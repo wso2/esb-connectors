@@ -1,0 +1,281 @@
+<template name="search" xmlns="http://ws.apache.org/ns/synapse">
+
+    <parameter name="query" description="query parameter to specify your search expression"/>
+
+    <parameter name="searchType"
+               description="Specifies the search type: image.  If unspecified, results are limited to webpages"/>
+    <parameter name="exactTerms" description=""/>
+    <parameter name="excludeTerms" description=""/>
+    <parameter name="dateRestrict" description=""/>
+    <parameter name="filter" description=""/>
+    <parameter name="countryCode" description=""/>
+    <parameter name="interfaceLanguage" description=""/>
+    <parameter name="appendsQuery" description=""/>
+    <parameter name="imgColorType" description=""/>
+    <parameter name="imgDominantColor" description=""/>
+    <parameter name="imgSize" description=""/>
+    <parameter name="imgType" description=""/>
+    <parameter name="start" description=""/>
+    <parameter name="sort" description=""/>
+    <parameter name="safe" description=""/>
+    <parameter name="num" description=""/>
+    <parameter name="lr" description=""/>
+    <parameter name="lowRange" description=""/>
+    <parameter name="siteSearchFilter" description=""/>
+    <parameter name="relatedSite" description=""/>
+    <parameter name="linkSite" description=""/>
+    <parameter name="alt" description=""/>
+    <parameter name="countryRestrict" description=""/>
+
+    <sequence>
+        <property name="uri.var.query" expression="$func:query"/>
+
+        <property name="uri.var.searchType" expression="$func:searchType"/>
+        <property name="uri.var.exactTerms" expression="$func:exactTerms"/>
+        <property name="uri.var.excludeTerms" expression="$func:excludeTerms"/>
+        <property name="uri.var.dateRestrict" expression="$func:dateRestrict"/>
+        <property name="uri.var.filter" expression="$func:filter"/>
+        <property name="uri.var.countryCode" expression="$func:countryCode"/>
+        <property name="uri.var.interfaceLanguage" expression="$func:interfaceLanguage"/>
+        <property name="uri.var.appendsQuery" expression="$func:appendsQuery"/>
+        <property name="uri.var.imgColorType" expression="$func:imgColorType"/>
+        <property name="uri.var.imgDominantColor" expression="$func:imgDominantColor"/>
+        <property name="uri.var.imgSize" expression="$func:imgSize"/>
+        <property name="uri.var.imgType" expression="$func:imgType"/>
+        <property name="uri.var.start" expression="$func:start"/>
+        <property name="uri.var.sort" expression="$func:sort"/>
+        <property name="uri.var.safe" expression="$func:safe"/>
+        <property name="uri.var.num" expression="$func:num"/>
+        <property name="uri.var.lr" expression="$func:lr"/>
+        <property name="uri.var.lowRange" expression="$func:lowRange"/>
+        <property name="uri.var.siteSearchFilter" expression="$func:siteSearchFilter"/>
+        <property name="uri.var.relatedSite" expression="$func:relatedSite"/>
+        <property name="uri.var.linkSite" expression="$func:linkSite"/>
+        <property name="uri.var.alt" expression="$func:alt"/>
+        <property name="uri.var.countryRestrict" expression="$func:countryRestrict"/>
+
+
+        <property name="uri.var.parameters" expression="fn:concat(
+        'key=', get-property('uri.var.apiKey'),
+        '&amp;cx=', get-property('uri.var.cseID'),
+        '&amp;q=', get-property('uri.var.query')
+        )"/>
+
+        <filter
+                xpath="(not(get-property('uri.var.searchType') = '' or  (not(string(get-property('uri.var.searchType'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;searchType=', get-property('uri.var.searchType')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.exactTerms') = '' or  (not(string(get-property('uri.var.exactTerms'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;exactTerms=', get-property('uri.var.exactTerms')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.excludeTerms') = '' or  (not(string(get-property('uri.var.excludeTerms'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;excludeTerms=', get-property('uri.var.excludeTerms')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.dateRestrict') = '' or  (not(string(get-property('uri.var.dateRestrict'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;dateRestrict=', get-property('uri.var.dateRestrict')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.filter') = '' or  (not(string(get-property('uri.var.filter'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;filter=', get-property('uri.var.filter')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.countryCode') = '' or  (not(string(get-property('uri.var.countryCode'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;gl=', get-property('uri.var.countryCode')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.interfaceLanguage') = '' or  (not(string(get-property('uri.var.interfaceLanguage'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;hl=', get-property('uri.var.interfaceLanguage')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.appendsQuery') = '' or  (not(string(get-property('uri.var.appendsQuery'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;hq=', get-property('uri.var.appendsQuery')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.imgColorType') = '' or  (not(string(get-property('uri.var.imgColorType'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;imgColorType=', get-property('uri.var.imgColorType')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.imgDominantColor') = '' or  (not(string(get-property('uri.var.imgDominantColor'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;imgDominantColor=', get-property('uri.var.imgDominantColor')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.imgSize') = '' or  (not(string(get-property('uri.var.imgSize'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;imgSize=', get-property('uri.var.imgSize')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.imgType') = '' or  (not(string(get-property('uri.var.imgType'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;imgType=', get-property('uri.var.imgType')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.start') = '' or  (not(string(get-property('uri.var.start'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;start=', get-property('uri.var.start')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.sort') = '' or  (not(string(get-property('uri.var.sort'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;sort=', get-property('uri.var.sort')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.safe') = '' or  (not(string(get-property('uri.var.safe'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;safe=', get-property('uri.var.safe')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.num') = '' or  (not(string(get-property('uri.var.num'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;num=', get-property('uri.var.num')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.lr') = '' or  (not(string(get-property('uri.var.lr'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;lr=', get-property('uri.var.lr')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.lowRange') = '' or  (not(string(get-property('uri.var.lowRange'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;lowRange=', get-property('uri.var.lowRange')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.siteSearchFilter') = '' or  (not(string(get-property('uri.var.siteSearchFilter'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;siteSearchFilter=', get-property('uri.var.siteSearchFilter')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.relatedSite') = '' or  (not(string(get-property('uri.var.relatedSite'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;relatedSite=', get-property('uri.var.relatedSite')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.linkSite') = '' or  (not(string(get-property('uri.var.linkSite'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;linkSite=', get-property('uri.var.linkSite')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.alt') = '' or  (not(string(get-property('uri.var.alt'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+                get-property('uri.var.parameters'),
+                '&amp;alt=', get-property('uri.var.alt')
+                )"/>
+            </then>
+        </filter>
+        <filter
+                xpath="(not(get-property('uri.var.countryRestrict') = '' or  (not(string(get-property('uri.var.countryRestrict'))))))">
+            <then>
+                <property name="uri.var.parameters" expression="fn:concat(
+               get-property('uri.var.parameters'),
+               '&amp;cr=', get-property('uri.var.countryRestrict')
+               )"/>
+            </then>
+        </filter>
+
+
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.url}?{uri.var.parameters}"/>
+            </endpoint>
+        </call>
+
+    </sequence>
+</template>
