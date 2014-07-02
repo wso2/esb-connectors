@@ -3,7 +3,5 @@
     "apiKey":"%s(apiKey)",
     "cseID":"%s(cseID)",
     "url":"%s(url)",
-    "num":"%s(invalidNum)"
+    "languageRestrict":"%s(languageRestrict)"
 }
-
-

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<!--
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
     <parent>
         <groupId>org.wso2.esb</groupId>
         <artifactId>esb-integration-tests</artifactId>
@@ -16,9 +16,7 @@
     <name>WSO2 Carbon - Mediation Library Connector For Googlecustomsearch</name>
     <url>http://wso2.org</url>
 
-
-
- <dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.mediation.initializer</artifactId>
@@ -146,13 +144,13 @@
             <scope>test</scope>
         </dependency>
 
-     <dependency>
-         <groupId>org.wso2.esb</groupId>
-         <artifactId>org.wso2.connector.integration.test.base</artifactId>
-         <version>4.8.1</version>
-         <scope>system</scope>
-         <systemPath>${basedir}/../integration-base/target/org.wso2.connector.integration.test.base-4.8.1.jar</systemPath>
-     </dependency>
+        <dependency>
+            <groupId>org.wso2.esb</groupId>
+            <artifactId>org.wso2.connector.integration.test.base</artifactId>
+            <version>4.8.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../integration-base/target/org.wso2.connector.integration.test.base-4.8.1.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
@@ -170,6 +168,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
                 <executions>
                     <execution>
                         <id>copy</id>
@@ -270,6 +269,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
                 <executions>
                     <execution>
                         <id>copy-emma-dependencies</id>
@@ -378,10 +378,10 @@
                 <version>2.12.4</version>
                 <inherited>false</inherited>
                 <configuration>
-                         <!--<argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=128m -Xmx1024m -XX:PermSize=256m-->
-                             <!---XX:MaxPermSize=512m -Xdebug -Xnoagent -Djava.compiler=NONE-->
-                             <!---Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005-->
-                         <!--</argLine>-->
+                    <!--<argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=128m -Xmx1024m -XX:PermSize=256m-->
+                    <!---XX:MaxPermSize=512m -Xdebug -Xnoagent -Djava.compiler=NONE-->
+                    <!---Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005-->
+                    <!--</argLine>-->
                     <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=128m</argLine>
                     <testFailureIgnore>true</testFailureIgnore>
                     <disableXmlReport>false</disableXmlReport>
@@ -428,6 +428,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
                 <executions>
                     <execution>
                         <id>copy-emma-dependencies</id>
@@ -634,7 +635,7 @@
     <properties>
         <test.framework.version>4.2.0</test.framework.version>
         <esb.version>4.8.1</esb.version>
-           <carbon.platform.version>4.2.0</carbon.platform.version>
+        <carbon.platform.version>4.2.0</carbon.platform.version>
         <emma.version>2.1.5320</emma.version>
     </properties>
 </project>

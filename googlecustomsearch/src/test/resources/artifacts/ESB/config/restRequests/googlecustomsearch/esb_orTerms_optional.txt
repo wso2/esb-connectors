@@ -1,9 +1,7 @@
 {
 	"query":"%s(query)",
     "apiKey":"%s(apiKey)",
-    "cseID":"%s(cseID)",
     "url":"%s(url)",
-    "num":"%s(invalidNum)"
+     "cseID":"%s(cseID)",
+    "orTerms":"%s(orTerms)"
 }
-
-

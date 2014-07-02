@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+~  Copyright (c) 2005-2010, WSO2 Inc. (http://wso2.com) All Rights Reserved.
+~
+~  WSO2 Inc. licenses this file to you under the Apache License,
+~  Version 2.0 (the "License"); you may not use this file except
+~  in compliance with the License.
+~  You may obtain a copy of the License at
+~
+~    http://www.apache.org/licenses/LICENSE-2.0
+~
+~  Unless required by applicable law or agreed to in writing,
+~  software distributed under the License is distributed on an
+~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~  KIND, either express or implied.  See the License for the
+~  specific language governing permissions and limitations
+~  under the License.
+-->
+
 <proxy xmlns="http://ws.apache.org/ns/synapse"
        name="googlecustomsearch"
        transports="https,http"
@@ -29,13 +47,15 @@
             <property name="sort" expression="json-eval($.sort)"/>
             <property name="safe" expression="json-eval($.safe)"/>
             <property name="num" expression="json-eval($.num)"/>
-            <property name="lr" expression="json-eval($.lr)"/>
+            <property name="languageRestrict" expression="json-eval($.languageRestrict)"/>
             <property name="lowRange" expression="json-eval($.lowRange)"/>
             <property name="siteSearchFilter" expression="json-eval($.siteSearchFilter)"/>
             <property name="relatedSite" expression="json-eval($.relatedSite)"/>
             <property name="linkSite" expression="json-eval($.linkSite)"/>
             <property name="alt" expression="json-eval($.alt)"/>
             <property name="countryRestrict" expression="json-eval($.countryRestrict)"/>
+            <property name="orTerms" expression="json-eval($.orTerms)"/>
+            <property name="rights" expression="json-eval($.rights)"/>
 
             <googlecustomsearch.init>
                 <apiKey>{$ctx:apiKey}</apiKey>
@@ -150,10 +170,10 @@
                     </googlecustomsearch.search>
                 </case>
 
-                <case regex="urn:lr">
+                <case regex="urn:languageRestrict">
                     <googlecustomsearch.search>
                         <query>{$ctx:query}</query>
-                        <lr>{$ctx:lr}</lr>
+                        <languageRestrict>{$ctx:languageRestrict}</languageRestrict>
                     </googlecustomsearch.search>
                 </case>
                 <case regex="urn:lowRange">
@@ -190,6 +210,18 @@
                     <googlecustomsearch.search>
                         <query>{$ctx:query}</query>
                         <countryRestrict>{$ctx:countryRestrict}</countryRestrict>
+                    </googlecustomsearch.search>
+                </case>
+                <case regex="urn:orTerms">
+                    <googlecustomsearch.search>
+                        <query>{$ctx:query}</query>
+                        <orTerms>{$ctx:orTerms}</orTerms>
+                    </googlecustomsearch.search>
+                </case>
+                <case regex="urn:rights">
+                    <googlecustomsearch.search>
+                        <query>{$ctx:query}</query>
+                        <rights>{$ctx:rights}</rights>
                     </googlecustomsearch.search>
                 </case>
 
