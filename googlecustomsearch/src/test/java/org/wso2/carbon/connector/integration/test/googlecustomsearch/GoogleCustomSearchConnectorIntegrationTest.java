@@ -68,7 +68,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
-        Assert.assertEquals(apiRestResponse.getBody().get("items").toString(), esbRestResponse.getBody().get("items").toString());
+        Assert.assertEquals(apiRestResponse.getBody().get("queries").toString(), esbRestResponse.getBody().get("queries").toString());
     }
 
     /**
@@ -180,7 +180,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
-        Assert.assertEquals(apiRestResponse.getBody().get("items").toString(), esbRestResponse.getBody().get("items").toString());
+        Assert.assertEquals(apiRestResponse.getBody().get("queries").toString(), esbRestResponse.getBody().get("queries").toString());
     }
 
     /**
@@ -203,7 +203,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
         Assert.assertEquals(apiRestResponse.getBody().get("items").toString(), esbRestResponse.getBody().get("items").toString());
-        Thread.sleep(1000);
+        Thread.sleep(1500);
     }
 
     /**
@@ -292,7 +292,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
-        Assert.assertEquals(apiRestResponse.getBody().get("items").toString(), esbRestResponse.getBody().get("items").toString());
+        Assert.assertEquals(apiRestResponse.getBody().get("queries").toString(), esbRestResponse.getBody().get("queries").toString());
     }
 
     /**
@@ -409,7 +409,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
         Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code"), apiRestResponse.getBody().getJSONObject("error").get("code"));
         Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message"), apiRestResponse.getBody().getJSONObject("error").get("message"));
         Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").getJSONArray("errors").length(), apiRestResponse.getBody().getJSONObject("error").getJSONArray("errors").length());
-        Thread.sleep(1000);
+        Thread.sleep(1500);
     }
 
     /**
@@ -616,7 +616,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
         Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("code"), apiRestResponse.getBody().getJSONObject("error").get("code"));
         Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").get("message"), apiRestResponse.getBody().getJSONObject("error").get("message"));
         Assert.assertEquals(esbRestResponse.getBody().getJSONObject("error").getJSONArray("errors").length(), apiRestResponse.getBody().getJSONObject("error").getJSONArray("errors").length());
-        Thread.sleep(1000);
+        Thread.sleep(1500);
     }
 
     /**
@@ -682,7 +682,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
-        Assert.assertEquals(apiRestResponse.getBody().get("items").toString(), esbRestResponse.getBody().get("items").toString());
+        Assert.assertEquals(apiRestResponse.getBody().get("queries").toString(), esbRestResponse.getBody().get("queries").toString());
     }
 
     /**
@@ -812,7 +812,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("queries").toString(), esbRestResponse.getBody().get("queries").toString());
-        Thread.sleep(1000);
+        Thread.sleep(1500);
     }
 
     /**
