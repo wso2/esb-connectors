@@ -69,8 +69,6 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
         Assert.assertEquals(apiRestResponse.getBody().get("url").toString(), esbRestResponse.getBody().get("url").toString());
-        System.out.println("\n\nESB=========>"+esbRestResponse.getBody().getJSONObject("queries").getJSONArray("request").getJSONObject(0).getString("totalResults"));
-        System.out.println("\n\nAPI=========>"+apiRestResponse.getBody().getJSONObject("queries").getJSONArray("request").getJSONObject(0).getString("totalResults"));
     }
 
     /**
@@ -114,10 +112,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
-        Assert.assertEquals(apiRestResponse.getBody().get("url").toString(), esbRestResponse.getBody().get("url").toString());
-        System.out.println("\n\nESB=========>"+esbRestResponse.getBody().getJSONObject("queries").getJSONArray("request").getJSONObject(0).getString("totalResults"));
-        System.out.println("\n\nAPI=========>"+apiRestResponse.getBody().getJSONObject("queries").getJSONArray("request").getJSONObject(0).getString("totalResults"));
-
+        Assert.assertEquals(apiRestResponse.getBody().get("url").toString(), esbRestResponse.getBody().get("url").toString());      
     }
 
     /**
@@ -162,10 +157,7 @@ public class GoogleCustomSearchConnectorIntegrationTest extends ConnectorIntegra
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("context").toString(), esbRestResponse.getBody().get("context").toString());
-        Assert.assertEquals(apiRestResponse.getBody().get("url").toString(), esbRestResponse.getBody().get("url").toString());
-        System.out.println("\n\nESB=========>"+esbRestResponse.getBody().getJSONObject("queries").getJSONArray("request").getJSONObject(0).getString("totalResults"));
-        System.out.println("\n\nAPI=========>"+apiRestResponse.getBody().getJSONObject("queries").getJSONArray("request").getJSONObject(0).getString("totalResults"));
-
+        Assert.assertEquals(apiRestResponse.getBody().get("url").toString(), esbRestResponse.getBody().get("url").toString());   
     }
 
 
