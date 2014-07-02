@@ -78,6 +78,6 @@ STEPS:
 10. Navigate to "${basedir}/" and run the following command.
       $ mvn clean install
 
-NOTE => The Custom Search API allows only 100 queries for free, 
+NOTE => The Custom Search API allows only 100 queries per day for free,
 	if you want to search more than 100, you have to paid for it 
 	or create a new API key and use it.
