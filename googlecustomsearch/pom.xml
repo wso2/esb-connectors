@@ -21,7 +21,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-
     <modelVersion>4.0.0</modelVersion>
     <artifactId>esb-connector-parent</artifactId>
     <groupId>org.wso2.carbon</groupId>
@@ -154,11 +153,8 @@
 			<artifactId>org.wso2.carbon.esb.common</artifactId>
 			<version>4.8.0</version>
 			<scope>test</scope>
-		</dependency>
-		
+		</dependency>		
 	</dependencies>
-
-
 
 	<repositories>
 		<repository>
@@ -187,6 +183,4 @@
 		<carbon.platform.version>4.2.0</carbon.platform.version>
 		<emma.version>2.1.5320</emma.version>
 	</properties>
-
 </project>
-
