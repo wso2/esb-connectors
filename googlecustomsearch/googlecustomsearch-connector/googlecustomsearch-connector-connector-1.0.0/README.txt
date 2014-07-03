@@ -89,3 +89,5 @@ STEPS:
 NOTE => The Custom Search API allows only 100 queries per day for free,
 	if you want to search more than 100, you have to paid for it 
 	or create a new API key and use it.
+        apiKey:AIzaSyBAj-H1k2IGT19ZTqp_UwZzJmzvzQvV4tw
+	cscID:014869045608377880101:18pywcgrwls
