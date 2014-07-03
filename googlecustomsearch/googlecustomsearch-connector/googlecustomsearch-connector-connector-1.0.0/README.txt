@@ -12,26 +12,34 @@ Tested Platform:
 
 STEPS:
 
-1. Make sure the ESB 4.8.1 zip file with latest patches available at "Integration_Test/products/esb/4.8.1/modules/distribution/target/"
+1. Make sure the ESB 4.8.1 zip file with latest patches available at "{PATH_TO_SOURCE_BUNDLE}/dropbox-connector/dropbox-connector-1.0.0/org.wso2.carbon.connector/repository/"
 
 2. This ESB should be configured as below;
-    In Axis configurations (\repository\conf\axis2\axis2.xml).
+	Please make sure that the below mentioned Axis configurations are enabled (\repository\conf\axis2\axis2.xml).
 
-   i) Enable message formatter for "text/html" in messageFormatters tag
-            <messageFormatter contentType="text/html" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
+   <messageFormatter contentType="text/html" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
+   
+   <messageFormatter contentType="application/x-www-form-urlencoded" class="org.apache.axis2.transport.http.XFormURLEncodedFormatter"/>
+   
+   <messageFormatter contentType="text/javascript" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>	
+   
+   <messageFormatter contentType="application/octet-stream" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>	
+   
+   <messageBuilder contentType="text/html" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+   
+   <messageBuilder contentType="application/x-www-form-urlencoded" class="org.apache.synapse.commons.builders.XFormURLEncodedBuilder"/>
+   
+   <messageBuilder contentType="text/javascript" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+   
+   <messageBuilder contentType="application/octet-stream" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+   
+   Enable the relevant message builders and formatters in axis2 configuration file when testing file upload methods.
+   
+		Eg: Below mentioned message formatter and the builder should be enabled when uploading ".png" files to test file upload methods.
+		
+		<messageFormatter contentType="image/png" class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
 
-   ii) Enable message builder for "text/html" in messageBuilders tag
-            <messageBuilder contentType="text/html" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
-
-   iii) Enable message formatter for "application/json" in messageFormatters tag
-            <messageFormatter contentType="application/json" class="org.apache.synapse.commons.json.JsonStreamFormatter"/>
-
-   iv) Enable message builder for "application/json" in messageBuilders tag
-            <messageBuilder contentType="application/json" class="org.apache.synapse.commons.json.JsonStreamBuilder"/>
-
-   V) Install HTTP PATCH request enabling patch and Json patch to ESB 4.8.1
-        patch0804 - http PATCH request patch
-        patch0800 - Json string escape ("\") character patch
+		<messageBuilder contentType="image/png" class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
 
 3. Make sure "integration-base" project is placed at "{basedir}/../"
 
