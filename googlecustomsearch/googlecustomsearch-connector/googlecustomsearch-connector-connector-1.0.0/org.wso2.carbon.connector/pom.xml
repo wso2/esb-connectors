@@ -28,13 +28,12 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>org.wso2.carbon.connector</groupId>
-    <artifactId>org.wso2.carbon.connector.${connector.name}</artifactId>
-    <version>${connector.version}</version>
-    <packaging>jar</packaging>
-    <name>WSO2 Carbon - Mediation Library Connector For ${connector.name}</name>
-    <url>http://wso2.org</url>
+    	<artifactId>org.wso2.carbon.connector.${connector.name}</artifactId>
+	<version>${connector.version}</version>
+	<packaging>jar</packaging>
+    	<name>WSO2 Carbon - Mediation Library Connector For ${connector.name}</name>
+    	<url>http://wso2.org</url>
 
 	<properties>
 	<connector.name>googlecustomsearch</connector.name>
@@ -244,7 +243,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
