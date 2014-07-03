@@ -36,8 +36,8 @@
     	<url>http://wso2.org</url>
 
 	<properties>
-	<connector.name>googlecustomsearch</connector.name>
-	<connector.version>1.0.0</connector.version>
+		<connector.name>googlecustomsearch</connector.name>
+		<connector.version>1.0.0</connector.version>
 	</properties>
 	
 	<dependencies>
@@ -140,9 +140,7 @@
 						</property>
 						<property>
 							<name>server.list</name>
-							<value>
-								ESB
-							</value>
+							<value>	ESB</value>
 						</property>
 						<property>
 							<name>usedefaultlisteners</name>
@@ -228,7 +226,6 @@
 							</artifactItems>
 						</configuration>
 					</execution>
-
 				</executions>
 			</plugin>
 			<plugin>
