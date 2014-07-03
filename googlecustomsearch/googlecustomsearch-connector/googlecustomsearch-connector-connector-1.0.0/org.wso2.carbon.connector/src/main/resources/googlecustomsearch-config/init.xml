@@ -1,7 +1,7 @@
 <template name="init" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="apiKey" description="API Key" />
     <parameter name="cseID" description="Customer Search Engine ID" />
-    <parameter name="cref" description="linked custom search engine reference url"/>
+    <parameter name="cref" description="Linked custom search engine reference url"/>
     <parameter name="url" description="Google Custom Search URL" />
     <sequence>
         <property name="uri.var.apiKey" expression="$func:apiKey" />
