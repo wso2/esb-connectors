@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ *  Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+ 
+<template xmlns="http://ws.apache.org/ns/synapse" name="init">
+	<parameter name="brokerlist" />
+	<parameter name="serializationclass" />
+	<parameter name="requiredacks" />
+	<parameter name="producertype" />
+	<parameter name="keyserializerclass" />
+	<parameter name="partitionerclass" />
+	<parameter name="compressioncodec" />
+	<parameter name="compressedtopics" />
+	<parameter name="messagesendmaxretries" />
+	<parameter name="retrybackoff" />
+	<parameter name="refreshinterval" />
+	<parameter name="bufferingmaxmessages" />
+	<parameter name="batchnomessages" />
+	<parameter name="sendbuffersize" />
+	<parameter name="requestTimeout" />
+	<paramter name="bufferingMaxTime" />
+	<parameter name="enqueueTimeout" />
+	<parameter name="clientId" />
+
+	<sequence>
+		<property expression="$func:brokerlist" name="kafka.brokerlist"
+			scope="operation" type="STRING" />
+		<property expression="$func:requiredacks" name="kafka.requiredAcks" />
+		<property expression="$func:requestTimeout" name="kafka.requestTimeout" />
+		<property expression="$func:producertype" name="kafka.producertype" />
+		<property expression="$func:serializationclass" name="kafka.serializationClass" />
+		<property expression="$func:keyserializerclass" name="kafka.keyserializerclass" />
+		<property expression="$func:partitionerclass" name="kafka.partitionerclass" />
+		<property expression="$func:compressioncodec" name="kafka.compressioncodec" />
+		<property expression="$func:compressedtopics" name="kafka.compressedtopics" />
+		<property expression="$func:messagesendmaxretries" name="kafka.messagesendmaxretries" />
+		<property expression="$func:retrybackoff" name="kafka.retrybackoff" />
+		<property expression="$func:refreshinterval" name="kafka.refreshinterval" />
+		<property expression="$func:bufferingmaxmessages" name="kafka.bufferingmaxmessages" />
+		<property expression="$func:batchnomessages" name="kafka.batchnomessages" />
+		<property expression="$func:sendbuffersize" name="kafka.sendbuffersize" />
+		<property expression="$func:requestTimeout" name="kafka.requestTimeout" />
+		<property expression="$func:bufferingMaxTime" name="kafka.bufferingmaxtime" />
+		<property expression="$func:enqueueTimeout" name="kafka.enqueueTimeout" />
+		<property expression="$func:clientId" name="kafka.clientId" />
+
+		<filter
+			xpath="get-property('kafka.compressioncodec') = '' or  not(string(get-property('kafka.compressioncodec')))">
+			<then>
+				<property name="kafka.compressioncodec" value="none" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.compressioncodec" expression="$func:compressioncodec"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.serializationClass') = '' or  not(string(get-property('kafka.serializationClass')))">
+			<then>
+				<property name="kafka.serializationClass" value="kafka.serializer.StringEncoder"
+					scope="operation" type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.serializationClass" expression="$func:serializationclass"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.requiredAcks') = '' or  not(string(get-property('kafka.requiredAcks')))">
+			<then>
+				<property name="kafka.requiredAcks" value="0" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.requiredAcks" expression="$func:requiredacks"
+					scope="operation" type="STRING" />
+
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.producertype') = '' or  not(string(get-property('kafka.producertype')))">
+			<then>
+				<property name="kafka.producertype" value="sync" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.producertype" expression="$func:producertype"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.keyserializerclass') = '' or  not(string(get-property('kafka.keyserializerclass')))">
+			<then>
+				<property name="kafka.keyserializerclass" value="kafka.serializer.StringEncoder"
+					scope="operation" type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.keyserializerclass" expression="$func:keyserializerclass"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.partitionerclass') = '' or  not(string(get-property('kafka.partitionerclass')))">
+			<then>
+				<property name="kafka.partitionerclass" value="kafka.producer.DefaultPartitioner"
+					scope="operation" type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.partitionerclass" expression="$func:partitionerclass"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.compressedtopics') = '' or  not(string(get-property('kafka.compressedtopics')))">
+			<then>
+				<property name="kafka.compressedtopics" value="null" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.compressedtopics" expression="$func:compressedtopics"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.messagesendmaxretries') = '' or  not(string(get-property('kafka.messagesendmaxretries')))">
+			<then>
+				<property name="kafka.messagesendmaxretries" value="3"
+					scope="operation" type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.messagesendmaxretries" expression="$func:messagesendmaxretries"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.retrybackoff') = '' or  not(string(get-property('kafka.retrybackoff')))">
+			<then>
+				<property name="kafka.retrybackoff" value="100" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.retrybackoff" expression="$func:retrybackoff"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.refreshinterval') = '' or  not(string(get-property('kafka.refreshinterval')))">
+			<then>
+				<property name="kafka.refreshinterval" value="6000" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.refreshinterval" expression="$func:refreshinterval"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.bufferingmaxmessages') = '' or  not(string(get-property('kafka.bufferingmaxmessages')))">
+			<then>
+				<property name="kafka.bufferingmaxmessages" value="200000"
+					scope="operation" type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.bufferingmaxmessages" expression="$func:bufferingmaxmessages"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.batchnomessages') = '' or  not(string(get-property('kafka.batchnomessages')))">
+			<then>
+				<property name="kafka.batchnomessages" value="4000" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.batchnomessages" expression="$func:batchnomessages"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.sendbuffersize') = '' or  not(string(get-property('kafka.sendbuffersize')))">
+			<then>
+				<property name="kafka.sendbuffersize" value="1024000"
+					scope="operation" type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.sendbuffersize" expression="$func:sendbuffersize"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+
+		<filter
+			xpath="get-property('kafka.requestTimeout') = '' or  not(string(get-property('kafka.requestTimeout')))">
+			<then>
+				<property name="kafka.requestTimeout" value="10000" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.requestTimeout" expression="$func:requestTimeout"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.enqueueTimeout') = '' or  not(string(get-property('kafka.enqueueTimeout')))">
+			<then>
+				<property name="kafka.enqueueTimeout" value="-1" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.enqueueTimeout" expression="$func:enqueueTimeout"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.bufferingmaxtime') = '' or  not(string(get-property('kafka.bufferingmaxtime')))">
+			<then>
+				<property name="kafka.bufferingmaxtime" value="5000" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.bufferingmaxtime" expression="$func:bufferingMaxTime"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+		<filter
+			xpath="get-property('kafka.clientId') = '' or  not(string(get-property('kafka.clientId')))">
+			<then>
+				<property name="kafka.clientId" value="" scope="operation"
+					type="STRING" />
+			</then>
+			<else>
+				<property name="kafka.clientId" expression="$func:clientId"
+					scope="operation" type="STRING" />
+			</else>
+		</filter>
+
+	</sequence>
+</template>
