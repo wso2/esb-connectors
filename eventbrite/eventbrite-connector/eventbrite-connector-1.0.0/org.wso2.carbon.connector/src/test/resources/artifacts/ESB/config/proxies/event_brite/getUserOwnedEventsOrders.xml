@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="getUserOwnedEventsOrders"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+
+            <property name="apiUrl" expression="json-eval($.apiUrl)"/>
+            <property name="accessToken" expression="json-eval($.accessToken)"/>
+            <property name="userId" expression="json-eval($.userId)"/>
+            <property name="changed_since" expression="json-eval($.changed_since)"/>
+
+            <event_brite.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+                <accessToken>{$ctx:accessToken}</accessToken>
+            </event_brite.init>
+
+            <event_brite.getUserOwnedEventsOrders>
+                <userId>{$ctx:userId}</userId>
+                <changed_since>{$ctx:changed_since}</changed_since>
+
+            </event_brite.getUserOwnedEventsOrders>
+            <respond/>
+
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
+</proxy>
+

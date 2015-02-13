@@ -1,0 +1,8 @@
+{
+	"apiUrl":"%s(apiUrl)",
+	"accessToken":"%s(accessToken)",
+	"eventId":"%s(eventIdMandatory)",
+	"className":"%s(className)",
+	"quantityTotal":"%s(quantityTotal)",
+	"isFree":"true"	
+}

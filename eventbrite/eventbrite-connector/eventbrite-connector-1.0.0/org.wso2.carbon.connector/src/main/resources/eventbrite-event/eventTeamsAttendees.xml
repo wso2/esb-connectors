@@ -1,0 +1,19 @@
+<template name="eventTeamsAttendees" xmlns="http://ws.apache.org/ns/synapse">
+
+    <parameter name="EventID" description="Full-text search query string." />
+    <parameter name="teamId" description="teamId." />
+    <!--<parameter name="accessToken" description="accessToken." />-->
+    <sequence>
+        <property name="uri.var.EventID" expression="$func:EventID" />
+
+        <property name="uri.var.teamId" expression="$func:teamId" />
+
+
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.EventID}/teams/{uri.var.teamId}/attendees/?token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>

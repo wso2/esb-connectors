@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="eventbrite_retrieveEventsAndMarketing" transports="https http" startOnLoad="true" trace="disable">
+   <target>
+      <inSequence>
+         <!-- EventBrite Properties-->
+         <property name="eventBrite.apiUrl" expression="json-eval($.eventBriteApiUrl)" />
+         <property name="eventBrite.accessToken" expression="json-eval($.eventBriteAccessToken)" />
+         <property name="eventbrite.eventCount" expression="count(//eventBriteEventIds)" scope="operation" />
+         <property name="eventbrite.eventIndex" expression="0" scope="operation" />
+
+         <!-- Facebook Properties-->
+         <property name="facebook.apiUrl" expression="json-eval($.facebookApiUrl)" />
+         <property name="facebook.accessToken" expression="json-eval($.facebookAccessToken)" />
+		 
+         <!-- ConstantContact Properties-->
+         <property name="constantContact.apiUrl" expression="json-eval($.constantContactApiUrl)" />
+         <property name="constantContact.apiToken" expression="json-eval($.constantContactApiToken)" />
+         <property name="constantContact.apiKey" expression="json-eval($.constantContactApiKey)" />
+         <property name="constantContact.fromEmail" expression="json-eval($.constantContactFromEmail)" />
+         <property name="constantContact.fromName" expression="json-eval($.constantContactFromName)" />
+         <property name="constantContact.replyToEmail" expression="json-eval($.constantContactreplyToEmail)" />
+         <property name="constantContact.sendToContactList" expression="json-eval($.constantContactSentToContactLists)" />
+		 
+         <!--Process only if the event array is not empty-->
+         <filter xpath="get-property('operation','eventbrite.eventCount') >0">
+            <then>
+               <property name="futureEvent" value="false" scope="operation" />
+               <property name="publishedEvent" value="false" scope="operation" />
+			   
+               <!--FOR EACH event : BEGIN-->
+               <iterate continueParent="true" id="events" expression="//eventBriteEventIds" sequential="true">
+                  <target>
+                     <sequence>
+                        <property name="eventbrite.eventId" expression="//eventBriteEventIds/text()" />
+						
+                        <!-- Call eventbrite connector eventDetails method Get the event details for the given event ID -->
+                        <eventbrite.init>
+                           <apiUrl>{$ctx:eventBrite.apiUrl}</apiUrl>
+                           <accessToken>{$ctx:eventBrite.accessToken}</accessToken>
+                        </eventbrite.init>
+                        <eventbrite.eventDetails>
+                           <EventID>{$ctx:eventbrite.eventId}</EventID>
+                        </eventbrite.eventDetails>
+						
+                        <!-- Remove unused headers before calling createPostsAndCampaigns template.-->
+                        <sequence key="removeResponseHeaders" />
+						
+                        <property name="eventId" expression="json-eval($.id)" />
+						
+                        <!--Process only if the event details retrieved successfully-->
+                        <filter source="boolean(get-property('eventId'))" regex="false">
+                           <then>
+                              <property name="id" expression="fn:concat('{event_id:',get-property('eventbrite.eventId'),'}')" />
+                              <property name="status" value="Skipped" />
+                              <property name="message" expression="json-eval($)" />
+                              <call-template target="responseHandlerTemplate">
+                                 <with-param name="id" value="{$ctx:id}" />
+                                 <with-param name="activity" value="eventbrite_eventDetails" />
+                                 <with-param name="status" value="{$ctx:status}" />
+                                 <with-param name="message" value="{$ctx:message}" />
+                              </call-template>
+                           </then>
+                           <else>
+                              <property name="eventbrite.id" expression="json-eval($.id)" />
+                              <property name="eventbrite.url" expression="json-eval($.url)" />
+                              <property name="eventbrite.name" expression="json-eval($.name.text)" />
+                              <property name="eventbrite.status" expression="json-eval($.status)" />
+                              <property name="eventbrite.startTime" expression="json-eval($.start.local)" />
+                              <property name="eventbrite.endTime" expression="json-eval($.end.local)" />
+							  							  
+                              <property name="facebook.urlDescription" expression="fn:concat('Starting time - ',get-property('eventbrite.startTime'),'   End time - ',get-property('eventbrite.endTime'))" />
+                              <property name="facebook.urlCaption" value="click here to view the event"/>
+							  <property name="constantcontact.urlDescription" value="For more details please click here"/>
+							  
+							  <!--Process only if the event is a publish event-->
+                              <filter xpath="get-property('eventbrite.status')!='live'">
+                                 <then>
+                                    <property name="id" expression="fn:concat('{event_id:',get-property('eventbrite.eventId'),'}')" />
+                                    <property name="status" value="Skipped" />
+                                    <property name="message" value="This event is not a published event." />
+                                    <call-template target="responseHandlerTemplate">
+                                       <with-param name="activity" value="retrieveEventsAndMarketing" />
+                                       <with-param name="id" value="{$ctx:id}" />
+                                       <with-param name="status" value="{$ctx:status}" />
+                                       <with-param name="message" value="{$ctx:message}" />
+                                    </call-template>
+                                 </then>
+                                 <else>
+                                    <property name="publishedEvent" value="true" scope="operation" />
+									<property name="constantContact.sheduledDate" value="" />
+                                    <property name="dateComparison" value="false" />
+                                    <script language="js"><![CDATA[var eventStartingDate = mc.getProperty('eventbrite.startTime');
+										var comparedDate = mc.getProperty('dateComparison');
+										var eventStartDay = "";
+							
+								var systemDate=new Date();
+								var minutes = systemDate.getMinutes();
+								var hours = systemDate.getHours();
+								var currentDate=""+systemDate.getDate();
+								
+								var sheduledMins = minutes + 5;
+								if(sheduledMins<10){
+									sheduledMins ="0"+sheduledMins;
+								}
+																
+								if(currentDate.length==1){
+									currentDate="0"+currentDate;
+								}
+								var dateString=systemDate.getFullYear() + "-" + Number(systemDate.getMonth()+1) + "-" + currentDate ;
+								
+								var sheduledDate= dateString+"T"+hours+":"+sheduledMins+":00.000Z"
+								if (eventStartingDate != null && eventStartingDate != "") {
+									eventStartDay = eventStartingDate.split('T')[0];
+								}
+								if(dateString < eventStartDay) {
+									comparedDate = "true";
+								}
+								
+								mc.setProperty("constantContact.sheduledDate", sheduledDate);
+								mc.setProperty("dateComparison", comparedDate);]]></script>
+								                                  
+								   <!--Process only if the event is a future event-->
+                                    <filter source="get-property('dateComparison')" regex="false">
+                                       <then>
+                                          <property name="id" expression="fn:concat('{event_id:',get-property('eventbrite.eventId'),'}')" />
+                                          <property name="status" value="Skipped" />
+                                          <property name="message" value="The start date of this event is not a future date." />
+                                          <call-template target="responseHandlerTemplate">
+                                             <with-param name="activity" value="retrieveEventsAndMarketing" />
+                                             <with-param name="id" value="{$ctx:id}" />
+                                             <with-param name="status" value="{$ctx:status}" />
+                                             <with-param name="message" value="{$ctx:message}" />
+                                          </call-template>
+                                       </then>
+                                       <else>
+                                          <property name="futureEvent" value="true" scope="operation" />
+                                         
+										 <!-- Calling createPostsAndCampaigns Template to create campaign in constant contact in  and
+									post in the facebook -->
+                                          <call-template target="createPostsAndCampaigns">
+                                             <!-- parameter values will be passed on to a sequence template -->
+                                             (
+                                             <with-param name="event.idObj" value="{$ctx:eventbrite.id}" />
+                                             |
+                                             <with-param name="facebook.apiUrl" value="{$ctx:facebook.apiUrl}" />
+                                             |
+                                             <with-param name="facebook.accessToken" value="{$ctx:facebook.accessToken}" />
+                                             |
+											 <with-param name="facebook.url" value="{$ctx:eventbrite.url}" />
+                                             |
+                                             <with-param name="facebook.urlDescription" value="{$ctx:facebook.urlDescription}" />
+                                             |
+											  <with-param name="facebook.urlName" value="{$ctx:eventbrite.name}" />
+                                             |
+                                             <with-param name="constantContact.apiUrl" value="{$ctx:constantContact.apiUrl}" />
+                                             |
+                                             <with-param name="constantContact.apiToken" value="{$ctx:constantContact.apiToken}" />
+                                             |
+                                             <with-param name="constantContact.apiKey" value="{$ctx:constantContact.apiKey}" />
+                                             |
+                                             <with-param name="constantContact.fromEmail" value="{$ctx:constantContact.fromEmail}" />
+                                             |
+                                             <with-param name="constantContact.sendToContactList" value="{$ctx:constantContact.sendToContactList}" />
+                                             |
+                                             <with-param name="constantContact.replyToEmail" value="{$ctx:constantContact.replyToEmail}" />
+                                             |
+                                             <with-param name="constantContact.fromName" value="{$ctx:constantContact.fromName}" />
+                                             |
+											  <with-param name="constantContact.emailTitle" value="{$ctx:eventbrite.name}" />
+                                             |
+											 <with-param name="constantContact.url" value="{$ctx:eventbrite.url}" />
+                                             |
+											 <with-param name="constantContact.urlDescription" value="{$ctx:constantcontact.urlDescription}" />
+                                             |
+											 <with-param name="constantContact.sheduledDate" value="{$ctx:constantContact.sheduledDate}" />
+                                             |
+                                       ) *
+                                          </call-template>
+                                       </else>
+                                    </filter>
+                                 </else>
+                              </filter>
+                           </else>
+                        </filter>
+                        <property name="eventbrite.eventIndex" expression="get-property('operation','eventbrite.eventIndex') + 1" scope="operation" />
+                     </sequence>
+                  </target>
+               </iterate>
+               <!--FOR EACH event : END-->
+			   
+               <filter xpath="get-property('operation','eventbrite.eventIndex') = get-property('operation', 'eventbrite.eventCount')">
+                  <then>
+                     <loopback />
+                  </then>
+               </filter>
+            </then>
+            <else>
+               <payloadFactory media-type="json">
+                  <format>{
+							"Response":{
+								"process":"eventbrite_retrieveEventsAndMarketing",
+								"activityResponse":"The event list is empty - No entries to be processed."
+							}
+						}</format>
+                  <args>
+                     <arg expression="get-property('operation','responseString')" />
+                  </args>
+               </payloadFactory>
+               <property name="messageType" value="application/json" scope="axis2" />
+               <respond />
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <payloadFactory media-type="json">
+            <format>{
+				"Response":{
+					"process":"eventbrite_retrieveEventsAndMarketing",
+					"activityResponse":[$1]
+				}
+				}</format>
+            <args>
+               <arg expression="get-property('operation', 'responseString')" />
+            </args>
+         </payloadFactory>
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>

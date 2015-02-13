@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="eventbrite-event" type="synapse/template">
+    <subComponents>
+    	<component name="publishEvent">
+            <file>publishEvent.xml</file>
+            <description>Publish an Event.</description>
+        </component>
+        <component name="createEvent">
+            <file>createEvent.xml</file>
+            <description>Create an Event.</description>
+        </component>
+        <component name="createTicketClass">
+            <file>createTicketClass.xml</file>
+            <description>Create a Ticket Class for the Event.</description>
+        </component>
+        <component name="eventDetails">
+            <file>eventDetails.xml</file>
+            <description>Give the detail of the events.</description>
+        </component>
+        <component name="eventAttendees">
+            <file>eventAttendees.xml</file>
+            <description>Give the detail of the eventAttendees.</description>
+        </component>
+        <component name="eventCategories">
+            <file>eventCategories.xml</file>
+            <description>Give the detail categoreis of the event.</description>
+        </component>
+        <component name="eventTransfers">
+            <file>eventTransfers.xml</file>
+            <description>Give the transfer of the event.</description>
+        </component>
+        <component name="eventTeams">
+            <file>eventTeams.xml</file>
+            <description>Give the detail teams of the event.</description>
+        </component>
+        <component name="getEventAccessCodes">
+            <file>getEventAccessCodes.xml</file>
+            <description>Give the teams of the event.</description>
+        </component>
+        <component name="createEventAccessCodes">
+            <file>createEventAccessCodes.xml</file>
+            <description>Give the teams of the event.</description>
+        </component>
+        <component name="eventTeamsDetails">
+            <file>eventTeamsDetails.xml</file>
+            <description>Give the detail teams of the event.</description>
+        </component>
+        <component name="eventTeamsAttendees">
+            <file>eventTeamsAttendees.xml</file>
+            <description>Give the detail teams attendees of the event.</description>
+        </component>
+        <component name="eventOrders">
+            <file>eventOrders.xml</file>
+            <description>Give the orders of the event.</description>
+        </component>
+        <component name="eventAttendeesDetails">
+            <file>eventAttendeesDetails.xml</file>
+            <description>Give the orders of the event.</description>
+        </component>
+        <component name="eventSearch">
+            <file>eventSearch.xml</file>
+            <description>Give the orders of the event.</description>
+        </component>
+        <component name="getEventDiscounts">
+            <file>getEventDiscounts.xml</file>
+            <description>Give the orders of the event.</description>
+        </component>
+        <component name="createEventDiscounts">
+            <file>createEventDiscounts.xml</file>
+            <description>Give the orders of the event.</description>
+        </component>
+
+    </subComponents>
+</component>

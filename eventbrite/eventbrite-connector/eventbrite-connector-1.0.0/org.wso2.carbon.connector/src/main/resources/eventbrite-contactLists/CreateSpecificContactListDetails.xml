@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://ws.apache.org/ns/synapse" name="CreateSpecificContactListDetails" >
+<parameter name="userId"/>
+<parameter name="contactlistId"/>
+
+<parameter name="email"/>
+<parameter name="first_name"/>
+<parameter name="last_name"/>
+
+<sequence>
+    <property name="HTTP_METHOD" value="POST" scope="axis2" type="STRING"/>
+    <property name="Accept-Encoding" scope="transport" action="remove"/>
+    <property name="messageType" value="application/json" scope="axis2" type="STRING"/>
+
+    <property name="uri.var.userId" expression="$func:userId" />
+    <property name="uri.var.contactlistId" expression="$func:contactlistId" />
+    <property name="uri.var.email" expression="$func:email" />
+    <property name="uri.var.first_name" expression="$func:first_name" />
+    <property name="uri.var.last_name" expression="$func:last_name" />
+
+
+
+
+
+    <payloadFactory media-type="json">
+        <format> {
+            "email": "$1",
+            "first_name": "$2",
+            "last_name": "$3"
+            }
+        </format>
+        <args>
+            <arg evaluator="xml" expression="$func:email"/>
+            <arg evaluator="xml" expression="$func:first_name"/>
+            <arg evaluator="xml" expression="$func:last_name"/>
+
+        </args>
+    </payloadFactory>
+
+    <call>
+        <endpoint>
+            <http method="POST"
+
+
+
+            uri-template="{uri.var.eventbrite.apiUrl}/v3/users/{uri.var.userId}/contact_lists/{uri.var.contactlistId}/contacts/?token={uri.var.eventbrite.accessToken}" />
+        </endpoint>
+    </call>
+
+</sequence>
+
+</template>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+    
+
+     

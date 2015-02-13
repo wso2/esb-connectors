@@ -1,0 +1,18 @@
+{ 
+"gotowebinarApiUrl": "https://api.citrixonline.com",
+"gotowebinarAccessToken": "ilcGbGSSoVIBHZafWLZlwGz4gljJ",
+"gotowebinarOrganizerKey": "512299114040876806",
+"webinar":{"data":[ 
+                                { 
+                                        "webinarKey":"7607870960316259073", 
+                                        "price":"1000", 
+                                        "currency":"JPY", 
+                                        "timeZone":"Asia/Colombo",
+                                        "ticketQty":"50" 
+                                }
+                        ] 
+                        }, 
+"eventbriteApiUrl":"https://www.eventbriteapi.com", 
+"eventbriteAccessToken":"HBZYG2JXL5WMABCLV2SB" 
+
+}

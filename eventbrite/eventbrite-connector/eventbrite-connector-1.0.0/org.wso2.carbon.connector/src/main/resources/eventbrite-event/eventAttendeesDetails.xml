@@ -1,0 +1,29 @@
+<template name="eventAttendeesDetails" xmlns="http://ws.apache.org/ns/synapse">
+
+    <parameter name="EventID" description="Full-text search query string." />
+    <parameter name="attendeesId" description="teamId." />
+    <parameter name="expand" description="expand." />
+
+    <sequence>
+        <property name="uri.var.EventID" expression="$func:EventID" />
+        <property name="uri.var.attendeesId" expression="$func:attendeesId" />
+        <property name="uri.var.expand" expression="$func:expand" />
+
+        <property name="apiParameters" value=""/>
+
+        <filter xpath="boolean(get-property('uri.var.expand'))">
+            <then>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'), 'expand=',get-property('uri.var.expand'),'&amp;')"/>
+            </then>
+        </filter>
+        
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.EventID}/attendees/{uri.var.attendeesId}/?{uri.var.parameters}token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+        
+    </sequence>
+</template>

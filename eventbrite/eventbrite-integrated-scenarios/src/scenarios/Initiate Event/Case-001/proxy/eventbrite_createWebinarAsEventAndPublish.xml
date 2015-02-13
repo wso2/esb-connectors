@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="eventbrite_createWebinarAsEventAndPublish"
+       transports="https http"
+       startOnLoad="true"
+       trace="disable">
+   <description/>
+   <target>
+      <inSequence onError="faultHandlerSeq">
+	  
+		 <!-- GoToWebinar Properties-->
+         <property name="gotowebinar.apiUrl" expression="json-eval($.gotowebinarApiUrl)"/>
+         <property name="gotowebinar.accessToken" expression="json-eval($.gotowebinarAccessToken)"/>
+         <property name="gotowebinar.organizerKey" expression="json-eval($.gotowebinarOrganizerKey)"/>
+         
+         
+		 <!-- Eventbrite Properties -->
+         <property name="eventbrite.apiUrl" expression="json-eval($.eventbriteApiUrl)"/>
+         <property name="eventbrite.accessToken" expression="json-eval($.eventbriteAccessToken)"/>
+		 
+		 <!-- Operation Properties -->
+		 <property name="gotowebinar.webinarCount" expression="count(//webinar/data)" scope="operation"/>
+         <property name="gotowebinar.webinarIndex" value="0" scope="operation"/>
+		 <property name="gotowebinar.sessionCount" value="0" scope="operation"/>
+		 <property name="gotowebinar.sessionIndex" value="0" scope="operation"/>
+		 
+		 <!--FOR EACH Webinars : BEGIN-->
+         <iterate continueParent="true" id="webinars" expression="//webinar/data" sequential="true">
+            <target>
+               <sequence>
+					  <property name="gotowebinar.webinarKey" expression="//data/webinarKey/text()"/>
+					  <property name="eventbrite.price" expression="//data/price/text()"/>
+					  <property name="eventbrite.currency" expression="//data/currency/text()"/>
+					  <property name="eventbrite.timeZone" expression="//data/timeZone/text()"/>
+					  <property name="eventbrite.ticketQty" expression="//data/ticketQty/text()"/>
+				  
+					<!-- Loop back entire scenario for invalid request-->
+					<filter source="boolean(get-property('gotowebinar.webinarKey'))" regex="false">
+                     <then>
+                        <property name="status" value="Error"/>
+                        <property name="message" value="Bad Request."/>
+						<property name="event.idObject" value="{}"/>
+                        <call-template target="responseHandlerTemplate">
+                           <with-param name="id" value="{$ctx:event.idObject}"/>
+                           <with-param name="activity" value="eventbrite_createWebinarAsEventAndPublish"/>
+                           <with-param name="status" value="{$ctx:status}"/>
+                           <with-param name="message" value="{$ctx:message}"/>
+                        </call-template>
+						<loopback/>
+                     </then>
+					</filter>		
+				  <!--Retrieve  webinar details-->
+                  <gotowebinar.init>
+                     <apiUrl>{$ctx:gotowebinar.apiUrl}</apiUrl>
+                     <accessToken>{$ctx:gotowebinar.accessToken}</accessToken>
+                     <organizerKey>{$ctx:gotowebinar.organizerKey}</organizerKey>
+                  </gotowebinar.init>
+                  <gotowebinar.getWebinarById>
+                     <webinarKey>{$ctx:gotowebinar.webinarKey}</webinarKey>
+                  </gotowebinar.getWebinarById>
+				  <property name="gotowebinar.webinarIndex" expression="get-property('operation','gotowebinar.webinarIndex') + 1"
+                            scope="operation"/>
+                  <!-- Removing unused headers by calling a sequence template -->
+				  <sequence key="removeResponseHeaders" />
+                  <property name="messageType" value="application/json" scope="axis2"/>
+                  <property name="password" value="operation"/>
+                  
+                  <property name="webinarSubject" expression="json-eval($.subject)"/>
+				  
+				  <!-- Check if valid webinar -->
+                  <filter source="boolean(get-property('webinarSubject'))" regex="false">
+                     <then>
+                        <property name="status" value="Error"/>
+                        <property name="message" expression="json-eval($.)"/>
+                        <call-template target="responseHandlerTemplate">
+                           <with-param name="id" value="{$ctx:event.idObject}"/>
+                           <with-param name="activity" value="eventbrite_createWebinarAsEventAndPublish"/>
+                           <with-param name="status" value="{$ctx:status}"/>
+                           <with-param name="message" value="{$ctx:message}"/>
+                        </call-template>
+                     </then>
+                     <else>
+                        <property name="gotowebinar.webinarName" expression="json-eval($.subject)"/>
+                        <property name="gotowebinar.description" expression="json-eval($.description)"/>
+                        <property name="gotowebinar.idObject"
+                                  expression="fn:concat('webinar_key:',get-property('gotowebinar.webinarKey'))"/>
+								  
+						<property name="gotowebinar.sessionCount" expression="get-property('operation','gotowebinar.sessionCount') + count(//times)" scope="operation"/>	  
+						
+						<!--FOR EACH Webinar Sessions : BEGIN-->	
+						<iterate continueParent="true" id="session" expression="//times" sequential="true">
+							<target>
+								<sequence>
+								
+									<property name="gotowebinar.webinarStartTime" expression="//times/startTime/text()"/>
+									<property name="gotowebinar.webinarEndTime" expression="//times/endTime/text()"/>
+									
+									<!-- Call createEventAndTraining template to create and publish Event -->
+									<call-template target="createEventAndPublish">
+									   <with-param name="eventbrite.apiUrl" value="{$ctx:eventbrite.apiUrl}"/>
+									   <with-param name="eventbrite.accessToken" value="{$ctx:eventbrite.accessToken}"/>
+									   <with-param name="eventbrite.currency" value="{$ctx:eventbrite.currency}"/>
+									   <with-param name="eventbrite.price" value="{$ctx:eventbrite.price}"/>
+									   <with-param name="eventbrite.ticketQty" value="{$ctx:eventbrite.ticketQty}"/>
+									   <with-param name="event.timezone" value="{$ctx:eventbrite.timeZone}"/>
+									   <with-param name="event.endTime" value="{$ctx:gotowebinar.webinarEndTime}"/>
+									   <with-param name="event.startTime" value="{$ctx:gotowebinar.webinarStartTime}"/>
+									   <with-param name="event.name" value="{$ctx:gotowebinar.webinarName}"/>
+									   <with-param name="event.description" value="{$ctx:gotowebinar.description}"/>
+									   <with-param name="event.idObject" value="{$ctx:gotowebinar.idObject}"/>
+									</call-template>
+								
+								<property name="gotowebinar.sessionIndex" expression="get-property('operation','gotowebinar.sessionIndex') + 1" scope="operation"/>
+								</sequence>
+							</target>
+						</iterate>			
+						<!--FOR EACH Webinar Sessions : END-->
+                     </else>
+                  </filter>
+               </sequence>
+            </target>
+         </iterate>
+		 <!--FOR EACH Webinars : END-->
+         <filter xpath="(get-property('operation','gotowebinar.webinarCount') = get-property('operation','gotowebinar.webinarIndex')) and (get-property('operation','gotowebinar.sessionCount') = get-property('operation','gotowebinar.sessionIndex'))">
+            <then>
+				<loopback/>
+            </then>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <payloadFactory media-type="json">
+            <format>{
+					"Response":{
+						"process":"Eventbrite-createWebinarAsEventAndPublish",
+						"activityResponse":[$1]
+					}
+				}</format>
+            <args>
+               <arg evaluator="xml" expression="get-property('operation','responseString')"/>
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <send/>
+      </outSequence>
+   </target>
+</proxy>

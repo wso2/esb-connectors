@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://ws.apache.org/ns/synapse" name="CreateContactListDetails" >
+<parameter name="userId"/>
+<parameter name="contactlistId"/>
+<parameter name="name" />
+
+
+<sequence>
+    <property name="HTTP_METHOD" value="POST" scope="axis2" type="STRING"/>
+    <property name="Accept-Encoding" scope="transport" action="remove"/>
+    <property name="messageType" value="application/json" scope="axis2" type="STRING"/>
+
+    <property name="uri.var.userId" expression="$func:userId" />
+    <property name="uri.var.name" expression="$func:name" />
+    <property name="uri.var.contactlistId" expression="$func:contactlistId" />
+
+
+
+
+    <payloadFactory media-type="json">
+        <format> {
+            "name": "$1"
+            }
+        </format>
+        <args>
+            <arg evaluator="xml" expression="$func:name"/>
+
+        </args>
+    </payloadFactory>
+
+    <call>
+        <endpoint>
+            <http method="POST"
+
+
+
+            uri-template="{uri.var.eventbrite.apiUrl}/v3/users/{uri.var.userId}/contact_lists/{uri.var.contactlistId}?token={uri.var.eventbrite.accessToken}" />
+        </endpoint>
+    </call>
+
+</sequence>
+
+</template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

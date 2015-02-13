@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://ws.apache.org/ns/synapse" name="getUserOwnedEventsOrders">
+    <parameter name="userId"/>
+    <parameter name="changed_since"  />
+
+
+    <sequence>
+
+        <property name="parameters" value="0"/>
+        <property name="uri.var.userId" expression="$func:userId" />
+        <property name="uri.var.changed_since" expression="$func:changed_since" />
+
+        <filter
+                xpath="get-property('uri.var.changed_since') = '' or  not(string(get-property('uri.var.changed_since')))" >
+            <then>
+                <property name="uri.var.changed_since" value=""/>
+            </then>
+            <else>
+                <property name="parameters" expression="fn:concat(get-property('parameters'),'&amp;changed_since=', get-property('uri.var.changed_since'))"/>
+            </else>
+        </filter>
+
+
+
+
+
+
+
+
+        <call>
+            <endpoint>
+
+
+                <http method="GET"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/users/{uri.var.userId}/owned_event_orders/?{uri.var.parameters}&amp;token={uri.var.eventbrite.accessToken}" />
+
+            </endpoint>
+        </call>
+
+    </sequence>
+</template>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy
+    xmlns="http://ws.apache.org/ns/synapse" name="eventbrite_retrievePastEventAttendeesAndSendSurveys" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+    <target>
+        <inSequence onError="faultHandlerSeq">
+		
+            <!--EventBrite Properties-->
+            <property name="eventbrite.apiUrl" expression="json-eval($.eventBriteApiUrl)"/>
+            <property name="eventbrite.accessToken" expression="json-eval($.eventBriteAccessToken)"/>
+            <property name="eventbrite.eventCount" expression="count(//pastEventData)" scope="operation" />
+            <property name="eventbrite.eventIndex" expression="0" scope="operation" />
+            <property name="eventbrite.idObject" value="" scope="operation" />
+			
+            <!--SurveyMonkey Properties-->
+            <property name="surveymonkey.apiUrl" expression="json-eval($.surveyMonkeyApiUrl)" />
+            <property name="surveymonkey.accessToken" expression="json-eval($.surveyMonkeyAccessToken)" />
+            <property name="surveymonkey.apiKey" expression="json-eval($.surveyMonkeyApiKey)" />
+            <property name="surveymonkey.surveyTitle" expression="json-eval($.surveyMonkeySurveyTitle)" />
+            <property name="surveymonkey.collectorName" expression="json-eval($.surveyMonkeyCollectorName)" />
+            <property name="surveymonkey.replyEmail" expression="json-eval($.surveyMonkeyReplyEmail)" />
+            <property name="surveymonkey.messageSubject" expression="json-eval($.surveyMonkeyMessageSubject)" />
+			
+            <!--Common Properties-->
+            <property name="event.Recipients" value="" scope="operation"/>
+			
+            <filter xpath="get-property('operation','eventbrite.eventCount') >0">
+                <then>
+                    <iterate continueParent="true" id="events" expression="//pastEventData" sequential="true">
+                        <target>
+                            <sequence>
+                                <property name="eventbrite.eventId" expression="//pastEventData/eventId/text()"/>
+                                <property name="surveymonkey.fromSurveyId" expression="//pastEventData/surveyId/text()"/>
+								
+                                <!-- Call Eventbrite eventAttendees to retrieve event attendies .-->
+                                <eventbrite.init>
+                                    <apiUrl>{$ctx:eventbrite.apiUrl}</apiUrl>
+                                    <accessToken>{$ctx:eventbrite.accessToken}</accessToken>
+                                </eventbrite.init>
+                                <eventbrite.eventAttendees>
+                                    <EventID>{$ctx:eventbrite.eventId}</EventID>
+                                </eventbrite.eventAttendees>
+								
+                                <filter source="$axis2:HTTP_SC" regex="200">
+                                    <then>
+                                        <property name="event.attendeesCount" expression="json-eval($.pagination.object_count)" scope="operation"/>
+                                        <filter xpath="get-property('eventbrite.attendeesCount')=0">
+                                            <then>
+                                                <property name="id" expression="fn:concat('{event_id:',get-property('eventbrite.eventId'),'}')"/>
+                                                <property name="status" value="Skipped" />
+                                                <property name="message" value="No attendees to the event id" />
+                                                <call-template target="responseHandlerTemplate">
+                                                    <with-param name="id" value="{$ctx:id}" />
+                                                    <with-param name="activity" value="surveymonkey_sendSurveys" />
+                                                    <with-param name="status" value="{$ctx:status}" />
+                                                    <with-param name="message" value="{$ctx:message}" />
+                                                </call-template>
+                                            </then>
+                                            <else>
+                                                <property name="eventbrite.idObject" expression="fn:concat(get-property('operation','eventbrite.idObject'), get-property('eventbrite.eventId'), ',')" scope="operation"/>
+                                                <property name="event.attendees" expression="json-eval($.attendees)" />
+                                                <iterate continueParent="true" id="attendees" expression="//attendees" sequential="true">
+                                                    <target>
+                                                        <sequence>
+                                                            <property name="event.attendeeFirstName" expression="json-eval($.attendees.profile.first_name)" />
+                                                            <property name="event.attendeeLastName" expression="json-eval($.attendees.profile.last_name)" />
+                                                            <property name="event.attendeeEmail" expression="json-eval($.attendees.profile.email)" />
+                                                            <payloadFactory media-type="json">
+                                                                <format>
+																	{  
+																		"email":"$1",
+																		"first_name":"$2",
+																		"last_name":"$3"
+																	}
+																</format>
+                                                                <args>
+                                                                    <arg  expression="get-property('event.attendeeEmail')"/>
+                                                                    <arg  expression="get-property('event.attendeeFirstName')"/>
+                                                                    <arg  expression="get-property('event.attendeeLastName')"/>
+                                                                </args>
+                                                            </payloadFactory>
+                                                            <property name="event.recipient" expression="json-eval($.)"/>
+                                                            <property name="event.Recipients" expression="fn:concat(get-property('operation','event.Recipients'), get-property('event.recipient'), ',')" scope="operation"/>
+                                                        </sequence>
+                                                    </target>
+                                                </iterate>
+                                                <filter source="boolean(get-property('operation','eventbrite.idObject'))" regex="true">
+                                                    <then>
+                                                        <property name="event.Recipients" expression="fn:substring(get-property('operation','event.Recipients'),1,fn:string-length(get-property('operation','event.Recipients'))-1)"/>
+														<property name="surveymonkey.Recipients" expression="fn:concat('[',get-property('event.Recipients'),']')" />
+                                                        <property name="surveymonkey.messageBody" value="Please use this link to complete the survey.  [SurveyLink]   If you do not want to receive these emails in the future, unsubscribe yourself with the use of this link.  [RemoveLink]"/>
+														
+														<!-- Removing unused headers by calling a sequence template -->
+                                                        <sequence key="removeResponseHeaders" />
+                                                        
+														<!-- Call SurveyMonkey createFlow to create and send survey to event attendees. -->
+                                                        <surveymonkey.init>
+                                                            <accessToken>{$ctx:surveymonkey.accessToken}</accessToken>
+                                                            <apiKey>{$ctx:surveymonkey.apiKey}</apiKey>
+                                                            <apiUrl>{$ctx:surveymonkey.apiUrl}</apiUrl>
+                                                        </surveymonkey.init>
+                                                        <surveymonkey.createFlow>
+                                                            <surveyTitle>{$ctx:surveymonkey.surveyTitle}</surveyTitle>
+                                                            <fromSurveyId>{$ctx:surveymonkey.fromSurveyId}</fromSurveyId>
+                                                            <collectorType>email</collectorType>
+                                                            <collectorName>{$ctx:surveymonkey.collectorName}</collectorName>
+                                                            <recipients>{$ctx:surveymonkey.Recipients}</recipients>
+                                                            <collectorSend>true</collectorSend>
+                                                            <replyEmail>{$ctx:surveymonkey.replyEmail}</replyEmail>
+                                                            <messageSubject>{$ctx:surveymonkey.messageSubject}</messageSubject>
+                                                            <messageBody>{$ctx:surveymonkey.messageBody}</messageBody>
+                                                        </surveymonkey.createFlow>
+                                                        
+														<filter source="$axis2:HTTP_SC" regex="201">
+                                                            <then>
+                                                                <property name="collectorId" expression="json-eval($.data.collector.collector_id)" />
+                                                                <property name="status" value="Success" />
+                                                                <property name="message" expression="fn:concat('Survey was successfully sent with the collector id ', get-property('collectorId'),'.')" />
+                                                            </then>
+                                                            <else>
+                                                                <property name="status" value="Error" />
+                                                                <property name="message" expression="json-eval($.)" />
+                                                            </else>
+                                                        </filter>
+                                                    </then>
+                                                </filter>
+                                                <property name="eventbrite.idObject" expression="fn:substring(get-property('operation','eventbrite.idObject'),1,fn:string-length(get-property('operation','eventbrite.idObject'))-1)" scope="operation" />
+												<property name="eventbrite.idObject" expression="fn:concat('{event_ids:[',get-property('operation','eventbrite.idObject'),']}')" />
+                                                <call-template target="responseHandlerTemplate">
+                                                    <with-param name="id" value="{$ctx:eventbrite.idObject}" />
+                                                    <with-param name="activity" value="surveymonkey_sendSurveys" />
+                                                    <with-param name="status" value="{$ctx:status}" />
+                                                    <with-param name="message" value="{$ctx:message}" />
+                                                </call-template>
+                                            </else>
+                                        </filter>
+                                    </then>
+                                    <else>
+                                        <property name="id" expression="fn:concat('{event_id:',get-property('eventbrite.eventId'),'}')"/>
+                                        <property name="status" value="Skipped" />
+                                        <property name="message" expression="json-eval($.)" />
+                                        <call-template target="responseHandlerTemplate">
+                                            <with-param name="id" value="{$ctx:id}" />
+                                            <with-param name="activity" value="surveymonkey_sendSurveys" />
+                                            <with-param name="status" value="{$ctx:status}" />
+                                            <with-param name="message" value="{$ctx:message}" />
+                                        </call-template>
+                                    </else>
+                                </filter>
+                                <property name="eventbrite.eventIndex" expression="get-property('operation','eventbrite.eventIndex') + 1" scope="operation" />
+                            </sequence>
+                        </target>
+                    </iterate>
+                    <filter xpath="get-property('operation','eventbrite.eventCount') = get-property('operation','eventbrite.eventIndex')">
+                        <then>
+                            <loopback />
+                        </then>
+                    </filter>
+                </then>
+                <else>
+                    <property name="id" value="{event_ids:[]}" />
+                    <property name="status" value="Skipped" />
+                    <property name="message" value="No EventBrite event ids on request to retrieve attendees." />
+                    <call-template target="responseHandlerTemplate">
+                        <with-param name="id" value="{$ctx:id}" />
+                        <with-param name="activity" value="surveymonkey_sendSurveys" />
+                        <with-param name="status" value="{$ctx:status}" />
+                        <with-param name="message" value="{$ctx:message}" />
+                    </call-template>
+                    <loopback />
+                </else>
+            </filter>
+        </inSequence>
+        <outSequence>
+            <payloadFactory media-type="json">
+                <format>{
+					"Response":{
+						"process":"Eventbrite-retrievePastEventAttendeesAndSendSurveys",
+						"activityResponse":[$1]
+					}
+				}</format>
+                <args>
+                    <arg expression="get-property('operation','responseString')" />
+                </args>
+            </payloadFactory>
+            <property name="messageType" value="application/json" scope="axis2" />
+            <send />
+        </outSequence>
+    </target>
+    <description />
+</proxy>

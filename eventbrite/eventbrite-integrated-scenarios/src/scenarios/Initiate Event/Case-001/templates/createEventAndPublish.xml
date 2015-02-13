@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This template responsible for creating Eventbrite Event, Event Tickets and publish event  -->
+<template xmlns="http://ws.apache.org/ns/synapse"
+          name="createEventAndPublish">
+		<parameter name="eventbrite.apiUrl" description="URL of the eventbrite API."/>
+		<parameter name="eventbrite.accessToken" description="Access token to eventbrite API."/>
+		<parameter name="eventbrite.currency" description="Currency code for the event ticket."/>
+		<parameter name="eventbrite.venueId" description="Event venue id."/>
+		<parameter name="eventbrite.ticketQty" description="Event ticket quantity."/>
+		<parameter name="eventbrite.price" description="Event ticket price."/>
+		
+		<parameter name="event.timezone" description="Event time zone (Olson format)."/>
+		<parameter name="event.endTime" description="End time of the event."/>
+		<parameter name="event.startTime" description="Start time of the event."/>
+		<parameter name="event.name" description="Name of the event."/>
+		<parameter name="event.description" description="Description about the event."/>
+		<parameter name="event.idObject" description="Id as Key value pair(s) for response handler (Ex. id1:value1,id2:value2)."/>
+		
+   
+	<sequence>
+   
+		<!-- EventBrite Properties-->
+		<property name="eventbrite.apiUrl" expression="$func:eventbrite.apiUrl"/>
+		<property name="eventbrite.accessToken" expression="$func:eventbrite.accessToken"/>
+		<property name="eventbrite.currency" expression="$func:eventbrite.currency"/>
+		<property name="eventbrite.venueId" expression="$func:eventbrite.venueId"/>
+		<property name="eventbrite.ticketQty" expression="$func:eventbrite.ticketQty"/>
+		<property name="eventbrite.price" expression="$func:eventbrite.price"/>
+        <property name="eventbrite.onlineEvent" value="false"/>
+		<property name="eventbrite.isFree" value="false"/>
+		
+		<!-- Common Properties-->
+		<property name="event.timezone" expression="$func:event.timezone"/>
+		<property name="event.endTime" expression="$func:event.endTime"/>
+		<property name="event.startTime" expression="$func:event.startTime"/>
+		<property name="event.name" expression="$func:event.name"/>
+		<property name="event.description" expression="$func:event.description"/>
+		<property name="event.idObject" expression="$func:event.idObject"/>
+		
+		<!-- Operation status flags -->
+		<property name="eventbrite.isSuccess" value="false"/>
+		
+        
+
+		<!-- Process eventbrite operations, only if eventbrite accessToken provided -->
+		<filter source="boolean(get-property('eventbrite.accessToken'))" regex="true">
+			<then>
+				<filter source="boolean(get-property('eventbrite.venueId'))" regex="false">
+					<then>
+						<property name="eventbrite.onlineEvent" value="true"/>
+					</then>
+				</filter>
+				
+				<!-- Calling the eventbrite connector createEvent method -->
+				<eventbrite.init>
+					<accessToken>{$ctx:eventbrite.accessToken}</accessToken>
+					<apiUrl>{$ctx:eventbrite.apiUrl}</apiUrl>
+				</eventbrite.init>
+				<eventbrite.createEvent>
+					<startTimezone>{$ctx:event.timezone}</startTimezone>
+					<endTimezone>{$ctx:event.timezone}</endTimezone>
+					<endTime>{$ctx:event.endTime}</endTime>
+					<currency>{$ctx:eventbrite.currency}</currency>
+					<startTime>{$ctx:event.startTime}</startTime>
+					<name>{$ctx:event.name}</name>
+					<venueId>{$ctx:eventbrite.venueId}</venueId>
+					<description>{$ctx:event.description}</description>
+					<onlineEvent>{$ctx:eventbrite.onlineEvent}</onlineEvent>
+				</eventbrite.createEvent> 
+				<sequence key="removeResponseHeaders" />
+						
+				<property name="eventbriteEventId" expression="json-eval($.id)" />
+				
+				<filter source="boolean(get-property('eventbriteEventId'))" regex="false">
+					<then>
+						<property name="status" value="Error" />
+						<property name="message" expression="json-eval($.)" />
+					</then>
+					<else>
+						<property name="status" value="Success" />
+						<property name="message" expression="fn:concat('Event has been created successfully with the Event Id ',get-property('eventbriteEventId'),' .')" />
+					</else>
+				</filter>
+				<call-template target="responseHandlerTemplate">
+					<with-param name="id" value="{$ctx:event.idObject}" />
+					<with-param name="activity" value="eventbrite_createEvent" />
+					<with-param name="status" value="{$ctx:status}" />
+					<with-param name="message" value="{$ctx:message}" />
+				</call-template>
+				
+				
+						
+				<!-- Create Event Ticket, only if Event is created -->
+				<filter source="boolean(get-property('eventbriteEventId'))" regex="true">
+					<then>
+						<filter source="boolean(get-property('eventbrite.price'))" regex="false">
+							<then>
+								<property name="eventbrite.isFree" value="true"/>
+								<property name="eventbrite.currency" value=" "/>
+							</then>
+						</filter>
+						<eventbrite.init>
+							<accessToken>{$ctx:eventbrite.accessToken}</accessToken>
+							<apiUrl>{$ctx:eventbrite.apiUrl}</apiUrl>
+						</eventbrite.init>
+						<eventbrite.createTicketClass>
+							<eventId>{$ctx:eventbriteEventId}</eventId>
+							<className>{$ctx:event.name}</className>
+							<classDescription>{$ctx:event.name}</classDescription>
+							<quantityTotal>{$ctx:eventbrite.ticketQty}</quantityTotal>
+							<costCurrency>{$ctx:eventbrite.currency}</costCurrency>
+							<costValue>{$ctx:eventbrite.price}</costValue>
+							<isFree>{$ctx:eventbrite.isFree}</isFree>
+						</eventbrite.createTicketClass>
+						
+						<!-- Remove custom headers from eventbrite response.-->
+						
+						<sequence key="removeResponseHeaders" />
+						
+						<property name="eventbriteTicketId" expression="json-eval($.id)" />
+						
+						<filter source="boolean(get-property('eventbriteTicketId'))" regex="false">
+							<then>
+								<property name="status" value="Error" />
+								<property name="message" expression="json-eval($.)" />
+							</then>
+							<else>
+								<property name="status" value="Success" />
+								<property name="message" expression="fn:concat('Ticket has been created successfully with the Ticket Id ',get-property('eventbriteTicketId'),' .')" />
+							</else>
+						</filter>
+						
+						<call-template target="responseHandlerTemplate">
+							<with-param name="id" value="{$ctx:event.idObject}" />
+							<with-param name="activity" value="eventbrite_createEventTicket" />
+							<with-param name="status" value="{$ctx:status}" />
+							<with-param name="message" value="{$ctx:message}" />
+						</call-template>
+						
+						
+						<!-- Publish Event,only if Event Ticket is created. -->
+						<filter source="boolean(get-property('eventbriteTicketId'))" regex="true">
+							<then>
+								<eventbrite.init>
+									<accessToken>{$ctx:eventbrite.accessToken}</accessToken>
+									<apiUrl>{$ctx:eventbrite.apiUrl}</apiUrl>
+								</eventbrite.init>
+								<eventbrite.publishEvent>
+									<eventId>{$ctx:eventbriteEventId}</eventId>
+								</eventbrite.publishEvent>	
+
+								<!-- Remove custom headers from eventbrite response.-->
+								
+								<sequence key="removeResponseHeaders" />
+								<property name="eventPublished" expression="json-eval($.published)" />
+						
+								<filter source="boolean(get-property('eventPublished'))" regex="false">
+									<then>
+										<property name="status" value="Error" />
+										<property name="message" expression="json-eval($.)" />
+									</then>
+									<else>
+										<property name="status" value="Success" />
+										<property name="message" expression="fn:concat('Event [',get-property('eventbriteEventId'),'] has been published.')" />
+										<property name="eventbrite.isSuccess" value="true"/>
+									</else>
+								</filter>
+								<call-template target="responseHandlerTemplate">
+									<with-param name="id" value="{$ctx:event.idObject}" />
+									<with-param name="activity" value="eventbrite_publishEvent" />
+									<with-param name="status" value="{$ctx:status}" />
+									<with-param name="message" value="{$ctx:message}" />
+								</call-template>
+								
+								
+							</then>
+							
+						</filter>
+						
+					</then>
+				</filter> 
+			</then>
+		</filter>
+		
+	</sequence>
+</template>

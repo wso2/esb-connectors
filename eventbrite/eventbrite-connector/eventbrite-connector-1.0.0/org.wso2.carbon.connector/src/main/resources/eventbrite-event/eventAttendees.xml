@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="eventAttendees" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="EventID" description="Full-text search query string." />
+    <parameter name="status" description="status" />
+    <parameter name="changed_since" description="changed_since." />
+    <parameter name="expand" description=" expand." />
+    <sequence>
+        <property name="uri.var.EventID" expression="$func:EventID" />
+        <property name="uri.var.status" expression="$func:status" />
+        <property name="uri.var.changed_since" expression="$func:changed_since" />
+        <property name="uri.var.expand" expression="$func:expand" />
+
+
+        <filter xpath="boolean(get-property('uri.var.status'))">
+            <then>
+                <property name="uri.var.apiParameters"
+                          expression="fn:concat(get-property('uri.var.apiParameters'), 'status=', get-property('uri.var.status'), '&amp;')"/>
+            </then>
+        </filter>
+
+        <filter xpath="boolean(get-property('uri.var.changed_since'))">
+            <then>
+                <property name="uri.var.apiParameters"
+                          expression="fn:concat(get-property('uri.var.apiParameters'), 'changed_since=', get-property('uri.var.changed_since'), '&amp;')"/>
+            </then>
+        </filter>
+
+
+        <filter xpath="boolean(get-property('uri.var.expand'))">
+            <then>
+                <property name="uri.var.apiParameters"
+                          expression="fn:concat(get-property('uri.var.apiParameters'), 'expand=', get-property('uri.var.expand'), '&amp;')"/>
+            </then>
+        </filter>
+
+
+        <call>
+
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.EventID}/attendees/?{uri.var.apiParameters}token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+
+
+    </sequence>
+</template>

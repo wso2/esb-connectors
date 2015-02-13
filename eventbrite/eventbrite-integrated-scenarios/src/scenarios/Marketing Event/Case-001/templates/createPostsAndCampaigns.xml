@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This template is to create campaign in ConstantContact and add posts in facebook which are retrieved from eventBrite-->
+<template xmlns="http://ws.apache.org/ns/synapse" name="createPostsAndCampaigns">
+   <!--Constant Contact parameters-->
+   <parameter name="constantContact.apiToken" description="Encrypted alphanumeric string to authenticate the Constant Contact credentials." />
+   <parameter name="constantContact.apiUrl" description="The constantContact API URL." />
+   <parameter name="constantContact.apiKey" description="The constantContact API Key." />
+   <parameter name="constantContact.fromEmail" description="The name of the campaign." />
+   <parameter name="constantContact.emailContent" description="The email content of the campaign. " />
+   <parameter name="constantContact.sendToContactList" description="The contactList id to send the campaign. " />
+   <parameter name="constantContact.replyToEmail" description="The email address to send replies. " />
+   <parameter name="constantContact.fromName" description="The campaign sender's name. " />
+   <property name="constantContact.url" description="The url to send in the campaign. " />
+   <property name="constantContact.sheduledDate" description="The sheduled date to send the campaign. " />
+   <parameter name="constantContact.emailTitle" description="The email title of the constant contact." />
+   <parameter name="constantContact.url" description="The urlCaption of the constant contact." />
+   <parameter name="constantContact.urlDescription" description="The url description of the constant contact post." />
+   
+   <!-- Facebook parameters-->
+   <parameter name="facebook.accessToken" description="Encrypted alphanumeric string to authenticate the facebook credentials." />
+   <parameter name="facebook.apiUrl" description="The facebook API URL." />
+   <parameter name="facebook.urlDescription" description="The url description of the facebook post." />
+   <parameter name="facebook.url" description="The url of facebook post." />
+   <parameter name="facebook.urlCaption" description="The urlCaption of the facebook post." />
+   <parameter name="facebook.urlName" description="The name of the link of the facebook post." />
+   
+   <!--common parameters-->
+   <parameter name="event.idObj" description="Id as Key value pair(s) for response handler (Ex. id1:value1,id2:value2)." />
+   
+   <sequence>
+		
+      <property name="constantContact.apiToken" expression="$func:constantContact.apiToken" />
+      <property name="constantContact.apiUrl" expression="$func:constantContact.apiUrl" />
+      <property name="constantContact.apiKey" expression="$func:constantContact.apiKey" />
+  	  <property name="constantContact.fromEmail" expression="$func:constantContact.fromEmail" />
+	  <property name="constantContact.sendToContactList" expression="$func:constantContact.sendToContactList" />
+      <property name="constantContact.emailContent" expression="$func:constantContact.emailContent" />
+	  <property name="constantContact.replyToEmail" expression="$func:constantContact.replyToEmail" />
+	  <property name="constantContact.fromName" expression="$func:constantContact.fromName" />
+	  <property name="constantContact.emailTitle" expression="$func:constantContact.emailTitle" />
+	  <property name="constantContact.url" expression="$func:constantContact.url" />
+	  <property name="constantContact.urlDescription" expression="$func:constantContact.urlDescription" />
+	  <property name="constantContact.sheduledDate" expression="$func:constantContact.sheduledDate" />
+	  
+      <property name="facebook.apiUrl" expression="$func:facebook.apiUrl" />
+      <property name="facebook.accessToken" expression="$func:facebook.accessToken" />
+      <property name="facebook.urlDescription" expression="$func:facebook.urlDescription" />
+	  <property name="facebook.urlName" expression="$func:facebook.urlName" />
+	  <property name="facebook.url" expression="$func:facebook.url" />
+	  <property name="facebook.urlCaption" expression="$func:facebook.urlCaption" />
+      
+      <property name="event.idObj" expression="$func:event.idObj" />
+	  
+	  <property name="constantContact.subject" expression="fn:concat('Campaign for - ',get-property('constantContact.emailTitle'))" />
+	  <property name="constantContact.emailBody" expression="fn:concat('You have been successfully subscribed for the event -',get-property('constantContact.emailTitle'),'.     ')" />
+	  <property name="constantContact.emailUser" value="Dear user," />
+	  <property name="constantContact.regards1" value="Best regards," />
+
+	  
+      <!--Process creating campaign only if the access token is given-->
+      <filter source="boolean(get-property('constantContact.apiToken'))" regex="true">        
+		   
+         <then>
+			<property name="messageType" value="application/json" scope="axis2" />
+			<payloadFactory media-type="json">
+               <format>
+					{
+						"html_content":"&lt;html&gt;&lt;body&gt;&lt;p&gt;$1&lt;/p&gt;&lt;/br&gt;&lt;p&gt;$2&lt;a href=&apos;$3&apos;&gt;$4&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;/br&gt;$5&lt;br&gt;$6&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;"
+					}
+				</format>
+               <args>
+			      <arg expression="get-property('constantContact.emailUser')"/>
+                  <arg expression="get-property('constantContact.emailBody')"/>
+				  <arg expression="get-property('constantContact.url')" />
+				  <arg expression="get-property('constantContact.urlDescription')" />
+				  <arg expression="get-property('constantContact.regards1')" />
+				  <arg expression="get-property('constantContact.fromName')" />
+               </args>
+            </payloadFactory>
+		    <property name="constantContact.emailContent" expression="json-eval($.html_content)" />
+		
+			<!-- Calling the constantContact connector createCampaign method -->
+			<constantcontact.init>
+				<apiToken>{$ctx:constantContact.apiToken}</apiToken>
+				<apiUrl>{$ctx:constantContact.apiUrl}</apiUrl>
+				<apiKey>{$ctx:constantContact.apiKey}</apiKey>
+			</constantcontact.init>
+            <constantcontact.createCampaign>
+				<subject>{$ctx:constantContact.subject}</subject>
+				<emailContentFormat>HTML</emailContentFormat>
+				<emailContent>{$ctx:constantContact.emailContent}</emailContent>
+				<name>{$ctx:constantContact.subject}</name>
+				<fromEmail>{$ctx:constantContact.fromEmail}</fromEmail>
+				<greetingString>Welcome</greetingString>
+				<replyToEmail>{$ctx:constantContact.replyToEmail}</replyToEmail>
+				<sentToContactLists>{$ctx:constantContact.sendToContactList}</sentToContactLists>
+				<fromName>{$ctx:constantContact.fromName}</fromName>
+				<textContent>{$ctx:constantContact.urlDescription}</textContent>				
+			</constantcontact.createCampaign>
+			
+			<property name="id" expression="fn:concat('{event_id:',get-property('event.idObj'),'}')"/>
+            <property name="campaignId" expression="json-eval($.id)" />
+            <filter xpath="get-property('campaignId')='null'">
+               <then>
+                  <property name="status" value="Error" />
+                  <property name="message" expression="json-eval($.)" />
+               </then>
+               <else>
+                  <property name="status" value="Success" />
+                  <property name="message" expression="fn:concat('Constant Contact campaign has been created with the ID - [',get-property('campaignId'),']')" />
+               </else>
+            </filter>
+            <call-template target="responseHandlerTemplate">
+               <with-param name="id" value="{$ctx:id}" />
+               <with-param name="activity" value="constantcontact-createCampaign" />
+               <with-param name="status" value="{$ctx:status}" />
+               <with-param name="message" value="{$ctx:message}" />
+            </call-template>
+			
+				<!-- Shedule the campaign, only if campaign is created -->
+				<filter xpath="get-property('campaignId') !='null'">
+					<then>
+						<constantcontact.init>
+							<apiToken>{$ctx:constantContact.apiToken}</apiToken>
+							<apiUrl>{$ctx:constantContact.apiUrl}</apiUrl>
+							<apiKey>{$ctx:constantContact.apiKey}</apiKey>
+						</constantcontact.init>
+						<constantcontact.createSchedule>
+							<campaignId>{$ctx:campaignId}</campaignId>
+							<scheduledDate>{$ctx:constantContact.sheduledDate}</scheduledDate>
+						</constantcontact.createSchedule>
+						
+						<property name="CampaignSendId" expression="json-eval($.id)" />
+						
+						<filter xpath="get-property('CampaignSendId')='null'" >
+							<then>
+								<property name="status" value="Error" />
+								<property name="message" expression="json-eval($.)" />
+							</then>
+							<else>
+								<property name="status" value="Success" />
+								<property name="message" expression="fn:concat('Campaign has been sheduled for - [',get-property('constantContact.sheduledDate'),']')" />
+							</else>
+						</filter>
+						
+						<call-template target="responseHandlerTemplate">
+							<with-param name="id" value="{$ctx:event.idObj}" />
+							<with-param name="activity" value="constantcontact-sheduledCampaign" />
+							<with-param name="status" value="{$ctx:status}" />
+							<with-param name="message" value="{$ctx:message}" />
+						</call-template>
+					</then>
+				</filter>
+			
+         </then>
+      </filter>
+	  
+      <!--Process creating a facebook post only if the access token is given-->
+      <filter source="boolean(get-property('facebook.accessToken'))" regex="true">
+         <then>
+			<!-- Calling the facebook connector createPost method -->
+            <facebook.init>
+               <apiUrl>{$ctx:facebook.apiUrl}</apiUrl>
+               <accessToken>{$ctx:facebook.accessToken"}</accessToken>
+            </facebook.init>
+			 <facebook.createPost> 
+				<link>{$ctx:facebook.url}</link> 
+				<name>{$ctx:facebook.urlName}</name>
+				<caption>{$ctx:facebook.urlCaption}</caption>
+				<description>{$ctx:facebook.urlDescription}</description>
+			</facebook.createPost>
+			
+			<header name="Facebook-API-Version" action="remove" scope="transport" />
+			
+			<property name="id" expression="fn:concat('{event_id:',get-property('event.idObj'),'}')"/>
+            <property name="postId" expression="json-eval($.id)" />
+			
+            <filter source="boolean(get-property('postId'))" regex="false">
+               <then>
+                  <property name="status" value="Error" />
+                  <property name="message" expression="json-eval($.)" />
+               </then>
+               <else>
+				  <property name="status" value="Success" />
+                  <property name="message" expression="fn:concat('FaceBook post is created with the ID - [',get-property('postId'),']')" />
+               </else>
+            </filter>
+            <call-template target="responseHandlerTemplate">
+               <with-param name="id" value="{$ctx:id}" />
+               <with-param name="activity" value="facebook-createPost" />
+               <with-param name="status" value="{$ctx:status}" />
+               <with-param name="message" value="{$ctx:message}" />
+            </call-template>
+         </then>
+      </filter>
+   </sequence>
+</template>

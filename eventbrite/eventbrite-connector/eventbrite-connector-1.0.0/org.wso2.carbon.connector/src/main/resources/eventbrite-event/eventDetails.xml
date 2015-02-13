@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="eventDetails" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="EventID" description="ID of the Event." />
+    <sequence>
+        <property name="uri.var.EventID" expression="$func:EventID" />
+        <call>
+
+            <endpoint>
+                <http method="get"
+                uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.EventID}/?token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>

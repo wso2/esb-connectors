@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="eventbrite_retrieveClickersAndCreateContactList" transports="https http" startOnLoad="true" trace="disable">
+   <description />
+   <target>
+      <inSequence onError="faultHandlerSeq">
+         <!-- ConstantContact Properties-->
+         <property name="constantContact.apiUrl" expression="json-eval($.constantContactApiUrl)" />
+         <property name="constantContact.apiToken" expression="json-eval($.constantContactApiToken)" />
+         <property name="constantContact.apiKey" expression="json-eval($.constantContactApiKey)" />
+         <property name="constantContact.campaignId" expression="json-eval($.constantContactCampaignId)" />
+         <property name="constantContact.contactListId" expression="json-eval($.constantContactContactListId)" />
+		 
+         <!--Call constantcontact connector listCampaignClicks method to retrieve details of clickers-->
+         <constantcontact.init>
+            <apiUrl>{$ctx:constantContact.apiUrl}</apiUrl>
+            <apiToken>{$ctx:constantContact.apiToken}</apiToken>
+            <apiKey>{$ctx:constantContact.apiKey}</apiKey>
+         </constantcontact.init>
+         <constantcontact.listCampaignClicks>
+            <campaignId>{$ctx:constantContact.campaignId}</campaignId>
+         </constantcontact.listCampaignClicks>
+		 
+         <!--Process only if clickers list is retrieved successfully-->
+         <filter source="$axis2:HTTP_SC" regex="200">
+            <then>
+               <property name="clickersCount" expression="count(//jsonObject/results)" scope="operation" />
+               <property name="clickerIndex" expression="0" scope="operation" />
+               <property name="publishedEvents" value="false" scope="operation" />
+               <filter xpath="get-property('operation', 'clickersCount') != 0">
+                  <then>
+                     <!--FOR EACH clicker : BEGIN-->
+                     <iterate continueParent="true" id="clickerIterator" preservePayload="true" expression="//jsonObject/results" sequential="true">
+                        <target>
+                           <sequence>
+                              <property name="constantContact.contactID" expression="//results/contact_id/text()" />
+                             
+							 <!--Call constantcontact connector getContactById method to retrieve details of the contact -->
+                              <constantcontact.init>
+                                 <apiUrl>{$ctx:constantContact.apiUrl}</apiUrl>
+                                 <apiToken>{$ctx:constantContact.apiToken}</apiToken>
+                                 <apiKey>{$ctx:constantContact.apiKey}</apiKey>
+                              </constantcontact.init>
+                              <constantcontact.getContactById>
+                                 <contactId>{$ctx:constantContact.contactID}</contactId>
+                              </constantcontact.getContactById>
+							  
+                              <property name="addressCount" expression="count(//jsonObject/addresses)" />
+							  
+                              <property name="constantContact.id" expression="json-eval($.id)" />
+                              <property name="constantContact.exsistingList" expression="json-eval($.lists)" />
+                              <property name="constantContact.email" expression="json-eval($.email_addresses[0].email_address)" />
+                              <property name="constantContact.firstName" expression="json-eval($.first_name)" />
+                              <property name="constantContact.middleName" expression="json-eval($.middle_name)" />
+                              <property name="constantContact.lastName" expression="json-eval($.last_name)" />
+                              <property name="constantContact.fax" expression="json-eval($.fax)" />
+                              <property name="constantContact.cellPhone" expression="json-eval($.cell_phone)" />
+                              <property name="constantContact.companyName" expression="json-eval($.company_name)" />
+                              <property name="constantContact.jobtitle" expression="json-eval($.job_title)" />
+                              <property name="constantContact.prefixName" expression="json-eval($.prefix_name)" />
+                              <property name="constantContact.homePhone" expression="json-eval($.home_phone)" />
+                              <property name="constantContact.workPhone" expression="json-eval($.work_phone)" />
+                              <property name="constantContact.customFields" expression="json-eval($.custom_fields)" />
+                              <property name="constantContact.addLine1" expression="json-eval($.addresses[0].line1)" />
+                              <property name="constantContact.addLine2" expression="json-eval($.addresses[0].line2)" />
+                              <property name="constantContact.addCity" expression="json-eval($.addresses[0].city)" />
+                              <property name="constantContact.addCountryCode" expression="json-eval($.addresses[0].country_code)" />
+                              <property name="constantContact.addType" expression="json-eval($.addresses[0].address_type)" />
+                              <property name="constantContact.actionBy" expression="json-eval($.email_addresses[0].opt_in_source)" />
+                              
+							  <!--Process only if the contact has an address-->
+                              <filter xpath="get-property('addressCount') != 0">
+                                 <then>
+                                    <payloadFactory media-type="json">
+                                       <format>{
+									"emailAddresses":[{
+										"email_address": "$1"
+									}],
+									"addresses":[{
+									"address_type": "$2",
+									"line1": "$3",
+									"line2": "$4",
+									"city": "$5",
+									"country_code": "$6"
+									}],
+									
+									"list": {
+										"id":"$7"
+									}
+ 
+								}</format>
+                                       <args>
+                                          <arg expression="get-property('constantContact.email')" />
+                                          <arg expression="get-property('constantContact.addType')" />
+                                          <arg expression="get-property('constantContact.addLine1')" />
+                                          <arg expression="get-property('constantContact.addLine2')" />
+                                          <arg expression="get-property('constantContact.addCity')" />
+                                          <arg expression="get-property('constantContact.addCountryCode')" />
+                                          <arg expression="get-property('constantContact.contactListId')" />
+                                       </args>
+                                    </payloadFactory>
+                                    <property name="constantContact.addresses" expression="json-eval($.addresses)" />
+                                    <property name="constantContact.email" expression="json-eval($.emailAddresses)" />
+                                    <property name="constantContact.newList" expression="json-eval($.list)" />
+                                    <property name="constantContact.newList" expression="fn:concat(fn:substring(get-property('constantContact.exsistingList'),0,fn:string-length(get-property('constantContact.exsistingList'))),',',get-property('constantContact.newList'),']')" />
+                                 </then>
+                                 <else>
+                                    <payloadFactory media-type="json">
+                                       <format>{
+									"emailAddresses":[{
+										"email_address": "$1"
+									}],
+									
+									
+									"list": {
+										"id":"$2"
+									}
+ 
+								}</format>
+                                       <args>
+                                          <arg expression="get-property('constantContact.email')" />
+                                          <arg expression="get-property('constantContact.contactListId')" />
+                                       </args>
+                                    </payloadFactory>
+                                    <property name="constantContact.email" expression="json-eval($.emailAddresses)" />
+                                    <property name="constantContact.newList" expression="json-eval($.list)" />
+                                    <property name="constantContact.newList" expression="fn:concat(fn:substring(get-property('constantContact.exsistingList'),0,fn:string-length(get-property('constantContact.exsistingList'))),',',get-property('constantContact.newList'),']')" />
+                                    <property name="constantContact.addresses" expression="json-eval($.addresses)" />
+                                 </else>
+                              </filter>
+							  
+                              <!--Call constantcontact connector updateContact method to add the contact to clickers contact list -->
+                              <constantcontact.init>
+                                 <apiUrl>{$ctx:constantContact.apiUrl}</apiUrl>
+                                 <apiToken>{$ctx:constantContact.apiToken}</apiToken>
+                                 <apiKey>{$ctx:constantContact.apiKey}</apiKey>
+                              </constantcontact.init>
+                              <constantcontact.updateContact>
+                                 <middleName>{$ctx:constantContact.middleName}</middleName>
+                                 <lastName>{$ctx:constantContact.lastName}</lastName>
+                                 <fax>{$ctx:constantContact.fax}</fax>
+                                 <customFields>{$ctx:constantContact.customFields}</customFields>
+                                 <cellPhone>{$ctx:constantContact.cellPhone}</cellPhone>
+                                 <actionBy>{$ctx:constantContact.actionBy}</actionBy>
+                                 <companyName>{$ctx:constantContact.companyName}</companyName>
+                                 <homePhone>{$ctx:constantContact.homePhone}</homePhone>
+                                 <prefixName>{$ctx:constantContact.prefixName}</prefixName>
+                                 <contactId>{$ctx:constantContact.contactId}</contactId>
+                                 <workPhone>{$ctx:constantContact.workPhone}</workPhone>
+                                 <addresses>{$ctx:constantContact.addresses}</addresses>
+                                 <firstName>{$ctx:constantContact.firstName}</firstName>
+                                 <lists>{$ctx:constantContact.newList}</lists>
+                                 <jobTitle>{$ctx:constantContact.jobTitle}</jobTitle>
+                                 <emailAddresses>{$ctx:constantContact.email}</emailAddresses>
+                              </constantcontact.updateContact>
+							  
+							  <property name="id" expression="fn:concat('{contact_id:',get-property('constantContact.contactID'),'}')"/>
+                              <filter source="$axis2:HTTP_SC" regex="200">
+                                 <then>
+                                    <property name="status" value="success" />
+                                    <property name="message" expression="fn:concat('The clicker has been added to the contact list [', get-property('constantContact.contactListId'), '].')" />
+                                 </then>
+                                 <else>
+                                    <property name="status" value="error" />
+                                    <property name="message" expression="json-eval($)" />
+                                 </else>
+                              </filter>
+                              <!--Call the responseHandler template-->
+                              <call-template target="responseHandlerTemplate">
+                                 <with-param name="activity" value="constantcontact_updateContact" />
+                                 <with-param name="id" value="{$ctx:id}" />
+                                 <with-param name="status" value="{$ctx:status}" />
+                                 <with-param name="message" value="{$ctx:message}" />
+                              </call-template>
+                              <property name="clickerIndex" expression="get-property('operation','clickerIndex') + 1" scope="operation" />
+                           </sequence>
+                        </target>
+                     </iterate>
+                     <!--FOR EACH clicker : END-->
+					 
+                     <filter xpath="get-property('operation','clickerIndex') = get-property('operation', 'clickersCount')">
+                        <then>
+                           <loopback />
+                        </then>
+                     </filter>
+                  </then>
+                  <else>
+                     <payloadFactory media-type="json">
+                        <format>{
+							"Response":{
+								"process":"eventbrite_retrieveClickersAndCreateContactList",
+								"activityResponse":"The clickers' list is empty - No contacts to be processed."
+							}
+						}</format>
+                        <args>
+                           <arg expression="get-property('operation','responseString')" />
+                        </args>
+                     </payloadFactory>
+                     <property name="messageType" value="application/json" scope="axis2" />
+                     <respond />
+                  </else>
+               </filter>
+            </then>
+            <else>
+               <property name="id" value="{}" />
+               <property name="status" value="Error" />
+               <property name="message" expression="json-eval($.)" />
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="eventbrite_retrieveClickersAndCreateContactList" />
+                  <with-param name="id" value="{$ctx:id}" />
+                  <with-param name="status" value="{$ctx:status}" />
+                  <with-param name="message" value="{$ctx:message}" />
+               </call-template>
+               <loopback />
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <payloadFactory media-type="json">
+            <format>{
+				"Response":{
+					"process":"eventbrite_retrieveClickersAndCreateContactList",
+					"activityResponse":[$1]
+				}
+				}</format>
+            <args>
+               <arg expression="get-property('operation', 'responseString')" />
+            </args>
+         </payloadFactory>
+         <send />
+      </outSequence>
+   </target>
+</proxy>

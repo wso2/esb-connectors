@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="publishEvent" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="eventId" description="ID of the Event." />
+    <sequence>
+        <property name="uri.var.eventId" expression="$func:eventId" />
+        
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2" />        	
+			
+        <call>      
+            <endpoint>
+                <http method="post"
+                uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.eventId}/publish/?token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+		
+		<!-- Remove custom headers from response -->
+		<header name="X-Frame-Options" scope="transport" action="remove" />
+		<header name="x-xss-protection" scope="transport" action="remove" />
+		<header name="x-content-type-options" scope="transport" action="remove" />
+		<header name="Vary" scope="transport" action="remove" />
+		<header name="P3p" scope="transport" action="remove" />
+		<header name="Allow" scope="transport" action="remove" />
+		<header name="X-UA-Compatible" scope="transport" action="remove" />
+		<header name="Access-Control-Allow-Headers" scope="transport" action="remove" />
+		<header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
+		
+    </sequence>
+</template>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://ws.apache.org/ns/synapse" name="getUserVenues">
+    <parameter name="userId"/>
+
+
+
+    <sequence>
+
+
+        <property name="uri.var.userId" expression="$func:userId" />
+
+        <call>
+            <endpoint>
+                <http method="GET"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/users/{uri.var.userId}/venues/?token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://ws.apache.org/ns/synapse" name="getUserOwnedEvents">
+    <parameter name="userId"/>
+    <parameter name="status" />
+    <parameter name="order_by" />
+
+
+    <parameter name="optionalParameters"
+               description="Concatination of optional parameters" />
+
+
+    <sequence>
+        <property name="HTTP_METHOD" value="GET" scope="axis2" type="STRING"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
+        <property name="messageType" value="application/json" scope="axis2" type="STRING"/>
+
+        <property name="uri.var.userId" expression="$func:userId" />
+        <property name="uri.var.status" expression="$func:status" />
+        <property name="uri.var.order_by" expression="$func:order_by" />
+
+        <property name="parameters" value=""/>
+
+
+        <filter
+                xpath="get-property('uri.var.status') = '' or  not(string(get-property('uri.var.status')))" >
+            <then>
+                <property name="uri.var.status" value=""/>
+            </then>
+            <else>
+                <property name="parameters" expression="fn:concat(get-property('parameters'),
+                '&amp;status=', get-property('uri.var.status'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.order_by') = '' or  not(string(get-property('uri.var.order_by')))" >
+            <then>
+                <property name="uri.var.order_by" value=""/>
+            </then>
+            <else>
+                <property name="parameters" expression="fn:concat(get-property('parameters'),
+                '&amp;order_by=', get-property('uri.var.order_by'))"/>
+            </else>
+        </filter>
+        <property name="uri.var.optionalParameters" expression="get-property('parameters')" />
+
+        <payloadFactory media-type="xml">
+            <format>
+                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soapenv:Header/>
+                    <soapenv:Body/>
+                </soapenv:Envelope>
+            </format>
+            <args/>
+        </payloadFactory>
+        <property name="messageType" value="application/json" scope="axis2" />
+        <call>
+            <endpoint>
+                <http method="GET"
+
+
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/users/{uri.var.userId}/owned_events?{uri.var.optionalParameters}&amp;token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>
+
+
+
+

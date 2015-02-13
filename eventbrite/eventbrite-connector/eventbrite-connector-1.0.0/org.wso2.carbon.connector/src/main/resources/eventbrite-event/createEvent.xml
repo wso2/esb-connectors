@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="createEvent" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="name" description="Name of the event." />
+    <parameter name="description" description="Decription about the event." />
+    <parameter name="organizerId" description="ID of the organizer this event." />
+    <parameter name="startTime" description="Start time of the event." />
+    <parameter name="endTime" description="Start time timezone (Olson format)." />
+    <parameter name="startTimezone" description="End time of the event." />
+    <parameter name="endTimezone" description="End time timezone (Olson format)." />
+    <parameter name="currency" description="Event Currency (3 letter code)." />
+    <parameter name="venueId" description="ID of the venue (this or online_event is required)." />
+    <parameter name="onlineEvent" description="Is the event online-only (no venue)?." />
+    <parameter name="listed" description="If the event is publicly listed and searchable." />
+    <parameter name="logoId" description="The logo for the event." />
+    <parameter name="categoryId" description="The category for the event." />
+    <parameter name="subcategoryId" description="The subcategory for the event." />
+    <parameter name="formatId" description="The format for the event." />
+    <parameter name="shareable" description="If an event is shareable via social media." />
+    <parameter name="inviteOnly" description="Only invited users can see the event page." />
+    <parameter name="password" description="Password needed to see the event in unlisted mode." />
+    <parameter name="capacity" description="Set specific capacity (if omitted, sums ticket capacities)." />
+    <parameter name="showRemaining" description="If the remaining number of tickets is publicly visible on the event page." />
+
+    <sequence>
+        <property name="uri.var.name" expression="$func:name" />
+        <property name="uri.var.description" expression="$func:description" />
+        <property name="uri.var.organizerId" expression="$func:organizerId" />
+        <property name="uri.var.startTime" expression="$func:startTime" />
+        <property name="uri.var.endTime" expression="$func:endTime" />
+        <property name="uri.var.startTimezone" expression="$func:startTimezone" />
+        <property name="uri.var.endTimezone" expression="$func:endTimezone" />
+        <property name="uri.var.currency" expression="$func:currency" />
+        <property name="uri.var.venueId" expression="$func:venueId" />
+        <property name="uri.var.onlineEvent" expression="$func:onlineEvent" />
+        <property name="uri.var.listed" expression="$func:listed" />
+        <property name="uri.var.logoId" expression="$func:logoId" />
+        <property name="uri.var.categoryId" expression="$func:categoryId" />
+        <property name="uri.var.subcategoryId" expression="$func:subcategoryId" />
+        <property name="uri.var.formatId" expression="$func:formatId" />
+        <property name="uri.var.shareable" expression="$func:shareable" />
+        <property name="uri.var.inviteOnly" expression="$func:inviteOnly" />
+        <property name="uri.var.password" expression="$func:password" />
+        <property name="uri.var.capacity" expression="$func:capacity" />
+        <property name="uri.var.showRemaining" expression="$func:showRemaining" />
+
+        <payloadFactory media-type="json">
+            <format>
+                {
+					"event" : {
+						"name": {
+							"html": "$1"
+						},
+						"description": {
+							"html": "$2"
+						},
+						"start": {
+							"utc": "$3",
+							"timezone": "$4"
+						},
+						"end": {
+							"utc": "$5",
+							"timezone": "$6"
+						}
+					}
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.name')"/>
+                <arg expression="get-property('uri.var.description')"/>
+                <arg expression="get-property('uri.var.startTime')"/>
+                <arg expression="get-property('uri.var.startTimezone')"/>
+                <arg expression="get-property('uri.var.endTime')"/>
+                <arg expression="get-property('uri.var.endTimezone')"/>
+            </args>
+        </payloadFactory>
+        
+        <script language="js">
+            <![CDATA[
+                var jsonPayload = mc.getPayloadJSON();
+				var eventObject = jsonPayload.event;
+				var logoObject = new Object();
+				
+                var organizerId = mc.getProperty('uri.var.organizerId');
+                var currency = mc.getProperty('uri.var.currency');
+                var venueId = mc.getProperty('uri.var.venueId');
+				var onlineEvent = mc.getProperty('uri.var.onlineEvent');
+                var listed = mc.getProperty('uri.var.listed');
+                var logoId = mc.getProperty('uri.var.logoId');
+				var categoryId = mc.getProperty('uri.var.categoryId');
+                var subcategoryId = mc.getProperty('uri.var.subcategoryId');
+                var formatId = mc.getProperty('uri.var.formatId');
+				var shareable = mc.getProperty('uri.var.shareable');
+                var inviteOnly = mc.getProperty('uri.var.inviteOnly');
+                var password = mc.getProperty('uri.var.password');
+				var capacity = mc.getProperty('uri.var.capacity');
+				var showRemaining = mc.getProperty('uri.var.showRemaining');
+				
+                if (organizerId != null && organizerId != ""){
+                    eventObject.organizer_id = organizerId;
+                }                
+                
+                if (currency != null && currency != ""){
+                    eventObject.currency = currency;
+                }
+                
+                if (venueId != null && venueId != ""){
+                    eventObject.venue_id = venueId;
+                }
+				
+				if (onlineEvent != null && onlineEvent != ""){
+                    eventObject.online_event = onlineEvent;
+                }                
+                
+                if (listed != null && listed != ""){
+                    eventObject.listed = listed;
+                }
+				
+				if (categoryId != null && categoryId != ""){
+                    eventObject.category_id = categoryId;
+                }                
+                
+                if (subcategoryId != null && subcategoryId != ""){
+                    eventObject.subcategory_id = subcategoryId;
+                }
+                
+                if (formatId != null && formatId != ""){
+                    eventObject.format_id = formatId;
+                }
+				
+				if (shareable != null && shareable != ""){
+                    eventObject.shareable = shareable;
+                }                
+                
+                if (inviteOnly != null && inviteOnly != ""){
+                    eventObject.invite_only = inviteOnly;
+                }
+                
+                if (password != null && password != ""){
+                    eventObject.password = password;
+                }
+				
+				if (capacity != null && capacity != ""){
+                    eventObject.capacity = capacity;
+                }
+				
+				if (showRemaining != null && showRemaining != ""){
+                    eventObject.show_remaining = showRemaining;
+                }                
+				
+                if (logoId != null && logoId != ""){
+                    logoObject.id = logoId;
+                }
+				
+				eventObject.logo = logoObject;
+                
+                mc.setPayloadJSON(jsonPayload);
+            ]]>
+        </script>
+        
+		<property name="DISABLE_CHUNKING" value="true" scope="axis2" />
+
+        <call>
+            <endpoint>
+                <http method="post" uri-template="{uri.var.eventbrite.apiUrl}/v3/events/?token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+		
+		<!-- Remove custom headers from response -->
+		<header name="X-Frame-Options" scope="transport" action="remove" />
+		<header name="x-xss-protection" scope="transport" action="remove" />
+		<header name="x-content-type-options" scope="transport" action="remove" />
+		<header name="Vary" scope="transport" action="remove" />
+		<header name="P3p" scope="transport" action="remove" />
+		<header name="Allow" scope="transport" action="remove" />
+		<header name="X-UA-Compatible" scope="transport" action="remove" />
+		<header name="Access-Control-Allow-Headers" scope="transport" action="remove" />
+		<header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
+		
+    </sequence>
+</template>

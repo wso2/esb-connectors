@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="eventbrite-contactLists" type="synapse/template" >
+<subComponents>
+    <component name="getContactListDetails">
+        <file>getContactListDetails.xml</file>
+        <description>Returns ContactList information</description>
+    </component>
+
+
+    <component name="getContactLists">
+        <file>getContactLists.xml</file>
+        <description>Returns ContactList information with id</description>
+    </component>
+
+
+	<component name="getSpecificContactListDetails">
+        <file>getSpecificContactListDetails.xml</file>
+        <description>Returns ContactList  information</description>
+    </component>
+
+<component name="CreateContactListDetails">
+        <file>CreateContactListDetails.xml</file>
+        <description>Create contact list details</description>
+    </component>
+<component name="CreateContactLists">
+        <file>CreateContactLists.xml</file>
+        <description>create contact list</description>
+    </component>
+<component name="CreateSpecificContactListDetails">
+        <file>CreateSpecificContactListDetails.xml</file>
+        <description>create contact list</description>
+    </component>
+
+
+</subComponents>
+</component>

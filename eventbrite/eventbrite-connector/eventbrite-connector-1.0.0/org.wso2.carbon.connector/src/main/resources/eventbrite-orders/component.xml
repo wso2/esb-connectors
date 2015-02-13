@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="eventbrite-orders" type="synapse/template" >
+<subComponents>
+    <component name="getOrderDetails">
+        <file>getOrderDetails.xml</file>
+        <description>Returns order information</description>
+    </component>
+
+
+   
+
+</subComponents>
+</component>

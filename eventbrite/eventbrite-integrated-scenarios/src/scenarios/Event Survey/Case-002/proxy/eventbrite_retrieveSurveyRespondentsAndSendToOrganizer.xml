@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="eventbrite_retrieveSurveyRespondentsAndSendToOrganizer" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+    <target>
+        <inSequence onError="faultHandlerSeq">
+		
+			<!--SurveyMonkey Properties-->
+			<property name="surveymonkey.apiUrl" expression="json-eval($.surveyMonkeyApiUrl)" />
+			<property name="surveymonkey.accessToken" expression="json-eval($.surveyMonkeyAccessToken)" />
+			<property name="surveymonkey.apiKey" expression="json-eval($.surveyMonkeyApiKey)" />
+			<property name="surveymonkey.collectorId" expression="json-eval($.surveyMonkeyCollectiorId)" />
+			
+			<!--GMail Properties-->
+			<property name="gmail.username" expression="json-eval($.gmailUsername)" />
+			<property name="gmail.accessToken" expression="json-eval($.gmailAccessToken)" />
+			<property name="gmail.subject" expression="json-eval($.gmailSubject)" />
+			<property name="gmail.toRecipients" expression="json-eval($.eventOrganizerEmail)" />
+			
+			<!-- Call SurveyMonkey getResponseCounts method to retrieve survey respondents -->
+			<surveymonkey.init>
+				<apiUrl>{$ctx:surveymonkey.apiUrl}</apiUrl>
+				<accessToken>{$ctx:surveymonkey.accessToken}</accessToken>
+				<apiKey>{$ctx:surveymonkey.apiKey}</apiKey>
+			</surveymonkey.init>
+			<surveymonkey.getResponseCounts> 
+				<collectorId>{$ctx:surveymonkey.collectorId}</collectorId> 
+			</surveymonkey.getResponseCounts>
+			
+			<property name="id" expression="fn:concat('collector_id:',get-property('surveymonkey.collectorId'))" />
+			<property name="surveymonkey.data" expression="json-eval($.data)" />
+			<filter source="boolean(get-property('surveymonkey.data'))" regex="true">
+				<then>
+					<property name="surveymonkey.startedRespondents" expression="json-eval($.data.started)" />
+					<property name="surveymonkey.completedRespondents" expression="json-eval($.data.completed)" />
+					<property name="gmail.textContent" expression="fn:concat('Here is your survey respondents details. Number of Started respondents on your survey is : ',get-property('surveymonkey.startedRespondents'),' and  Number of completed respondents on your survey is: ', get-property('surveymonkey.completedRespondents'))" />
+					
+					<!-- Call GMail sendMail method to send survey respondents details to organizer -->
+					<gmail.init>
+						<username>{$ctx:gmail.username}</username>
+						<oauthAccessToken>{$ctx:gmail.accessToken}</oauthAccessToken>
+					</gmail.init>
+					<gmail.sendMail>
+						<subject>{$ctx:gmail.subject}</subject>
+						<toRecipients>{$ctx:gmail.toRecipients}</toRecipients>
+						<textContent>{$ctx:gmail.textContent}</textContent>
+					</gmail.sendMail>
+					
+					<property name="messageSubject" expression="json-eval($.sendMailResponse.message.subject)" />
+                  
+					<filter source="boolean(get-property('messageSubject'))" regex="false">
+						<then>
+							<property name="status" value="Error" />
+							<property name="message" expression="json-eval($.)" />
+						</then>
+						<else>
+							<property name="status" value="Success" />
+							<property name="message" expression="fn:concat('Survey response details are successfully sent to the event organizer email (', get-property('gmail.toRecipients') ,').')" />
+						</else>
+					</filter>
+				</then>
+				<else>
+					<property name="status" value="Error" />
+					<property name="message" expression="json-eval($.)" />
+				</else>
+			</filter>
+			<call-template target="responseHandlerTemplate">
+				<with-param name="id" value="{$ctx:eventbrite.idObject}" />
+				<with-param name="activity" value="gmail_sendRespondentsToOrganizer" />
+				<with-param name="status" value="{$ctx:status}" />
+				<with-param name="message" value="{$ctx:message}" />
+			</call-template>
+			<loopback/>
+		</inSequence>
+	<outSequence>
+            <payloadFactory media-type="json">
+                <format>
+				{
+					"Response":{
+						"process":"Eventbrite-retrieveSurveyRespondentsAndSendToOrganizer",
+						"activityResponse":[$1]
+					}
+				}
+				</format>
+                <args>
+                    <arg expression="get-property('operation','responseString')" />
+                </args>
+            </payloadFactory>
+            <property name="messageType" value="application/json" scope="axis2" />
+            <send />
+        </outSequence>
+    </target>
+    <description />
+</proxy>

@@ -1,0 +1,12 @@
+{
+	"surveyMonkeyApiUrl":"https://api.surveymonkey.net",
+	"surveyMonkeyAccessToken":"paTBz61kMlD0mPWrsaHR3921EuYbHlBvqU0GDZQ.5nahBvB1GbdZpbh2WnOzXY4SpgPezvIfjiLKg1h6dpRI5VJpOBjV3RTscaxNGlgM2w8=",
+	"surveyMonkeyApiKey":"v9wjtvutfpvz5x82t5dqtt8v",
+	"surveyMonkeyCollectiorId":"61874290",
+
+	"gmailUsername":"sbliyanage",
+	"gmailAccessToken":"ya29.3QAinAl8rTI1GU3b70wddYpOn_sOMLXdh4LWhnkk-xUSvau0Z1xaA9JrdFrikby6N94vnWq6BHMe8Q",
+	"gmailSubject":"Your Survey Response Details",
+	
+	"eventOrganizerEmail":"sampath.liyanage@myport.ac.uk"
+}

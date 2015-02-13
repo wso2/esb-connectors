@@ -1,0 +1,11 @@
+{
+	"apiUrl":"%s(apiUrl)",
+	"accessToken":"%s(accessToken)",
+	"description":"%s(description)",
+	"startTimezone":"%s(timeZone)",
+	"endTimezone":"%s(timeZone)",
+	"name":"%s(name)",
+	"startTime":"2014-11-30T09:00:00Z",
+	"endTime":"2014-11-30T12:00:00Z",
+	"currency":"%s(currency)"
+}

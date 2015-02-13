@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector>
+    <component name="eventbrite" package="org.wso2.carbon.connector" >
+        <dependency component="eventbrite-config"/>
+        <dependency component="eventbrite-users"/>
+        <dependency component="eventbrite-event"/>
+        <dependency component="eventbrite-orders"/>
+		<dependency component="eventbrite-contactLists"/>
+        <description>WSO2 connector library for Eventbrite</description>
+    </component>
+	<icon>icon/icon-small.gif</icon>
+</connector>

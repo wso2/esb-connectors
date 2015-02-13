@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="eventbrite" transports="https,http" statistics="disable" trace="disable"
+	startOnLoad="true">
+	<target>
+		<inSequence>
+			<property name="apiUrl" expression="json-eval($.apiUrl)"/>
+			<property name="accessToken" expression="json-eval($.accessToken)"/>
+			<property name="shareable" expression="json-eval($.shareable)"/>
+			<property name="description" expression="json-eval($.description)"/>
+			<property name="startTimezone" expression="json-eval($.startTimezone)"/>
+			<property name="endTimezone" expression="json-eval($.endTimezone)"/>
+			<property name="name" expression="json-eval($.name)"/>
+			<property name="startTime" expression="json-eval($.startTime)"/>
+			<property name="currency" expression="json-eval($.currency)"/>
+			<property name="endTime" expression="json-eval($.endTime)"/>
+			<property name="onlineEvent" expression="json-eval($.onlineEvent)"/>
+			<property name="logoId" expression="json-eval($.logoId)"/>
+			<property name="eventId" expression="json-eval($.eventId)"/>
+			<property name="className" expression="json-eval($.className)"/>
+			<property name="classDescription" expression="json-eval($.classDescription)"/>
+			<property name="quantityTotal" expression="json-eval($.quantityTotal)"/>
+			<property name="costCurrency" expression="json-eval($.costCurrency)"/>
+			<property name="costValue" expression="json-eval($.costValue)"/>
+			<property name="isFree" expression="json-eval($.isFree)"/>
+
+			<eventbrite.init>
+				<apiUrl>{$ctx:apiUrl}</apiUrl>
+				<accessToken>{$ctx:accessToken}</accessToken>
+			</eventbrite.init>
+			<switch source="get-property('transport', 'Action')">
+				<case regex="urn:createEvent">
+					<eventbrite.createEvent>
+						 <shareable>{$ctx:shareable}</shareable>
+						 <description>{$ctx:description}</description>
+						 <startTimezone>{$ctx:startTimezone}</startTimezone>
+						 <endTimezone>{$ctx:endTimezone}</endTimezone>
+						 <name>{$ctx:name}</name>
+						 <startTime>{$ctx:startTime}</startTime>
+						 <currency>{$ctx:currency}</currency>
+						 <endTime>{$ctx:endTime}</endTime>
+						 <onlineEvent>{$ctx:onlineEvent}</onlineEvent>
+						 <logoId>{$ctx:logoId}</logoId>
+					</eventbrite.createEvent>
+				</case>
+				<case regex="urn:publishEvent">
+					<eventbrite.publishEvent>
+			             <eventId>{$ctx:eventId}</eventId>
+			        </eventbrite.publishEvent>
+				</case>
+				<case regex="urn:createTicketClass">
+					<eventbrite.createTicketClass>
+						<eventId>{$ctx:eventId}</eventId>
+						<className>{$ctx:className}</className>
+						<classDescription>{$ctx:classDescription}</classDescription>
+						<quantityTotal>{$ctx:quantityTotal}</quantityTotal>
+						<costCurrency>{$ctx:costCurrency}</costCurrency>
+						<costValue>{$ctx:costValue}</costValue>
+						<isFree>{$ctx:isFree}</isFree>
+					</eventbrite.createTicketClass>
+				</case>
+			</switch>
+			<respond />
+		</inSequence>
+	</target>
+</proxy>

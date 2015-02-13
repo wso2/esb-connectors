@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="getContactListDetails"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="apiUrl" expression="json-eval($.apiUrl)"/>
+            <property name="accessToken" expression="json-eval($.accessToken)"/>
+            <property name="userId" expression="json-eval($.userId)"/>
+            <property name="contactlistId" expression="json-eval($.contactlistId)"/>
+            <property name="messageType" value="application/json" scope="axis2"/>
+            <property name="ContentType" value="application/json" scope="axis2"/>
+            <event_brite.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+                <accessToken>{$ctx:accessToken}</accessToken>
+            </event_brite.init>
+
+            <event_brite.getContactListDetails>
+                <userId>{$ctx:userId}</userId>
+                <contactlistId>{$ctx:contactlistId}</contactlistId>
+            </event_brite.getContactListDetails>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <property name="messageType" value="application/json" scope="axis2"/>
+            <property name="ContentType" value="application/json" scope="axis2"/>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
+</proxy>

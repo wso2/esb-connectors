@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="createTicketClass" xmlns="http://ws.apache.org/ns/synapse">
+
+	<parameter name="eventId"  description="Unique identifier of the event." />
+	<parameter name="className" description="Name of this ticket class." />
+	<parameter name="classDescription" description="Description of the ticket class." />
+	<parameter name="quantityTotal" description="Total available number of this ticket class." />
+	<parameter name="costCurrency" description="Currency of the ticket (must match event currency)." />
+	<parameter name="costValue" description="Ticket cost (in integer minor units of currency)." />
+	<parameter name="isDonation" description="Is this a donation (user-determined cost)." />
+	<parameter name="isFree" description="Is this a free ticket or not." />
+	<parameter name="includeFee" description="Absorb the fee into the displayed cost." />
+	<parameter name="splitFee" description="Absorb the payment fee, but show the Eventbrite fee." />
+	<parameter name="hideDescription" description="Hide the ticket description on the event page." />
+	<parameter name="salesStartDate" description="When the ticket is available for sale (leave empty for ‘when event is published’)." />
+	<parameter name="salesStartAfterID" description="The ID of another ticket class – when it sells out, this class will go on sale." />
+	<parameter name="minimumQuantity" description="Minimum number per order." />
+	<parameter name="maximumQuantity" description="Maximum number per Order." />
+	<parameter name="isAutoHide" description="Hide this ticket when it’s not on sale." />
+	<parameter name="autoHideBeforeDate" description="Override reveal date for auto-hide." />
+	<parameter name="autoHideAfterDate" description="Override re-hide date for auto-hide." />
+
+	<sequence>
+	    <property name="uri.var.eventId" expression="$func:eventId" />
+		<property name="uri.var.className" expression="$func:className" />
+		<property name="uri.var.classDescription" expression="$func:classDescription" />
+		<property name="uri.var.quantityTotal" expression="$func:quantityTotal" />
+		<property name="uri.var.costCurrency" expression="$func:costCurrency" />
+		<property name="uri.var.costValue" expression="$func:costValue" />
+		<property name="uri.var.isDonation" expression="$func:isDonation" />
+		<property name="uri.var.isFree" expression="$func:isFree" />
+		<property name="uri.var.includeFee" expression="$func:includeFee" />
+		<property name="uri.var.splitFee" expression="$func:splitFee" />
+		<property name="uri.var.hideDescription" expression="$func:hideDescription" />
+		<property name="uri.var.salesStartDate" expression="$func:salesStartDate" />
+		<property name="uri.var.salesStartAfterID" expression="$func:salesStartAfterID" />
+		<property name="uri.var.minimumQuantity" expression="$func:minimumQuantity" />
+		<property name="uri.var.maximumQuantity" expression="$func:maximumQuantity" />
+		<property name="uri.var.isAutoHide" expression="$func:isAutoHide" />
+		<property name="uri.var.autoHideBeforeDate" expression="$func:autoHideBeforeDate" />
+		<property name="uri.var.autoHideAfterDate" expression="$func:autoHideAfterDate" />
+
+		<payloadFactory media-type="json">
+			<format>
+				{ 
+					"ticket_class":{
+					   "name": "$1",
+					   "description": "$2",
+					   "quantity_total": "$3",
+					   "cost":    {
+					      "currency": "$4",
+					      "value": "$5"
+					   },  
+					   "donation": "$6",   
+					   "free": "$7",  
+					   "include_fee": "$8",  
+					   "split_fee": "$9",  
+					   "hide_description": "$10",   
+					   "sales_start": "$11",  
+					   "sales_start_after": "$12",  
+					   "minimum_quantity": "$13",
+					   "maximum_quantity": "$14",
+					   "auto_hide": "$15",
+					   "auto_hide_before": "$16",
+					   "auto_hide_after": "$17"
+					}
+				}
+			</format>
+			<args>
+				<arg expression="get-property('uri.var.className')" />
+				<arg expression="get-property('uri.var.classDescription')" />
+				<arg expression="get-property('uri.var.quantityTotal')" />
+				<arg expression="get-property('uri.var.costCurrency')" />
+				<arg expression="get-property('uri.var.costValue')" />
+				<arg expression="get-property('uri.var.isDonation')" />
+				<arg expression="get-property('uri.var.isFree')" />
+				<arg expression="get-property('uri.var.includeFee')" />
+				<arg expression="get-property('uri.var.splitFee')" />
+				<arg expression="get-property('uri.var.hideDescription')" />
+				<arg expression="get-property('uri.var.salesStartDate')" />
+				<arg expression="get-property('uri.var.salesStartAfterID')" />
+				<arg expression="get-property('uri.var.minimumQuantity')" />
+				<arg expression="get-property('uri.var.maximumQuantity')" />
+				<arg expression="get-property('uri.var.isAutoHide')" />
+				<arg expression="get-property('uri.var.autoHideBeforeDate')" />
+				<arg expression="get-property('uri.var.autoHideAfterDate')" />
+			</args>
+		</payloadFactory>
+
+	    <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>  
+	    		
+		<call>
+			<endpoint>
+				<http method="post"
+					uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.eventId}/ticket_classes/?token={uri.var.eventbrite.accessToken}" />
+			</endpoint>
+		</call>
+
+		<!-- remove the custom transport headers -->
+		<header name="X-Frame-Options" scope="transport" action="remove"/>
+		<header name="x-xss-protection" scope="transport" action="remove"/>
+		<header name="x-content-type-options" scope="transport" action="remove"/>
+		<header name="Access-Control-Allow-Headers" scope="transport" action="remove"/>
+		<header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+		<header name="P3P" scope="transport" action="remove"/>
+		<header name="X-UA-Compatible" scope="transport" action="remove"/>
+		<header name="Vary" scope="transport" action="remove"/>
+		<header name="Allow" scope="transport" action="remove"/>
+		
+	</sequence>
+</template>

@@ -1,0 +1,24 @@
+{
+    "eventBriteApiUrl": "https://www.eventbriteapi.com",
+    "eventBriteAccessToken": "O5CHYSIJQPS7QNQKBYU6",
+    "pastEventData": [
+        {
+			"eventId":"14845207415",
+			"surveyId":"59164527"
+			
+		},
+		{
+			"eventId":"123",
+			"surveyId":"59164527"
+		}
+    ],
+	
+	"surveyMonkeyApiUrl":"https://api.surveymonkey.net",
+	"surveyMonkeyAccessToken":"paTBz61kMlD0mPWrsaHR3921EuYbHlBvqU0GDZQ.5nahBvB1GbdZpbh2WnOzXY4SpgPezvIfjiLKg1h6dpRI5VJpOBjV3RTscaxNGlgM2w8=",
+	"surveyMonkeyApiKey":"v9wjtvutfpvz5x82t5dqtt8v",
+	"surveyMonkeySurveyTitle":"Survey Demo",
+	"surveyMonkeyCollectorName":"Test Demo",
+	"surveyMonkeyReplyEmail":"apptest.virajith@gmail.com",
+	"surveyMonkeyMessageSubject":"Thank you for attending to the event"
+		
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="eventCategories"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="apiUrl" expression="json-eval($.apiUrl)"/>
+            <property name="accessToken" expression="json-eval($.accessToken)"/>
+
+            <event_brite.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+                <accessToken>{$ctx:accessToken}</accessToken>
+            </event_brite.init>
+
+            <event_brite.eventCategories>
+
+            </event_brite.eventCategories>
+            <respond/>
+
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
+</proxy>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="eventbrite_sendEventReminders" transports="https,http" startOnLoad="true" trace="disable">
+   <target>
+      <inSequence onError="faultHandlerSeq"> 
+        <!-- EventBrite Properties-->
+        <property name="eventBrite.apiUrl" expression="json-eval($.eventBriteApiUrl)" />
+        <property name="eventBrite.accessToken" expression="json-eval($.eventBriteAccessToken)" />
+        <property name="eventBrite.organizerId" expression="json-eval($.eventBriteOrganizerId)" />
+		<property name="eventBrite.changedSince" expression="json-eval($.eventBriteChangedSince)" />
+		 
+		 
+        <!-- Nexmo Properties-->
+        <property name="nexmo.apiUrl" expression="json-eval($.nexmoApiUrl)" />
+        <property name="nexmo.apiSecret" expression="json-eval($.nexmoApiSecret)" />
+        <property name="nexmo.apiKey" expression="json-eval($.nexmoApiKey)" />
+		 
+        <!-- Gmail Properties-->
+        <property name="gmail.username" expression="json-eval($.gmailUsername)" />
+        <property name="gmail.oAuthAccessToken" expression="json-eval($.gmailOAuthAccessToken)" />
+		 
+		<!-- Operation Properties-->
+        <property name="eventbrite.attendeesIndex" value="0"  scope="operation" />
+		<property name="eventbrite.attendeesCount" value="0"  scope="operation" />
+		<property name="eventbrite.isAnyReminder" value="false" scope="operation"/>
+		<property name="attendee.idObject" value="{}" />
+        
+		<header name="Content-Type" scope="transport" action="remove"/>
+		
+		<!-- List all events attendees for the given organizer -->
+		<eventbrite.init>
+            <apiUrl>{$ctx:eventBrite.apiUrl}</apiUrl>
+            <accessToken>{$ctx:eventBrite.accessToken}</accessToken>
+         </eventbrite.init>
+        <eventbrite.getUserOwnedEventAttendees>
+			<userId>{$ctx:eventBrite.organizerId}</userId>
+			<changedSince>{$ctx:eventBrite.changedSince}</changedSince>
+			<status>attending</status>
+		</eventbrite.getUserOwnedEventAttendees>
+		
+		<property name="eventbrite.noOfAttendees" expression="json-eval($.pagination.object_count)"/>
+		
+		<!-- Removing unused headers by calling a sequence template -->
+		<sequence key="removeResponseHeaders" />
+				
+		<filter xpath="get-property('eventbrite.noOfAttendees') = 0">
+			<then>
+				<property name="status" value="Skipped"/>
+				<property name="message" value="No attendees for the organizer."/>
+				<call-template target="responseHandlerTemplate">
+					<with-param name="id" value="{$ctx:attendee.idObject}"/>
+					<with-param name="status" value="{$ctx:status}"/>
+					<with-param name="message" value="{$ctx:message}"/>
+				</call-template>
+				<loopback />
+			</then>
+			<else>
+				<property name="eventbrite.attendeesCount" expression="count(//attendees)" scope="operation"/>
+				<!--FOR EACH Attendees : BEGIN-->
+				<iterate continueParent="true" id="attendees" expression="//attendees" sequential="true">
+					<target>
+						<sequence>
+							<property name="eventbrite.attendeeId" expression="json-eval($.attendees.id)"/>
+							<property name="eventbrite.isDuplicate" expression="(fn:contains(get-property('eventbrite.attendeeId'),'-'))"/>
+							<!-- If duplicate attendee in eventbrite, the duplicate will ignore -->
+							<filter source="get-property('eventbrite.isDuplicate')" regex="false">
+								<then>
+									
+									<property name="eventbrite.startDate" expression="json-eval($.attendees.event.start.local)" />
+									<property name="eventbrite.eventStatus" expression="json-eval($.attendees.event.status)" />
+									<property name="eventbrite.isTommorrowEvent" value="false" />
+									<script language="js">
+									<![CDATA[
+										var eventStartDate = mc.getProperty('eventbrite.startDate');
+										var tommorrow=new Date();
+										tommorrow.setDate(tommorrow.getDate() + 1);
+										var eventDateString ="";
+										var tommorrowDay=""+tommorrow.getDate();
+				
+										if(tommorrowDay.length==1){
+											tommorrowDay="0"+tommorrowDay;
+										}
+										var tommorrowString=tommorrow.getFullYear() + "-" + Number(tommorrow.getMonth()+1)+ "-" + tommorrowDay ;
+										
+										if (eventStartDate != null && eventStartDate != "") {
+											eventDateString = eventStartDate.split('T')[0];
+										}
+										
+										if(tommorrowString == eventDateString) {
+											mc.setProperty("eventbrite.isTommorrowEvent", "true");
+											mc.setProperty("eventbrite.isAnyReminder", "true");
+										}
+									]]></script>
+									<!--<filter source="get-property('eventbrite.isTommorrowEvent')" regex="true">-->
+									<filter xpath="get-property('eventbrite.isTommorrowEvent')='true' and get-property('eventbrite.eventStatus')='live'">
+										<then>
+											<property name="attendee.email" expression="json-eval($.attendees.profile.email)"/>
+											<property name="attendee.firstName" expression="json-eval($.attendees.profile.first_name)"/>
+											<property name="attendee.lastName" expression="json-eval($.attendees.profile.last_name)"/>
+											<property name="attendee.cellPhone" expression="json-eval($.attendees.profile.cell_phone)"/>
+											<property name="attendee.eventName" expression="json-eval($.attendees.event.name.text)"/>
+											
+											<property name="attendee.eventId" expression="json-eval($.attendees.event.id)"/>
+											<property name="attendee.attendeeId" expression="json-eval($.attendees.id)"/>
+											
+											<property name="attendee.reminderSubject" expression="fn:concat(get-property('attendee.eventName'),' - Reminder')" />
+											<property name="attendee.reminderText" expression="fn:concat('Reminder : ',get-property('attendee.eventName'),' will be held on ; ',get-property('eventbrite.startDate'))" />
+											<property name="attendee.idObject" expression="fn:concat('event_id:',get-property('attendee.eventId'),',attendee_id:',get-property('attendee.attendeeId'))" />
+											
+											
+											<call-template target="sendReminders">
+                                                    <!-- parameter values will be passed on to a sequence template -->
+                                                    (
+                                                    <with-param name="nexmo.apiUrl" value="{$ctx:nexmo.apiUrl}" />
+                                                    |
+                                                    <with-param name="nexmo.apiSecret" value="{$ctx:nexmo.apiSecret}" />
+                                                    |
+                                                    <with-param name="nexmo.apiKey" value="{$ctx:nexmo.apiKey}" />
+                                                    |
+                                                    <with-param name="nexmo.to" value="{$ctx:attendee.cellPhone}" />
+                                                    |
+                                                    <with-param name="nexmo.from" value="{$ctx:attendee.eventName}" />
+                                                    |
+                                                    <with-param name="nexmo.text" value="{$ctx:attendee.reminderText}" />
+													|
+													<with-param name="nexmo.responseIds" value="{$ctx:attendee.idObject}" />
+                                                    |
+                                                    <with-param name="gmail.username" value="{$ctx:gmail.username}" />
+                                                    |
+                                                    <with-param name="gmail.oAuthAccessToken" value="{$ctx:gmail.oAuthAccessToken}" />
+                                                    |
+                                                    <with-param name="gmail.toRecipients" value="{$ctx:attendee.email}" />
+                                                    |
+                                                    <with-param name="gmail.subject" value="{$ctx:attendee.reminderSubject}" />
+                                                    |
+                                                    <with-param name="gmail.textContent" value="{$ctx:attendee.reminderText}" />
+                                                    |
+                                                    <with-param name="gmail.responseIds" value="{$ctx:attendee.idObject}" />
+                                                    |
+													) *
+                                            </call-template>
+										</then>
+									</filter>	
+								</then>
+							</filter>	
+							<property name="eventbrite.attendeesIndex" expression="get-property('operation','eventbrite.attendeesIndex') + 1" scope="operation"/>
+							
+						</sequence>
+					</target>
+				</iterate>
+				<!--FOR EACH Attendees : END-->
+				<filter xpath="get-property('operation','eventbrite.attendeesCount') = get-property('operation','eventbrite.attendeesIndex')">
+				<then>
+					<loopback />
+					
+				</then>
+			</filter>
+			</else>
+		</filter>
+      </inSequence>
+      <outSequence>
+         <property name="messageType" value="application/json" scope="axis2" />
+		 
+         <filter source="boolean(get-property('operation','responseString'))" regex="true">
+            <then>
+               <payloadFactory media-type="json">
+                  <format>{
+					"Response":{
+						"process":"Eventbrite-sendEventReminders",
+						"activityResponse":[$1]
+					}
+					}</format>
+                  <args>
+                     <arg evaluator="xml" expression="get-property('operation','responseString')"/>
+                  </args>
+               </payloadFactory>
+            </then>
+            <else>
+               <payloadFactory media-type="json">
+                  <format>{
+					"Response":{
+						"process":"Eventbrite-sendEventRemainders",
+						"activityResponse":"There are no reminders to be sent."
+					}
+					}</format>
+                  <args/>
+               </payloadFactory>
+            </else>
+         </filter>
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>

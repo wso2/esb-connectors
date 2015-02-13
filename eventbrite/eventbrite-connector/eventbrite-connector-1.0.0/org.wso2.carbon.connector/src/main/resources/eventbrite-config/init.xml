@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="init" xmlns="http://ws.apache.org/ns/synapse" >
+    <parameter name="apiUrl" description="URL of the eventbrite API"/>
+    <parameter name="accessToken" description="Access token to access backend services"/>
+    <sequence>
+        <property name="uri.var.eventbrite.apiUrl" expression="$func:apiUrl"/>
+        <property name="uri.var.eventbrite.accessToken" expression="$func:accessToken"/>
+
+        <filter  source="boolean(get-property('uri.var.eventbrite.apiUrl'))" regex="false">
+            <then>
+                <property name="uri.var.eventbrite.apiUrl" value="https://www.eventbriteapi.com"/>
+            </then>
+        </filter>
+        
+    </sequence>
+</template>

@@ -1,0 +1,19 @@
+{
+"gotowebinarApiUrl": "https://api.citrixonline.com",
+"gotowebinarAccessToken": "ilcGbGSSoVIBHZafWLZlwGz4gljJ",
+"gotowebinarOrganizerKey": "512299114040876806",
+
+"events":[
+		 { 
+             "webinarKey":"1460715854080232706",
+             "eventId":"14877104821" 
+           },
+           { 
+             "webinarKey":"1460715854080232706",
+             "eventId":"14917949990" 
+           }  
+
+],
+"eventbriteApiUrl":"https://www.eventbriteapi.com", 
+"eventbriteAccessToken":"4SMVCVGYVT2K3FYPMMLP" 
+}

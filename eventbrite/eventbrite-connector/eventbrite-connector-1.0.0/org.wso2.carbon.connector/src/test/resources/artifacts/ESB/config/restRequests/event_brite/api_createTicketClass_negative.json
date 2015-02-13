@@ -1,0 +1,7 @@
+{ 
+	"ticket_class":{
+	   "name": "%s(className)",
+	   "quantity_total": "%s(quantityTotal)",					   					   
+	   "free": "false" 
+	}
+}

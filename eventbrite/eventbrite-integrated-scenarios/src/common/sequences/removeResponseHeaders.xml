@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="removeResponseHeaders">
+   <header name="Content-Encoding" scope="transport" action="remove"/>
+   <header name="Vary" scope="transport" action="remove"/>
+   <header name="Set-Cookie" scope="transport" action="remove"/>
+   <header name="Status" scope="transport" action="remove"/>
+   <header name="Link" scope="transport" action="remove"/>
+   <header name="ETag" scope="transport" action="remove"/>
+   <header name="Pragma" scope="transport" action="remove"/>
+   <header name="Cache-Control" scope="transport" action="remove"/>
+   <header name="X-Frame-Options" action="remove" scope="transport" />
+   <header name="x-xss-protection" action="remove" scope="transport" />
+   <header name="x-content-type-options" action="remove" scope="transport" />
+   <header name="Access-Control-Allow-Headers" action="remove" scope="transport" />
+   <header name="Access-Control-Allow-Origin" action="remove" scope="transport" />
+   <header name="P3P" action="remove" scope="transport" />
+   <header name="Allow" action="remove" scope="transport" />
+</sequence>

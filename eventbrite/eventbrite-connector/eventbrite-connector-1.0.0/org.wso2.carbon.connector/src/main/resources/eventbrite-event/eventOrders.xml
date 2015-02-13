@@ -1,0 +1,52 @@
+<template name="eventOrders" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="EventID" description="Full-text search query string." />
+
+    <parameter name="status" description="status." />
+    <parameter name="changed_since" description="changed_since." />
+
+    <parameter name="parameters" description=" parameters." />
+
+    <sequence>
+        <property name="uri.var.EventID" expression="$func:EventID" />
+        <property name="uri.var.eventbrite.accessToken" expression="$func:accessToken" />
+
+        <property name="uri.var.status" expression="$func:status" />
+        <property name="uri.var.changed_since" expression="$func:changed_since" />
+
+        <property name="apiParameters" value=""/>
+
+        <filter xpath="get-property('uri.var.status') = '' or (not(string(get-property('uri.var.status'))))">
+            <then>
+                <property name="uri.var.status" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'&amp;status=',get-property('uri.var.status'))"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.changed_since') = '' or (not(string(get-property('uri.var.changed_since'))))">
+            <then>
+                <property name="uri.var.changed_since" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'&amp;changed_since=',get-property('uri.var.changed_since'))"/>
+            </else>
+        </filter>
+
+        <property name="uri.var.parameters" expression="get-property('apiParameters')"/>
+
+        <log level="full">
+            <property name="TestProperty" expression="get-property('apiParameters')"></property>
+        </log>
+
+        <call>
+
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.EventID}/orders/?{uri.var.parameters}&amp;token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>

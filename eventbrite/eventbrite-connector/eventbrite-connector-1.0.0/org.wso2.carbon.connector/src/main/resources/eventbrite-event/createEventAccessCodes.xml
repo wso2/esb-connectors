@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="createEventAccessCodes" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="EventID" description="Full-text search query string." />
+
+    <parameter name="code" description="code." />
+    <parameter name="ticket_ids" description="ticket_ids." />
+    <parameter name="start_date" description="start_date." />
+    <parameter name="end_date" description="end_date." />
+    <parameter name="quantity_available" description="quantity_available." />
+
+    <parameter name="parameters" description=" parameters." />
+    <parameter name="apiParameters" description=" apiParameters." />
+
+
+    <sequence>
+
+        <property name="uri.var.EventID" expression="$func:EventID" />
+        <property name="uri.var.code" expression="$func:code" />
+        <property name="uri.var.ticket_ids" expression="$func:ticket_ids" />
+        <property name="uri.var.start_date" expression="$func:start_date" />
+        <property name="uri.var.end_date" expression="$func:end_date" />
+        <property name="uri.var.quantity_available" expression="$func:quantity_available" />
+
+        <property name="apiParameters" value=""/>
+
+         <filter xpath="get-property('uri.var.code') = '' or (not(string(get-property('uri.var.code'))))">
+                <then>
+                    <property name="uri.var.code" value=" "/>
+                </then>
+                <else>
+                    <property name="apiParameters"
+                              expression="fn:concat(get-property('apiParameters'),'code=',get-property('uri.var.code'),'&amp;')"/>
+                </else>
+         </filter>
+
+
+        <filter xpath="get-property('uri.var.start_date') = '' or (not(string(get-property('uri.var.start_date'))))">
+            <then>
+                <property name="uri.var.start_date" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'start_date=',get-property('uri.var.start_date'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.ticket_ids') = '' or (not(string(get-property('uri.var.ticket_ids'))))">
+            <then>
+                <property name="uri.var.ticket_ids" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'ticket_ids=',get-property('uri.var.ticket_ids'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.end_date') = '' or (not(string(get-property('uri.var.end_date'))))">
+            <then>
+                <property name="uri.var.end_date" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'end_date=',get-property('uri.var.end_date'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.quantity_available') = '' or (not(string(get-property('uri.var.quantity_available'))))">
+            <then>
+                <property name="uri.var.quantity_available" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'quantity_available=',get-property('uri.var.quantity_available'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <property name="uri.var.parameters" expression="get-property('apiParameters')"/>
+
+        <log level="full">
+            <property name="TestProperty" expression="get-property('apiParameters')"></property>
+        </log>
+
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/events/{uri.var.EventID}/access_codes/?{uri.var.parameters}token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+
+    </sequence>
+
+</template>

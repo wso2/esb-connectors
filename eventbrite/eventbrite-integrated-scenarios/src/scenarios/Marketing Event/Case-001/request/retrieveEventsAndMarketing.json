@@ -1,0 +1,18 @@
+{
+	"eventBriteApiUrl":"https://www.eventbriteapi.com",
+	"eventBriteAccessToken":"SWUMON44AB7JOBR3WL6Q",
+	"eventBriteEventIds":[ "14939837456","14939838459","123"],
+
+	"constantContactApiUrl":"https://api.constantcontact.com",
+	"constantContactApiToken":"bcb827b5-99d9-48b1-9e53-3030f0d449c3",
+	"constantContactApiKey":"9cwvw4st5apz7m9hvupfh6gg",
+	"constantContactFromEmail":"testapp.mahesh@gmail.com",
+	"constantContactSentToContactLists":[{
+		"id": "1232651732"
+		}],
+	"constantContactreplyToEmail":"testapp.mahesh@gmail.com",
+	"constantContactFromName":"Mahesh",
+	
+	"facebookApiUrl":"https://graph.facebook.com",
+	"facebookAccessToken":"CAAWPj8fl6j4BAEwADxHsSYZCh5COFmnndb7iMmoFZBkxFhZAbXnuOdouzZBjZA64C049MPPzii7ZBeYhEHUjAQ7qOD0rvLE4aTyj24KlZBAE1wDJ0xMXITYDVMxkPI4W7uc8wkPltEHUEpxZCyenpRIwZBVn58ZACCPWF0O6cpkh2wdhZAk42a8RTOF8KHyNN3L2QrfUqpNwhZBY0dVXvkhpIva5FEnsLcWehIcZD"
+}

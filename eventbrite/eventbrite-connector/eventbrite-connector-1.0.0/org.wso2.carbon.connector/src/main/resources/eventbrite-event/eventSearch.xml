@@ -1,0 +1,328 @@
+<template name="eventSearch" xmlns="http://ws.apache.org/ns/synapse">
+
+
+    <parameter name="q" description="q." />
+    <parameter name="since_id" description="since_id." />
+    <parameter name="sort_by" description="sort_by." />
+    <parameter name="popular" description="popular." />
+    <parameter name="location.address" description="location.address." />
+    <parameter name="location.latitude" description="location.latitude." />
+    <parameter name="location.longitude	" description="location.longitude." />
+    <parameter name="location.within" description="location.within." />
+    <parameter name="venue.city" description="venue.city." />
+    <parameter name="venue.region" description="venue.region." />
+    <parameter name="venue.country" description="venue.country." />
+    <parameter name="organizer.id" description="organizer.id." />
+    <parameter name="user.id" description="user.id." />
+    <parameter name="tracking_code" description="tracking_code." />
+    <parameter name="categories" description="categories." />
+    <parameter name="formats" description="formats." />
+    <parameter name="start_date.range_start	" description="start_date.range_start" />
+    <parameter name="start_date.range_end" description="start_date.range_end" />
+    <parameter name="start_date.keyword" description="start_date.keyword" />
+    <parameter name="date_created.range_start" description="date_created.range_start" />
+    <parameter name="date_created.range_end" description="date_created.range_end." />
+    <parameter name="date_created.keyword" description="date_created.keyword." />
+    <parameter name="date_modified.range_start" description="date_modified.range_start." />
+    <parameter name="date_modified.range_end" description="date_modified.range_end" />
+    <parameter name="date_modified.keyword" description="date_modified.keyword." />
+
+
+    <parameter name="parameters" description=" parameters." />
+    <parameter name="apiParameters" description=" apiParameters." />
+
+    <sequence>
+
+        <property name="uri.var.q" expression="$func:q" />
+        <property name="uri.var.since_id" expression="$func:since_id" />
+        <property name="uri.var.sort_by" expression="$func:sort_by" />
+        <property name="uri.var.popular" expression="$func:popular" />
+        <property name="uri.var.location.address" expression="$func:location.address" />
+        <property name="uri.var.location.latitude" expression="$func:location.latitude" />
+        <property name="uri.var.location.longitude" expression="$func:location.longitude" />
+        <property name="uri.var.location.within" expression="$func:location.within" />
+        <property name="uri.var.venue.city" expression="$func:venue.city" />
+        <property name="uri.var.venue.region" expression="$func:venue.region" />
+        <property name="uri.var.venue.country" expression="$func:venue.country" />
+        <property name="uri.var.organizer.id" expression="$func:organizer.id" />
+        <property name="uri.var.user.id" expression="$func:user.id" />
+        <property name="uri.var.tracking_code" expression="$func:tracking_code" />
+        <property name="uri.var.categories" expression="$func:categories" />
+        <property name="uri.var.formats" expression="$func:formats" />
+        <property name="uri.var.start_date.range_start" expression="$func:start_date.range_start" />
+        <property name="uri.var.start_date.range_end" expression="$func:start_date.range_end" />
+        <property name="uri.var.start_date.keyword" expression="$func:start_date.keyword" />
+        <property name="uri.var.date_created.range_start" expression="$func:date_created.range_start" />
+        <property name="uri.var.date_created.range_end" expression="$func:date_created.range_end" />
+        <property name="uri.var.date_created.keyword" expression="$func:date_created.keyword" />
+        <property name="uri.var.date_modified.range_start" expression="$func:date_modified.range_start" />
+        <property name="uri.var.date_modified.range_end" expression="$func:date_modified.range_end" />
+        <property name="uri.var.date_modified.keyword" expression="$func:date_modified.keyword" />
+
+
+        <property name="apiParameters" value=""/>
+
+        <filter xpath="get-property('uri.var.q') = '' or (not(string(get-property('uri.var.q'))))">
+            <then>
+                <property name="uri.var.q" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'&amp;q=',get-property('uri.var.q'))"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.since_id') = '' or (not(string(get-property('uri.var.since_id'))))">
+            <then>
+                <property name="uri.var.since_id" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'since_id=',get-property('uri.var.since_id'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.sort_by') = '' or (not(string(get-property('uri.var.sort_by'))))">
+            <then>
+                <property name="uri.var.sort_by" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'sort_by=',get-property('uri.var.sort_by'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.popular') = '' or (not(string(get-property('uri.var.popular'))))">
+            <then>
+                <property name="uri.var.popular" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'popular=',get-property('uri.var.popular'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.location.address') = '' or (not(string(get-property('uri.var.location.address'))))">
+            <then>
+                <property name="uri.var.location.address" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'location.address=',get-property('uri.var.location.address'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.location.latitude') = '' or (not(string(get-property('uri.var.location.latitude'))))">
+            <then>
+                <property name="uri.var.location.latitude" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'location.latitude=',get-property('uri.var.location.latitude'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.location.longitude') = '' or (not(string(get-property('uri.var.location.longitude'))))">
+            <then>
+                <property name="uri.var.location.longitude" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'location.longitude=',get-property('uri.var.location.longitude'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.location.within') = '' or (not(string(get-property('uri.var.location.within'))))">
+            <then>
+                <property name="uri.var.location.within" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'location.within=',get-property('uri.var.location.within'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.venue.city') = '' or (not(string(get-property('uri.var.venue.city'))))">
+            <then>
+                <property name="uri.var.venue.city" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'venue.city=',get-property('uri.var.venue.city'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.venue.region') = '' or (not(string(get-property('uri.var.venue.region'))))">
+            <then>
+                <property name="uri.var.venue.region" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'venue.region=',get-property('uri.var.venue.region'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.venue.country') = '' or (not(string(get-property('uri.var.venue.country'))))">
+            <then>
+                <property name="uri.var.venue.country" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'venue.country=',get-property('uri.var.venue.country'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.organizer.id') = '' or (not(string(get-property('uri.var.organizer.id'))))">
+            <then>
+                <property name="uri.var.organizer.id" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'organizer.id=',get-property('uri.var.organizer.id'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.user.id') = '' or (not(string(get-property('uri.var.user.id'))))">
+            <then>
+                <property name="uri.var.user.id" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'user.id=',get-property('uri.var.user.id'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.tracking_code') = '' or (not(string(get-property('uri.var.tracking_code'))))">
+            <then>
+                <property name="uri.var.tracking_code" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'tracking_code=',get-property('uri.var.tracking_code'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.categories') = '' or (not(string(get-property('uri.var.categories'))))">
+            <then>
+                <property name="uri.var.categories" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'categories=',get-property('uri.var.categories'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.formats') = '' or (not(string(get-property('uri.var.formats'))))">
+            <then>
+                <property name="uri.var.formats" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'formats=',get-property('uri.var.formats'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.start_date.range_start	') = '' or (not(string(get-property('uri.var.start_date.range_start	'))))">
+            <then>
+                <property name="uri.var.start_date.range_start" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'start_date.range_start=',get-property('uri.var.start_date.range_start'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.start_date.range_end') = '' or (not(string(get-property('uri.var.start_date.range_end'))))">
+            <then>
+                <property name="uri.var.start_date.range_end" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'start_date.range_end=',get-property('uri.var.start_date.range_end'),'&amp;')"/>
+            </else>
+        </filter>
+        start_date.keyword
+        <filter xpath="get-property('uri.var.start_date.keyword	') = '' or (not(string(get-property('uri.var.start_date.keyword	'))))">
+            <then>
+                <property name="uri.var.start_date.keyword" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'start_date.keyword=',get-property('uri.var.start_date.keyword'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.date_created.range_start') = '' or (not(string(get-property('uri.var.date_created.range_start'))))">
+            <then>
+                <property name="uri.var.date_created.range_start" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'date_created.range_start=',get-property('uri.var.date_created.range_start'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.date_created.range_end') = '' or (not(string(get-property('uri.var.date_created.range_end'))))">
+            <then>
+                <property name="uri.var.date_created.range_end" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'date_created.range_end=',get-property('uri.var.date_created.range_end'),'&amp;')"/>
+            </else>
+        </filter>
+        <filter xpath="get-property('uri.var.date_created.keyword') = '' or (not(string(get-property('uri.var.date_created.keyword'))))">
+            <then>
+                <property name="uri.var.date_created.keyword" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'date_created.keyword=',get-property('uri.var.date_created.keyword'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.date_modified.range_start') = '' or (not(string(get-property('uri.var.date_modified.range_start'))))">
+            <then>
+                <property name="uri.var.date_modified.range_start" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'date_modified.range_start=',get-property('uri.var.date_modified.range_start'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.date_modified.range_end') = '' or (not(string(get-property('uri.var.date_modified.range_end'))))">
+            <then>
+                <property name="uri.var.date_modified.range_end" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'date_modified.range_end=',get-property('uri.var.date_modified.range_end'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <filter xpath="get-property('uri.var.date_modified.keyword') = '' or (not(string(get-property('uri.var.date_modified.keyword'))))">
+            <then>
+                <property name="uri.var.date_modified.keyword" value=" "/>
+            </then>
+            <else>
+                <property name="apiParameters"
+                          expression="fn:concat(get-property('apiParameters'),'date_modified.keyword=',get-property('uri.var.date_modified.keyword'),'&amp;')"/>
+            </else>
+        </filter>
+
+        <property name="uri.var.parameters" expression="get-property('apiParameters')"/>
+
+        <log level="full">
+            <property name="TestProperty" expression="get-property('apiParameters')"></property>
+        </log>
+
+        <call>
+
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.eventbrite.apiUrl}/v3/events/search/?{uri.var.parameters}token={uri.var.eventbrite.accessToken}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>

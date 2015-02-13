@@ -1,0 +1,14 @@
+{
+"eventBriteApiUrl":"https://www.eventbriteapi.com",
+"eventBriteAccessToken":"4SMVCVGYVT2K3FYPMMLP",
+"eventBriteOrganizerId":"129926182147",
+"eventBriteChangedSince":"2014-12-10T13:18:40Z",
+
+"gmailUsername" : "janaka.n.ranathunga@gmail.com",
+"gmailOAuthAccessToken" : "ya29.3QCKj0LyISF9aBbuVHBS99O1V1r6iz_tx_FrPIIZyvNIPbm5RdqUc-FfkTj88iIQY-o--pmkodbStg",
+
+"nexmoApiUrl":"https://rest.nexmo.com",
+"nexmoApiSecret":"57c0d061",
+"nexmoApiKey":"15e053e1"
+
+}

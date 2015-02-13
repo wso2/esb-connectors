@@ -1,0 +1,19 @@
+{
+    "event": {
+        "name": {
+            "html": "%s(name)"
+        },
+        "description": {
+            "html": "%s(description)"
+        },
+        "start": {
+            "utc": "2014-12-30T09:00:00Z",
+            "timezone": "%s(timeZone)"
+        },
+        "end": {
+            "utc": "2014-12-30T09:00:00Z",
+            "timezone": "%s(timeZone)"
+        },
+        "currency": "%s(currency)"
+    }
+}
