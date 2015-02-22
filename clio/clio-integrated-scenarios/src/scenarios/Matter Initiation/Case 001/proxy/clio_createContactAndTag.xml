@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="clio_createContactAndTag" transports="https,http" statistics="disable"
+   trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+		 <sequence key="scenarioConstants" />
+		 
+         <!-- ZohoCrm Properties -->
+         <property name="zohocrm.apiUrl" expression="json-eval($.zohoCrmApiUrl)" />
+         <property name="zohocrm.accessToken" expression="json-eval($.zohoCrmAccessToken)" />
+         <property name="zohocrm.contactIds" expression="json-eval($.zohoCrmContactIds)" />
+
+         <!-- Clio Properties -->
+         <property name="clio.apiUrl" expression="json-eval($.clioApiUrl)" />
+         <property name="clio.accessToken" expression="json-eval($.clioAccessToken)" />
+         <property name="clio.addresses" expression="json-eval($.clioContact.addresses)" />
+         <property name="clio.instantMessengers" expression="json-eval($.clioContact.instantMessengers)" />
+         <property name="clio.firstName" expression="json-eval($.clioContact.firstName)" />
+         <property name="clio.lastName" expression="json-eval($.clioContact.lastName)" />
+         <property name="clio.title" expression="json-eval($.clioContact.title)" />
+         <property name="clio.prefix" expression="json-eval($.clioContact.prefix)" />
+         <property name="clio.phoneNumbers" expression="json-eval($.clioContact.phoneNumbers)" />
+         <property name="clio.emailAddresses" expression="json-eval($.clioContact.emailAddresses)" />
+
+         <!-- SimpleNote properties -->
+         <property name="simplenote.authToken" expression="json-eval($.simpleNoteAuthToken)" />
+         <property name="simplenote.email" expression="json-eval($.simpleNoteEmail)" />
+         <property name="simplenote.apiUrl" expression="json-eval($.simpleNoteApiUrl)" />
+
+         <!--Getting the count of the zohoCrm contactIds the user has passed -->
+         <property name="contactIdsCount" expression="count(//jsonObject/zohoCrmContactIds)" scope="operation" />
+         <property name="contactIdIndex" expression="0" scope="operation" />
+
+         <!--START: Priority 1 - If the user sends an array of zohoCrmContactIds then retrieve those contacts to create them 
+            in Clio -->
+         <filter source="get-property('operation', 'contactIdsCount')" regex="0.0">
+            <!-- If zohoCrmContactIds count is zero then check whether the user has given required details to create the 
+               Contact
+               directly in Clio -->
+            <then>
+               <!--START: Priority 2 - If the user sends clioContact object then create the contact in Clio. To create the 
+                  it is
+                  mandatory for the user to provide firstName and lastName. -->
+               <filter xpath="boolean(get-property('clio.firstName')) and boolean(get-property('clio.lastName'))">
+                  <then>
+                     <!-- call createContactInClioAndTagInSimpleNote template to create the contact in Clio and create the
+                        tag in SimpleNote. -->
+                     <call-template target="createContactAndTag">
+                        <with-param name="clio.apiUrl" value="{$ctx:clio.apiUrl}" />
+                        <with-param name="clio.accessToken" value="{$ctx:clio.accessToken}" />
+                        <with-param name="clio.addresses" value="{$ctx:clio.addresses}" />
+                        <with-param name="clio.instantMessengers" value="{$ctx:clio.instantMessengers}" />
+                        <with-param name="clio.firstName" value="{$ctx:clio.firstName}" />
+                        <with-param name="clio.lastName" value="{$ctx:clio.lastName}" />
+                        <with-param name="clio.title" value="{$ctx:clio.title}" />
+                        <with-param name="clio.prefix" value="{$ctx:clio.prefix}" />
+                        <with-param name="clio.phoneNumbers" value="{$ctx:clio.phoneNumbers}" />
+                        <with-param name="clio.emailAddresses" value="{$ctx:clio.emailAddresses}" />
+                        <with-param name="zohocrm.isContactFromZohoCrm" value="false" />
+                        <with-param name="simplenote.apiUrl" value="{$ctx:simplenote.apiUrl}" />
+                        <with-param name="simplenote.authToken" value="{$ctx:simplenote.authToken}" />
+                        <with-param name="simplenote.email" value="{$ctx:simplenote.email}" />
+                     </call-template>
+                     <loopback />
+                  </then>
+                  <else>
+                     <!--If user doesn't send firstName and lastName of the contact, send an error message and loopback -->
+                     <call-template target="responseHandlerTemplate">
+                        <with-param name="activity" value="clio_createContact" />
+                        <with-param name="id" value="{$ctx:id.empty}" />
+                        <with-param name="status" value="{$ctx:status.skipped}" />
+                        <with-param name="message" value="{$ctx:message.insufficientContactDetails}" />
+                     </call-template>
+                     <loopback />
+                  </else>
+               </filter>
+               <!-- END: Priority 2 - If the user sends clioContact object then create the contact in Clio. To create the 
+                  it is
+                  mandatory for the user to provide firstName and lastName. -->
+            </then>
+            <else>
+
+               <!--START LOOP: Retrieve contact details of each contact Id array and create contact for each in Clio -->
+               <iterate continueParent="true" id="contactsIdIterator" preservePayload="true" expression="//zohoCrmContactIds"
+                  sequential="true">
+                  <target>
+                     <sequence>
+                        <!-- Retrieving one contact at a time from the zohoCrmContactIds array -->
+                        <property name="zohoCrmContactId" expression="//zohoCrmContactIds" />
+
+                        <!--Get the contact from ZohoCRM -->
+                        <zohocrm.init>
+                           <apiUrl>{$ctx:zohocrm.apiUrl}</apiUrl>
+                           <accessToken>{$ctx:zohocrm.accessToken}</accessToken>
+                           <scope>crmapi</scope>
+                        </zohocrm.init>
+                        <zohocrm.getRecordsById>
+                           <id>{$ctx:zohoCrmContactId}</id>
+                           <moduleType>Contacts</moduleType>
+                        </zohocrm.getRecordsById>
+                        <sequence key="removeResponseHeaders" />
+
+                        <property name="uri.var.zohoCrm.responseContactId" expression="json-eval($.response.result.Contacts.row.FL[0].content)" />
+
+                        <!--START: Proceed to create the contact in Clio only if the contact was successfully retrieved from
+                           ZohoCRM -->
+                        <filter source="boolean(get-property('uri.var.zohoCrm.responseContactId'))" regex="false">
+                           <then>
+                              <property name="id"
+                                 expression="fn:concat('zohoCrm_contactId : ',get-property('zohoCrmContactId'))" />
+                              <property name="errorResponse" expression="json-eval($)" />
+
+                              <!--Call the responseHandler template -->
+                              <call-template target="responseHandlerTemplate">
+                                 <with-param name="activity" value="zohocrm_getRecordsById" />
+                                 <with-param name="id" value="{$ctx:id}" />
+                                 <with-param name="status" value="{$ctx:status.failure}" />
+                                 <with-param name="message" value="{$ctx:errorResponse}" />
+                              </call-template>
+
+                           </then>
+                           <else>
+                              <property name="contactAttributes" expression="json-eval($.response.result.Contacts.row.FL)" />
+
+                              <!-- Script Mediator is used to extract necessary properties from the JSON response. Attributes
+                                 of the contact are returned as a map (key-value pairs) rather than as an object -->
+                              <script language="js">
+                                 var jsn = eval("(" + mc.getProperty("contactAttributes") + ")");
+
+                                 for (var i = 0; i &lt; jsn.length ; i++) {
+                                    if(jsn[i].val == "First Name"){
+                                       mc.setProperty('firstName', jsn[i].content);
+                                    } else if(jsn[i].val == "Last Name"){
+                                       mc.setProperty('lastName', jsn[i].content);
+                                    }else if(jsn[i].val == "Title"){
+                                       mc.setProperty('title', jsn[i].content);
+                                    }else if(jsn[i].val == "Salutation"){
+                                       mc.setProperty('prefix', jsn[i].content);
+                                    }else if(jsn[i].val == "Mailing Street"){
+                                       mc.setProperty('mailingStreet', jsn[i].content);
+                                    }else if(jsn[i].val == "Mailing City"){
+                                       mc.setProperty('mailingCity', jsn[i].content);
+                                    }else if(jsn[i].val == "Mailing State"){
+                                       mc.setProperty('mailingState', jsn[i].content);
+                                    }else if(jsn[i].val == "Mailing Zip"){
+                                       mc.setProperty('mailingZip', jsn[i].content);
+                                    }else if(jsn[i].val == "Mailing Country"){
+                                       mc.setProperty('mailingCountry', jsn[i].content);
+                                    }else if(jsn[i].val == "Skype ID"){
+                                       mc.setProperty('skypeId', jsn[i].content);
+                                    }else if(jsn[i].val == "Mobile"){
+                                       mc.setProperty('phoneMobile', jsn[i].content);
+                                    }else if(jsn[i].val == "Home Phone"){
+                                       mc.setProperty('phoneHome', jsn[i].content);
+                                    }else if(jsn[i].val == "Email"){
+                                       mc.setProperty('email', jsn[i].content);
+                                    }else if(jsn[i].val == "Clio Contact ID"){
+                                       mc.setProperty('clioContactId', jsn[i].content);
+                                    }
+                                 }
+                              </script>
+
+                              <!--Constructing the complex data in Clio such as addresses,emailAddress and instantMessengers -->
+                              <property name="zohocrm.addresses"
+                                 expression="fn:concat('[ { &quot;street&quot;: &quot;', get-property('mailingStreet') ,'&quot;, &quot;city&quot;: &quot;', get-property('mailingCity'),'&quot;, &quot;postal_code&quot;: &quot;',get-property('mailingZip'),'&quot;, &quot;province&quot;: &quot;',get-property('mailingState'),'&quot;, &quot;country&quot;: &quot;',get-property('mailingCountry'),'&quot;}]')" />
+                              <property name="zohocrm.emailAddresses"
+                                 expression="fn:concat('[ { &quot;name&quot;: &quot;Work&quot;, &quot;address&quot;: &quot;',get-property('email'),'&quot;, &quot;default_email&quot;: &quot;',get-property('email') ,'&quot; } ]')" />
+                              <property name="zohocrm.instantMessengers"
+                                 expression="fn:concat('[ { &quot;name&quot;: &quot;Skype&quot;, &quot;address&quot;: &quot;',get-property('skypeId'),'&quot;}]')" />
+                              <property name="zohocrm.phoneNumbers"
+                                 expression="fn:concat('[ { &quot;name&quot;: &quot;Work&quot;, &quot;number&quot;: &quot;',get-property('phoneHome'),'&quot;}]')" />
+
+                              <!-- Call createContactAndTag template to create the contact in Clio and
+                                 create the tag in SimpleNote. -->
+                              <call-template target="createContactAndTag">
+                                 <with-param name="clio.apiUrl" value="{$ctx:clio.apiUrl}" />
+                                 <with-param name="clio.accessToken" value="{$ctx:clio.accessToken}" />
+                                 <with-param name="clio.contactType" value="Person" />
+                                 <with-param name="clio.addresses" value="{$ctx:zohocrm.addresses}" />
+                                 <with-param name="clio.instantMessengers" value="{$ctx:zohocrm.instantMessengers}" />
+                                 <with-param name="clio.firstName" value="{$ctx:firstName}" />
+                                 <with-param name="clio.lastName" value="{$ctx:lastName}" />
+                                 <with-param name="clio.title" value="{$ctx:title}" />
+                                 <with-param name="clio.prefix" value="{$ctx:prefix}" />
+                                 <with-param name="clio.phoneNumbers" value="{$ctx:zohocrm.phoneNumbers}" />
+                                 <with-param name="clio.emailAddresses" value="{$ctx:zohocrm.emailAddresses}" />
+                                 <with-param name="zohocrm.apiUrl" value="{$ctx:zohocrm.apiUrl}" />
+                                 <with-param name="zohocrm.accessToken" value="{$ctx:zohocrm.accessToken}" />
+                                 <with-param name="zohocrm.id" value="{$ctx:zohoCrmContactId}" />
+                                 <with-param name="zohocrm.clioContactId" value="{$ctx:clioContactId}" />
+                                 <with-param name="zohocrm.isContactFromZohoCrm" value="true" />
+                                 <with-param name="simplenote.apiUrl" value="{$ctx:simplenote.apiUrl}" />
+                                 <with-param name="simplenote.authToken" value="{$ctx:simplenote.authToken}" />
+                                 <with-param name="simplenote.email" value="{$ctx:simplenote.email}" />
+                              </call-template>
+
+                           </else>
+                        </filter>
+                        <!--END: Proceed to create the contact in Clio only if the contact was successfully retrieved from
+                           ZohoCRM -->
+
+                        <!--Increment the contactId count -->
+                        <property name="contactIdIndex" expression="get-property('operation', 'contactIdIndex') + 1"
+                           scope="operation" />
+
+                     </sequence>
+                  </target>
+               </iterate>
+               <!--END LOOP: Retrieve contact details of each contact Id array and create contact for each in Clio -->
+
+               <!--FOR EACH Contact : END -->
+               <filter xpath="get-property('operation', 'contactIdsCount') = get-property('operation', 'contactIdIndex')">
+                  <then>
+                     <loopback />
+                  </then>
+               </filter>
+
+            </else>
+         </filter>
+         <!-- END: Priority 1 - If the user sends an array of zohoCrmContactIds then retrieve those contacts to create them 
+            in Clio -->
+      </inSequence>
+
+      <outSequence>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <payloadFactory media-type="json">
+            <format>{
+               "Response":{
+                  "process":"clio_matterInitiationCreateContacts",
+                  "activityResponse": [$1]
+                  }
+               }
+            </format>
+            <args>
+               <arg expression="get-property('operation', 'responseString')" />
+            </args>
+         </payloadFactory>
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>

@@ -1,0 +1,13 @@
+{
+	"simplenoteApiUrl":"https://simple-note.appspot.com",
+	"simplenoteAuthToken":"B2019C86386A49B2DF68EB8C025A46D65DBB255ED6BD1CDC13C9D1F4D241F97E",
+	"simplenoteEmail":"courtycorporation@gmail.com",
+	"clioContacts":[
+		{"clioContactID":"889056955", "createMatter":true},
+		{"clioContactID":"889056957", "createMatter":true},
+		{"clioContactID":"889056953", "createMatter":true},
+		{"clioContactID":"889056959", "createMatter":true}
+	],
+	"clioApiUrl":"https://app.goclio.com",
+	"clioAccessToken":"fL9aZC3k6wprSqVtlfuowat1JMXX9WazGyQCkQzG"
+}

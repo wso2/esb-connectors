@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="clio_sendTaskNotificationsToAssignees" transports="https,http"
+   statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+
+         <!-- Clio parameters -->
+         <property name="clio.apiUrl" expression="json-eval($.clioApiUrl)" />
+         <property name="clio.accessToken" expression="json-eval($.clioAccessToken)" />
+         <property name="clio.name" expression="json-eval($.clioTaskName)" />
+         <property name="clio.description" expression="json-eval($.clioTaskDescription)" />
+         <property name="clio.priority" expression="json-eval($.clioTaskPriority)" />
+         <property name="clio.assignee" expression="json-eval($.clioTaskAssignee)" />
+         <property name="clio.assigner" expression="json-eval($.clioTaskAssigner)" />
+         <property name="clio.matter" expression="json-eval($.clioTaskMatter)" />
+         <property name="clio.dueAt" expression="json-eval($.clioTaskDueAt)" />
+         <property name="clio.complete" expression="json-eval($.clioTaskComplete)" />
+         <property name="clio.completedAt" expression="json-eval($.clioTaskCompletedAt)" />
+         <property name="clio.isPrivate" expression="json-eval($.clioTaskIsPrivate)" />
+         <property name="clio.isStatuteOfLimitations" expression="json-eval($.clioTaskIsStatuteOfLimitations)" />
+         <property name="clio.reminders" expression="json-eval($.clioTaskReminders)" />
+         <property name="clio.activities" expression="json-eval($.clioTaskActivities)" />
+         <property name="clio.cascadingSource" expression="json-eval($.clioTaskCascadingSource)" />
+         <property name="clio.cascadingOffset" expression="json-eval($.clioTaskCascadingOffset)" />
+         <property name="clio.cascadingOffsetType" expression="json-eval($.clioTaskascadingOffsetType)" />
+         <property name="clio.optionalFields" expression="json-eval($.clioTaskOptionalFields)" />
+
+         <!-- Gmail parameters -->
+         <property name="gmail.username" expression="json-eval($.gmailUsername)" />
+         <property name="gmail.oAuthAccessToken" expression="json-eval($.gmailOauthAccessToken)" />
+
+         <!-- Properties required by faultHandler -->               
+         <property name="activityName" value="clio_sendTaskNotificationViaGmail" scope="operation" />
+         <property name="processName" value="clio_sendNotificationsToTaskAssigneesByMail" scope="operation" />
+
+         <!-- Create a task in Clio -->
+         <clio.init>
+            <apiUrl>{$ctx:clio.apiUrl}</apiUrl>
+            <accessToken>{$ctx:clio.accessToken}</accessToken>
+         </clio.init>
+         <clio.createTask>
+            <name>{$ctx:clio.name}</name>
+            <description>{$ctx:clio.description}</description>
+            <priority>{$ctx:clio.priority}</priority>
+            <assignee>{$ctx:clio.assignee}</assignee>
+            <assigner>{$ctx:clio.assigner}</assigner>
+            <matter>{$ctx:clio.matter}</matter>
+            <dueAt>{$ctx:clio.dueAt}</dueAt>
+            <complete>{$ctx:clio.complete}</complete>
+            <completedAt>{$ctx:clio.completedAt}</completedAt>
+            <isPrivate>{$ctx:clio.isPrivate}</isPrivate>
+            <isStatuteOfLimitations>{$ctx:clio.isStatuteOfLimitations}</isStatuteOfLimitations>
+            <reminders>{$ctx:clio.reminders}</reminders>
+            <activities>{$ctx:clio.activities}</activities>
+            <cascadingSource>{$ctx:clio.cascadingSource}</cascadingSource>
+            <cascadingOffset>{$ctx:clio.cascadingOffset}</cascadingOffset>
+            <cascadingOffsetType>{$ctx:clio.cascadingOffsetType}</cascadingOffsetType>
+            <optionalFields>{$ctx:clio.optionalFields}</optionalFields>
+         </clio.createTask>
+         <sequence key="removeResponseHeaders" />
+
+         <property name="clio.taskId" expression="json-eval($.task.id)" />
+
+         <!-- START: Proceed to email the task only if it is created successfully. -->
+         <filter source="boolean(get-property('clio.taskId'))" regex="false">
+            <then>
+               <!-- Failure case: Append an error message to be sent to the user. -->
+               <property name="id" value="{}" />
+               <property name="errorResponse" expression="json-eval($)" />
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="clio_createTask" />
+                  <with-param name="id" value="{$ctx:id}" />
+                  <with-param name="status" value="Failure" />
+                  <with-param name="message" value="{$ctx:errorResponse}" />
+               </call-template>
+            </then>
+            <else>
+               <!-- If a task has been created successfully, extract the task details. -->
+               <property name="clio.taskAssigneeEmail" expression="json-eval($.task.assignee.email)" />
+               <property name="clio.taskAssignerEmail" expression="json-eval($.task.assigner.email)" />
+               <property name="clio.taskAssigneeName" expression="json-eval($.task.assignee.name)" />
+               <property name="clio.taskAssignerName" expression="json-eval($.task.assigner.name)" />
+               <property name="clio.taskId" expression="json-eval($.task.id)" />
+               <property name="clio.taskName" expression="json-eval($.task.name)" />
+               <property name="clio.description" expression="json-eval($.task.description)" />
+               <property name="clio.priority" expression="json-eval($.task.priority)" />
+               <property name="clio.complete" expression="json-eval($.task.complete)" />
+               <property name="clio.matter" expression="json-eval($.task.matter)" />
+               <filter source="get-property('clio.matter')" regex="null">
+                  <then>
+                     <property name="clio.matter" value="Not Specified" />
+                  </then>
+               </filter>
+               <property name="clio.createdAt" expression="json-eval($.task.created_at)" />
+               <property name="clio.dueAt" expression="json-eval($.task.due_at)" />
+
+               <!-- Send success message to the user. -->
+               <property name="message" expression="fn:concat('A task is created in Clio with the following name - ', get-property('clio.taskName'))" />
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="clio_createTask" />
+                  <with-param name="id" value="{$ctx:clio.taskId}" />
+                  <with-param name="status" value="Success" />
+                  <with-param name="message" value="{$ctx:message}" />
+               </call-template>
+
+               <payloadFactory media-type="json">
+                  <format>{
+                     "mailSubject": "Clio Task - $11",
+                     "mailContent": "Hi $1,\n\nPlease note that the following task has been assigned to you.\n\nTask ID:     $2\nDescription: $3\nPriority:    $4\nAssigner:    $5 ($6)\nMatter:      $7\nCreated on:  $8 at $9\nDue date:    $10.\n\nPlease do not respond to this mail as it was auto-generated by the system."
+                     }
+                  </format>
+                  <args>
+                     <arg expression="get-property('clio.taskAssigneeName')" />
+                     <arg expression="get-property('clio.taskId')" />
+                     <arg expression="get-property('clio.description')" />
+                     <arg expression="get-property('clio.priority')" />
+                     <arg expression="get-property('clio.taskAssignerName')" />
+                     <arg expression="get-property('clio.taskAssignerEmail')" />
+                     <arg expression="get-property('clio.matter')" />
+                     <arg expression="fn:substring-before(get-property('clio.createdAt'), 'T')" />
+                     <arg expression="fn:substring-after(fn:substring-before(get-property('clio.createdAt'),'+'), 'T')" />
+                     <arg expression="get-property('clio.dueAt')" />
+                     <arg expression="get-property('clio.taskName')" />
+                  </args>
+               </payloadFactory>
+
+               <property name="gmail.responseIds" expression="fn:concat('clio_taskId:', get-property('clio.taskId'))" />
+
+               <!-- Build the message body -->
+               <property name="gmail.mailSubject" expression="json-eval($.mailSubject)" />
+               <property name="gmail.mailContent" expression="json-eval($.mailContent)" />
+
+               <!-- Send email notifications to responders. -->
+               <call-template target="sendNotifications">
+                  <with-param name="gmail.username" value="{$ctx:gmail.username}" />
+                  <with-param name="gmail.oAuthAccessToken" value="{$ctx:gmail.oAuthAccessToken}" />
+                  <with-param name="gmail.subject" value="{$ctx:gmail.mailSubject}" />
+                  <with-param name="gmail.toRecipients" value="{$ctx:clio.taskAssigneeEmail}" />
+                  <with-param name="gmail.textContent" value="{$ctx:gmail.mailContent}" />
+                  <with-param name="gmail.responseIds" value="{$ctx:gmail.responseIds}" />
+               </call-template>
+            </else>			
+         </filter>
+         <loopback />
+         <!-- END: Proceed to email the task only if it is created successfully. -->
+      </inSequence>
+      <outSequence>
+         <payloadFactory media-type="json">
+            <format>{
+               "Response":{
+				   "process":"clio_sendTaskNotificationsToAssignees",
+				   "activityResponse":[$1]
+				   }
+               }
+            </format>
+            <args>
+               <arg expression="get-property('operation','responseString')" />
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>
