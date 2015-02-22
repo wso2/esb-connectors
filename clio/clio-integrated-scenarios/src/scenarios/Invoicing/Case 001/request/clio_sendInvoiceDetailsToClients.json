@@ -1,7 +1,7 @@
 {
     "clioApiUrl": "https://app.goclio.com",
-    "clioAccessToken": "fL9aZC3k6wprSqVtlfuowat1JMXX9WazGyQCkQzG",
-    "clioBillIds": ["11585777","11585781","11585785"],
+    "clioAccessToken": "ENaGPPvMj8dkJWOHQxmIJxvAs1DHSokfHE4ho5Iz",
+    "clioBillIds": ["11676340","11676348","11676350","11676360"],
     "zohoBooksApiUrl": "https://books.zoho.com",
     "zohoBooksAuthToken": "e9199d6b1779aa8fe0103e0e56f402bb",
     "zohoBooksOrganizationId": "48120746"
