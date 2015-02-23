@@ -84,8 +84,8 @@ Environment Set-up:
 		
 		- Special Notes: (a) If the user decides to fetch contacts from ZohoCrm then initially there should be few records in the user's ZohoCrm account.
 							 This is not required if the user directly gives the contact's details in the request.
-						 (b) A custom field named 'Clio Contact ID' should be created in ZohoCRM API for contacts.
-						 (c) A custom field named 'Current SimpleNote Key' should be created in Clio for contacts as a prerequisite.
+						 (b) A custom field named 'Clio Contact ID' (single line text) should be created in ZohoCRM API for contacts.
+						 (c) A custom field named 'Current SimpleNote Key' (single line text) should be created in Clio for contacts as a prerequisite.
 		
 	[ii] Case-002
 		- Purpose:	(a) Retrieve the contents of selected notes in SimpleNote and create them as matters in Clio under the contact identified by the name of the tag to which the note belongs.
@@ -138,7 +138,7 @@ Environment Set-up:
 		
 		-Request Parameters:	(a) clioBillIds - An array of VALID bill IDs.
 		
-		- Special Notes: (a) A custom field named 'ZohoBooks Contact ID' and 'ZohoBooks Contact Person ID' should be created in Clio for contacts as a prerequisite.
+		- Special Notes: (a) A custom field named 'ZohoBooks Contact ID' (single line text) and 'ZohoBooks Contact Person ID' (single line text) should be created in Clio for contacts as a prerequisite.
 						 (b) When creating bills to pass to the scenario the following should be adhered to.
 								- Bills should be created for a contact and a matter.
 								- Multiple bills can be created for the same contact but different matters should be used for each bill.

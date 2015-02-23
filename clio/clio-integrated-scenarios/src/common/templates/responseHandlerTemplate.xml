@@ -11,11 +11,9 @@
         <property name="status" expression="$func:status" />
         <property name="message" expression="$func:message" />
 		<property name="activity" expression="$func:activity" />
-        <property name="uri.var.responseString" expression="get-property('operation','responseString')" />
 		
         <script language="js">
 			<![CDATA[	
-				var responseString = mc.getProperty("uri.var.responseString");
 				var status = mc.getProperty("status");
 				var message = mc.getProperty("message");
 				var activity = mc.getProperty("activity");
@@ -72,16 +70,18 @@
 				responseStringVal += '"message":' + message + '\n';
 				responseStringVal += "}";				
 					
-				if(responseString == null || responseString == ''){
-					responseString = responseStringVal;
-				} else {
-					responseString += ',\n' + responseStringVal;			
-				}
-				mc.setProperty('uri.var.responseString', responseString);
+				mc.setProperty('uri.var.responseString', '\n' + responseStringVal);
 			]]>
 		</script>
 		
-        <property name="responseString" expression="get-property('uri.var.responseString')" scope="operation" />
+		<filter source="boolean(get-property('operation','responseString'))" regex="true">
+			<then>
+				<property name="responseString" expression="fn:concat(get-property('operation','responseString'), ',', get-property('uri.var.responseString'))" scope="operation" />
+			</then>
+			<else>
+				<property name="responseString" expression="get-property('uri.var.responseString')" scope="operation" />
+			</else>
+		</filter>
 		
     </sequence>
 </template>
