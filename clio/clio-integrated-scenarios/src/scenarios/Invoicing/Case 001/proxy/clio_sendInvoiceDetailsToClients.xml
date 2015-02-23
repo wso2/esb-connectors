@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="clio_sendInvoiceDetailsToClients" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+         <sequence key="scenarioConstants" />
+		 
+         <!-- Clio parameters. -->
+         <property name="clio.apiUrl" expression="json-eval($.clioApiUrl)" />
+         <property name="clio.accessToken" expression="json-eval($.clioAccessToken)" />
+		 
+         <!-- Zoho Books parameters. -->
+         <property name="zohoBooks.apiUrl" expression="json-eval($.zohoBooksApiUrl)" />
+         <property name="zohoBooks.authToken" expression="json-eval($.zohoBooksAuthToken)" />
+         <property name="zohoBooks.organizationId" expression="json-eval($.zohoBooksOrganizationId)" />
+		 
+         <!-- Operation scoped properties -->
+         <property name="responseString" value="" scope="operation" />
+         <property name="activityName" value="clio_sendInvoiceDetailsToClients" scope="operation" />
+         <property name="noOfBills" expression="count(//jsonObject/clioBillIds)" scope="operation" />
+         <property name="billIndex" expression="0" scope="operation" />
+		 
+         <!--START: Proceed with the scenario only if at least one Clio contactID is provided by the user. -->
+         <filter source="get-property('operation', 'noOfBills')" regex="0.0">
+            <then>
+               <payloadFactory media-type="json">
+                  <format>{
+						 "Response":{
+							 "activity":"clio_sendInvoiceDetailsToClients",
+							 "activityResponse":"clioBillIds array is empty - No entries to process."
+						 }
+                     }
+				  </format>
+               </payloadFactory>
+               <respond />
+            </then>
+            <else>
+               <!--FOR EACH Clio Bill ID given in the Array: BEGIN -->
+               <iterate continueParent="false" id="noteKeys" expression="//jsonObject/clioBillIds" sequential="false">
+                  <target>
+                     <sequence>					 
+                        <property name="clio.billId" expression="//clioBillIds/text()" />
+						
+                        <!-- Retrieve bill details from Clio. -->
+                        <clio.init>
+                           <apiUrl>{$ctx:clio.apiUrl}</apiUrl>
+                           <accessToken>{$ctx:clio.accessToken}</accessToken>
+                        </clio.init>
+                        <clio.getBill>
+                           <billId>{$ctx:clio.billId}</billId>
+                        </clio.getBill>
+                        <sequence key="removeResponseHeaders" />
+						
+                        <property name="clio.billId" expression="//jsonObject/bill/id/text()" />
+                        
+						<!-- START: Proceed with the scenario only if the bill (identified by the billId provided by the user) was found in Clio. -->
+                        <filter source="boolean(get-property('clio.billId'))" regex="false">
+                           <then>
+                              <!-- Failure case: Append an error message to be sent to the user. -->
+                              <property name="id" expression="fn:concat('clio_billId:', get-property('clio.billId'))" />
+                              <call-template target="responseHandlerTemplate">
+                                 <with-param name="activity" value="clio_getBill" />
+                                 <with-param name="id" value="{$ctx:id}" />
+                                 <with-param name="status" value="Failure" />
+                                 <with-param name="message" value="Unable to retrieve the contents of the bill. Probably the bill doesn't exist in Clio." />
+                              </call-template>
+                           </then>
+                           <else>
+                              <property name="clio.billStatus" expression="//jsonObject/bill/state/text()" />
+							  
+                              <!-- START: Process the bill if only it is in 'Awaiting Payment' state. -->
+                              <filter source="fn:lower-case(get-property('clio.billStatus'))" regex="awaiting payment">
+                                 <then>
+                                    <!-- Extract required properties of the bill from the response. -->
+                                    <property name="clio.clientId" expression="//jsonObject/bill/client/id/text()" />
+                                    <property name="clio.billTotal" expression="//jsonObject/bill/total/text()" />
+                                    <property name="clio.matterId" expression="//jsonObject/bill/matters/id/text()" />
+                                    <property name="clio.billIssued" expression="//jsonObject/bill/issued_at/text()" />
+                                    <property name="clio.billDueAt" expression="//jsonObject/bill/due_at/text()" />
+									
+                                    <!-- Retrieve the matter details related to the bill from Clio. -->
+                                    <clio.init>
+                                       <apiUrl>{$ctx:clio.apiUrl}</apiUrl>
+                                       <accessToken>{$ctx:clio.accessToken}</accessToken>
+                                    </clio.init>
+                                    <clio.getMatter>
+                                       <matterId>{$ctx:clio.matterId}</matterId>
+                                    </clio.getMatter>
+                                    <sequence key="removeResponseHeaders" />
+									
+                                    <property name="clio.matterDisplayId" expression="//jsonObject/matter/display_number/text()" />
+                                    <property name="clio.matterDescription" expression="//jsonObject/matter/description/text()" />
+									
+                                    <!-- START: Proceed only if the matter (associated with the bill) is found in Clio. -->
+                                    <filter source="boolean(get-property('clio.matterDisplayId'))" regex="false">
+                                       <then>
+                                          <!-- Failure case: Append an error message to be sent to the user. -->
+                                          <property name="id" expression="fn:concat('clio_billId:', get-property('clio.billId'), ',clio_matterId:', get-property('clio.matterId'))" />
+                                          <call-template target="responseHandlerTemplate">
+                                             <with-param name="activity" value="clio_getMatter" />
+                                             <with-param name="id" value="{$ctx:id}" />
+                                             <with-param name="status" value="Failure" />
+                                             <with-param name="message" value="Unable to retrieve the Matter for the bill." />
+                                          </call-template>
+                                       </then>
+                                       <else>
+                                          <!-- Retrieve contact details using contact ID from Clio. -->
+                                          <clio.init>
+                                             <apiUrl>{$ctx:clio.apiUrl}</apiUrl>
+                                             <accessToken>{$ctx:clio.accessToken}</accessToken>
+                                          </clio.init>
+                                          <clio.getContact>
+                                             <contactId>{$ctx:clio.clientId}</contactId>
+                                          </clio.getContact>
+                                          <sequence key="removeResponseHeaders" />
+										  
+                                          <property name="clio.customFieldArray" expression="json-eval($.contact.custom_field_values)" />
+                                          
+										  <!-- Script Mediator to iterate through the custom fields and extract the required zohoBooksContactId and zohoBooksContactPersonId. -->
+                                          <script language="js">
+										        <![CDATA[var customFieldArray = eval("(" + mc.getProperty('clio.customFieldArray') + ")");
+												var contactCustomFieldName = 'ZohoBooks Contact ID';
+												var contactPersonCustomFieldName = 'ZohoBooks Contact Person ID';
+																	 
+												for(var i=0; i<customFieldArray.length; i++){
+												   if(customFieldArray[i].custom_field.name.toLowerCase() == contactCustomFieldName.toLowerCase()){
+												      // Set the zohoBooksContactId to a property
+												      mc.setProperty('clio.zohoBooksContactId', customFieldArray[i].value);																			
+												   } else if (customFieldArray[i].custom_field.name.toLowerCase() == contactPersonCustomFieldName.toLowerCase()) {
+												      // Set the zohoBooksContactPersonId to a property
+												      mc.setProperty('clio.zohoBooksContactPersonId', customFieldArray[i].value);	
+												   }
+											    }]]>
+										  </script>
+                                          
+										  <!-- START: If the contact still doesn't exist (new contact) in ZohoBooks, create the contact. -->
+                                          <filter source="boolean(get-property('clio.zohoBooksContactId')) and boolean(get-property('clio.zohoBooksContactPersonId'))" regex="false">
+                                             <then>
+                                                <!-- Extracting clio contact details. -->
+                                                <property name="clio.webSite" expression="//jsonObject/contact/web_sites/address/text()" />
+                                                <property name="clio.contactName" expression="//jsonObject/contact/name/text()" />
+                                                <property name="clio.prefix" expression="//jsonObject/contact/prefix/text()" />
+                                                <property name="clio.firstName" expression="//jsonObject/contact/first_name/text()" />
+                                                <property name="clio.lastName" expression="//jsonObject/contact/last_name/text()" />
+                                                <property name="clio.email" expression="//jsonObject/contact/email_addresses/address/text()" />
+                                                <property name="clio.phone" expression="//jsonObject/contact/phone_numbers/number/text()" />
+                                                
+												<!-- Extracting clio billing address details. -->
+                                                <property name="clio.address" expression="//jsonObject/contact/addresses/street/text()" />
+                                                <property name="clio.city" expression="//jsonObject/contact/addresses/city/text()" />
+                                                <property name="clio.province" expression="//jsonObject/contact/addresses/province/text()" />
+                                                <property name="clio.postalCode" expression="//jsonObject/contact/addresses/postal_code/text()" />
+                                                <property name="clio.country" expression="//jsonObject/contact/addresses/country/text()" />
+                                                
+												<!-- Constructing the zohoBooks contactPersons field value. -->
+                                                <property name="zohoBooks.contactPersons" expression="fn:concat('[{&quot;salutation&quot;:&quot;', get-property('clio.prefix'), '&quot;,&quot;first_name&quot;:&quot;', get-property('clio.firstName'),'&quot;,&quot;last_name&quot;:&quot;', get-property('clio.lastName'),'&quot;,&quot;email&quot;:&quot;', get-property('clio.email'),'&quot;,&quot;phone&quot;:&quot;', get-property('clio.phone'),'&quot;,&quot;is_primary_contact&quot;:true}]')" />
+                                                
+												<!-- Constructing the zohoBooks billingAddress field value. -->
+                                                <property name="zohoBooks.billingAddress" expression="fn:concat('{&quot;address&quot;:&quot;', get-property('clio.address'), '&quot;,&quot;city&quot;:&quot;', get-property('clio.city'),'&quot;,&quot;state&quot;:&quot;', get-property('clio.province'),'&quot;,&quot;zip&quot;:&quot;', get-property('clio.postalCode'),'&quot;,&quot;country&quot;:&quot;', get-property('clio.country'),'&quot;}')" />
+                                                
+												<!-- Create a contact in ZohoBooks (with a contact person) -->
+                                                <zohobooks.init>
+                                                   <apiUrl>{$ctx:zohoBooks.apiUrl}</apiUrl>
+                                                   <authToken>{$ctx:zohoBooks.authToken}</authToken>
+                                                   <organizationId>{$ctx:zohoBooks.organizationId}</organizationId>
+                                                </zohobooks.init>
+                                                <zohobooks.createContact>
+                                                   <isPrimaryContact>true</isPrimaryContact>
+                                                   <email>{$ctx:email}</email>
+                                                   <contactPersons>{$ctx:zohoBooks.contactPersons}</contactPersons>
+                                                   <billingAddress>{$ctx:zohoBooks.billingAddress}</billingAddress>
+                                                   <website>{$ctx:clio.webSite}</website>
+                                                   <contactName>{$ctx:clio.contactName}</contactName>
+                                                </zohobooks.createContact>
+                                                <sequence key="removeResponseHeaders" />
+												
+                                                <property name="clio.zohoBooksContactId" expression="//jsonObject/contact/contact_id/text()" />
+                                                <property name="clio.zohoBooksContactPersonId" expression="//jsonObject/contact/contact_persons/contact_person_id/text()" />
+                                                
+												<!-- START: Proceed only if the contact and contact person was created successfully. -->
+                                                <filter source="boolean(get-property('clio.zohoBooksContactId')) and boolean(get-property('clio.zohoBooksContactPersonId'))" regex="false">
+                                                   <then>
+                                                      <!-- Failure case: Append an error message to be sent to the user. -->
+                                                      <property name="id" expression="fn:concat('clio_contactId:', get-property('clio.clientId'))" />
+                                                      <property name="errorResponse" expression="json-eval($)" />
+                                                      <call-template target="responseHandlerTemplate">
+                                                         <with-param name="activity" value="zohobooks_createContact" />
+                                                         <with-param name="id" value="{$ctx:id}" />
+                                                         <with-param name="status" value="Failure" />
+                                                         <with-param name="message" value="{$ctx:errorResponse}" />
+                                                      </call-template>
+                                                   </then>
+                                                   <else>
+                                                      <!-- Message to be sent if a contact was created in zohoBooks. -->
+                                                      <property name="id" expression="fn:concat('clio_contactId:', get-property('clio.clientId'), ',zohobooks_contactId:', get-property('clio.zohoBooksContactId'), ',zohobooks_contactPersonId:', get-property('clio.zohoBooksContactPersonId'))" />
+                                                      <call-template target="responseHandlerTemplate">
+                                                         <with-param name="activity" value="zohobooks_createContact" />
+                                                         <with-param name="id" value="{$ctx:id}" />
+                                                         <with-param name="status" value="Success" />
+                                                         <with-param name="message" value="{$ctx:message.zohobooks.contactCreated}" />
+                                                      </call-template>
+													  
+                                                      <!-- Call the getCustomFieldId template to get the ID of the Custom Field: ZohoBooks Contact ID -->
+                                                      <call-template target="getCustomFieldId">
+                                                         <with-param name="apiUrl" value="{$ctx:clio.apiUrl}" />
+                                                         <with-param name="accessToken" value="{$ctx:clio.accessToken}" />
+                                                         <with-param name="customFieldName" value="ZohoBooks Contact ID" />
+                                                      </call-template>
+                                                      <property name="clio.zohoBooksContactCustomFieldId" expression="get-property('clio.customFieldId')" />
+                                                      
+													  <!--Call the getCustomFieldId to get the ID of the Custom Field: ZohoBooks Contact Person ID -->
+                                                      <call-template target="getCustomFieldId">
+                                                         <with-param name="apiUrl" value="{$ctx:clio.apiUrl}" />
+                                                         <with-param name="accessToken" value="{$ctx:clio.accessToken}" />
+                                                         <with-param name="customFieldName" value="ZohoBooks Contact Person ID" />
+                                                      </call-template>
+                                                      <property name="clio.zohoBooksContactPersonCustomFieldId" expression="get-property('clio.customFieldId')" />
+                                                      
+													  <!-- Constructing the Clio contact custom field value. -->
+                                                      <property name="clio.updateZohoBooksContactId" expression="fn:concat('[{&quot;custom_field&quot;:{&quot;id&quot;:', get-property('clio.zohoBooksContactCustomFieldId'),'},&quot;value&quot;:&quot;', get-property('clio.zohoBooksContactId'),'&quot;},                   {&quot;custom_field&quot;:{&quot;id&quot;:', get-property('clio.zohoBooksContactPersonCustomFieldId'),'},&quot;value&quot;:&quot;', get-property('clio.zohoBooksContactPersonId'),'&quot;}]')" />
+                                                      
+													  <!-- Update zohoBooks contact ID and contact person ID in Clio custome fields. -->
+                                                      <clio.init>
+                                                         <apiUrl>{$ctx:clio.apiUrl}</apiUrl>
+                                                         <accessToken>{$ctx:clio.accessToken}</accessToken>
+                                                      </clio.init>
+                                                      <clio.updateContact>
+                                                         <contactId>{$ctx:clio.clientId}</contactId>
+                                                         <customFieldValues>{$ctx:clio.updateZohoBooksContactId}</customFieldValues>
+                                                      </clio.updateContact>
+                                                      <sequence key="removeResponseHeaders" />
+													  
+                                                      <property name="clio.updatedZohoBooksContactId" expression="//jsonObject/contact/custom_field_values/value/text()" />
+                                                      
+													  <!-- If the custom fields were not updated successfully, send an error message to the user -->
+                                                      <filter xpath="get-property('zohoBooks.contactId') != get-property('clio.updatedZohoBooksContactId')">
+                                                         <then>
+                                                            <property name="id" expression="fn:concat('clio_contactId:', get-property('clio.clientId'),'zohobooks_contactId:', get-property('zohoBooks.contactId'))" />
+                                                            <call-template target="responseHandlerTemplate">
+                                                               <with-param name="activity" value="zohobooks_updateContact" />
+                                                               <with-param name="id" value="{$ctx:id}" />
+                                                               <with-param name="status" value="Failure" />
+                                                               <with-param name="message" value="{$ctx:message.zohobooks.customFieldUpdateFailed}" />
+                                                            </call-template>
+                                                         </then>
+                                                      </filter>
+													  
+                                                      <!-- Create an item and generate the invoice with the bill information. -->
+                                                      <call-template target="createInvoice">
+                                                         <with-param name="zohobooks.apiUrl" value="{$ctx:zohoBooks.apiUrl}" />
+                                                         <with-param name="zohobooks.authToken" value="{$ctx:zohoBooks.authToken}" />
+                                                         <with-param name="zohobooks.organizationId" value="{$ctx:zohoBooks.organizationId}" />
+                                                         <with-param name="zohobooks.customerId" value="{$ctx:clio.zohoBooksContactId}" />
+                                                         <with-param name="zohobooks.contactPersons" value="{$ctx:clio.zohoBooksContactPersonId}" />
+                                                         <with-param name="zohobooks.billIssuedDate" value="{$ctx:clio.billIssued}" />
+                                                         <with-param name="zohobooks.billDueAt" value="{$ctx:clio.billDueAt}" />
+                                                         <with-param name="zohobooks.itemName" value="{$ctx:clio.matterDisplayId}" />
+                                                         <with-param name="zohobooks.itemDescription" value="{$ctx:clio.matterDescription}" />
+                                                         <with-param name="zohobooks.billTotal" value="{$ctx:clio.billTotal}" />
+                                                      </call-template>
+                                                   </else>
+                                                </filter>
+                                                <!-- END: Proceed only if the contact and contact person was created successfully. -->
+                                             </then>
+                                             <else>
+                                                <!-- Create an item and generate the invoice with the bill information. -->
+                                                <call-template target="createInvoice">
+                                                   <with-param name="zohobooks.apiUrl" value="{$ctx:zohoBooks.apiUrl}" />
+                                                   <with-param name="zohobooks.authToken" value="{$ctx:zohoBooks.authToken}" />
+                                                   <with-param name="zohobooks.organizationId" value="{$ctx:zohoBooks.organizationId}" />
+                                                   <with-param name="zohobooks.customerId" value="{$ctx:clio.zohoBooksContactId}" />
+                                                   <with-param name="zohobooks.contactPersons" value="{$ctx:clio.zohoBooksContactPersonId}" />
+                                                   <with-param name="zohobooks.billIssuedDate" value="{$ctx:clio.billIssued}" />
+                                                   <with-param name="zohobooks.billDueAt" value="{$ctx:clio.billDueAt}" />
+                                                   <with-param name="zohobooks.itemName" value="{$ctx:clio.matterDisplayId}" />
+                                                   <with-param name="zohobooks.itemDescription" value="{$ctx:clio.matterDescription}" />
+                                                   <with-param name="zohobooks.billTotal" value="{$ctx:clio.billTotal}" />
+                                                </call-template>
+                                             </else>
+                                          </filter>
+                                          <!-- END: If the contact doesn't exist in ZohoBooks, create the contact. -->
+                                       </else>
+                                    </filter>
+                                    <!-- END: Proceed only if the matter (associated with the bill) is found in Clio. -->
+                                 </then>
+                                 <else>
+                                    <!-- Failure case: Append an error message to be sent to the user. -->
+                                    <property name="id" expression="fn:concat('clio_billId:', get-property('clio.billId'))" />
+                                    <call-template target="responseHandlerTemplate">
+                                       <with-param name="activity" value="clio_checkBillState" />
+                                       <with-param name="id" value="{$ctx:id}" />
+                                       <with-param name="status" value="Skipped" />
+                                       <with-param name="message" value="The bill is not in 'Awaiting Payment' state." />
+                                    </call-template>
+                                 </else>
+                              </filter>
+                              <!-- END: Process the bill if only it is in 'Awaiting Payment' state. -->
+                           </else>
+                        </filter>
+                        <!-- END: Proceed with the scenario only if the bill (identified by the billId provided by the user) was found in Clio. -->
+                        <!--Increment the Bill Count -->
+                        <property name="billIndex" expression="get-property('operation','billIndex') + 1" scope="operation" />
+						
+					    <!--FOR EACH Clio Bill ID given in the Array: BEGIN -->
+					    <filter xpath="get-property('operation', 'billIndex') = get-property('operation', 'noOfBills')">
+						   <then>
+							  <loopback />
+						   </then>
+					    </filter>
+						
+                     </sequence>
+                  </target>
+               </iterate>
+			   <!--FOR EACH Clio Bill ID given in the Array: END -->
+            </else>
+         </filter>
+         <!--END: Proceed with the scenario only if at least one Clio contactID is provided. -->
+      </inSequence>
+      <outSequence>
+         <payloadFactory media-type="json">
+            <format>
+			   {
+				   "Response":{
+					   "process":"clio_sendInvoiceDetailsToClients",
+					   "activityResponse":[$1]
+				   }
+               }
+			</format>
+            <args>
+               <arg expression="get-property('operation','responseString')" />
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>

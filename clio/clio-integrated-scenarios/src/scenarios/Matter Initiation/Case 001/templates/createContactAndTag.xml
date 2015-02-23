@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This template creates contacts in Clio, updates contacts record in ZohoCRM and create tag in SimpleNote. -->
+<template xmlns="http://ws.apache.org/ns/synapse" name="createContactAndTag">
+
+   <!-- Clio parameters -->
+   <parameter name="clio.apiUrl" description="Base endpoint URL of Clio API." />
+   <parameter name="clio.accessToken" description="OAuth Token to read and manipulate data of Clio account." />
+   <parameter name="clio.addresses" description="Collection of mailing addresses." />
+   <parameter name="clio.instantMessengers" description="Collection of instant messengers' addresses of the Contact." />
+   <parameter name="clio.firstName" description="Person's given name." />
+   <parameter name="clio.lastName" description="Person's surname." />
+   <parameter name="clio.title" description="Person's title." />
+   <parameter name="clio.prefix" description="Person's prefix (e.g. Mr, Mrs, etc)." />
+   <parameter name="clio.phoneNumbers" description="Collection of phone numbers. The first phone number listed is the default." />
+   <parameter name="clio.emailAddresses" description="Collection of email addresses of the Contact." />
+
+   <!-- ZohoCRM parameters -->
+   <parameter name="zohocrm.apiUrl" description="The url to access ZohoCRM api." />
+   <parameter name="zohocrm.accessToken" description="Encrypted alphanumeric string to authenticate the Zoho credentials" />
+   <parameter name="zohocrm.id" description="The identifier of the record being updated" />
+   <parameter name="zohocrm.clioContactId" description="The custom field in ZohoCRM which indicates whether the Clio contact ID is stored or not." />
+   <parameter name="zohocrm.isContactFromZohoCrm" description="Indicates whether or not the Contact is retrieved from ZohoCRM." />
+
+   <!-- SimpleNote parameters -->
+   <parameter name="simplenote.apiUrl" description="Base endpoint URL of SimpleNote API." />
+   <parameter name="simplenote.authToken" description="OAuth Token to read and manipulate data of SimpleNote account." />
+   <parameter name="simplenote.email" description="Email address of the authorized account." />
+
+   <sequence>
+      <!-- Clio properties -->
+      <property name="uri.var.clio.apiUrl" expression="$func:clio.apiUrl" />
+      <property name="uri.var.clio.accessToken" expression="$func:clio.accessToken" />
+      <property name="uri.var.clio.addresses" expression="$func:clio.addresses" />
+      <property name="uri.var.clio.instantMessengers" expression="$func:clio.instantMessengers" />
+      <property name="uri.var.clio.firstName" expression="$func:clio.firstName" />
+      <property name="uri.var.clio.lastName" expression="$func:clio.lastName" />
+      <property name="uri.var.clio.title" expression="$func:clio.title" />
+      <property name="uri.var.clio.prefix" expression="$func:clio.prefix" />
+      <property name="uri.var.clio.phoneNumbers" expression="$func:clio.phoneNumbers" />
+      <property name="uri.var.clio.emailAddresses" expression="$func:clio.emailAddresses" />
+
+      <!-- ZohoCRM properties -->
+      <property name="uri.var.zohocrm.apiUrl" expression="$func:zohocrm.apiUrl" />
+      <property name="uri.var.zohocrm.accessToken" expression="$func:zohocrm.accessToken" />
+      <property name="uri.var.zohocrm.id" expression="$func:zohocrm.id" />
+      <property name="uri.var.zohocrm.clioContactId" expression="$func:zohocrm.clioContactId" />
+      <property name="uri.var.zohocrm.isContactFromZohoCrm" expression="$func:zohocrm.isContactFromZohoCrm" />
+
+      <!-- SimpleNote properties -->
+      <property name="uri.var.simplenote.authToken" expression="$func:simplenote.authToken" />
+      <property name="uri.var.simplenote.email" expression="$func:simplenote.email" />
+      <property name="uri.var.simplenote.apiUrl" expression="$func:simplenote.apiUrl" />
+
+      <!--Check whether the contact is already existing or not -->
+      <filter source="boolean(get-property('uri.var.zohocrm.clioContactId'))" regex="true">
+         <!--If contact exists then display a custom error message -->
+         <then>
+            <property name="id" expression="fn:concat('zohocrm_contactId:', get-property('uri.var.zohocrm.id'))" />
+
+            <!--Call the responseHandler template -->
+            <call-template target="responseHandlerTemplate">
+               <with-param name="activity" value="clio_createContact" />
+               <with-param name="id" value="{$ctx:id}" />
+               <with-param name="status" value="{$ctx:status.skipped}" />
+               <with-param name="message" value="{$ctx:message.existingContact}" />
+            </call-template>
+         </then>
+         <else>
+            <!-- Clio API Requirement: Ensure that the Content-Type header is application/json -->
+            <header name="Content-Type" value="application/json" scope="transport" />
+
+            <!--Create a Contact in Clio with the given details -->
+            <clio.init>
+               <apiUrl>{$ctx:uri.var.clio.apiUrl}</apiUrl>
+               <accessToken>{$ctx:uri.var.clio.accessToken}</accessToken>
+            </clio.init>
+            <clio.createContact>
+               <contactType>Person</contactType>
+               <addresses>{$ctx:uri.var.clio.addresses}</addresses>
+               <instantMessengers>{$ctx:uri.var.clio.instantMessengers}</instantMessengers>
+               <firstName>{$ctx:uri.var.clio.firstName}</firstName>
+               <lastName>{$ctx:uri.var.clio.lastName}</lastName>
+               <title>{$ctx:uri.var.clio.title}</title>
+               <prefix>{$ctx:uri.var.clio.prefix}</prefix>
+               <phoneNumbers>{$ctx:uri.var.clio.phoneNumbers}</phoneNumbers>
+               <emailAddresses>{$ctx:uri.var.clio.emailAddresses}</emailAddresses>
+            </clio.createContact>
+            <sequence key="removeResponseHeaders" />
+
+            <!-- Extract the id and the firstName from Clio response. -->
+            <property name="uri.var.clio.contactId" expression="json-eval($.contact.id)" />
+            <property name="uri.var.clio.contactFirstName" expression="json-eval($.contact.first_name)" />
+            <property name="uri.var.clio.contactLastName" expression="json-eval($.contact.last_name)" />
+
+            <filter source="boolean(get-property('uri.var.clio.contactId'))" regex="false">
+               <!-- If creation of contact is unsuccessful then display a custom generated error message -->
+               <then>
+                  <property name="apiErrorResponse" expression="json-eval($.message)" />
+
+                  <!--Call the responseHandler template -->
+                  <call-template target="responseHandlerTemplate">
+                     <with-param name="activity" value="clio_createContact" />
+                     <with-param name="id" value="{$ctx:id.empty}" />
+                     <with-param name="status" value="{$ctx:status.failure}" />
+                     <with-param name="message" value="{$ctx:apiErrorResponse}" />
+                  </call-template>
+               </then>
+               <else>
+                  <property name="id" expression="fn:concat('clio_contactId:', get-property('uri.var.clio.contactId'))" />
+
+                  <!--Call the responseHandler template -->
+                  <call-template target="responseHandlerTemplate">
+                     <with-param name="id" value="{$ctx:id}" />
+                     <with-param name="activity" value="clio_createContact" />
+                     <with-param name="status" value="{$ctx:status.success}" />
+                     <with-param name="message" value="{$ctx:message.contactCreated}" />
+                  </call-template>
+
+                  <!--START: If the contact is retrieved from ZohoCrm then update the custom field with the Clio contact
+                     Id -->
+                  <filter source="get-property('uri.var.zohocrm.isContactFromZohoCrm')" regex="true">
+                     <then>
+                        <script language="js"><![CDATA[
+							  
+								//constructing the xml data in order to update the contact in ZohoCrm								
+								var clioContactId=mc.getProperty('uri.var.clio.contactId');								
+								var xmlData="<Contacts> <row no=\"1\"> <FL val=\"Clio Contact ID\">"+clioContactId+"</FL> </row> </Contacts>";
+								
+								mc.setProperty('uri.var.zohocrm.xmlData', xmlData);
+								]]></script>
+
+                        <!-- Update custom field of contact in ZohoCRM -->
+                        <zohocrm.init>
+                           <apiUrl>{$ctx:uri.var.zohocrm.apiUrl}</apiUrl>
+                           <accessToken>{$ctx:uri.var.zohocrm.accessToken}</accessToken>
+                           <scope>crmapi</scope>
+                        </zohocrm.init>
+                        <zohocrm.updateRecords>
+                           <moduleType>Contacts</moduleType>
+                           <id>{$ctx:uri.var.zohocrm.id}</id>
+                           <xmlData>{$ctx:uri.var.zohocrm.xmlData}</xmlData>
+                        </zohocrm.updateRecords>
+                        <sequence key="removeResponseHeaders" />
+
+                        <property name="uri.var.zohocrm.contactId" expression="json-eval($.response.result.recorddetail.FL[0].content)" />
+
+                        <filter source="boolean(get-property('uri.var.zohocrm.contactId'))" regex="false">
+                           <then>
+                              <property name="id"
+                                 expression="fn:concat('zohocrm_contactId:', get-property('uri.var.zohocrm.id'))" />
+
+                              <!--Call the responseHandler template -->
+                              <call-template target="responseHandlerTemplate">
+                                 <with-param name="activity" value="zohocrm_updateRecords" />
+                                 <with-param name="id" value="{$ctx:id}" />
+                                 <with-param name="status" value="{$ctx:status.failure}" />
+                                 <with-param name="message" value="{$ctx:message.zohocrmUpdateFailed}" />
+                              </call-template>
+                           </then>
+                        </filter>		<!--END of filter: Checking the successful update in zohoCRM -->
+                     </then>
+                  </filter>
+                  <!--START: If the contact is retrieved from ZohoCrm then update the custom field with the Clio contact
+                     Id -->
+
+                  <!-- Create a tag in SimpleNote for the contact -->
+                  <property name="uri.var.simplenote.name"
+                     expression="fn:concat(get-property('uri.var.clio.contactFirstName'), '-', get-property('uri.var.clio.contactLastName'))" />
+
+                  <!-- Create the contact Tag in SimpleNote -->
+                  <simplenote.init>
+                     <apiUrl>{$ctx:uri.var.simplenote.apiUrl}</apiUrl>
+                     <authToken>{$ctx:uri.var.simplenote.authToken}</authToken>
+                     <email>{$ctx:uri.var.simplenote.email}</email>
+                  </simplenote.init>
+                  <simplenote.createTag>
+                     <name>{$ctx:uri.var.simplenote.name}</name>
+                  </simplenote.createTag>
+                  <sequence key="removeResponseHeaders" />
+
+                  <!-- Retrieve the status code of the response -->
+                  <property name="uri.var.simpleNoteStatusCode" expression="$axis2:HTTP_SC" />
+
+                  <!--Checking response code to track error scenarios in SimpleNote -->
+                  <switch source="get-property('uri.var.simpleNoteStatusCode')">
+                     <case regex="200">
+
+                        <property name="tags"
+                           expression="fn:concat('[&quot;', get-property('uri.var.simplenote.name'), '&quot;]')" />
+                        <property name="initialContent"
+                           expression="fn:concat('Active note for ', get-property('uri.var.clio.contactFirstName'), ' ', get-property('uri.var.clio.contactLastName'), '...')" />
+
+                        <!-- Create a BLANK note for the Contact. -->
+                        <simplenote.init>
+                           <authToken>{$ctx:simplenote.authToken}</authToken>
+                           <email>{$ctx:simplenote.email}</email>
+                           <apiUrl>{$ctx:simplenote.apiUrl}</apiUrl>
+                        </simplenote.init>
+                        <simplenote.createNote>
+                           <content>{$ctx:initialContent}</content>
+                           <tags>{$ctx:tags}</tags>
+                        </simplenote.createNote>
+                        <sequence key="removeResponseHeaders" />
+
+                        <property name="statusCode" expression="$axis2:HTTP_SC" />
+
+                        <!--START: Proceed to update the contact if the note was created successfully -->
+                        <filter source="get-property('statusCode')" regex="200">
+                           <then>
+                              <property name="binaryString" expression="json-eval($.binary)" />
+
+                              <!--Base64Decode and get the JSON object from Base64Encoded String - Issue caused by Content-Type:
+                                 text/html response header. -->
+                              <script language="js">
+							     <![CDATA[
+									function base64_decode(data) {
+										var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+										var o1, o2, o3, h1, h2, h3, h4, bits, i = 0, ac = 0, dec = '', tmp_arr = [];
+												  
+										if (data.trim().length == 0) {
+										  return data;
+										} else {
+										  data += '';
+										}
+																   
+										do {
+      										// unpack four hexets into three octets using index points in b64
+      										h1 = b64.indexOf(data.charAt(i++));
+      										h2 = b64.indexOf(data.charAt(i++));
+      										h3 = b64.indexOf(data.charAt(i++));
+      										h4 = b64.indexOf(data.charAt(i++));
+      												  
+      										bits = h1 << 18 | h2 << 12 | h3 << 6 | h4;
+      												  
+      										o1 = bits >> 16 & 0xff;
+      										o2 = bits >> 8 & 0xff;
+      										o3 = bits & 0xff;
+      												  
+      										if (h3 == 64) {
+      										tmp_arr[ac++] = String.fromCharCode(o1);
+      										} else if (h4 == 64) {
+      										tmp_arr[ac++] = String.fromCharCode(o1, o2);
+      										} else {
+      										tmp_arr[ac++] = String.fromCharCode(o1, o2, o3);
+      										}
+										} while (i < data.length);
+												  
+										dec = tmp_arr.join('');
+												  
+										return dec.replace(/\0+$/, '');
+									}
+																 
+									var binaryString = mc.getProperty('binaryString');
+																 
+									if(binaryString != null && binaryString != ""){
+      									var jsonString = base64_decode(binaryString);
+      									var responseObject = eval("(" + jsonString + ")");
+      									mc.setPayloadJSON(responseObject);
+									}			   
+									]]>
+                              </script>
+
+                              <property name="noteKey" expression="//key/text()" />
+
+                              <!--Call the getCustomFieldId to get the ID of the Custom Field -->
+                              <call-template target="getCustomFieldId">
+                                 <with-param name="apiUrl" value="{$ctx:clio.apiUrl}" />
+                                 <with-param name="accessToken" value="{$ctx:clio.accessToken}" />
+                                 <with-param name="customFieldName" value="{$ctx:clio.simpleNoteCustomFieldName}" />
+                              </call-template>
+
+                              <property name="customFieldValues"
+                                 expression="fn:concat('[{&quot;custom_field&quot;:{&quot;id&quot;:', get-property('clio.customFieldId'),'},&quot;value&quot;:&quot;', get-property('noteKey'),'&quot;}]')" />
+
+                              <!-- Update the custom field of the contact in Clio -->
+                              <clio.init>
+                                 <apiUrl>{$ctx:clio.apiUrl}</apiUrl>
+                                 <accessToken>{$ctx:clio.accessToken}</accessToken>
+                              </clio.init>
+                              <clio.updateContact>
+                                 <contactId>{$ctx:uri.var.clio.contactId}</contactId>
+                                 <customFieldValues>{$ctx:customFieldValues}</customFieldValues>
+                              </clio.updateContact>
+                              <sequence key="removeResponseHeaders" />
+
+                              <property name="clio.contactId" expression="json-eval($.contact.id)" />
+
+                              <!-- START: Inform the user only if the update fails. -->
+                              <filter source="boolean(get-property('clio.contactId'))" regex="false">
+                                 <then>
+                                    <property name="id"
+                                       expression="fn:concat('clio_contactId:', get-property('uri.var.clio.contactId'))" />
+                                    <property name="errorResponse" expression="json-eval($)" />
+
+                                    <!--Call the Response Handler Template -->
+                                    <call-template target="responseHandlerTemplate">
+                                       <with-param name="activity" value="clio_updateContactIdWithNoteKey" />
+                                       <with-param name="id" value="{$ctx:id}" />
+                                       <with-param name="status" value="{$ctx:status.failure}" />
+                                       <with-param name="message" value="{$ctx:errorResponse}" />
+                                    </call-template>
+                                 </then>
+                              </filter>
+                              <!-- END: Inform the user only if the update fails. -->
+                           </then>
+                           <else>
+                              <!--Call the Response Handler Template -->
+                              <call-template target="responseHandlerTemplate">
+                                 <with-param name="activity" value="simplenote_createNewNote" />
+                                 <with-param name="id" value="{$ctx:id.empty}" />
+                                 <with-param name="status" value="{$ctx:status.failure}" />
+                                 <with-param name="message" value="{ctx:message.simplenoteNoteFailed}" />
+                              </call-template>
+                           </else>
+                        </filter>
+                        <!--END: Proceed to update the contact if the note was created successfully -->
+
+                        <property name="status" expression="get-property('status.success')" />
+                        <property name="id"
+                           expression="fn:concat('clio_contactId:', get-property('uri.var.clio.contactId'), ',simplenote_tagName:', get-property('uri.var.simplenote.name'))" />
+                        <property name="message" expression="get-property('message.tagCreated')" />
+                     </case>
+                     <case regex="400">
+                        <property name="status" expression="get-property('status.failure')" />
+                        <property name="id" expression="fn:concat('clio_contactId:', get-property('uri.var.clio.contactId'))" />
+                        <property name="message" expression="get-property('message.simplenoteBadRequest')" />
+                     </case>
+                     <case regex="401">
+                        <property name="status" expression="get-property('status.failure')" />
+                        <property name="id" expression="fn:concat('clio_contactId:', get-property('uri.var.clio.contactId'))" />
+                        <property name="message" expression="get-property('message.simplenoteUnauthorized')" />
+                     </case>
+                     <default>
+                        <property name="status" expression="get-property('status.failure')" />
+                        <property name="id" expression="fn:concat('clio_contactId:', get-property('uri.var.clio.contactId'))" />
+                        <property name="message" expression="get-property('message.simplenoteUnknownErrors')" />
+                     </default>
+                  </switch>
+                  <!-- END of switch statement to check status codes -->
+
+                  <!--Call the responseHandler template -->
+                  <call-template target="responseHandlerTemplate">
+                     <with-param name="id" value="{$ctx:id}" />
+                     <with-param name="activity" value="simplenote_createTag" />
+                     <with-param name="status" value="{$ctx:status}" />
+                     <with-param name="message" value="{$ctx:message}" />
+                  </call-template>
+               </else>
+            </filter>
+            <!--END of filter: Checking the successful creation of the contact in Clio -->
+         </else>
+      </filter>
+      <!--END of filter: Checking the existence of the contact in Clio -->
+   </sequence>
+</template>
