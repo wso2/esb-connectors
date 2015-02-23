@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="scenarioConstants" xmlns="http://ws.apache.org/ns/synapse">
+
+   <!-- Status -->
+   <property name="status.success" value="Success" />
+   <property name="status.failure" value="Failure" />
+   <property name="status.skipped" value="Skipped" />   
+   
+   <!-- Custom Field Name -->
+   <property name="clio.simpleNoteCustomFieldName" value="Current SimpleNote Key" />
+   <property name="clio.zohobooksCustomFieldName" value="ZohoBooks Contact ID" />
+   <property name="clio.zohobooksContactPersonCustomFieldName" value="ZohoBooks Contact Person ID" />
+   
+   <!-- Empty ID -->
+   <property name="id.empty" value="{}" />
+   
+   <!-- Success Messages-->
+   <property name="message.contactCreated" value="Contact is successfully created." />
+   <property name="message.zohobooks.contactCreated" value="A new contact was created in ZohoBooks." />
+   <property name="message.tagCreated" value="A Tag is successfully created for the contact." />
+   <property name="message.clio.matterCreated" value="Matter has been successfully created in Clio. The note has been added to 'Selected-Notes' Tag." />
+   
+   <!-- Failure Messages-->
+   <property name="message.zohobooks.customerMissing" value="Contact does not exist in ZohoBooks anymore." />
+   <property name="message.zohobooks.customFieldUpdateFailed" value="Unknown error occured while updating the Contact in Clio. Please try to update the custom field ZohoBooksId value manually in Clio." />
+   <property name="message.insufficientContactDetails" value="The contact cannot be created since First name and Last name of the contact is not provided." />
+   <property name="message.existingContact" value="The contact was already created in Clio." />
+   <property name="message.zohocrmUpdateFailed" value="The Contact is created, however the contactID of Clio is failed to be updated in ZohoCRM." />
+   <property name="message.simplenoteNoteFailed" value="Unknown error occured while creating the note." />
+   <property name="message.simplenoteBadRequest" value="Failed to create the tag for the Contact. 400 Bad Request." />
+   <property name="message.simplenoteUnauthorized" value="Failed to create the tag for the Contact. 401 Unauthorized." />
+   <property name="message.simplenoteUnknownErrors" value="Failed to create the tag for the Contact due to unknown error." />
+   
+   <property name="message.clio.noCustomFieldsFound" value="No custom fields found in the Contact." />
+   <property name="message.clio.caseInformationNotAdded" value="Case information has not been added to Note." />
+   <property name="message.clio.tagUpdationFailed" value="Matter has been successfully created in Clio. Unknown error occured while adding the note to 'Selected-Notes' Tag." />
+   <property name="message.clio.requiredCustomFieldNotFound" expression="fn:concat('Required custom field: ', get-property('clio.simpleNoteCustomFieldName'), ' not found in the Contact.')" />
+</sequence>

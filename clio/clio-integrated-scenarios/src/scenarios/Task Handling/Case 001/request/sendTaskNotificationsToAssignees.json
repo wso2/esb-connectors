@@ -1,0 +1,54 @@
+{
+    "clioApiUrl": "https://app.goclio.com",
+    "clioAccessToken": "QS9sMwAIyxjldou4xpbsbplxDW5jOpePniqRk5ZD",	
+    "clionTaskName": "Call and inform Sahan about the meeting",	
+    "clioTaskDescription": "Call and inform Sahan about the meeting with the lawyer from colombo.",	
+    "clioTaskMatter": "",
+    "clioTaskAssignee": "",
+    "clioTaskAssigner": "",
+    "clioTaskCompletedAt": "2015-02-20",
+    "clioTaskDueAt": "2015-03-20",
+    "clioTaskIsPrivate": "false",
+    "clioTaskComplete": "false",
+    "clioTaskPriority": "Normal",
+    "clioTaskCascadingSource": "",
+    "clioTaskIsStatuteOfLimitations": "false",
+    "clioTaskOptionalFields": "activities",
+    "clioTaskascadingOffsetType": "CalendarDays",
+    "clioTaskCascadingOffset": "5",
+    "clioTaskReminders": [ {
+            "minutes": 30,
+            "method": "Popup"
+    }],
+    "clioTaskActivities": [
+      {
+        "type": "TimeEntry",
+        "quantity": 1,
+        "note": "Note down to take the number."
+      }
+    ],
+    "gmailUsername" : "wso2.connector.virtusa",
+    "gmailOauthAccessToken" : "ya29.CAFA5iPtpZKtf5dX2VyZp3-z1_PzmaVIpDitu0w6s6qQAjfCdivfi1e2XlsNTxZF3-sBKoWUvHSIXw"   
+
+}
+{
+    "clioApiUrl": "https://app.goclio.com",
+    "clioAccessToken": "fL9aZC3k6wprSqVtlfuowat1JMXX9WazGyQCkQzG",	
+    "clioTaskName": "Sample Task 0007",	
+    "clioTaskDescription": "Let's create a Sample Task 0007",	
+    "clioTaskMatter": "",
+    "clioTaskAssignee": {
+      "id": 344411004
+    },
+    "clioTaskAssigner": {
+      "id": 344410994
+    },
+    "clioTaskDueAt": "2015-02-28",
+    "clioTaskIsPrivate": "true",
+    "clioTaskComplete": "false",
+    "clioTaskPriority": "High",
+    
+    "gmailUsername" : "courtycorp",
+    "gmailOauthAccessToken" : "ya29.GQG5U4A-vhzaXu0Go0gV24ulksOgTpQARrc-1u97Btz2NZj_WJiuI9JwL_GlDrjyPOfiFJbLWVgXLA"   
+
+}
