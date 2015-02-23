@@ -1,6 +1,0 @@
-{
-"apiVersion":"",
-"apiUrl":"",
-"apiKey":"",
-"invoiceId":""
-}
