@@ -1,0 +1,14 @@
+{
+"apiVersion":"",
+"apiUrl":"",
+"apiKey":"",
+"amount":"",
+"statementDescription":"",
+"interval":"",
+"trialPeriodDays":"",
+"intervalCount":"",
+"name":"",
+"planId":"",
+"metadata":"",
+"currency":""
+}

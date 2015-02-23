@@ -1,0 +1,10 @@
+{
+"apiVersion":"",
+"apiUrl":"",
+"apiKey":"",
+"limit":"",
+"customerId":"",
+"startingAfter":"",
+"apiParameters":"",
+"endingBefore":""
+}
