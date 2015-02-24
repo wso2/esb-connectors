@@ -22,13 +22,5 @@
          <file>createAccount.xml</file>
          <description>Create a new account.</description>
       </component>
-      <component name="getAccountById">
-         <file>getAccountById.xml</file>
-         <description>View account details by ID.</description>
-      </component>
-      <component name="listAccounts">
-         <file>listAccounts.xml</file>
-         <description>List all the accounts.</description>
-      </component>
    </subComponents>
 </component>
