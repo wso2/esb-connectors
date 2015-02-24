@@ -17,22 +17,18 @@
    under the License.
 -->
 <component name="salesbinder-documents" type="synapse/template">
-  <subComponents>
-    	<component name="createDocument">
-      <file>createDocument.xml</file>
-      <description>Create a new document.</description>
-    </component>
-    	<component name="updateDocument">
-      <file>updateDocument.xml</file>
-      <description>Update an existing document.</description>
-    </component>
-    <component name="getDocumentById">
-      <file>getDocumentById.xml</file>
-      <description>Get details of a specific document.</description>
-    </component>
-    <component name="listDocuments">
-      <file>listDocuments.xml</file>
-      <description>List all the documents.</description>
-    </component>
-    </subComponents>
+   <subComponents>
+      <component name="createDocument">
+         <file>createDocument.xml</file>
+         <description>Create a new document.</description>
+      </component>
+      <component name="getDocumentById">
+         <file>getDocumentById.xml</file>
+         <description>Get details of a specific document.</description>
+      </component>
+      <component name="listDocuments">
+         <file>listDocuments.xml</file>
+         <description>List all the documents.</description>
+      </component>
+   </subComponents>
 </component>
