@@ -17,10 +17,10 @@
    under the License.
 -->
 <component name="salesbinder-accounts" type="synapse/template">
-  <subComponents>
-    	<component name="createAccount">
-      <file>createAccount.xml</file>
-      <description>Create a new account.</description>
-    </component>
-    </subComponents>
+   <subComponents>
+      <component name="createAccount">
+         <file>createAccount.xml</file>
+         <description>Create a new account.</description>
+      </component>
+   </subComponents>
 </component>

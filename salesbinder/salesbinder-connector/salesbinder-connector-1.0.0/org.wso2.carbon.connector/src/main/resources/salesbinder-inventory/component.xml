@@ -17,18 +17,18 @@
    under the License.
 -->
 <component name="salesbinder-inventory" type="synapse/template">
-  <subComponents>
-    	<component name="addInventoryItem">
-      <file>addInventoryItem.xml</file>
-      <description>Add a new inventory item.</description>
-    </component>
-    	<component name="listInventoryItems">
-      <file>listInventoryItems.xml</file>
-      <description>List all inventory items.</description>
-    </component>
-    	<component name="getInventoryItemById">
-      <file>getInventoryItemById.xml</file>
-      <description>View inventory item details by ID.</description>
-    </component>
-    </subComponents>
+   <subComponents>
+      <component name="addInventoryItem">
+         <file>addInventoryItem.xml</file>
+         <description>Add a new inventory item.</description>
+      </component>
+      <component name="listInventoryItems">
+         <file>listInventoryItems.xml</file>
+         <description>List all inventory items.</description>
+      </component>
+      <component name="getInventoryItemById">
+         <file>getInventoryItemById.xml</file>
+         <description>View inventory item details by ID.</description>
+      </component>
+   </subComponents>
 </component>

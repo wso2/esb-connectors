@@ -17,18 +17,18 @@
    under the License.
 -->
 <component name="salesbinder-contacts" type="synapse/template">
-  <subComponents>
-    	<component name="createContact">
-      <file>createContact.xml</file>
-      <description>Create a new contact.</description>
-    </component>
-    	<component name="listContacts">
-      <file>listContacts.xml</file>
-      <description>List call contacts.</description>
-    </component>
-    	<component name="getContactById">
-      <file>getContactById.xml</file>
-      <description>View contact details by ID.</description>
-    </component>
-    </subComponents>
+   <subComponents>
+      <component name="createContact">
+         <file>createContact.xml</file>
+         <description>Create a new contact.</description>
+      </component>
+      <component name="listContacts">
+         <file>listContacts.xml</file>
+         <description>List call contacts.</description>
+      </component>
+      <component name="getContactById">
+         <file>getContactById.xml</file>
+         <description>View contact details by ID.</description>
+      </component>
+   </subComponents>
 </component>
