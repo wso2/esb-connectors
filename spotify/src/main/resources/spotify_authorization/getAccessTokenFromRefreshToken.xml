@@ -18,18 +18,18 @@ under the License.
 -->
 <template name="getAccessTokenFromRefreshToken" xmlns="http://ws.apache.org/ns/synapse">
     <!-- Required parameters -->
-    <parameter name="refresh_token"
+    <parameter name="refreshToken"
                description="Refresh token."/>
-    <parameter name="client_id"
+    <parameter name="clientId"
                description="Value of your API Key given when you registered your application with Spotify."/>
-    <parameter name="client_secret"
+    <parameter name="clientSecret"
                description="Value of your secret key given when you registered your application with Spotify."/>
-    <parameter name="grant_type" description="Token grant type. Value must be set to authorization_code."/>
+    <parameter name="grantType" description="Token grant type. Value must be set to authorization_code."/>
     <sequence>
-        <property name="uri.var.refresh_token" expression="$func:refresh_token"/>
-        <property name="uri.var.client_id" expression="$func:client_id"/>
-        <property name="uri.var.client_secret" expression="$func:client_secret"/>
-        <property name="uri.var.grant_type" expression="$func:grant_type"/>
+        <property name="uri.var.refreshToken" expression="$func:refreshToken"/>
+        <property name="uri.var.client_id" expression="$func:clientId"/>
+        <property name="uri.var.clientSecret" expression="$func:clientSecret"/>
+        <property name="uri.var.grantType" expression="$func:grantType"/>
         <payloadFactory media-type="json">
             <format>
                 {
@@ -38,15 +38,15 @@ under the License.
                 }
             </format>
             <args>
-                <arg expression="$func:refresh_token"/>
-                <arg expression="$func:grant_type"/>
+                <arg expression="$func:refreshToken"/>
+                <arg expression="$func:grantType"/>
             </args>
         </payloadFactory>
         <property name="messageType" value="application/x-www-form-urlencoded" scope="axis2"/>
         <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
 
         <header name="Authorization"
-                expression="fn:concat('Basic ',base64Encode(fn:concat(get-property('uri.var.client_id'),':',get-property('uri.var.client_secret'))))"
+                expression="fn:concat('Basic ',base64Encode(fn:concat(get-property('uri.var.clientId'),':',get-property('uri.var.clientSecret'))))"
                 scope="transport"/>
         <call>
             <endpoint>
