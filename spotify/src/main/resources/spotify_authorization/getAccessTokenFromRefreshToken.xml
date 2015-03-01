@@ -27,7 +27,7 @@ under the License.
     <parameter name="grantType" description="Token grant type. Value must be set to authorization_code."/>
     <sequence>
         <property name="uri.var.refreshToken" expression="$func:refreshToken"/>
-        <property name="uri.var.client_id" expression="$func:clientId"/>
+        <property name="uri.var.clientId" expression="$func:clientId"/>
         <property name="uri.var.clientSecret" expression="$func:clientSecret"/>
         <property name="uri.var.grantType" expression="$func:grantType"/>
         <payloadFactory media-type="json">
