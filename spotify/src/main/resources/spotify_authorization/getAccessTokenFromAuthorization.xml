@@ -28,10 +28,10 @@ under the License.
     <parameter name="grantType" description="Token response type. Value must be set to code."/>
     <sequence>
         <property name="uri.var.code" expression="$func:code"/>
-        <property name="uri.var.redirectUri" expression="$func:redirect_uri"/>
-        <property name="uri.var.clientId" expression="$func:client_id"/>
-        <property name="uri.var.clientSecret" expression="$func:client_secret"/>
-        <property name="uri.var.grantType" expression="$func:grant_type"/>
+        <property name="uri.var.redirectUri" expression="$func:redirectUri"/>
+        <property name="uri.var.clientId" expression="$func:clientId"/>
+        <property name="uri.var.clientSecret" expression="$func:clientSecret"/>
+        <property name="uri.var.grantType" expression="$func:grantType"/>
         <payloadFactory media-type="json">
             <format>
                 {
