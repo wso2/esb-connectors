@@ -18,49 +18,47 @@ under the License.
 -->
 <template name="getCodeForAccessToken" xmlns="http://ws.apache.org/ns/synapse">
     <!-- Required parameters -->
-    <parameter name="response_type" description="Token response type. Value must be set to code."/>
-    <parameter name="redirect_uri"
+    <parameter name="responseType" description="Token response type. Value must be set to code."/>
+    <parameter name="redirectUri"
                description="Same redirect_uri that you passed to get authorization_code."/>
-    <parameter name="client_id"
+    <parameter name="clientId"
                description="Value of your API Key given when you registered your application with Spotify."/>
     <!-- Optional parameters -->
-    <parameter name="show_dialog"
+    <parameter name="showDialog"
                description="Whether or not to force the user to approve the app again if they’ve already done so."/>
     <parameter name="state" description="The state can be useful for correlating requests and responses."/>
     <parameter name="scope"
                description="A space-separated list of scopes."/>
-    <!--<parameter name="optional_parameters"-->
     description="Concatination of optional parameters." />
     <sequence>
-        <property name="uri.var.redirect_uri" expression="$func:redirect_uri"/>
-        <property name="uri.var.client_id" expression="$func:client_id"/>
-        <property name="uri.var.response_type" expression="$func:response_type"/>
-        <property name="uri.var.show_dialog" expression="$func:show_dialog"/>
+        <property name="uri.var.redirectUri" expression="$func:redirectUri"/>
+        <property name="uri.var.clientId" expression="$func:clientId"/>
+        <property name="uri.var.responseType" expression="$func:responseType"/>
+        <property name="uri.var.showDialog" expression="$func:showDialog"/>
         <property name="uri.var.scope" expression="$func:scope"/>
         <property name="uri.var.state" expression="$func:state"/>
-        <!--<property name="uri.var.optional_parameters" value=""/>-->
         <filter xpath="(not(get-property('uri.var.scope') = '' or (not(string(get-property('uri.var.scope'))))))">
             <then>
-                <property name="uri.var.optional_parameters"
-                          expression="fn:concat(get-property('uri.var.optional_parameters'),'&amp;scope=',get-property('uri.var.scope'))"/>
+                <property name="uri.var.optionalParameters"
+                          expression="fn:concat(get-property('uri.var.optionalParameters'),'&amp;scope=',get-property('uri.var.scope'))"/>
             </then>
         </filter>
         <filter xpath="(not(get-property('uri.var.state') = '' or (not(string(get-property('uri.var.state'))))))">
             <then>
-                <property name="uri.var.optional_parameters"
-                          expression="fn:concat(get-property('uri.var.optional_parameters'),'&amp;state=',get-property('uri.var.state'))"/>
+                <property name="uri.var.optionalParameters"
+                          expression="fn:concat(get-property('uri.var.optionalParameters'),'&amp;state=',get-property('uri.var.state'))"/>
             </then>
         </filter>
-        <filter xpath="(not(get-property('uri.var.show_dialog') = '' or (not(string(get-property('uri.var.show_dialog'))))))">
+        <filter xpath="(not(get-property('uri.var.showDialog') = '' or (not(string(get-property('uri.var.showDialog'))))))">
             <then>
-                <property name="uri.var.optional_parameters"
-                          expression="fn:concat(get-property('uri.var.optional_parameters'),'&amp;show_dialog=',get-property('uri.var.show_dialog'))"/>
+                <property name="uri.var.optionalParameters"
+                          expression="fn:concat(get-property('uri.var.optionalParameters'),'&amp;show_dialog=',get-property('uri.var.showDialog'))"/>
             </then>
         </filter>
         <call>
             <endpoint>
                 <http method="get"
-                      uri-template="https://accounts.spotify.com/authorize/?client_id={uri.var.client_id}&amp;response_type={uri.var.response_type}&amp;redirect_uri={uri.var.redirect_uri}{uri.var.optional_parameters}"/>
+                      uri-template="https://accounts.spotify.com/authorize/?client_id={uri.var.clientId}&amp;response_type={uri.var.responseType}&amp;redirect_uri={uri.var.redirectUri}{uri.var.optionalParameters}"/>
 
             </endpoint>
         </call>
