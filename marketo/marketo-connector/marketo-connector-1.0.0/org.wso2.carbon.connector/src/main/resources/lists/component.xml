@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="leads" type="synapse/template">
+    <subComponents>
+        <component name="getListById">
+            <file>getListById.xml</file>
+            <description>Retrieves a list for a given Marketo Id</description>
+        </component>
+        <component name="getMultipleLists">
+            <file>getMultipleLists.xml</file>
+            <description>Retrieves multiple lists</description>
+        </component>
+        <component name="getMultipleLeadsByListId">
+            <file>getMultipleLeadsByListId.xml</file>
+            <description>Retrieves multiple leads from a given list id</description>
+        </component>
+        <component name="createAndUpdateLeads">
+            <file>createAndUpdateLeads.xml</file>
+            <description>Creates a new lead or Updates an existing lead</description>
+        </component>
+        <component name="associateLead">
+            <file>associateLead.xml</file>
+            <description>Associates a lead with a cookie value</description>
+        </component>
+        <component name="mergeLead">
+            <file>mergeLead.xml</file>
+            <description>Merges two leads</description>
+        </component>
+        <component name="getLeadPartitions">
+            <file>getLeadPartitions.xml</file>
+            <description>Returns a list of lead partitions in a Marketo instance.</description>
+        </component>
+    </subComponents>
+</component>

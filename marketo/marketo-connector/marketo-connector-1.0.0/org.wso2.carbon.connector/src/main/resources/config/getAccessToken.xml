@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+   WSO2 Inc. licenses this file to you under the Apache License,
+   Version 2.0 (the "License"); you may not use this file except
+   in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied. See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
+<template name="getAccessToken" xmlns="http://ws.apache.org/ns/synapse">
+    <!-- Required parameters -->
+    <parameter name="identityServiceUrl" description="The REST API identity service URL."/>
+    <parameter name="clientId" description="Custom service client ID."/>
+    <parameter name="clientSecret" description="Custom service client secret"/>
+
+    <sequence>
+        <property name="uri.var.identityServiceUrl" expression="$func:identityServiceUrl"/>
+        <property name="uri.var.clientId" expression="$func:clientId"/>
+        <property name="uri.var.clientSecret" expression="$func:clientSecret"/>
+
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.identityServiceUrl}/oauth/token?grant_type=client_credentials&amp;client_id={uri.var.clientId}&amp;client_secret={uri.var.clientSecret}"/>
+            </endpoint>
+        </call>
+
+        <filter source="$axis2:HTTP_SC" regex="[2][0][0]">
+            <then>
+                <property name="accessToken" expression="json-eval($.access_token)"/>
+                <header name="Authorization" expression="fn:concat('Bearer ',get-property('accessToken'))"
+                        scope="transport"/>
+            </then>
+        </filter>
+
+    </sequence>
+</template>
