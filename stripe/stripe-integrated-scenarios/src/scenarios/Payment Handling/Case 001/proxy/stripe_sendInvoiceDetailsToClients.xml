@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_sendInvoiceDetailsToClients" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+         <!-- Stripe Properties. -->
+         <property name="stripe.apiVersion" value="v1" />
+         <property name="stripe.apiUrl" value="https://api.stripe.com" />
+         <property name="stripe.apiKey" expression="json-eval($.stripeApiKey)" />
+		 
+         <!-- Zoho Books parameters. -->
+         <property name="zohobooks.apiUrl" value="https://books.zoho.com" />
+         <property name="zohobooks.authToken" expression="json-eval($.zohobooksAuthToken)" />
+         <property name="zohobooks.organizationId" expression="json-eval($.zohobooksOrganizationId)" />
+		 
+         <!-- Operation scoped properties -->
+         <property name="responseString" value="" scope="operation" />
+         <property name="activityName" value="stripe_sendInvoiceDetailsToClients" scope="operation" />
+		 
+         <!-- Convert the date/time (format: dd-MM-yyyy HH:mm X) sent by the user to Epoch Unix timestamp. -->
+         <script language="js">
+			<![CDATA[
+				// Get the current time in milliseconds (Greenwich standard time)
+                var currentTimeInMillis = java.util.Date().getTime();
+                // No. of milliseconds on a day
+                var millisInADay = 24*60*60*1000;
+                // Remaining time of the day in Milliseconds
+                var remainder = java.lang.Long.parseLong(currentTimeInMillis) % millisInADay;
+                // Milliseconds until start of day
+                var startOfDay = java.lang.Long.parseLong(currentTimeInMillis) - java.lang.Long.parseLong(remainder);
+                //compensating for the difference in time zone
+                mc.setProperty('stripe.startTime', '' + new java.text.SimpleDateFormat("dd-MM-yyyy").format(new Date(java.lang.Long.parseLong(startOfDay))));
+                mc.setProperty('stripe.startTimeStamp', '' + java.lang.Long.parseLong(startOfDay)/1000);
+			]]>
+		 </script>
+		 
+         <!-- Get the invoices from Stripe filtered by the startTimeStamp provided by the user. -->
+         <stripe.init>
+            <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+            <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+            <apiKey>{$ctx:stripe.apiKey}</apiKey>
+         </stripe.init>
+         <stripe.getAListOfInvoices>
+            <limit>100</limit>
+            <dateGTE>{$ctx:stripe.startTimeStamp}</dateGTE>
+         </stripe.getAListOfInvoices>
+		 
+         <property name="noOfInvoices" expression="count(//jsonObject/data)" scope="operation" />
+         <property name="invoiceIndex" expression="0" scope="operation" />
+         <property name="noOfItems" expression="0" scope="operation" />
+         <property name="itemIndex" expression="0" scope="operation" />
+		 
+         <!-- START: Proceed with the scenario if at least one invoice is returned in the previous call. If not, send a message to user and terminate the scenario. -->
+         <filter source="get-property('operation', 'noOfInvoices')" regex="0.0">
+            <then>
+               <payloadFactory media-type="json">
+                  <format>
+					 {
+						 "Response":{
+							 "activity":"stripe_sendInvoiceDetailsToClients",
+							 "activityResponse":"There are no invoices created since $1."
+						 }
+                     }
+				  </format>
+                  <args>
+                     <arg expression="get-property('stripe.startTime')" />
+                  </args>
+               </payloadFactory>
+               <respond />
+            </then>
+            <else>
+               <!-- FOR EACH Stripe Invoice: BEGIN -->
+               <iterate continueParent="false" id="invoices" expression="//jsonObject/data" sequential="false">
+                  <target>
+                     <sequence>
+                        <property name="stripe.invoiceId" expression="json-eval($.data.id)" />
+                        <property name="stripe.invoiceClosed" expression="json-eval($.data.closed)" />
+						
+                        <!-- START: Process the invoice only if it is 'open' (not closed). -->
+                        <filter source="get-property('stripe.invoiceClosed')" regex="false">
+                           <then>
+						      <!--Extract the ZohoBooks invoice ID found in the metadata section of the Stripe invoice. -->
+                              <property name="stripe.zohobooksInvoiceId" expression="json-eval($.data.metadata.zohobooks_invoice_id)" />
+							  
+                              <!-- START: Process the invoice only if it is not processed before. Once a Stripe invoice is created in ZohoBooks, the ZohoBooks invoice ID is added to the metadata section of the Stripe invoice to avoid duplication.
+									Therefore only when the particular metadata is not found in the Stripe invoice, the invoice is created in ZohoBooks.-->
+                              <filter source="boolean(get-property('stripe.zohobooksInvoiceId'))" regex="false">
+                                 <then>
+                                    <property name="noOfItems" expression="get-property('operation', 'noOfItems') + count(//data/lines/data)" scope="operation" />
+						
+									<!-- Increment the invoiceIndex Count by 1 -->
+									<property name="invoiceIndex" expression="get-property('operation', 'invoiceIndex') + 1" scope="operation" />
+                                    
+									<!--FOR EACH Invoice Item: BEGIN -->
+                                    <iterate continueParent="false" id="items" expression="//data/lines/data" sequential="false">
+                                       <target>
+                                          <sequence>
+                                             <property name="stripe.itemId" expression="//data/id/text()" />
+                                             <property name="stripe.itemAmount" expression="//data/amount/text()" />
+                                             <property name="stripe.itemDescription" expression="//data/description/text()" />
+											 
+                                             <!-- Item name is constructed as: <stripe-invoice-id>-<stripe-item-description> -->
+                                             <property name="stripe.itemName" expression="fn:concat(get-property('stripe.itemDescription'), '-', get-property('stripe.invoiceId'))" />
+                                             
+											 <!-- Convert the amount in cents to dollars -->
+                                             <script language="js">
+												 <![CDATA[
+													mc.setProperty('stripe.itemAmount', mc.getProperty('stripe.itemAmount')/100);
+												 ]]>
+											 </script>
+											 
+                                             <!-- Create the Item in ZohoBooks -->
+                                             <zohobooks.init>
+                                                <apiUrl>{$ctx:zohobooks.apiUrl}</apiUrl>
+                                                <authToken>{$ctx:zohobooks.authToken}</authToken>
+                                                <organizationId>{$ctx:zohobooks.organizationId}</organizationId>
+                                             </zohobooks.init>
+                                             <zohobooks.createItem>
+                                                <itemName>{$ctx:stripe.itemName}</itemName>
+                                                <description>{$ctx:stripe.itemDescription}</description>
+                                                <rate>{$ctx:stripe.itemAmount}</rate>
+                                             </zohobooks.createItem>
+											 
+                                             <property name="zohobooks.itemId" expression="json-eval($.item.item_id)" />
+											 
+                                             <!-- START: Proceed to update the metadata of the invoice item in Stripe, only if the item is created successfully in ZohoBooks. -->
+                                             <filter source="boolean(get-property('zohobooks.itemId'))" regex="false">
+                                                <then>
+                                                   <!-- Failure case: Append an error message to be sent to the user. -->
+                                                   <property name="id" expression="fn:concat('stripe_invoiceId:', get-property('stripe.invoiceId'), ',stripe_itemId:', get-property('stripe.itemId'))" />
+                                                   <property name="errorResponse" expression="json-eval($)" />
+                                                   <call-template target="responseHandlerTemplate">
+                                                      <with-param name="activity" value="stripe_createItem" />
+                                                      <with-param name="id" value="{$ctx:id}" />
+                                                      <with-param name="status" value="Failure" />
+                                                      <with-param name="message" value="{$ctx:errorResponse}" />
+                                                   </call-template>
+                                                </then>
+                                                <else>
+                                                   <property name="stripe.metadata" expression="fn:concat('{&quot;zohobooks_item_id&quot;:&quot;Item-', get-property('zohobooks.itemId'), '&quot;}')" />
+                                                   
+												   <!-- Invalidate the property set in a previous call to avoid ambiguity. -->
+                                                   <property name="uri.var.description" action="remove" />
+                                                   
+												   <!-- Update the invoice item in Stripe with the ZohoBooks item id. -->
+                                                   <stripe.init>
+                                                      <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                                      <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                                      <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                                   </stripe.init>
+                                                   <stripe.updateAnInvoiceItem>
+                                                      <invoiceItemId>{$ctx:stripe.itemId}</invoiceItemId>
+                                                      <metadata>{$ctx:stripe.metadata}</metadata>
+                                                   </stripe.updateAnInvoiceItem>
+                                                   
+												   <property name="stripe.itemId" expression="json-eval($.id)" />
+                                                   
+												   <!-- START: Send an error message to the user only if the updation failed. -->
+                                                   <filter source="boolean(get-property('stripe.itemId'))" regex="false">
+                                                      <then>
+                                                         <property name="id" expression="fn:concat('stripe_itemId:', get-property('stripe.itemId'), ',zohobooks_itemId:', get-property('zohobooks.itemId'))" />
+                                                         <property name="errorResponse" expression="json-eval($)" />
+                                                         <call-template target="responseHandlerTemplate">
+                                                            <with-param name="activity" value="stripe_updateItem" />
+                                                            <with-param name="id" value="{$ctx:id}" />
+                                                            <with-param name="status" value="Failure" />
+                                                            <with-param name="message" value="Item was successfully created in ZohoBooks, but an error occured while updating the corresponding item in Stripe." />
+                                                         </call-template>
+                                                      </then>
+                                                   </filter>
+                                                   <!-- END: Send an error message to the user only if the updation failed. -->
+                                                </else>
+                                             </filter>
+                                             <!-- END: Proceed to update the custom field of the invoice item in Stripe only if it is created successfully in ZohoBooks. -->
+                                             
+											 <!-- Increment the itemIndex Count by 1 -->
+                                             <property name="itemIndex" expression="get-property('operation', 'itemIndex') + 1" scope="operation" />
+											 
+                                          </sequence>
+                                       </target>
+                                    </iterate>
+                                    <!--FOR EACH Invoice Item: END -->
+									
+                                 </then>
+                                 <else>
+                                    <!-- Skip case: Append an error message to be sent to the user. -->
+                                    <property name="id" expression="fn:concat('stripe_invoiceId:', get-property('stripe.invoiceId'))" />
+                                    <property name="errorResponse" expression="json-eval($)" />
+                                    <call-template target="responseHandlerTemplate">
+                                       <with-param name="activity" value="stripe_verifyInvoice" />
+                                       <with-param name="id" value="{$ctx:id}" />
+                                       <with-param name="status" value="Skipped" />
+                                       <with-param name="message" value="The invoice has already been created in ZohoBooks." />
+                                    </call-template>
+						
+									<!-- Increment the invoiceIndex Count by 1 -->
+									<property name="invoiceIndex" expression="get-property('operation', 'invoiceIndex') + 1" scope="operation" />
+                                 </else>
+                              </filter>
+                              <!-- END: Process the invoice only if it is not processed before. -->
+                           </then>
+                           <else>
+                              <!-- Failure case: Append an error message to be sent to the user. -->
+                              <property name="id" expression="fn:concat('stripe_invoiceId:', get-property('stripe.invoiceId'))" />
+                              <call-template target="responseHandlerTemplate">
+                                 <with-param name="activity" value="stripe_checkInvoiceStatus" />
+                                 <with-param name="id" value="{$ctx:id}" />
+                                 <with-param name="status" value="Skipped" />
+                                 <with-param name="message" value="The invoice is already closed." />
+                              </call-template>
+						
+							<!-- Increment the invoiceIndex Count by 1 -->
+							<property name="invoiceIndex" expression="get-property('operation', 'invoiceIndex') + 1" scope="operation" />
+                           </else>
+                        </filter>
+                        <!-- END: Process the invoice only if it is 'open' (not closed). -->
+						
+                        <!-- START: Execute the code when all the previous iterations are done. -->
+                        <filter xpath="(get-property('operation', 'noOfInvoices') = get-property('operation', 'invoiceIndex'))
+											and (get-property('operation', 'noOfItems') = get-property('operation', 'itemIndex'))">
+                           <then>
+                              <!-- List invoices in Stripe -->
+                              <stripe.init>
+                                 <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                 <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                 <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                              </stripe.init>
+                              <stripe.getAListOfInvoices>
+                                 <limit>100</limit>
+                                 <dateGTE>{$ctx:stripe.startTimeStamp}</dateGTE>
+                              </stripe.getAListOfInvoices>
+							  
+                              <property name="noOfInvoices" expression="count(//jsonObject/data)" scope="operation" />
+                              <property name="invoiceIndex" expression="0" scope="operation" />
+							  
+                              <!--FOR EACH Stripe Invoice: BEGIN -->
+                              <iterate continueParent="false" id="invoices" expression="//jsonObject/data" sequential="false">
+                                 <target>
+                                    <sequence>
+                                       <property name="stripe.invoiceId" expression="json-eval($.data.id)" />
+                                       <property name="stripe.invoiceClosed" expression="//data/closed/text()" />
+                                       <property name="stripe.invoiceCustomerId" expression="//data/customer/text()" />
+                                       <property name="stripe.invoiceDate" expression="//data/date/text()" />
+                                       <property name="stripe.invoiceDueDate" expression="//data/next_payment_attempt/text()" />
+                                       <property name="stripe.invoiceDiscount" expression="//data/discount/text()" />
+									   
+                                       <!-- Extract the items array to a property -->
+                                       <property name="messageType" value="application/json" scope="axis2" />
+                                       <property name="stripe.invoiceItems" expression="json-eval($.data.lines.data)" />
+                                       
+                                       <!-- Concat and build the invoice note and number -->
+                                       <property name="stripe.invoiceNote" expression="fn:concat('This invoice is created based on the information extracted from Stripe invoice (Invoice ID:', get-property('stripe.invoiceId'), ', Customer ID:', get-property('stripe.invoiceCustomerId'), ')')" />
+                                       <property name="stripe.invoiceNumber" expression="fn:concat('Stripe - ', get-property('stripe.invoiceId'))" />
+                                       
+									   
+									   <!-- Convert the time stamps to Time string and build the lineItems array required to create the invoice. -->
+                                       <script language="js">
+										   <![CDATA[
+												var invoiceItems = mc.getProperty('stripe.invoiceItems');
+												var itemsArray = eval("(" + invoiceItems + ")");										
+												var dateTimeStamp = mc.getProperty('stripe.invoiceDate');
+												var dueDateTimeStamp = mc.getProperty('stripe.invoiceDueDate');
+												
+												mc.setProperty('stripe.invoiceDate', new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(dateTimeStamp*1000)));
+												mc.setProperty('stripe.invoiceDueDate', new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(dueDateTimeStamp*1000)));
+												
+												// If there is only one item, an object is returned. When there are multiple items, an array is returned.
+												if (invoiceItems.startsWith('{') && itemsArray.metadata != null){
+													mc.setProperty('zohobooks.lineItems', '[{"item_id":"' + itemsArray.metadata.zohobooks_item_id.split('-')[1] + '"}]');
+												} else if (invoiceItems.startsWith('[')){
+													var lineItemsArray = '[';
+													for(var i=0; i<itemsArray.length; i++){									
+														if(i != 0){
+															lineItemsArray += ',';
+														}
+														var zohoBooksItemId = '' + itemsArray[i].metadata.zohobooks_item_id.split('-')[1];
+														lineItemsArray += '{"item_id":"' + zohoBooksItemId + '"}';
+													}
+													lineItemsArray += ']';
+													mc.setProperty('zohobooks.lineItems', lineItemsArray);
+												}														
+											]]>
+										</script>
+										
+                                       <property name="stripe.zohobooksInvoiceId" expression="//data/metadata/zohobooks_invoice_id/text()" />
+                                       
+                                       <!-- START: Process the invoice only if it is 'open' (not closed) and not processed before. -->
+                                       <filter xpath="get-property('stripe.invoiceClosed') = 'false' and get-property('stripe.zohobooksInvoiceId') = ''">
+                                          <then>
+                                             <!-- Get the details of the customer -->
+                                             <stripe.init>
+                                                <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                                <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                                <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                             </stripe.init>
+                                             <stripe.retrieveAnExistingCustomer>
+                                                <customerId>{$ctx:stripe.invoiceCustomerId}</customerId>
+                                             </stripe.retrieveAnExistingCustomer>
+											 
+                                             <property name="stripe.zohobooksContactId" expression="json-eval($.metadata.zohobooks_contact_id)" />
+                                             <property name="stripe.zohobooksContactPersonId" expression="json-eval($.metadata.zohobooks_contact_person_id)" />
+                                             
+											 <!-- START: Create the customer if he doesn't exist in ZohoBooks -->
+                                             <filter source="boolean(get-property('stripe.zohobooksContactId')) and boolean(get-property('stripe.zohobooksContactPersonId'))" regex="false">
+                                                <then>
+                                                   
+                                                   <!-- Extracting stripe contact details. -->
+                                                   <property name="stripe.email" expression="json-eval($.email)" />
+                                                   <property name="stripe.description" expression="json-eval($.description)" />
+                                                   <property name="stripe.name" expression="json-eval($.cards.data[0].name)" />
+												   
+                                                   <!-- Extracting stripe billing address details. -->
+                                                   <property name="stripe.addressLine1" expression="json-eval($.cards.data[0].address_line1)" />
+                                                   <property name="stripe.addressLine2" expression="json-eval($.cards.data[0].address_line2)" />
+                                                   <property name="stripe.addressCity" expression="json-eval($.cards.data[0].address_city)" />
+                                                   <property name="stripe.addressState" expression="json-eval($.cards.data[0].address_state)" />
+                                                   <property name="stripe.addressZip" expression="json-eval($.cards.data[0].address_zip)" />
+                                                   <property name="stripe.addressCountry" expression="json-eval($.cards.data[0].address_country)" />
+                                                   
+												   <!-- Constructing the zohoBooks contactPersons field value. -->
+                                                   <property name="zohobooks.contactPersons" expression="fn:concat('[{&quot;first_name&quot;:&quot;', get-property('stripe.name'),'&quot;,&quot;email&quot;:&quot;', get-property('stripe.email'),'&quot;,&quot;is_primary_contact&quot;:true}]')" />
+                                                   
+												   <!-- Constructing the zohoBooks billingAddress field value. -->
+                                                   <property name="zohobooks.billingAddress" expression="fn:concat('{&quot;address&quot;:&quot;', get-property('stripe.addressLine1'), ' ', get-property('stripe.addressLine2'), '&quot;,&quot;city&quot;:&quot;', get-property('stripe.addressCity'),'&quot;,&quot;state&quot;:&quot;', get-property('stripe.addressState'),'&quot;,&quot;zip&quot;:&quot;', get-property('stripe.addressZip'),'&quot;,&quot;country&quot;:&quot;', get-property('stripe.addressCountry'),'&quot;}')" />
+                                                   
+												   <!-- Create a contact in ZohoBooks (with a contact person) -->
+                                                   <zohobooks.init>
+                                                      <apiUrl>{$ctx:zohobooks.apiUrl}</apiUrl>
+                                                      <authToken>{$ctx:zohobooks.authToken}</authToken>
+                                                      <organizationId>{$ctx:zohobooks.organizationId}</organizationId>
+                                                   </zohobooks.init>
+                                                   <zohobooks.createContact>
+                                                      <notes>{$ctx:stripe.description}</notes>
+                                                      <contactPersons>{$ctx:zohobooks.contactPersons}</contactPersons>
+                                                      <billingAddress>{$ctx:zohobooks.billingAddress}</billingAddress>
+                                                      <shippingAddress>{$ctx:zohobooks.billingAddress}</shippingAddress>
+                                                      <contactName>{$ctx:stripe.name}</contactName>
+                                                   </zohobooks.createContact>
+                                                   
+												   <property name="stripe.zohobooksContactId" expression="json-eval($.contact.contact_id)" />
+                                                   <property name="stripe.zohobooksContactPersonId" expression="json-eval($.contact.contact_persons[0].contact_person_id)" />
+                                                   
+												   <!-- START: Proceed only if the contact was successfully created in ZohoBooks -->
+                                                   <filter source="boolean(get-property('stripe.zohobooksContactId')) and boolean(get-property('stripe.zohobooksContactPersonId'))" regex="false">
+                                                      <then>
+                                                         <!-- Failure case: Append an error message to be sent to the user. -->
+                                                         <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.invoiceCustomerId'))" />
+                                                         <property name="errorResponse" expression="json-eval($)" />
+                                                         <call-template target="responseHandlerTemplate">
+                                                            <with-param name="activity" value="zohobooks_createContact" />
+                                                            <with-param name="id" value="{$ctx:id}" />
+                                                            <with-param name="status" value="Failure" />
+                                                            <with-param name="message" value="{$ctx:errorResponse}" />
+                                                         </call-template>
+                                                      </then>
+                                                      <else>
+                                                         <!-- Success case: Append a message to be sent to the user saying that the contact was successfully created in ZohoBooks. -->
+                                                         <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.invoiceCustomerId'), ',zohobooks_contactId:', get-property('stripe.zohobooksContactId'), ',zohobooks_contactPersonId:', get-property('stripe.zohobooksContactPersonId'))" />
+                                                         <call-template target="responseHandlerTemplate">
+                                                            <with-param name="activity" value="zohobooks_createContact" />
+                                                            <with-param name="id" value="{$ctx:id}" />
+                                                            <with-param name="status" value="Success" />
+                                                            <with-param name="message" value="The customer has been successfully created in ZohoBooks." />
+                                                         </call-template>
+                                                         
+														 <property name="stripe.metadata" expression="fn:concat('{&quot;zohobooks_contact_id&quot;:&quot;', get-property('stripe.zohobooksContactId'), '&quot;,&quot;zohobooks_contact_person_id&quot;:&quot;', get-property('stripe.zohobooksContactPersonId'), '&quot;}')" />
+                                                         
+														 <!-- Update the custom field of the customer with the ZohoBooks Contact ID -->                                                         
+														 <stripe.init>
+                                                            <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                                            <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                                            <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                                         </stripe.init>
+                                                         <stripe.updateACustomerDetails>
+                                                            <customerId>{$ctx:stripe.customerId}</customerId>
+                                                            <metadata>{$ctx:stripe.metadata}</metadata>
+                                                         </stripe.updateACustomerDetails>
+                                                         
+														 <property name="stripe.zohobooksContactId" expression="json-eval($.metadata.zohobooks_contact_id)" />
+                                                         <property name="stripe.zohobooksContactPersonId" expression="json-eval($.metadata.zohobooks_contact_person_id)" />
+                                                         
+														 <!-- START: Send an error message to the user only if the updation failed. -->
+                                                         <filter source="boolean(get-property('stripe.zohobooksContactId')) and boolean(get-property('stripe.zohobooksContactPersonId'))" regex="false">
+                                                            <then>
+                                                               <property name="errorResponse" expression="json-eval($)" />
+                                                               <call-template target="responseHandlerTemplate">
+                                                                  <with-param name="activity" value="zohobooks_updateCustomer" />
+                                                                  <with-param name="id" value="{$ctx:id}" />
+                                                                  <with-param name="status" value="Failure" />
+                                                                  <with-param name="message" value="Contact was successfully created in ZohoBooks, but an error occured while updating the corresponding customer in Stripe." />
+                                                               </call-template>
+                                                            </then>
+                                                         </filter>
+														 <!-- END: Send an error message to the user only if the updation failed. -->
+														 
+                                                      </else>
+                                                   </filter>
+                                                   <!-- END: Proceed only if the contact was successfully created in ZohoBooks -->
+												   
+                                                </then>
+                                             </filter>
+                                             <!-- END: Create the customer if he doesn't exist in ZohoBooks -->
+											 
+                                             <!--START: Create the invoice only if the contact corresponding to the customer exist in ZohoBooks. -->
+                                             <filter source="boolean(get-property('stripe.zohobooksContactId')) and boolean(get-property('stripe.zohobooksContactPersonId'))" regex="true">
+                                                <then>
+                                                   <property name="zohobooks.contactPersons" expression="fn:concat('[&quot;',get-property('stripe.zohobooksContactPersonId'),'&quot;]')" />
+                                                   
+												   <!-- Create the invoice in ZohoBooks (with a contact person) -->
+                                                   <zohobooks.init>
+                                                      <apiUrl>{$ctx:zohobooks.apiUrl}</apiUrl>
+                                                      <authToken>{$ctx:zohobooks.authToken}</authToken>
+                                                      <organizationId>{$ctx:zohobooks.organizationId}</organizationId>
+                                                   </zohobooks.init>
+                                                   <zohobooks.createInvoice>
+                                                      <customerId>{$ctx:stripe.zohobooksContactId}</customerId>
+                                                      <contactPersons>{$ctx:zohobooks.contactPersons}</contactPersons>
+                                                      <invoiceNumber>{$ctx:stripe.invoiceNumber}</invoiceNumber>
+                                                      <date>{$ctx:stripe.invoiceDate}</date>
+                                                      <dueDate>{$ctx:stripe.invoiceDueDate}</dueDate>
+                                                      <discount>{$ctx:stripe.invoiceDiscount}</discount>
+                                                      <lineItems>{$ctx:zohobooks.lineItems}</lineItems>
+                                                      <notes>{$ctx:stripe.invoiceNotes}</notes>
+                                                      <send>true</send>
+                                                      <ignoreAutoNumberGeneration>true</ignoreAutoNumberGeneration>
+                                                   </zohobooks.createInvoice>
+                                                   
+												   <property name="zohobooks.invoiceId" expression="json-eval($.invoice.invoice_id)" />
+                                                   <property name="zohobooks.message" expression="json-eval($.message)" />
+                                                   <property name="id" expression="fn:concat('zohobooks_invoiceId:', get-property('zohobooks.invoiceId'))" />
+                                                   
+												   <!-- START: If invoiceId doesn't exist, then send the descriptive message sent by the API itself to the user. -->
+                                                   <filter source="boolean(get-property('zohobooks.invoiceId'))" regex="false">
+                                                      <then>
+                                                         <property name="message" expression="get-property('zohobooks.message')" />
+                                                         <call-template target="responseHandlerTemplate">
+                                                            <with-param name="activity" value="zohobooks_createInvoice" />
+                                                            <with-param name="id" value="{$ctx:id}" />
+                                                            <with-param name="status" value="Failure" />
+                                                            <with-param name="message" value="{$ctx:message}" />
+                                                         </call-template>
+                                                      </then>
+                                                      <else>
+													     <!-- Success case: Append a message to be sent to the user saying that the invoice was successfully created in ZohoBooks. -->
+                                                         <call-template target="responseHandlerTemplate">
+                                                            <with-param name="activity" value="zohobooks_createInvoice" />
+                                                            <with-param name="id" value="{$ctx:id}" />
+                                                            <with-param name="status" value="Success" />
+                                                            <with-param name="message" value="The invoice has been generated successfully and emailed to the respective contact." />
+                                                         </call-template>
+														 
+                                                         <property name="stripe.metadata" expression="fn:concat('{&quot;zohobooks_invoice_id&quot;:&quot;', get-property('zohobooks.invoiceId'), '&quot;}')" />
+                                                         
+														 <!-- Update the metadata of the Stripe invoice with the ZohoBooks invoice ID -->
+                                                         <stripe.init>
+                                                            <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                                            <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                                            <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                                         </stripe.init>
+                                                         <stripe.updateAnInvoice>
+                                                            <invoiceId>{$ctx:stripe.invoiceId}</invoiceId>
+                                                            <metadata>{$ctx:stripe.metadata}</metadata>
+                                                         </stripe.updateAnInvoice>
+                                                         
+														 <property name="zohobooksInvoiceId" expression="json-eval($.metadata.zohobooks_invoice_id)" />
+                                                         
+														 <!-- START: Send an error message to the user only if the updation failed. -->
+                                                         <filter source="boolean(get-property('zohobooksInvoiceId'))" regex="false">
+                                                            <then>
+                                                               <!-- Failure case: Append an error message to be sent to the user. -->
+                                                               <property name="id" expression="fn:concat('stripe_invoiceId:', get-property('stripe.invoiceId'), ',zohobooks_invoiceId:', get-property('zohobooks.invoiceId'))" />
+                                                               <property name="errorResponse" expression="json-eval($)" />
+                                                               <call-template target="responseHandlerTemplate">
+                                                                  <with-param name="activity" value="stripe_updateInvoice" />
+                                                                  <with-param name="id" value="{$ctx:id}" />
+                                                                  <with-param name="status" value="Failure" />
+                                                                  <with-param name="message" value="Unknown error occured while updating the corresponding invoice in Stripe." />
+                                                               </call-template>
+                                                            </then>
+                                                         </filter>
+														 <!-- END: Send an error message to the user only if the updation failed. -->
+														 
+                                                      </else>
+                                                   </filter>
+                                                   <!-- END: If invoiceId doesn't exist, then send the descriptive message sent by the API itself to the user. -->
+												   
+                                                </then>
+                                             </filter>
+                                             <!-- END: Create the invoice only if the contact corresponding to the customer exist in ZohoBooks. -->
+											 
+                                          </then>
+                                       </filter>
+									   
+                                       <!--Increment the invoiceIndex Count by 1 -->									   
+                                       <property name="invoiceIndex" expression="get-property('operation', 'invoiceIndex') + 1" scope="operation" />
+									   
+                                       <filter xpath="get-property('operation', 'invoiceIndex') = get-property('operation', 'noOfInvoices')">
+                                          <then>
+                                             <loopback />
+                                          </then>
+                                       </filter>
+									   
+                                    </sequence>
+                                 </target>
+                              </iterate>
+                              <!--FOR EACH Stripe Invoice: BEGIN -->
+							  
+                           </then>
+                        </filter>
+                        <!-- END: Execute the code when all the previous iterations are done. -->
+						
+                     </sequence>
+                  </target>
+               </iterate>
+			   <!-- FOR EACH Stripe Invoice: END -->
+			   
+            </else>
+         </filter>
+         <!-- END: Proceed with the scenario if at least one invoice is returned in the previous call. -->
+		 
+      </inSequence>
+      <outSequence>
+	     <!-- Send the constructed response to the user. -->
+         <payloadFactory media-type="json">
+            <format>
+				{
+				   "Response":{
+					   "process":"stripe_sendInvoiceDetailsToClients",
+					   "activityResponse":[$1]
+				   }
+                }
+			</format>
+            <args>
+               <arg expression="get-property('operation','responseString')" />
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <send />
+      </outSequence>
+   </target>
+</proxy>

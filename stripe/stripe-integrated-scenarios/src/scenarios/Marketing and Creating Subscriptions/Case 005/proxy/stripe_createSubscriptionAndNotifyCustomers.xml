@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Proxy Template - Parameters: {proxyName} - Name of the proxy/scenario -->
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_createSubscriptionAndNotifyCustomers" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+         <!-- Stripe Properties -->
+         <property name="stripe.apiUrl" value="https://api.stripe.com" />
+         <property name="stripe.apiVersion" value="v1" />
+         <property name="stripe.apiKey" expression="json-eval($.stripeApiKey)" />
+         <property name="stripe.applicationFeePercent" expression="json-eval($.stripeApplicationFeePercent)" />
+         <property name="stripe.taxPercent" expression="json-eval($.stripeTaxPercent)" />
+		 
+         <!-- Mandrill Properties-->
+         <property name="mandrill.apiKey" expression="json-eval($.mandrillApiKey)" />
+         <property name="mandrill.apiUrl" value="https://mandrillapp.com" />
+		 
+         <!-- Common Properties -->
+         <property name="id.empty" value="{}" />
+		 <property name="responseString" value="" scope="operation" />
+		 
+         <!--Retrieving the current stripe account details -->
+         <stripe.init>
+            <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+            <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+            <apiKey>{$ctx:stripe.apiKey}</apiKey>
+         </stripe.init>
+         <stripe.retrieveAccountDetails />
+		 
+         <!--Removing unused headers -->
+         <sequence key="removeResponseHeaders" />
+		 
+         <property name="stripe.accountId" expression="json-eval($.id)" />
+		 
+         <!--Checking whether the account id is returned or not -->
+         <filter source="boolean(get-property('stripe.accountId'))" regex="false">
+            <!--On error response, display the API error message -->
+            <then>
+               <property name="errorResponse" expression="json-eval($)" />
+               <!--Call the responseHandler template -->
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="stripe_retrieveAccountDetails" />
+                  <with-param name="id" value="{$ctx:id.empty}" />
+                  <with-param name="status" value="Failure" />
+                  <with-param name="message" value="{$ctx:errorResponse}" />
+               </call-template>
+               <loopback />
+            </then>
+            <else>
+               <property name="stripe.accountEmail" expression="json-eval($.email)" />
+               <property name="stripe.accountDisplayName" expression="json-eval($.display_name)" />
+               
+               <!-- Process the current date time in order to filter the results on created date and time-->
+               <script language="js"><![CDATA[
+							// Get the current time in milliseconds (Greenwich standard time)
+							var currentTimeInMillis = java.util.Date().getTime();
+							// No. of milliseconds on a day
+							var millisInADay = 24*60*60*1000;
+							// Remaining time of the day in Milliseconds
+							var remainder = java.lang.Long.parseLong(currentTimeInMillis) % millisInADay;
+							// Milliseconds until start of day
+							var startOfDay = java.lang.Long.parseLong(currentTimeInMillis) - java.lang.Long.parseLong(remainder);
+							//compensating for the difference in time zone
+							mc.setProperty('stripe.startTime', '' + new java.text.SimpleDateFormat("dd-MM-yyyy").format(new Date(java.lang.Long.parseLong(startOfDay))));
+							mc.setProperty('stripe.stripeCreatedTimeStamp', '' + java.lang.Long.parseLong(startOfDay)/1000);		
+							]]></script>
+               <!-- Retrieving all the customers from Stripe -->
+               <stripe.init>
+                  <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                  <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                  <apiKey>{$ctx:stripe.apiKey}</apiKey>
+               </stripe.init>
+               
+			   <stripe.getAListOfAllCustomers>
+                  <createdGTE>{$ctx:stripe.stripeCreatedTimeStamp}</createdGTE>
+               </stripe.getAListOfAllCustomers>
+              
+			  <!--Removing unused headers -->
+               <sequence key="removeResponseHeaders" />
+              
+			  <property name="stripe.errorResponse" expression="json-eval($.error)" />
+              
+			  <!--Check whether there occurred an error while retriving all customers from stripe-->
+               <filter source="boolean(get-property('stripe.errorResponse'))" regex="true">
+                  <then>
+                     <property name="errorResponse" expression="json-eval($)" />
+                     <!--Call the responseHandler template -->
+                     <call-template target="responseHandlerTemplate">
+                        <with-param name="activity" value="stripe_listCustomers" />
+                        <with-param name="id" value="{$ctx:id.empty}" />
+                        <with-param name="status" value="Failure" />
+                        <with-param name="message" value="{$ctx:errorResponse}" />
+                     </call-template>
+                     <loopback />
+                  </then>
+                  <else>
+                     <property name="recordsCount" expression="count(//jsonObject/data)" scope="operation" />
+                     <property name="recordsIndex" expression="0" scope="operation" />
+                    
+					<!--Checking there are sufficient Customer records to retrieve -->
+                     <filter source="get-property('operation', 'recordsCount')" regex="0.0">
+                        <then>
+                           <!--If there are no Customers in the Stripe account then send an error message and loopback -->
+                           <call-template target="responseHandlerTemplate">
+                              <with-param name="activity" value="stripe_listCustomers" />
+                              <with-param name="id" value="{$ctx:id.empty}" />
+                              <with-param name="status" value="Skipped" />
+                              <with-param name="message" value="There are no Customers in the account to be retrieved." />
+                           </call-template>
+                           <loopback />
+                        </then>
+                        <else>
+                           <!--Iterate through each set of records of the Customer and create a new subscription -->
+                           <iterate continueParent="false" id="customersIterator" expression="//jsonObject/data" sequential="true">
+                              <target>
+                                 <sequence>
+                                    <!--retrieving details of the Customer -->
+                                    <property name="stripe.email" expression="json-eval($.data.email)" />
+                                    <property name="stripe.id" expression="json-eval($.data.id)" />
+                                    <property name="stripe.customerPlanId" expression="json-eval($.data.metadata.plan_id)" />
+                                    <property name="stripe.subscriptionQuantity" expression="json-eval($.data.metadata.subscription_quantity)" />
+                                    <property name="subscription_created" expression="json-eval($.data.metadata.subscription_created)" />
+                                   
+								   <!--Checking whether the user is already subscribed to a plan or not -->
+								   <filter source="get-property('subscription_created')" regex="true">
+                                       <then>
+										  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.id'))" />
+                                          <!--If the Customer is already subscribed to the plan then display a custom error message-->
+                                          <call-template target="responseHandlerTemplate">
+                                             <with-param name="activity" value="stripe_createSubscription" />
+                                             <with-param name="id" value="{$ctx:id}" />
+                                             <with-param name="status" value="Skipped" />
+                                             <with-param name="message" value="Customer is already subscribed to the plan" />
+                                          </call-template>
+                                       </then>
+                                       <else>
+                                          <!--Checking the existence of the email -->
+                                          <filter source="get-property('stripe.email')" regex="null">
+                                             <!--If the email is not available then display a custom error message -->
+                                             <then>
+												<property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.id'))" />
+                                                <!--Call the responseHandler template -->
+                                                <call-template target="responseHandlerTemplate">
+                                                   <with-param name="activity" value="stripe_createSubscription" />
+                                                   <with-param name="id" value="{$ctx:id}" />
+                                                   <with-param name="status" value="Skipped" />
+                                                   <with-param name="message" value="Customer cannot be subscribed to the given plan since the email does not exist." />
+                                                </call-template>
+                                             </then>
+                                             <!--If the email exist then subscribe the customer for the plan -->
+                                             <else>
+                                                <stripe.init>
+                                                   <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                                   <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                                   <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                                </stripe.init>
+                                                
+												<stripe.createANewSubscription>
+                                                   <customerId>{$ctx:stripe.id}</customerId>
+                                                   <plan>{$ctx:stripe.customerPlanId}</plan>
+                                                   <quantity>{$ctx:stripe.subscriptionQuantity}</quantity>
+                                                   <applicationFeePercent>{$ctx:stripe.applicationFeePercent}</applicationFeePercent>
+                                                   <taxPercent>{$ctx:stripe.taxPercent}</taxPercent>
+                                                </stripe.createANewSubscription>
+                                               
+											   <!--Removing unused headers -->
+                                                <sequence key="removeResponseHeaders" />
+                                               
+											   <property name="stripe.subscriptionId" expression="json-eval($.id)" />
+                                               
+											   <!--Checking whether the subscription id is returned or not -->
+                                                <filter source="boolean(get-property('stripe.subscriptionId'))" regex="false">
+                                                   <!--On error response, display the API error message -->
+                                                   <then>
+                                                      <property name="errorResponse" expression="json-eval($)" />
+                                                      <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.id'), ',stripe_planId:', get-property('stripe.customerPlanId'))" />
+													  <!--Call the responseHandler template -->
+                                                      <call-template target="responseHandlerTemplate">
+                                                         <with-param name="activity" value="stripe_createSubscription" />
+                                                         <with-param name="id" value="{$ctx:id}" />
+                                                         <with-param name="status" value="Skipped" />
+                                                         <with-param name="message" value="{$ctx:errorResponse}" />
+                                                      </call-template>
+                                                   </then>
+                                                   <!--On successful response, notify the user by sending an email through Mandrill -->
+                                                   <else>
+													  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.id'), ',stripe_planId:', get-property('stripe.customerPlanId'), ',stripe_subscriptionId:', get-property('stripe.subscriptionId'))" />
+													  <call-template target="responseHandlerTemplate">
+                                                         <with-param name="activity" value="stripe_createSubscription" />
+                                                         <with-param name="id" value="{$ctx:id}" />
+                                                         <with-param name="status" value="Success" />
+                                                         <with-param name="message" value="Subscription has been successfully created." />
+                                                      </call-template>
+                                                   
+                                                      <property name="stripe.planName" expression="json-eval($.plan.name)" />
+                                                      <property name="stripe.subscriptionStatus" expression="json-eval($.status)" />
+                                                      <property name="stripe.trialStartDate" expression="json-eval($.trial_start)" />
+                                                      <property name="stripe.trialEndDate" expression="json-eval($.trial_end)" />
+                                                      
+													  <script language="js"><![CDATA[
+													    var trialStartDate=mc.getProperty('stripe.trialStartDate');	
+														var trialEndDate=mc.getProperty('stripe.trialEndDate');
+														
+														mc.setProperty('stripe.trialStartDate', '' + new java.text.SimpleDateFormat("dd-MM-yyyy").format(new  java.util.Date(trialStartDate*1000)));
+														mc.setProperty('stripe.trialEndDate', '' + new java.text.SimpleDateFormat("dd-MM-yyyy").format(new  java.util.Date(trialEndDate*1000)));
+														]]></script>
+                                                     
+													 <!--constructing complex data types to be sent for Mandrill -->
+                                                      <property name="mandrill.tags" expression="fn:concat('[&quot;', get-property('stripe.customerPlanId'),'&quot;]')" />
+                                                      <property name="mandrill.to" expression="fn:concat('[ { &quot;email&quot;: &quot;', get-property('stripe.email'),'&quot;, &quot;name&quot;: &quot;',get-property('stripe.name'),'&quot;, &quot;type&quot;: &quot;to&quot; } ]')" />
+                                                      <property name="mandrill.emailSubject" expression="fn:concat('You are subscribed to Plan - ', get-property('stripe.customerPlanId'),' in Stripe.')" />
+                                                      <property name="mandrill.emailHtml" expression="fn:concat('&lt;p&gt;Thank you for your subscription with the below plan&lt;/p&gt;&lt;p&gt;Subscription ID : ',get-property('stripe.subscriptionId') ,'&lt;/p&gt; &lt;p&gt;Plan ID : ',get-property('stripe.customerPlanId') ,'&lt;/p&gt; &lt;p&gt;Plan Name : ',get-property('stripe.planName') ,'&lt;/p&gt; &lt;p&gt;Subscribed email : ',get-property('stripe.email') ,'&lt;/p&gt; &lt;p&gt;Status of the subscription : ',get-property('stripe.subscriptionStatus') ,'&lt;/p&gt; &lt;p&gt;Trial start date : ',get-property('stripe.trialStartDate') ,'&lt;/p&gt; &lt;p&gt;Trial end date : ',get-property('stripe.trialEndDate'), '&lt;/p&gt;')" />
+                                                      
+													  <mandrill.init>
+                                                         <apiKey>{$ctx:mandrill.apiKey}</apiKey>
+                                                         <apiUrl>{$ctx:mandrill.apiUrl}</apiUrl>
+                                                         <format>json</format>
+                                                      </mandrill.init>
+                                                     
+													 <mandrill.sendMessage>
+                                                         <html>{$ctx:mandrill.emailHtml}</html>
+                                                         <subject>{$ctx:mandrill.emailSubject}</subject>
+                                                         <fromEmail>{$ctx:stripe.accountEmail}</fromEmail>
+                                                         <fromName>{$ctx:stripe.accountDisplayName}</fromName>
+                                                         <important>false</important>
+                                                         <trackOpens>true</trackOpens>
+                                                         <trackClicks>true</trackClicks>
+                                                         <autoHtml>true</autoHtml>
+                                                         <urlStripQs>false</urlStripQs>
+                                                         <preserveRecipients>true</preserveRecipients>
+                                                         <viewContentLink>true</viewContentLink>
+                                                         <to>{$ctx:mandrill.to}</to>
+                                                         <tags>{$ctx:mandrill.tags}</tags>
+                                                      </mandrill.sendMessage>
+                                                     
+													 <!--Removing unused headers -->
+                                                      <sequence key="removeResponseHeaders" />
+                                                     
+													 <property name="mandril.status" expression="//jsonArray/jsonElement/status" />
+													 
+                                                      <!--Checking whether the response returns the sent email status as 'sent' or 'queued' -->                            
+  													 <filter xpath="get-property('mandril.status') = 'sent' or get-property('mandril.status') = 'queued'">
+                                                         <!--On error response, display the API error message -->
+                                                         <then>
+															<property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.id'))" />
+                                                            <!--Call the responseHandler template -->
+                                                            <call-template target="responseHandlerTemplate">
+                                                               <with-param name="activity" value="mandrill_sendMessage" />
+                                                               <with-param name="id" value="{$ctx:id}" />
+                                                               <with-param name="status" value="Success" />
+                                                               <with-param name="message" value="Email notification is successfully sent to the customer." />
+                                                            </call-template>
+                                                          
+														  <property name="stripe.metadata" expression="fn:concat('{&quot;', get-property('stripe.customerPlanId') ,'&quot;:&quot;', get-property('stripe.subscriptionId') ,'&quot;,&quot;subscription_created&quot;:&quot;true&quot;}')" />
+                                                          
+														  <!--Update the Customer's meta-data with the subscription details in Stripe (key=planId , value=subscriptionId)-->
+                                                            <stripe.init>
+                                                               <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                                               <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                                               <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                                            </stripe.init>
+                                                          
+														  <stripe.updateACustomerDetails>
+                                                               <customerId>{$ctx:stripe.id}</customerId>
+                                                               <metadata>{$ctx:stripe.metadata}</metadata>
+                                                            </stripe.updateACustomerDetails>
+                                                          
+														  <!--Removing unused headers -->
+                                                          <sequence key="removeResponseHeaders" />
+                                                         
+  														  <property name="stripe.updatedCustomerId" expression="json-eval($.id)" />
+                                                            
+															<!--Checking whether the customerId is retrieved or not -->
+                                                            <filter source="boolean(get-property('stripe.updatedCustomerId'))" regex="false">
+                                                               <!--On error response, display the API error message -->
+                                                               <then>
+                                                                  <property name="errorResponse" expression="json-eval($)" />
+																  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.id'))" />
+                                                                  <!--Call the responseHandler template -->
+                                                                  <call-template target="responseHandlerTemplate">
+                                                                     <with-param name="activity" value="stripe_updateCustomer" />
+                                                                     <with-param name="id" value="{$ctx:id}" />
+                                                                     <with-param name="status" value="Failure" />
+                                                                     <with-param name="message" value="{$ctx:errorResponse}" />
+                                                                  </call-template>
+                                                               </then>
+                                                            </filter>		<!--END of filter: Checking whether the customerId is retrieved or not -->
+                                                         </then>
+                                                         <else>
+                                                            <property name="errorResponse" expression="json-eval($)" />
+															<property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.id'))" />
+                                                            <!--Call the responseHandler template -->
+                                                            <call-template target="responseHandlerTemplate">
+                                                               <with-param name="activity" value="mandrill_sendMessage" />
+                                                               <with-param name="id" value="{$ctx:id}" />
+                                                               <with-param name="status" value="Skipped" />
+                                                               <with-param name="message" value="{$ctx:errorResponse}" />
+                                                            </call-template>
+                                                         </else>
+                                                      </filter>		<!--END of filter: Checking whether the response returns the sent email status as 'sent' or 'queued'  -->
+                                                   </else>
+                                                </filter>		<!--END of filter: Checking whether the subscription id is returned or not -->
+                                             </else>
+                                          </filter>		<!--END of filter: Checking the existence of the email -->
+                                       </else>
+                                    </filter>		<!--END of filter: Checking whether the user is already subscribed to a plan or not -->
+                                   
+								   <!--Incrementing the index -->
+                                    <property name="recordsIndex" expression="get-property('operation','recordsIndex') + 1" scope="operation" />
+                                   
+								   <!--FOR EACH Customer : END -->
+                                    <filter xpath="get-property('operation', 'recordsCount') = get-property('operation', 'recordsIndex')">
+                                       <then>
+                                          <loopback />
+                                       </then>
+                                    </filter>
+                                 </sequence>
+                              </target>
+                           </iterate>		<!--END filter: Iterate through each set of records of the Customer and create a new subscription -->
+                        </else>
+                     </filter>		<!--END of filter: Checking there are sufficient Customer records to retrieve -->
+                  </else>
+               </filter>		<!--END of filter: Check the successful execution of retrieving all customers from stripe -->
+            </else>
+         </filter>			<!--END of filter: Checking whether the account id is returned or not -->
+      </inSequence>
+      <outSequence>
+         <payloadFactory media-type="json">
+            <format>{
+               "Response":{
+				   "process":"stripe_createSubscriptionAndNotifyCustomers",
+				   "activityResponse":[$1]
+				   }
+               }</format>
+            <args>
+               <arg expression="get-property('operation','responseString')" />
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>

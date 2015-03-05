@@ -1,0 +1,15 @@
+{
+	"stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",
+	"stripeAmount":1999,
+	"stripeStatementDescriptor":"Platinum Plan",
+	"stripeInterval":"month",
+	"stripeTrialPeriodDays":14,
+	"stripeIntervalCount":1,
+	"stripePlanName":"Bimbosky Anti-virus 0022",
+	"stripePlanId":"bimbosky_march_0003",
+	"stripeCurrency":"USD",
+	"stripeMailchimpListName":"Bimbosky 20",
+
+	"mailchimpApiKey":"444e6b63ca5c81d2143d3a161226043b-us9",
+	"mailchimpListName":"Courty Corporation Subscriber List"
+}

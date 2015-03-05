@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_createContactsAsCustomers" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+         <!-- ZohoCrm Properties -->
+         <property name="zohocrm.apiUrl" value="https://crm.zoho.com" />
+         <property name="zohocrm.accessToken" expression="json-eval($.zohoCrmAccessToken)" />
+		 
+         <!-- Stripe Properties -->
+         <property name="stripe.apiUrl" value="https://api.stripe.com" />
+         <property name="stripe.apiVersion" value="v1" />
+         <property name="stripe.apiKey" expression="json-eval($.stripeApiKey)" />
+		 
+         <!-- Common Properties -->
+         <property name="id.empty" value="{}" />
+		 <property name="responseString" value="" scope="operation" />
+		 
+         <!--Retrieving all the Contacts from ZohoCrm account -->
+         <zohocrm.init>
+            <apiUrl>{$ctx:apiUrl}</apiUrl>
+            <accessToken>{$ctx:zohocrm.accessToken}</accessToken>
+            <scope>crmapi</scope>
+         </zohocrm.init>
+         <zohocrm.getRecords>
+            <moduleType>Contacts</moduleType>
+         </zohocrm.getRecords>
+		 
+         <!--Removing unused headers -->
+         <sequence key="removeResponseHeaders" />
+		 
+         <property name="recordsCount" expression="count(//jsonObject/response/result/Contacts/row)" scope="operation" />
+         <property name="recordsIndex" expression="0" scope="operation" />
+         <property name="zohoCrm.responseError" expression="json-eval($.response.error)" />
+        
+		<!--If there occurred an error while retrieving the contacts records in zohoCrm display the api error message and loopback -->
+         <filter source="boolean(get-property('zohoCrm.responseError'))" regex="true">
+            <then>
+               <property name="errorResponse" expression="json-eval($)" />
+               <!--Call the responseHandler template -->
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="zohocrm_getRecords" />
+                  <with-param name="id" value="{$ctx:id.empty}" />
+                  <with-param name="status" value="Failure" />
+                  <with-param name="message" value="{$ctx:errorResponse}" />
+               </call-template>
+               <loopback />
+            </then>
+            <else>
+               <!-- Checking whether there are sufficient contacts to retrieve-->
+               <filter source="get-property('operation', 'recordsCount')" regex="0.0">
+                  <then>
+                     <!--If there are no Contacts in the ZohoCrm account then send an error message and loopback -->
+                     <call-template target="responseHandlerTemplate">
+                        <with-param name="activity" value="zohocrm_getRecords" />
+                        <with-param name="id" value="{$ctx:id.empty}" />
+                        <with-param name="status" value="Skipped" />
+                        <with-param name="message" value="Customers cannot be added in Stripe since there are no Contacts in ZohoCrm." />
+                     </call-template>
+                     <loopback />
+                  </then>
+                  <else>
+                     <!--If there are Contacts in the ZohoCrm account then iterate through all of them and get the contact details -->
+                     <iterate continueParent="false" id="contactsRecordsIterator" expression="//jsonObject/response/result/Contacts/row" sequential="true">
+                        <target>
+                           <sequence>
+                              <!--retrieving the contact Id -->
+                              <property name="contactIDVal" expression="//row/FL[1]/content/text()" />
+                              <property name="contactAttributes" expression="json-eval($.row.FL)" />
+							  
+                              <!-- Script Mediator is used to extract necessary properties from the JSON response.
+                                   Attributes of the contact are returned as a map (key-value pairs) rather than as an object -->
+                              <script language="js">var jsn = eval("(" + mc.getProperty("contactAttributes") + ")");
+
+                                 for (var i = 0; i &lt; jsn.length ; i++) {
+									 if(jsn[i].val == "Credit Card Number"){
+									 mc.setProperty('creditCardNumber', '' + jsn[i].content);
+									 }else if(jsn[i].val == "Credit Card Expiry Year"){
+									 mc.setProperty('creditCardExpiryYear', '' + jsn[i].content);
+									 }else if(jsn[i].val == "Credit Card Expiry Month"){
+									 mc.setProperty('creditCardExpiryMonth', ''+ jsn[i].content);									 									 
+									 }else if(jsn[i].val == "Stripe Plan ID"){
+									 mc.setProperty('stripePlanId', '' + jsn[i].content);									 									 
+									 }else if(jsn[i].val == "Stripe Subscription Quantity"){
+									 mc.setProperty('stripeSubscriptionQuantity', '' + jsn[i].content);									 									 
+									 }else if(jsn[i].val == "First Name"){
+									 mc.setProperty('firstName',jsn[i].content);
+									 }else if(jsn[i].val == "Last Name"){
+									 mc.setProperty('lastName',jsn[i].content);
+									 }else if(jsn[i].val == "Mailing Street"){
+									 mc.setProperty('mailingStreet', jsn[i].content);
+									 }else if(jsn[i].val == "Mailing City"){
+									 mc.setProperty('mailingCity', jsn[i].content);
+									 }else if(jsn[i].val == "Mailing Zip"){
+									 mc.setProperty('mailingZip', jsn[i].content);
+									 }else if(jsn[i].val == "Mailing State"){
+									 mc.setProperty('mailingState', jsn[i].content);
+									 }else if(jsn[i].val == "Mailing Country"){
+									 mc.setProperty('mailingCountry', jsn[i].content);
+									 }else if(jsn[i].val =="Email"){
+									 mc.setProperty('email', jsn[i].content);
+									 }else if(jsn[i].val == "Description"){
+									 mc.setProperty('description', jsn[i].content);
+									 }else if(jsn[i].val == "Stripe Customer ID"){
+									 mc.setProperty('stripeCustomerID', jsn[i].content);
+									 }								
+                                 }</script>
+                              <!--Check whether the contact already exist in Stripe -->
+                              <filter source="boolean(get-property('stripeCustomerID'))" regex="true">
+                                 <!--If contact exists then display a custom error message -->
+                                 <then>
+                                    <property name="id" expression="fn:concat('zohocrm_contactId:', get-property('contactIDVal'))" />
+                                    <!--Call the responseHandler template -->
+                                    <call-template target="responseHandlerTemplate">
+                                       <with-param name="activity" value="stripe_createCustomer" />
+                                       <with-param name="id" value="{$ctx:id}" />
+                                       <with-param name="status" value="Skipped" />
+                                       <with-param name="message" value="Contact already exists." />
+                                    </call-template>
+                                 </then>
+                                 <else>
+                                    <!--Constructing the stripe card holders name by concatenating firstname and lastname from ZohoCrm -->
+                                    <property name="stripe.name" expression="fn:concat(get-property('firstName'),' ' , get-property('lastName'))" />
+                                    <property name="stripe.metadata" expression="fn:concat('{&quot;plan_id&quot;:&quot;', get-property('stripePlanId') ,'&quot;,&quot;subscription_quantity&quot;:&quot;', get-property('stripeSubscriptionQuantity') ,'&quot;}')" />
+                                   
+								   <!--Create the contact in Stripe as a new customer -->
+                                    <stripe.init>
+                                       <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                       <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                       <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                    </stripe.init>
+                                    <stripe.createANewCustomer>
+                                       <cardNumber>{$ctx:creditCardNumber}</cardNumber>
+                                       <expYear>{$ctx:creditCardExpiryYear}</expYear>
+                                       <expMonth>{$ctx:creditCardExpiryMonth}</expMonth>
+                                       <name>{$ctx:stripe.name}</name>
+                                       <addressLine1>{$ctx:mailingStreet}</addressLine1>
+                                       <city>{$ctx:mailingCity}</city>
+                                       <zip>{$ctx:mailingZip}</zip>
+                                       <state>{$ctx:mailingState}</state>
+                                       <country>{$ctx:mailingCountry}</country>
+                                       <description>{$ctx:description}</description>
+                                       <email>{$ctx:email}</email>
+                                       <metadata>{$ctx:stripe.metadata}</metadata>
+                                    </stripe.createANewCustomer>
+                                   
+								    <property name="stripe.id" expression="json-eval($.id)" />
+                                    <property name="id" expression="fn:concat('zohoCrm_contactId:',get-property('contactIDVal'))" />
+                                    
+									<!--Check the existence of the stripeId in the response to decide the success response -->
+                                    <filter source="boolean(get-property('stripe.id'))" regex="false">
+                                       <then>
+                                          <property name="errorResponse" expression="json-eval($)" />
+                                          <!--Call the responseHandler template -->
+                                          <call-template target="responseHandlerTemplate">
+                                             <with-param name="activity" value="stripe_createCustomer" />
+                                             <with-param name="id" value="{$ctx:id}" />
+                                             <with-param name="status" value="Failure" />
+                                             <with-param name="message" value="{$ctx:errorResponse}" />
+                                          </call-template>
+                                       </then>
+                                       <else>
+                                          <!--Call the responseHandler template -->
+                                          <call-template target="responseHandlerTemplate">
+                                             <with-param name="activity" value="stripe_createCustomer" />
+                                             <with-param name="id" value="{$ctx:id}" />
+                                             <with-param name="status" value="Success" />
+                                             <with-param name="message" value="Contact is successfully created." />
+                                          </call-template>
+                                          <!--If the creation of Customer is successful then update the 'Stripe Customer
+                                              ID' field of the contact in ZohoCrm -->
+                                          <script language="js"><![CDATA[
+												//constructing the xml data in order to update the contact in ZohoCrm								
+												var stripeCustomerID=mc.getProperty('stripe.id');								
+												var xmlData="<Contacts> <row no=\"1\"> <FL val=\"Stripe Customer ID\">"+stripeCustomerID+"</FL> </row> </Contacts>";
+											
+												mc.setProperty('zohocrm.xmlData', xmlData);
+												]]></script>
+                                          <zohocrm.init>
+                                             <apiUrl>{$ctx:zohocrm.apiUrl}</apiUrl>
+                                             <accessToken>{$ctx:zohocrm.accessToken}</accessToken>
+                                             <scope>crmapi</scope>
+                                          </zohocrm.init>
+                                          <zohocrm.updateRecords>
+                                             <moduleType>Contacts</moduleType>
+                                             <id>{$ctx:contactIDVal}</id>
+                                             <xmlData>{$ctx:zohocrm.xmlData}</xmlData>
+                                          </zohocrm.updateRecords>
+                                          
+										  <!--Removing unused headers -->
+                                          <sequence key="removeResponseHeaders" />
+                                          
+										  <property name="zohocrm.responseId" expression="json-eval($.response.result.recorddetail.FL[0].content)" />
+                                          <!--Checking for the success response -->
+                                          <filter source="boolean(get-property('zohocrm.responseId'))" regex="false">
+                                             <then>
+                                                <property name="id" expression="fn:concat('zohocrm_contactId:', get-property('contactIDVal'))" />
+                                                <!--Call the responseHandler template -->
+                                                <call-template target="responseHandlerTemplate">
+                                                   <with-param name="activity" value="zohocrm_updateRecords" />
+                                                   <with-param name="id" value="{$ctx:id.empty}" />
+                                                   <with-param name="status" value="Failure" />
+                                                   <with-param name="message" value="The Contact is created, however the contactID of Stripe is failed to be updated in ZohoCRM." />
+                                                </call-template>
+                                             </then>
+                                          </filter>		<!--END of filter: Checking the successful update in zohoCRM -->
+                                       </else>
+                                    </filter>		<!--END of filter: Check the existence of the stripeId in the response to decide the success response -->
+                                 </else>
+                              </filter>		<!--END of filter: Check whether the contact already exist in Stripe -->
+                             
+							 <!--Incrementing the index -->
+                              <property name="recordsIndex" expression="get-property('operation','recordsIndex') + 1" scope="operation" />
+							  <filter xpath="get-property('operation', 'recordsCount') = get-property('operation', 'recordsIndex')">
+								 <then>
+								    <loopback />
+								 </then>
+							  </filter>
+							  
+                           </sequence>
+                        </target>
+                     </iterate>		<!--END LOOP: Iterating through all the contacts in ZohoCrm -->
+                     
+                  </else>
+               </filter>		<!--END of filter:  Checking whether there are sufficient contacts to retrieve-->
+            </else>
+         </filter>		<!--END of filter: Checking the error scenario while retrieving contact details-->
+      </inSequence>
+      <outSequence>
+         <payloadFactory media-type="json">
+            <format>{
+               "Response":{
+				   "process":"stripe_createContactsAsCustomers",
+				   "activityResponse":[$1]
+				   }
+               }</format>
+            <args>
+               <arg expression="get-property('operation','responseString')" />
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>
