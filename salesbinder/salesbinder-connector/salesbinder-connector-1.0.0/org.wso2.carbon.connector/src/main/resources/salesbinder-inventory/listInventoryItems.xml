@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/list-items -->
 <template name="listInventoryItems" xmlns="http://ws.apache.org/ns/synapse">
    <parameter name="page" description="The number of pages of items." />
    <parameter name="categoryId" description="The category ID of the item." />

@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/create-new-document -->
 <template name="createDocument" xmlns="http://ws.apache.org/ns/synapse">
    <parameter name="contextId" description="Id of the context" />
    <parameter name="customerId" description="Id of the customer" />

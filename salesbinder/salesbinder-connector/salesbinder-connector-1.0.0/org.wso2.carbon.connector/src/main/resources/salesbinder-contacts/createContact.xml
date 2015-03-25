@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/create-new-contact -->
 <template name="createContact" xmlns="http://ws.apache.org/ns/synapse">
    <parameter name="firstName" description="First name of the contact." />
    <parameter name="lastName" description="Last name of the contact." />

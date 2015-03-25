@@ -16,10 +16,10 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/list-documents -->
-<template name="listDocuments" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="page" description="The number of pages of documents." />
-   <parameter name="contextId" description="The context ID of the document." />
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/list-accounts -->
+<template name="listAccounts" xmlns="http://ws.apache.org/ns/synapse">
+   <parameter name="page" description="The number of pages of accountss." />
+   <parameter name="contextId" description="The context ID of the account." />
    <sequence>
       <property name="uri.var.page" expression="$func:page" />
       <property name="uri.var.contextId" expression="$func:contextId" />
@@ -28,8 +28,7 @@
          <![CDATA[
             var urlQuery="";
             var page = mc.getProperty("uri.var.page");
-            var contextId = mc.getProperty("uri.var.contextId");
-               
+            var contextId = mc.getProperty("uri.var.contextId");  
             if (page != null && page != ""){
                urlQuery += 'page=' + page + '&';
             }
@@ -45,7 +44,7 @@
       </script>
       <call>
          <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}/documents.json{uri.var.urlQuery}" />
+            <http method="get" uri-template="{uri.var.apiUrl}/customers.json{uri.var.urlQuery}" />
          </endpoint>
       </call>
       <!-- Remove custom Headers from the API Response -->

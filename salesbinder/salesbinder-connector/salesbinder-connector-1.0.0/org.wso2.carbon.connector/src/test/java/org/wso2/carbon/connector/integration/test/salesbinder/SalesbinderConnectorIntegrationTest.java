@@ -531,6 +531,8 @@ public class SalesbinderConnectorIntegrationTest extends ConnectorIntegrationTes
         
         Assert.assertEquals(apiCustomerObject.getString("name"), connectorProperties.get("accountName"));
         Assert.assertEquals(apiCustomerObject.getString("office_email"), connectorProperties.get("accountOfficeEmail"));
+        Assert.assertEquals(apiRestResponse.getBody().getJSONObject("Context").getString("id"),
+                connectorProperties.get("accountContextId"));
         
     }
     
@@ -556,6 +558,80 @@ public class SalesbinderConnectorIntegrationTest extends ConnectorIntegrationTes
                 esbResponseArray.getJSONObject(0).getJSONObject("Error").getString("message"));
       
         
+    }
+    
+    /**
+     * Positive test case for getAccountById method with mandatory parameters.
+     */
+    @Test(dependsOnMethods = { "testCreateAccountWithMandatoryParameters" }, groups = { "wso2.esb" }, description = "salesbinder {getAccountById} integration test with mandatory parameters.")
+    public void testGetAccountByIdWithMandatoryParameters() throws IOException, JSONException {
+    
+        esbRequestHeadersMap.put("Action", "urn:getAccountById");
+        RestResponse<JSONObject> esbRestResponse =
+                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getAccountById_mandatory.json");
+        JSONObject esbResponseObject = esbRestResponse.getBody().getJSONObject("Customer");
+        
+        String apiEndPoint =
+                connectorProperties.getProperty("apiUrl") + "/api/customers/"
+                        + connectorProperties.getProperty("accountId") + ".json";
+        RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+        JSONObject apiResponseObject = apiRestResponse.getBody().getJSONObject("Customer");
+        
+        Assert.assertEquals(apiResponseObject.getString("name"), esbResponseObject.getString("name"));
+        Assert.assertEquals(apiResponseObject.getString("created"), esbResponseObject.getString("created"));
+        Assert.assertEquals(apiResponseObject.getString("modified"), esbResponseObject.getString("modified"));
+    }
+    
+    /**
+     * Positive test case for listAccounts method with mandatory parameters.
+     */
+    @Test(dependsOnMethods = { "testCreateAccountWithMandatoryParameters","testCreateAccountWithOptionalParameters" }, groups = { "wso2.esb" }, description = "salesbinder {listAccounts} integration test with mandatory parameters.")
+    public void testListAccountsWithMandatoryParameters() throws IOException, JSONException {
+    
+        esbRequestHeadersMap.put("Action", "urn:listAccounts");
+        RestResponse<JSONObject> esbRestResponse =
+                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listAccounts_mandatory.json");
+        JSONObject esbResponseObject =
+                esbRestResponse.getBody().getJSONArray("Customers").getJSONObject(0).getJSONObject("Customer");
+        
+        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/customers.json";
+        RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+        JSONObject apiResponseObject =
+                apiRestResponse.getBody().getJSONArray("Customers").getJSONObject(0).getJSONObject("Customer");
+        
+        JSONObject apiResponseContextObject =
+                apiRestResponse.getBody().getJSONArray("Customers").getJSONObject(0).getJSONObject("Context");
+        
+        Assert.assertEquals(apiRestResponse.getBody().getString("count"), esbRestResponse.getBody().getString("count"));
+        Assert.assertEquals(apiResponseObject.getString("id"), esbResponseObject.getString("id"));
+        Assert.assertEquals(apiResponseContextObject.getString("id"), connectorProperties.getProperty("accountContextId"));
+        Assert.assertEquals(apiResponseObject.getString("created"), esbResponseObject.getString("created"));
+    }
+    
+    /**
+     * Positive test case for listAccounts method with optional parameters.
+     */
+    @Test(dependsOnMethods = { "testCreateAccountWithMandatoryParameters","testCreateAccountWithOptionalParameters" }, groups = { "wso2.esb" }, description = "salesbinder {listAccounts} integration test with optional parameters.")
+    public void testListAccountsWithOptionalParameters() throws IOException, JSONException {
+    
+        esbRequestHeadersMap.put("Action", "urn:listAccounts");
+        RestResponse<JSONObject> esbRestResponse =
+                sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listAccounts_optional.json");
+        
+        JSONObject esbResponseObject =
+                esbRestResponse.getBody().getJSONArray("Customers").getJSONObject(0).getJSONObject("Customer");
+        
+        String apiEndPoint =
+                connectorProperties.getProperty("apiUrl") + "/api/customers.json?contextId="
+                        + connectorProperties.getProperty("accountContextId")+"&page=1";
+        RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+        JSONObject apiResponseObject =
+                apiRestResponse.getBody().getJSONArray("Customers").getJSONObject(0).getJSONObject("Customer");
+        
+        Assert.assertEquals(apiRestResponse.getBody().getString("count"), esbRestResponse.getBody().getString("count"));
+        Assert.assertEquals(apiResponseObject.getString("id"), esbResponseObject.getString("id"));
+        Assert.assertEquals(apiResponseObject.getString("modified"), esbResponseObject.getString("modified"));
+        Assert.assertEquals(apiResponseObject.getString("created"), esbResponseObject.getString("created"));
     }
     
 }

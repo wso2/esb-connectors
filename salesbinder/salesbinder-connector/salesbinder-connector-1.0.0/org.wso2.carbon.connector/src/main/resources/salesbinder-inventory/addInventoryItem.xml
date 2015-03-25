@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/add-new-item -->
 <template name="addInventoryItem" xmlns="http://ws.apache.org/ns/synapse">
    <parameter name="name" description="Name of the item." />
    <parameter name="description" description="Optional description of item." />
