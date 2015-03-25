@@ -593,7 +593,8 @@ public class SalesbinderConnectorIntegrationTest extends ConnectorIntegrationTes
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listAccounts_mandatory.json");
         JSONObject esbResponseObject =
                 esbRestResponse.getBody().getJSONArray("Customers").getJSONObject(0).getJSONObject("Customer");
-        
+        JSONObject esbResponseContextObject =
+                esbRestResponse.getBody().getJSONArray("Customers").getJSONObject(0).getJSONObject("Context");
         String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/api/customers.json";
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         JSONObject apiResponseObject =
@@ -604,7 +605,7 @@ public class SalesbinderConnectorIntegrationTest extends ConnectorIntegrationTes
         
         Assert.assertEquals(apiRestResponse.getBody().getString("count"), esbRestResponse.getBody().getString("count"));
         Assert.assertEquals(apiResponseObject.getString("id"), esbResponseObject.getString("id"));
-        Assert.assertEquals(apiResponseContextObject.getString("id"), connectorProperties.getProperty("accountContextId"));
+        Assert.assertEquals(apiResponseContextObject.getString("id"), esbResponseContextObject.getString("id"));
         Assert.assertEquals(apiResponseObject.getString("created"), esbResponseObject.getString("created"));
     }
     
