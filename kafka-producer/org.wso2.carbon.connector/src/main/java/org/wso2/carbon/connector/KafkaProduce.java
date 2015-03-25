@@ -38,13 +38,15 @@ public class KafkaProduce extends AbstractConnector {
 		String key = this.getKey(messageContext);
 		try {
 			String message = this.getMessage(messageContext);
-
 			KafkaProduce.send(producer, topic, key, message);
 
 		} catch (Exception e) {
 			throw new ConnectException(e);
 		}
-	}
+        finally {
+            producer.close();
+        }
+    }
 
 	public String getTopic(MessageContext messageContext) {
 		String topic = KafkaUtils.lookupTemplateParamater(messageContext,
