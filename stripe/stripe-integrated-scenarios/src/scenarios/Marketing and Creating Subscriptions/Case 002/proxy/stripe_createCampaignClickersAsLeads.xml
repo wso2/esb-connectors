@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_createCampaignClickersAsLeads" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+         <!-- MailChimp Properties -->
+         <property name="mailchimp.apiUrl" value="https://us9.api.mailchimp.com" />
+         <property name="mailchimp.apiKey" expression="json-eval($.mailchimpApiKey)" />
+         <property name="mailchimp.campaignId" expression="json-eval($.mailchimpCampaignId)" />
+         <property name="mailchimp.clickURL" expression="json-eval($.mailchimpClickURL)" />
+		 
+         <!-- Stripe Properties -->
+         <property name="stripe.planId" expression="json-eval($.stripePlanId)" />
+		 
+         <!-- ZohoCRM Properties -->
+         <property name="zohocrm.apiUrl" value="https://crm.zoho.com" />
+         <property name="zohocrm.accessToken" expression="json-eval($.zohocrmAccessToken)" />
+		 
+		 <!-- Operation scoped properties -->
+         <property name="responseString" value="" scope="operation" />
+         <property name="leadIndex" value="0" scope="operation" />
+         <property name="leadsString" value="" scope="operation" />
+         <property name="activityName" value="stripe_createCampaignClickersAsLeads" scope="operation" />
+		 
+         <!-- Get a list of clickable URLs for the campaign from MailChimp. One campaign can have multiple URLs associated with it, each of which can be tracked based on clicks.
+				Therefore the user has to send the particular URL whose clicks needs to be processed. It will be chosen from the list of URLs returned from the following call, if it exists. -->
+         <mailchimp.init>
+            <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+            <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+            <format>json</format>
+         </mailchimp.init>
+         <mailchimp.listCampaignClicks>
+            <campaignId>{$ctx:mailchimp.campaignId}</campaignId>
+         </mailchimp.listCampaignClicks>		 
+         <sequence key="removeResponseHeaders" />
+		 
+         <!-- Extract details of the subscription plan which was created. -->
+         <property name="mailchimp.clickURLs" expression="json-eval($.total)" />
+         <script language="js">
+			<![CDATA[
+				var clickURLs = eval("(" + mc.getProperty('mailchimp.clickURLs') + ")");
+				var url = mc.getProperty('mailchimp.clickURL');
+				// Iterate through the URLs and pick the required URL.
+				for(var i=0; i<clickURLs.length; i++){
+					if(clickURLs[i].url == url){
+						mc.setProperty('malchimp.campaignTrackerId', '' + clickURLs[i].tid);
+						break;
+					}
+				}
+			]]>
+		 </script>
+		 
+         <!-- START: If the URL sent by the user exists in the click URLs retrieved for the campaign, then proceed to get the list
+            of clickers for that particular URL. Send an error message to the user otherwise. -->
+         <filter source="boolean(get-property('malchimp.campaignTrackerId'))" regex="false">
+            <then>
+               <!-- Failure case: Append an error message to be sent to the user. -->
+               <property name="id" expression="fn:concat('mailchimp_campaignId:', get-property('mailchimp.campaignId'))" />
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="mailchimp_getTrackerURL" />
+                  <with-param name="id" value="{$ctx:id}" />
+                  <with-param name="status" value="Failure" />
+                  <with-param name="message" value="The provided URL is not set to receive clicks in the campaign." />
+               </call-template>
+               <loopback />
+            </then>
+            <else>
+               <!-- Get a list of clickers for the campaign. -->
+               <mailchimp.init>
+                  <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+                  <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+                  <format>json</format>
+               </mailchimp.init>
+               <mailchimp.listCampaignClickers>
+                  <campaignId>{$ctx:mailchimp.campaignId}</campaignId>
+                  <trackingid>{$ctx:malchimp.campaignTrackerId}</trackingid>
+               </mailchimp.listCampaignClickers>		 
+			   <sequence key="removeResponseHeaders" />
+			   
+               <property name="noOfClickers" expression="count(//data)" scope="operation" />
+               <property name="clickerIndex" expression="0" scope="operation" />
+			   
+               <!-- START: Proceed to process the clickers if there are any. -->
+               <filter source="get-property('operation', 'noOfClickers')" regex="0.0">
+                  <then>
+                     <!-- Failure case: Append an error message to be sent to the user. -->
+                     <property name="id" expression="fn:concat('mailchimp_campaignId:', get-property('mailchimp.campaignId'), ',mailchimp_trackerId:', get-property('malchimp.campaignTrackerId'))" />
+                     <call-template target="responseHandlerTemplate">
+                        <with-param name="activity" value="mailchimp_getCampaignClickers" />
+                        <with-param name="id" value="{$ctx:id}" />
+                        <with-param name="status" value="Skipped" />
+                        <with-param name="message" value="There are no clickers for the campaign (for the given URL)." />
+                     </call-template>
+                     <loopback />
+                  </then>
+                  <else>
+                     <!--FOR EACH Clicker: BEGIN -->
+                     <iterate continueParent="false" id="clickers" expression="//data" sequential="true">
+                        <target>
+                           <sequence>
+							  <!-- Extract required properties of Clickers. -->
+                              <property name="mailchimp.clickerEmail" expression="//data/member/email/text()" />
+                              <property name="mailchimp.clickerFirstName" expression="//data/member/merges/FNAME/text()" />
+                              <property name="mailchimp.clickerLastName" expression="//data/member/merges/LNAME/text()" />
+							  
+                              <!--Increment the leadIndex Count by 1 -->
+                              <property name="leadIndex" expression="get-property('operation', 'leadIndex') + 1" scope="operation" />
+							  
+                              <!-- Get the leadIndex property to message-context scope -->
+                              <property name="leadIndex" expression="get-property('operation', 'leadIndex')" />
+							  
+                              <!--Build the Lead XML data to be sent to ZohoCRM to creat the Lead. -->
+                              <script language="js">
+									<![CDATA[
+										var leadIndex = '' + mc.getProperty('leadIndex');
+										var clickerEmail = mc.getProperty('mailchimp.clickerEmail');
+										var clickerFirstName = mc.getProperty('mailchimp.clickerFirstName');
+										var clickerLastName = mc.getProperty('mailchimp.clickerLastName');
+										var stripePlanId = mc.getProperty('stripe.planId');
+										
+										var currentLead = '<Leads><row no="' + leadIndex.split(".")[0]
+																		+ '"><FL val="Email">' + clickerEmail
+																		+ '</FL><FL val="First Name">' + clickerFirstName
+																		+ '</FL><FL val="Last Name">' + clickerLastName
+																		+ '</FL><FL val="Stripe Plan ID">' + stripePlanId
+																		+ '</FL><FL val="Lead Source">Advertisement</FL><FL val="Lead Status">Contacted</FL><FL val="Description">The lead has clicked the mail campaign.</FL></row></Leads>';
+										mc.setProperty('currentLead', currentLead);
+									]]>
+							  </script>
+							  
+                              <!-- Add the current lead to the list of leads -->
+                              <property name="leadsString" expression="fn:concat(get-property('operation','leadsString'), get-property('currentLead'))" scope="operation" />
+                              
+							  <!--Increment the clicker Count by 1 -->
+                              <property name="clickerIndex" expression="get-property('operation', 'clickerIndex') + 1" scope="operation" />
+                              
+							  <!-- START: Only the last iteration would proceed with the following code which would wrap up the scenario. -->
+                              <filter xpath="get-property('operation', 'noOfClickers') = get-property('operation', 'clickerIndex')">
+                                 <then>
+                                    <!-- Get the leadString to message context scope -->
+                                    <property name="leadsString" expression="get-property('operation','leadsString')" />
+									
+                                    <!-- Get the leadString to message context scope -->
+                                    <script language="js">
+										<![CDATA[
+											var leadsString = mc.getProperty('leadsString');	
+											var xmlData = '<Contact>' + leadsString + '</Contact>';
+											mc.setProperty('xmlData', xmlData);
+										]]>
+									</script>
+									
+									<!-- Create Lead in ZohoCRM. Since the duplicateCheck parameter is enabled in the request,
+										if the lead with the same email already exists, details of the lead would be updated instead of creating a new one. -->
+                                    <zohocrm.init>
+                                       <scope>crmapi</scope>
+                                       <accessToken>{$ctx:zohocrm.accessToken}</accessToken>
+                                       <apiUrl>{$ctx:zohocrm.apiUrl}</apiUrl>
+                                    </zohocrm.init>
+                                    <zohocrm.insertRecords>
+                                       <moduleType>Leads</moduleType>
+                                       <duplicateCheck>1</duplicateCheck>
+                                       <xmlData>{$ctx:xmlData}</xmlData>
+                                       <isApproval>false</isApproval>
+                                       <version>4</version>
+                                    </zohocrm.insertRecords>
+									
+                                    <property name="zohocrm.rows" expression="json-eval($.response.result.row)" />
+									
+									<!-- Get the count of leads created/updated. -->
+                                    <script language="js">
+										<![CDATA[
+											var rows = mc.getProperty('zohocrm.rows');	
+											// If row is an object
+											if(rows.startsWith('{')){
+												mc.setProperty('noOfLeadsAdded', '1');
+											}
+											// If row is an array
+											else {
+												var rows = eval("(" + mc.getProperty('zohocrm.rows') + ")");	
+												mc.setProperty('noOfLeadsAdded', '' + rows.length);
+											}
+										]]>
+									</script>
+									
+                                    <property name="id" expression="fn:concat('mailchimp_campaignId:', get-property('mailchimp.campaignId'), ',mailchimp_trackerId:', get-property('malchimp.campaignTrackerId'))" />
+                                    <filter source="boolean(get-property('zohocrm.rows'))" regex="true">
+                                       <then>
+                                          <property name="status" value="Success" />
+                                          <property name="message" expression="fn:concat(get-property('noOfLeadsAdded'), ' Clicker(s) added to ZohoCRM.')" />
+                                       </then>
+                                       <else>
+                                          <property name="status" value="Failure" />
+                                          <property name="message" expression="json-eval($)" />
+                                       </else>
+                                    </filter>
+									
+                                    <call-template target="responseHandlerTemplate">
+                                       <with-param name="activity" value="zohocrm_createLeads" />
+                                       <with-param name="id" value="{$ctx:id}" />
+                                       <with-param name="status" value="{$ctx:status}" />
+                                       <with-param name="message" value="{$ctx:message}" />
+                                    </call-template>
+                                    
+                                    <loopback />
+                                 </then>
+                              </filter>
+                              <!-- END: The last iteration would proceed with the following code. -->
+							  
+                           </sequence>
+                        </target>
+                     </iterate>					 
+                     <!--FOR EACH Clicker: BEGIN -->
+					 
+                  </else>
+               </filter>
+			   <!-- END: Proceed to process the clickers if there are any. -->
+			   
+            </else>
+         </filter>
+		 <!-- START: If the URL sent by the user exists in the click URLs retrieved for the campaign, then proceed to get the list
+            of clickers for that particular URL. Send an error message to the user otherwise. -->
+      </inSequence>
+      <outSequence>
+	     <!-- Send the constructed response to the user. -->
+         <payloadFactory media-type="json">
+            <format>
+				{
+				   "Response":{
+					   "process":"stripe_createCampaignClickersAsLeads",
+					   "activityResponse":[$1]
+					}
+                }
+			   </format>
+            <args>
+               <arg expression="get-property('operation','responseString')" />
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <send />
+      </outSequence>
+   </target>
+</proxy>

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_createSubscriptionPlanAndMarket" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence>
+         <!-- Stripe Properties -->
+		 <property name="stripe.apiVersion" value="v1" />
+         <property name="stripe.apiUrl" value="https://api.stripe.com" />
+         <property name="stripe.apiKey" expression="json-eval($.stripeApiKey)" />
+         <property name="stripe.amount" expression="json-eval($.stripeAmount)" />
+         <property name="stripe.statementDescriptor" expression="json-eval($.stripeStatementDescriptor)" />
+         <property name="stripe.interval" expression="json-eval($.stripeInterval)" />
+         <property name="stripe.trialPeriodDays" expression="json-eval($.stripeTrialPeriodDays)" />
+         <property name="stripe.intervalCount" expression="json-eval($.stripeIntervalCount)" />
+         <property name="stripe.name" expression="json-eval($.stripePlanName)" />
+         <property name="stripe.planId" expression="json-eval($.stripePlanId)" />
+         <property name="stripe.currency" expression="json-eval($.stripeCurrency)" />
+         <property name="stripe.malchimpListName" expression="json-eval($.stripeMailchimpListName)" />
+		 
+         <!-- MailChimp Properties -->
+         <property name="mailchimp.apiUrl" value="https://us9.api.mailchimp.com" />
+         <property name="mailchimp.apiKey" expression="json-eval($.mailchimpApiKey)" />
+         <property name="mailchimp.listName" expression="json-eval($.mailchimpListName)" />
+         <property name="mailchimp.templateId" expression="json-eval($.mailchimpTemplateId)" />
+		 
+		 <!-- Operation scoped properties -->
+         <property name="responseString" value="" scope="operation" />
+         <property name="activityName" value="stripe_createSubscriptionPlanAndMarket" scope="operation" />
+		 
+         <!-- Get the ID of the subscriber list using the provided list name. It is cumbersome for the user to obtain the list ID in Mailchimp,
+				as it cannot be done through the web application. Therefore the user is expected to provide the list name so the respective list ID can be obtained via the following call. -->
+         <mailchimp.init>
+            <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+            <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+            <format>json</format>
+         </mailchimp.init>
+         <mailchimp.listSubscriberLists>
+            <listName>{$ctx:stripe.malchimpListName}</listName>
+         </mailchimp.listSubscriberLists>
+		 <sequence key="removeResponseHeaders" />
+		 
+         <property name="mailchimp.listId" expression="json-eval($.data[0].id)" />
+		 
+         <!-- START: Proceed to create the plan only if the subscriber list ID could be retrieved using the name.
+						When there are no lists matching the provided name, an empty array ([]) is returned by the Mailchimp API. -->
+         <filter source="get-property('mailchimp.listId')" regex="\[\]">
+            <then>
+               <!-- Failure case: Append an error message to be sent to the user. -->
+               <property name="id" expression="fn:concat('mailchimp_listName:', get-property('stripe.malchimpListName'))" />
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="stripe_getListIdFromListName" />
+                  <with-param name="id" value="{$ctx:id}" />
+                  <with-param name="status" value="Failure" />
+                  <with-param name="message" value="The provided Mailchimp list name doesn't match with any existing subscriber lists." />
+               </call-template>
+            </then>
+            <else>
+			   <!-- Construct the metadata object to be provided while creating the plan {"metadata_key":"metadata_value"}-->
+               <property name="stripe.metadata" expression="fn:concat('{&quot;mailchimp_list_id&quot;:&quot;', get-property('mailchimp.listId'), '&quot;}')" />
+               
+			   <!-- Create a subscription plan in Stripe -->
+               <stripe.init>
+                  <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                  <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                  <apiKey>{$ctx:stripe.apiKey}</apiKey>
+               </stripe.init>
+               <stripe.createANewPlan>
+                  <amount>{$ctx:stripe.amount}</amount>
+                  <statementDescriptor>{$ctx:stripe.statementDescriptor}</statementDescriptor>
+                  <interval>{$ctx:stripe.interval}</interval>
+                  <trialPeriodDays>{$ctx:stripe.trialPeriodDays}</trialPeriodDays>
+                  <intervalCount>{$ctx:stripe.intervalCount}</intervalCount>
+                  <name>{$ctx:stripe.name}</name>
+                  <planId>{$ctx:stripe.planId}</planId>
+                  <metadata>{$ctx:stripe.metadata}</metadata>
+                  <currency>{$ctx:stripe.currency}</currency>
+               </stripe.createANewPlan>
+			   
+               <property name="stripe.planId" expression="json-eval($.id)" />
+			   
+               <!-- START: Proceed to create the campaign only if the plan was successfully created in Stripe. -->
+               <filter source="boolean(get-property('stripe.planId'))" regex="false">
+                  <then>
+                     <!-- Failure case: Append an error message to be sent to the user. -->
+                     <property name="id" value="{}" />
+                     <property name="errorResponse" expression="json-eval($)" />
+                     <call-template target="responseHandlerTemplate">
+                        <with-param name="activity" value="stripe_createSubscriptionPlan" />
+                        <with-param name="id" value="{$ctx:id}" />
+                        <with-param name="status" value="Failure" />
+                        <with-param name="message" value="{$ctx:errorResponse}" />
+                     </call-template>
+                  </then>
+                  <else>
+                     <!-- Success case: Append a message to be sent to the user saying that the plan was created successfully. -->
+                     <property name="id" expression="fn:concat('stripe_subscriptionPlanID:', get-property('stripe.planId'))" />
+                     <property name="message" expression="fn:concat('Subscription plan [', get-property('stripe.name'), '] has been successfully created in Stripe.')" />
+                     <call-template target="responseHandlerTemplate">
+                        <with-param name="activity" value="stripe_createSubscriptionPlan" />
+                        <with-param name="id" value="{$ctx:id}" />
+                        <with-param name="status" value="Success" />
+                        <with-param name="message" value="{$ctx:message}" />
+                     </call-template>
+					 
+                     <!-- Extract details of the subscription plan which was created. -->					 
+                     <property name="stripe.statementDescriptor" expression="json-eval($.statement_descriptor)" />
+                     <property name="stripe.interval" expression="json-eval($.interval)" />
+                     <property name="stripe.name" expression="json-eval($.name)" />
+                     <property name="stripe.currency" expression="json-eval($.currency)" />
+					 
+                     <property name="stripe.amount" expression="json-eval($.amount)" />
+					 <!-- Convert the amount in cents to dollars -->
+                     <script language="js">
+						 <![CDATA[
+							 mc.setProperty('stripe.amount', eval("(" + mc.getProperty('stripe.amount') + ")")/100);
+						 ]]>
+					 </script>
+					 
+                     <!-- Set the message for trial period based on the value returned for trial_period_days -->
+                     <property name="stripe.trialPeriodDays" expression="json-eval($.trial_period_days)" />
+                     <filter source="get-property('stripe.trialPeriodDays')" regex="null">
+                        <then>
+                           <property name="stripe.trialPeriodDays" value="No. We're sorry there is no trial period for the plan." />
+                        </then>
+                        <else>
+                           <property name="stripe.trialPeriodDays" expression="fn:concat('Yes. You have ', get-property('stripe.trialPeriodDays'), ' day(s) to test the subscription plan before purchasing.')" />
+                        </else>
+                     </filter>
+					 
+                     <!-- Set the default value for interval_count = 1, if not specified. -->
+                     <property name="stripe.intervalCount" expression="json-eval($.interval_count)" />
+                     <filter source="get-property('stripe.intervalCount')" regex="null">
+                        <then>
+                           <property name="stripe.intervalCount" value="1" />
+                        </then>
+                     </filter>
+					 
+                     <!-- Get the account details to extract the email address and name of the organization. -->
+                     <stripe.init>
+                        <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                        <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                        <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                     </stripe.init>
+                     <stripe.retrieveAccountDetails />
+					 
+                     <property name="stripe.accountEmail" expression="json-eval($.email)" />
+                     <property name="stripe.accountName" expression="json-eval($.display_name)" />
+					 
+                     <!-- START: Proceed to create the campaign only if the Stripe account email and name could be retrieved. -->
+                     <filter source="boolean(get-property('stripe.accountEmail'))" regex="false">
+                        <then>
+                           <!-- Failure case: Append an error message to be sent to the user. -->
+                           <property name="id" expression="fn:concat('stripe_subscriptionPlanID:', get-property('stripe.planId'))" />
+                           <property name="errorResponse" expression="json-eval($)" />
+                           <call-template target="responseHandlerTemplate">
+                              <with-param name="activity" value="stripe_retrieveAccountDetails" />
+                              <with-param name="id" value="{$ctx:id}" />
+                              <with-param name="status" value="Failure" />
+                              <with-param name="message" value="{$ctx:errorResponse}" />
+                           </call-template>
+                        </then>
+                        <else>
+                           <!-- Get the ID of the subscriber list using the provided list name. It is cumbersome for the user to obtain the list ID in Mailchimp,
+									as it cannot be done through the web application. Therefore the user is expected to provide the list name so the respective list ID can be obtained via the following call. -->
+                           <mailchimp.init>
+                              <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+                              <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+                              <format>json</format>
+                           </mailchimp.init>
+                           <mailchimp.listSubscriberLists>
+                              <listName>{$ctx:mailchimp.listName}</listName>
+                           </mailchimp.listSubscriberLists>
+						   
+                           <property name="mailchimp.listId" expression="json-eval($.data[0].id)" />
+						   
+                           <!-- START: Proceed to create the plan only if the subscriber list ID could be retrieved using the name.
+									When there are no lists matching the provided name, an empty array ([]) is returned by the Mailchimp API. -->
+                           <filter source="boolean(get-property('mailchimp.listId'))" regex="false">
+                              <then>
+                                 <!-- Failure case: Append an error message to be sent to the user. -->
+                                 <property name="id" expression="fn:concat('stripe_subscriptionPlanID:', get-property('stripe.planId'), ',mailchimp_listName:', get-property('mailchimp.listName'))" />
+                                 <property name="errorResponse" expression="json-eval($)" />
+                                 <call-template target="responseHandlerTemplate">
+                                    <with-param name="activity" value="stripe_getListIdFromListName" />
+                                    <with-param name="id" value="{$ctx:id}" />
+                                    <with-param name="status" value="Failure" />
+                                    <with-param name="message" value="{$ctx:errorResponse}" />
+                                 </call-template>
+                              </then>
+                              <else>
+                                 <!-- Construct the mailchimp 'options' parameter -->
+                                 <payloadFactory media-type="json">
+                                    <format>
+									 {
+										 "options":{
+											 "list_id": "$1",
+											 "subject": "$2",
+											 "from_email": "$3",
+											 "from_name": "$4",
+											 "to_name": "Subscriber",
+											 "template_id": "$5",
+											 "tracking":{
+												 "opens": true,
+												 "html_clicks": true,
+												 "text_clicks": true
+											 }
+										 }
+									 }
+								    </format>
+                                    <args>
+                                       <arg expression="get-property('mailchimp.listId')" />
+                                       <arg expression="get-property('stripe.name')" />
+                                       <arg expression="get-property('stripe.accountEmail')" />
+                                       <arg expression="get-property('stripe.accountName')" />
+                                       <arg expression="get-property('mailchimp.templateId')" />
+                                    </args>
+                                 </payloadFactory>
+								 
+                                 <property name="mailchimp.options" expression="json-eval($.options)" />
+								 
+                                 <!-- Construct the mailchimp 'content' parameter where the HTML campaign parameters are specified. -->
+                                 <payloadFactory media-type="json">
+                                    <format>
+									 {
+										 "content":{
+											 "sections": {
+												 "planTitle": "$1",
+												 "statementDescriptor":"$2",
+												 "subscriptionCost":"$3",
+												 "trialPeriodDetails":"$4"
+											 }
+										 }
+									 }
+								    </format>
+                                    <args>
+                                       <arg expression="get-property('stripe.name')" />
+                                       <arg expression="fn:concat(get-property('stripe.name'), ' - ', get-property('stripe.statementDescriptor'))" />
+                                       <arg expression="fn:concat(fn:upper-case(get-property('stripe.currency')), ' ', get-property('stripe.amount'), ' per ', get-property('stripe.intervalCount'), ' ', get-property('stripe.interval'), '(s)')" />
+                                       <arg expression="get-property('stripe.trialPeriodDays')" />
+                                    </args>
+                                 </payloadFactory>
+								 
+                                 <property name="mailchimp.content" expression="json-eval($.content)" />
+								 
+                                 <!-- Create a draft campaign for the subscription plan. -->
+                                 <mailchimp.init>
+                                    <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+                                    <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+                                    <format>json</format>
+                                 </mailchimp.init>
+                                 <mailchimp.createDraftCampaign>
+                                    <options>{$ctx:mailchimp.options}</options>
+                                    <content>{$ctx:mailchimp.content}</content>
+                                    <type>regular</type>
+                                 </mailchimp.createDraftCampaign>
+								 
+                                 <property name="mailchimp.campaignId" expression="json-eval($.id)" />
+								 
+                                 <!-- START: Proceed send the campaign only if it is created successfully. -->
+                                 <filter source="boolean(get-property('mailchimp.campaignId'))" regex="false">
+                                    <then>
+                                       <!-- Failure case: Append an error message to be sent to the user. -->
+                                       <property name="id" value="{}" />
+                                       <property name="errorResponse" expression="json-eval($)" />
+                                       <call-template target="responseHandlerTemplate">
+                                          <with-param name="activity" value="stripe_createDraftCampaign" />
+                                          <with-param name="id" value="{$ctx:id}" />
+                                          <with-param name="status" value="Failure" />
+                                          <with-param name="message" value="{$ctx:errorResponse}" />
+                                       </call-template>
+                                    </then>
+                                    <else>
+                                       <!-- Success case: Append a message to be sent to the user saying that the campaign was successfully created. -->
+                                       <property name="id" expression="fn:concat('mailchimp_campaignId:', get-property('mailchimp.campaignId'))" />
+									   
+									   <!-- Send the draft campaign. -->
+                                       <mailchimp.init>
+                                          <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+                                          <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+                                          <format>json</format>
+                                       </mailchimp.init>
+                                       <mailchimp.sendCampaign>
+                                          <campaignId>{$ctx:mailchimp.campaignId}</campaignId>
+                                       </mailchimp.sendCampaign>
+									   
+                                       <property name="mailchimp.complete" expression="json-eval($.complete)" />
+									   
+                                       <property name="id" expression="fn:concat('mailchimp_campaignId:', get-property('mailchimp.campaignId'))" />
+                                       <!-- START: Build the response based on whether the campaign is successfully sent or not -->
+                                       <filter source="get-property('mailchimp.complete')" regex="true">
+                                          <then>
+                                             <property name="status" value="Success" />
+                                             <property name="message" value="The campaign has been successfully created and sent to the subscribers." />
+                                          </then>
+                                          <else>
+                                             <property name="status" value="Failure" />
+                                             <property name="message" value="The campaign was successfully created. Apparently an error occured, while sending the campaign." />
+                                          </else>
+                                       </filter>
+									   
+                                       <!-- Success case: Append an error message to be sent to the user. -->
+                                       <call-template target="responseHandlerTemplate">
+                                          <with-param name="activity" value="mailchimp_createAndSendCampaign" />
+                                          <with-param name="id" value="{$ctx:id}" />
+                                          <with-param name="status" value="{$ctx:status}" />
+                                          <with-param name="message" value="{$ctx:message}" />
+                                       </call-template>
+                                    </else>
+                                 </filter>
+                                 <!-- END: Proceed send the campaign only if it is created successfully. -->
+                              </else>
+                           </filter>
+                           <!-- END: Proceed to create the plan only if the subscriber list ID could be retrieved using the name.
+									When there are no lists matching the provided name, an empty array ([]) is returned by the Mailchimp API. -->
+                        </else>
+                     </filter>
+                     <!-- END: Proceed to create the campaign only if the Stripe account email and name could be retrieved. -->
+                  </else>
+               </filter>
+               <!-- END: Proceed to create the campaign only if the plan was successfully created in Stripe. -->
+            </else>
+         </filter>
+		 <!-- END: Proceed to create the plan only if the subscriber list ID could be retrieved using the name.
+						When there are no lists matching the provided name, an empty array ([]) is returned by the Mailchimp API. -->
+         <loopback />
+      </inSequence>
+      <outSequence>
+		 <!-- Send the constructed response to the user. -->
+         <payloadFactory media-type="json">
+            <format>
+			   {
+				   "Response":{
+					  "process":"stripe_createSubscriptionPlanAndMarket",
+					  "activityResponse": [$1]
+				   }
+               }
+			</format>
+            <args>
+               <arg expression="get-property('operation', 'responseString')" />
+            </args>
+         </payloadFactory>
+         <send />
+      </outSequence>
+   </target>
+</proxy>

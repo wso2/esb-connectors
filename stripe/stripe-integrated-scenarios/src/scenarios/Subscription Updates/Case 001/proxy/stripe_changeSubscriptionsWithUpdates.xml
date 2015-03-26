@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Proxy Template - Parameters: {proxyName} - Name of the proxy/scenario -->
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_changeSubscriptionsWithUpdates" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
+   <target>
+      <inSequence onError="faultHandlerSeq">
+         <!-- Stripe Properties -->
+         <property name="stripe.apiUrl" expression="json-eval($.stripeApiUrl)" />
+         <property name="stripe.apiVersion" expression="json-eval($.stripeApiVersion)" />
+         <property name="stripe.apiKey" expression="json-eval($.stripeApiKey)" />
+         <property name="stripe.stripeCreatedTime" expression="json-eval($.stripeCreatedTime)" />
+		 
+         <!-- MailChimp Properties -->
+         <property name="mailchimp.apiUrl" expression="json-eval($.mailChimpApiUrl)" />
+         <property name="mailchimp.apiKey" expression="json-eval($.mailChimpApiKey)" />
+		 
+         <!-- Common Properties -->
+         <property name="id.empty" value="{}" />
+         <property name="responseString" value="" scope="operation" />
+		 
+		 <!-- Convert the date/time sent by the user to Epoch Unix timestamp. -->
+         <script language="js"><![CDATA[
+				var stripeCreatedTime = '' + mc.getProperty('stripe.stripeCreatedTime');									
+				var timeInSeconds;
+				
+				if(stripeCreatedTime != ""){
+					timeInSeconds = '' + java.lang.Math.round(new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm X").parse(stripeCreatedTime).getTime()/1000);				
+				} else {
+					timeInSeconds = '' + java.lang.Math.round((java.lang.System.currentTimeMillis() - 24*3600*1000)/1000);
+					mc.setProperty('stripe.startTime', new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm").format(new java.util.Date(java.lang.System.currentTimeMillis() - 24*3600*1000)));				
+				}
+				mc.setProperty('stripe.stripeCreatedTimeStamp', '' + timeInSeconds);
+				]]></script>
+        
+		<!--Retrieving the list of updated subscription details -->
+         <stripe.init>
+            <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+            <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+            <apiKey>{$ctx:stripe.apiKey}</apiKey>
+         </stripe.init>
+		 
+         <stripe.getListOfEvents>
+            <createdGTE>{$ctx:stripe.stripeCreatedTimeStamp}</createdGTE>
+            <type>customer.subscription.updated</type>
+         </stripe.getListOfEvents>
+		 
+         <!--Removing unused headers -->
+         <sequence key="removeResponseHeaders" />
+		 
+         <property name="stripe.errorResponse" expression="json-eval($.error)" />
+		 
+         <!--Check whether there occurred an error in retrieving all updated subscriptions-->
+         <filter source="boolean(get-property('stripe.errorResponse'))" regex="true">
+            <then>
+               <property name="errorResponse" expression="json-eval($)" />
+              
+			  <!--Call the responseHandler template -->
+               <call-template target="responseHandlerTemplate">
+                  <with-param name="activity" value="stripe_getListOfEvents" />
+                  <with-param name="id" value="{$ctx:id.empty}" />
+                  <with-param name="status" value="Failure" />
+                  <with-param name="message" value="{$ctx:errorResponse}" />
+               </call-template>
+               <loopback />
+            </then>
+            <else>
+               <property name="recordsCount" expression="count(//jsonObject/data)" scope="operation" />
+               <property name="recordsIndex" expression="0" scope="operation" />
+			   
+               <!--Checking there are sufficient Customer records to retrieve -->
+               <filter source="get-property('operation', 'recordsCount')" regex="0.0">
+                  <then>
+                     <!--If there are no Customers in the Stripe account then send an error message and loopback -->
+                     <call-template target="responseHandlerTemplate">
+                        <with-param name="activity" value="stripe_getListOfEvents" />
+                        <with-param name="id" value="{$ctx:id.empty}" />
+                        <with-param name="status" value="Skipped" />
+                        <with-param name="message" value="There are no Subscription updates in the account to be retrieved." />
+                     </call-template>
+                     <loopback />
+                  </then>
+                  <else>
+                     <!--Iterate through each set of records of the Customer and retrieve each customer's old and new subscription details -->
+                     <iterate continueParent="false" id="customersIterator" expression="//jsonObject/data" sequential="true">
+                        <target>
+                           <sequence>
+                              <!--retrieving details of the Customer -->
+                              <property name="stripe.customerId" expression="json-eval($.data.data.object.customer)" />
+                              <property name="stripe.currentSubscriptionId" expression="json-eval($.data.data.object.id)" />
+                              <property name="stripe.currentPlanId" expression="json-eval($.data.data.object.plan.id)" />
+                              <property name="stripe.previousPlanId" expression="json-eval($.data.data.previous_attributes.plan.id)" />
+							  
+                              <!--Having the planIds of the subscription update retrieving the corresponding plan's details  -->
+                              <stripe.init>
+                                 <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                 <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                 <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                              </stripe.init>
+							  
+                              <stripe.retrieveAnExistingPlan>
+                                 <planId>{$ctx:stripe.currentPlanId}</planId>
+                              </stripe.retrieveAnExistingPlan>
+							  
+                              <!--Removing unused headers -->
+                              <sequence key="removeResponseHeaders" />
+							  
+                              <property name="stripe.errorResponse" expression="json-eval($.error)" />
+							  
+                              <!--Check whether there occurred an error in retrieving the plan-->
+                              <filter source="boolean(get-property('stripe.errorResponse'))" regex="true">
+                                 <then>
+                                    <property name="errorResponse" expression="json-eval($)" />
+                                    <property name="id" expression="fn:concat('stripe_currentPlanId:', get-property('stripe.currentPlanId'))" />
+                                  
+   								    <!--Call the responseHandler template -->
+                                    <call-template target="responseHandlerTemplate">
+                                       <with-param name="activity" value="stripe_retrieveAnExistingPlan" />
+                                       <with-param name="id" value="{$ctx:id}" />
+                                       <with-param name="status" value="Failure" />
+                                       <with-param name="message" value="{$ctx:errorResponse}" />
+                                    </call-template>
+                                 </then>
+                                 <else>
+                                    <!--Retrieve the plan's corresponding subscription list name of MailChimp -->
+                                    <property name="stripe.currentMailChimpListId" expression="json-eval($.metadata.mailchimp_list_id)" />
+                                    <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
+									
+                                    <!--Check whether there occurred an error in retrieving the mailChimp list ID-->
+                                    <filter source="boolean(get-property('stripe.currentMailChimpListId'))" regex="false">
+                                       <then>
+                                          <!--Call the responseHandler template -->
+                                          <call-template target="responseHandlerTemplate">
+                                             <with-param name="activity" value="stripe_retrieveAnExistingPlan" />
+                                             <with-param name="id" value="{$ctx:id}" />
+                                             <with-param name="status" value="Skipped" />
+                                             <with-param name="message" value="Could not subscribe the customer to the new list since the Plan is not associated with a Mailchimp subscription list." />
+                                          </call-template>
+                                       </then>
+                                       <else>
+                                          <!--Retrieving the customer email using the customer ID -->
+                                          <stripe.init>
+                                             <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+                                             <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+                                             <apiKey>{$ctx:stripe.apiKey}</apiKey>
+                                          </stripe.init>
+										  
+                                          <stripe.retrieveAnExistingCustomer>
+                                             <customerId>{$ctx:stripe.customerId}</customerId>
+                                          </stripe.retrieveAnExistingCustomer>
+										  
+                                          <!--Removing unused headers -->
+                                          <sequence key="removeResponseHeaders" />
+										  
+										  <property name="stripe.isDeleted" expression="json-eval($.deleted)" />
+                                          <property name="stripe.errorResponse" expression="json-eval($.error)" />
+                                          <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />										  
+													
+										  <!--Check whether the customer is deleted-->
+                                          <filter source="get-property('stripe.isDeleted')" regex="true">
+											<then>
+                                                <!--Call the responseHandler template -->
+                                                <call-template target="responseHandlerTemplate">
+                                                   <with-param name="activity" value="stripe_retrieveAnExistingCustomer" />
+                                                   <with-param name="id" value="{$ctx:stripe.customerId}" />
+                                                   <with-param name="status" value="Skipped" />
+                                                   <with-param name="message" value="Customer does not exist." />
+                                                </call-template>																						
+											</then>
+											<else>
+												  <!--Check whether there occurred an error in retrieving the customer-->
+												  <filter source="boolean(get-property('stripe.errorResponse'))" regex="true">
+													 <then>
+														<property name="errorResponse" expression="json-eval($)" />
+														<!--Call the responseHandler template -->
+														<call-template target="responseHandlerTemplate">
+														   <with-param name="activity" value="stripe_retrieveAnExistingCustomer" />
+														   <with-param name="id" value="{$ctx:id}" />
+														   <with-param name="status" value="Failure" />
+														   <with-param name="message" value="{$ctx:errorResponse}" />
+														</call-template>
+													 </then>
+													 <else>
+														<property name="stripe.email" expression="json-eval($.email)" />
+													   
+													   <!--Check the existence of the email -->
+														<filter source="get-property('stripe.email')" regex="null">
+														   <then>
+															  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
+															  
+															  <!--Call the responseHandler template -->
+															  <call-template target="responseHandlerTemplate">
+																 <with-param name="activity" value="mailchimp_addSubscribersToList" />
+																 <with-param name="id" value="{$ctx:id}" />
+																 <with-param name="status" value="Skipped" />
+																 <with-param name="message" value="Cannot add the user to the new subscription list since the email does not exist." />
+															  </call-template>
+														   </then>
+														   <else>
+															  <!--Concatenate the emails to build an array in a way Mailchimp expects-->
+															  <property name="emailJSON" expression="fn:concat('[{ &quot;email&quot;: { &quot;email&quot;: &quot;',get-property('stripe.email'),'&quot; },&quot;email_type&quot;: &quot;text&quot;}]')" />
+															  
+															  <!-- Adding customer email address to the subscriber list in MailChimp -->
+															  <mailchimp.init>
+																 <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+																 <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+																 <format>json</format>
+															  </mailchimp.init>
+															  
+															  <mailchimp.addSubscribersToList>
+																 <listId>{$ctx:stripe.currentMailChimpListId}</listId>
+																 <batch>{$ctx:emailJSON}</batch>
+																 <doubleOptin>false</doubleOptin>
+																 <updateExisting>true</updateExisting>
+																 <replaceInterests>false</replaceInterests>
+															  </mailchimp.addSubscribersToList>
+															  
+															  <!--Removing unused headers -->
+															  <sequence key="removeResponseHeaders" />
+															  
+															  <property name="statusCode" expression="$axis2:HTTP_SC" />
+															  
+															  <!--Checking the successful status code -->
+															  <filter source="get-property('statusCode')" regex="200">
+																 <then>                                                          
+																	  <property name="mailchimp.adds" expression="json-eval($.adds)" />
+																	  <property name="message" expression="fn:concat('{&quot;subscriberAddedToTheList&quot;:', get-property('mailchimp.adds'),'}')" />
+																	  <property name="id" expression="fn:concat('mailchimp_listId:', get-property('stripe.currentMailChimpListId'))" />
+																	  
+																	  <!--Call the responseHandler template -->
+																	  <call-template target="responseHandlerTemplate">
+																		 <with-param name="activity" value="mailchimp_addSubscribersToList" />
+																		 <with-param name="id" value="{$ctx:id}" />
+																		 <with-param name="status" value="Success" />
+																		 <with-param name="message" value="{$ctx:message}" />
+																	  </call-template>
+																	 
+																	 <!--Update the Customer's meta-data with the subscription details in Stripe-->
+																	  <stripe.init>
+																		 <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+																		 <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+																		 <apiKey>{$ctx:stripe.apiKey}</apiKey>
+																	  </stripe.init>
+																	 
+																	 <stripe.updateACustomerDetails>
+																		 <customerId>{$ctx:stripe.customerId}</customerId>
+																		 <metadata>{$ctx:stripe.metadata}</metadata>
+																	  </stripe.updateACustomerDetails>
+																	 
+																	 <!--Removing unused headers -->
+																	  <sequence key="removeResponseHeaders" />
+																	 
+																	 <property name="stripe.updatedCustomerId" expression="json-eval($.id)" />
+																	  <!--Checking whether the customerId is retrieved or not -->
+																	  <filter source="boolean(get-property('stripe.updatedCustomerId'))" regex="false">
+																		 <!--On error response, display the API error message -->
+																		 <then>
+																			<property name="errorResponse" expression="json-eval($)" />
+																			<property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
+																		   
+																		   <!--Call the responseHandler template -->
+																			<call-template target="responseHandlerTemplate">
+																			   <with-param name="activity" value="stripe_updateACustomerDetails" />
+																			   <with-param name="id" value="{$ctx:id}" />
+																			   <with-param name="status" value="Failure" />
+																			   <with-param name="message" value="{$ctx:errorResponse}" />
+																			</call-template>
+																		 </then>
+																		 <else>
+																			<!--Having the planIds of the subscription update retrieving the corresponding plan's details  -->
+																			<stripe.init>
+																			   <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
+																			   <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
+																			   <apiKey>{$ctx:stripe.apiKey}</apiKey>
+																			</stripe.init>
+																			
+																			<stripe.retrieveAnExistingPlan>
+																			   <planId>{$ctx:stripe.previousPlanId}</planId>
+																			</stripe.retrieveAnExistingPlan>
+																		   
+																		   <!--Removing unused headers -->
+																			<sequence key="removeResponseHeaders" />
+																		   
+																		   <property name="stripe.errorResponse" expression="json-eval($.error)" />
+																		   
+																		   <!--Check whether there occurred an error in retrieving the plan-->
+																			<filter source="boolean(get-property('stripe.errorResponse'))" regex="true">
+																			   <then>
+																				  <property name="errorResponse" expression="json-eval($)" />
+																				  <property name="id" expression="fn:concat('stripe_previousPlanId:', get-property('stripe.previousPlanId'))" />
+																				 
+																				 <!--Call the responseHandler template -->
+																				  <call-template target="responseHandlerTemplate">
+																					 <with-param name="activity" value="stripe_retrieveAnExistingPlan" />
+																					 <with-param name="id" value="{$ctx:id}" />
+																					 <with-param name="status" value="Failure" />
+																					 <with-param name="message" value="{$ctx:errorResponse}" />
+																				  </call-template>
+																			   </then>
+																			   <else>
+																				  <!--Retrieve the plan's corresponding subscription list name of MailChimp -->
+																				  <property name="stripe.previousMailChimpListId" expression="json-eval($.metadata.mailchimp_list_id)" />
+																				  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
+																				  
+																				  <!--Check whether there occurred an error in retrieving the mailChimp list ID-->
+																				  <filter source="boolean(get-property('stripe.currentMailChimpListId'))" regex="false">
+																					 <then>
+																						<!--Call the responseHandler template -->
+																						<call-template target="responseHandlerTemplate">
+																						   <with-param name="activity" value="stripe_retrieveAnExistingPlan" />
+																						   <with-param name="id" value="{$ctx:id}" />
+																						   <with-param name="status" value="Skipped" />
+																						   <with-param name="message" value="Could not unsubscribe the customer from the new previous list since the Plan is not associated with a Mailchimp subscription list." />
+																						</call-template>
+																					 </then>
+																					 <else>
+																						<!--Concatenate the emails to build an array in a way Mailchimp expects-->
+																						<property name="emailJSON" expression="fn:concat('[{ &quot;email&quot;:&quot;',get-property('stripe.email'),'&quot;}]')" />
+																					   
+																					   <!--Unsubscribe the customer from the previous Mailchimp subscription list -->
+																						<mailchimp.init>
+																						   <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+																						   <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+																						   <format>json</format>
+																						</mailchimp.init>
+																					   
+																					   <mailchimp.removeSubscribersFromList>
+																						   <listId>{$ctx:stripe.previousMailChimpListId}</listId>
+																						   <batch>{$ctx:emailJSON}</batch>
+																						   <deleteMember>false</deleteMember>
+																						   <sendNotify>true</sendNotify>
+																						   <sendGoodbye>true</sendGoodbye>
+																						</mailchimp.removeSubscribersFromList>
+																						
+																						<property name="mailchimp.errorCount" expression="json-eval($.error_count)" />
+																						
+																						<!--Checking whether the error count returns a zero value -->
+																						<filter source="get-property('mailchimp.errorCount')" regex="0">
+																						   <then>
+																							  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
+																							  <property name="message" expression="fn:concat('Customer is successfully unsubscribed from the list [', get-property('stripe.previousMailChimpListId'),']')" />
+																							 
+																							 <!--Call the responseHandler template -->
+																							  <call-template target="responseHandlerTemplate">
+																								 <with-param name="activity" value="mailchimp_removeSubscribersFromList" />
+																								 <with-param name="id" value="{$ctx:id}" />
+																								 <with-param name="status" value="Success" />
+																								 <with-param name="message" value="{$ctx:message}" />
+																							  </call-template>
+																						   </then>
+																						   <else>
+																							  <property name="errorResponse" expression="json-eval($.errors[0])" />
+																							  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
+																							 
+																							 <!--Call the responseHandler template -->
+																							  <call-template target="responseHandlerTemplate">
+																								 <with-param name="activity" value="mailchimp_removeSubscribersFromList" />
+																								 <with-param name="id" value="{$ctx:id}" />
+																								 <with-param name="status" value="Failure" />
+																								 <with-param name="message" value="{$ctx:errorResponse}" />
+																							  </call-template>
+																						   </else>
+																						</filter>		<!--END of filter: Checking whether the error count returns a zero value-->
+																					 </else>
+																				  </filter>		<!--END of filter: Check whether there occurred an error in retrieving the mailChimp list ID-->
+																			   </else>
+																			</filter>		<!--END of filter: Check whether there occurred an error in retrieving the plan-->
+																		 </else>
+																	  </filter>		<!--END of filter: Checking whether the customerId is retrieved or not -->
+																 </then>
+																 <else>
+																	<property name="errorResponse" expression="json-eval($)" />
+																	<property name="id" expression="fn:concat('mailchimp_listId:', get-property('stripe.currentMailChimpListId'))" />
+																   
+																   <!--Call the responseHandler template -->
+																	<call-template target="responseHandlerTemplate">
+																	   <with-param name="activity" value="mailchimp_addSubscribersToList" />
+																	   <with-param name="id" value="{$ctx:id}" />
+																	   <with-param name="status" value="Failure" />
+																	   <with-param name="message" value="{$ctx:errorResponse}" />
+																	</call-template>
+																 </else>
+															  </filter>		<!-- END of filter: Checking the successful status code -->
+														   </else>
+														</filter>		<!-- END of filter: Check the existence of the email-->
+													 </else>
+												  </filter>		<!-- END of filter: Check whether there occurred an error in retrieving the customer -->											
+										  
+										  	</else>
+										  </filter>										                                          
+                                       </else>
+                                    </filter>		<!-- END of filter: Check whether there occurred an error in retrieving the mailChimp list ID -->
+                                 </else>
+                              </filter>		<!-- END of filter: Check whether there occurred an error in retrieving the plan -->
+                              
+							  <!--Incrementing the index -->
+                              <property name="recordsIndex" expression="get-property('operation','recordsIndex') + 1" scope="operation" />
+                              
+							  <!--FOR EACH Customer : END -->
+                              <filter xpath="get-property('operation', 'recordsCount') = get-property('operation', 'recordsIndex')">
+                                 <then>
+                                    <loopback />
+                                 </then>
+                              </filter>
+                           </sequence>
+                        </target>
+                     </iterate>		<!--END LOOP: Iterate through each set of records of the Customer and retrieve each customer's old and new subscription details  -->
+                  </else>
+               </filter>		<!-- END of filter: Checking there are sufficient Customer records to retrieve -->
+            </else>
+         </filter>		<!-- END of filter: Check whether there occurred an error in retrieving all updated subscriptions -->
+      </inSequence>
+      <outSequence>
+         <payloadFactory media-type="json">
+            <format>{
+               "Response":{
+				   "process":"stripe_changeSubscriptionsWithUpdates",
+				   "activityResponse":[$1]
+				   }
+               }</format>
+            <args>
+               <arg expression="get-property('operation','responseString')" />
+            </args>
+         </payloadFactory>
+         <property name="messageType" value="application/json" scope="axis2" />
+         <send />
+      </outSequence>
+   </target>
+   <description />
+</proxy>
