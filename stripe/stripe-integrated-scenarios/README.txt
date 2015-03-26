@@ -18,14 +18,18 @@ Environment Set-up:
 			Mandril		- 	
 			Stripe 		- 	https://docs.wso2.com/display/CONNECTORS/Stripe+Connector
 			ZohoCrm 	- 	https://docs.wso2.com/display/CONNECTORS/Zoho+CRM+Connector
-			ZohoBooks 	- 	
+			ZohoBooks 	- 	https://docs.wso2.com/display/CONNECTORS/Zoho+Books+Connector
 			
  - If required, add the corresponding website security certificates to the ESB for aforementioned connectors. 
 
- - Add the sequences and templates in the "common" directory (<Stripe_Connector_Home>/stripe-integrated-scenarios/src/common ), to the ESB that are listed as below.
+ - Add the sequences and templates in the "common" directory and "messages" directory(inside <Stripe_Connector_Home>/stripe-integrated-scenarios/src ), to the ESB that are listed as below.
 			- sequences - 	faultHandlerSeq.xml
 							removeResponseHeaders.xml
-			- templates - 	responseHandlerTemplate.xml							
+			- templates - 	responseHandlerTemplate.xml		
+				
+			- messages/sequence - 	stripe_changeSubscriptionsWithUpdates_messages.xml
+									stripe_retrieveChargesAndCreatePayments_messages.xml
+									stripe_sendInvoiceDetailsToClients_messages.xml
  
  - Each scenario folder consists of sub-folders named as <Case-xxx>. Before executing each case, please read through the corresponding Case section in this document.			
 
@@ -38,18 +42,18 @@ Environment Set-up:
 		- Files:	(a) Proxy - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Marketing and Creating Subscriptions/Case 001/proxy/stripe_createSubscriptionPlanAndMarket.xml
 		
 		- Request Parameters:	(a) stripeMailchimpListName - User is expected to create a new subscribers' list (in Mailchimp) for every new subscription plan (created in Stripe) and provide the name of the list as value for the parameter.
-								(b) mailchimpListName - Name of the default subscribers' list, to whose contacts the campaign is supposed to be sent. It is necessary to have at lease one contact in the list in order to receive the campaign.
-								(c) mailchimpTemplateId - ID of the template using which the campaign has to be created. Please refer to 'Special Notes - (d)' on how to create a template in Mailchimp.
-							*The remaining parameters are specific to Stripe and Mailchimp API. Please refer to the respective API reference for parameter explanation.
+								(b) mailchimpListName - Name of the default subscribers' list, to whose contacts the campaign is expected to be sent. It is necessary to have at least one contact in the list in order to send the campaign.
+								(c) mailchimpTemplateId - ID of the template using which the campaign is to be created. Please refer to 'Special Notes - (d)' on how to create a template in Mailchimp.
+									*The remaining parameters are specific to Stripe and Mailchimp API. Please refer to the respective API reference for parameter explanation.
 		
 		- Special Notes: (a) Before each execution of the scenario, a new subscribers' list has to be created in Mailchimp and the name of the list (case-sensitive) should be provided along with the request (stripeMailchimpListName).
 							 (Each subscription plan in Stripe is supposed to have a subscribers' list in Mailchimp to which the subscribers of the plan will be added.)
 						 (b) Request parameter 'stripePlanId' should be unique and has to be changed for each execution.
-						 (c) Name of a subscribers' list (in Mailchimp) should be provided with the request (mailchimpListName). It is the list to whose subscribers the campaign will be sent. It is necessary to have at least one contact in the list to test the camapaign template.
+						 (c) Name of a subscribers' list (in Mailchimp) should be provided with the request (mailchimpListName). It is the list to whose subscribers the campaign will be sent. It is necessary to have at least one contact in the list.
 						 (d) In Mailchimp, go to 'Templates' -> 'Create Template' -> 'Paste in Code' -> Copy and paste the contents of the following file to 'Edit Code' section:  <Stripe_Connector_Home>/stripe-integrated-scenarios/mailchimp_template.html -> Save the template and copy the 'tid' value in the URL. Retain the value to be passed in for the parameter 'mailchimpTemplateId'.
 		
 	[ii] Case-002
-		- Purpose:	(a) Get the clickers for a particular campaign (created in Case-0001) and create them as Leads in ZohoCRM.
+		- Purpose:	(a) Get the clickers for a particular campaign (created in Case-001) and create them as Leads in ZohoCRM.
 							
 		- Files:	(a) Proxy - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Marketing and Creating Subscriptions/Case 002/proxy/stripe_createCampaignClickersAsLeads.xml
 		
@@ -81,7 +85,6 @@ Environment Set-up:
 								-	Credit Card Number				Text			20		Credit Card Information
 								- 	Credit Card Expiry Year			Text			2		Credit Card Information
 								-	Credit Card Expiry Month		Text			2		Credit Card Information
-								-	Stripe Plan ID					Text			20		Stripe Information
 								-	Stripe Subscription Quantity	Text			10		Stripe Information
 								-	Stripe Customer ID				Text			20		Stripe Information
 								
@@ -93,7 +96,6 @@ Environment Set-up:
 		- Files:	(a) Proxy - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Marketing and Creating Subscriptions/Case 004/proxy/stripe_batchSubscribeCustomersToList.xml
 		
 		- Request Parameters:	(a) stripePlanId	  - a valid plan ID of stripe. Note that the customers will be added to the subscription list in mailchimp that is associated with this plan ID if and only if the the customer is associated with the same plan ID.
-								(b)	stripeCreatedTime - provide a valid date and time in the format of 'dd-MM-yyyy HH:mm X' (e.g:- 25-02-2015 08:00 +05:30). This date and time will be used to return values where the created field is after or equal to this timestamp.
 
 	[v] Case-005
 		- Purpose:	(a) Create Subscription for each account in the Stripe API.
@@ -101,32 +103,33 @@ Environment Set-up:
 							
 		- Files:	(a) Proxy - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Marketing and Creating Subscriptions/Case 005/proxy/stripe_createSubscriptionAndNotifyCustomers.xml
 		
-		- Request Parameters:	(a) stripeApplicationFeePercent	- A positive decimal that represents the fee percentage of the subscription invoice amount that will be transferred to the application owner’s Stripe account each billing period. 	  
-								(b) stripeTaxPercent			- If provided, each invoice created by the subscription will apply the tax rate, increasing the amount billed to the customer.
-								(c) stripeCreatedTime			- provide a valid date and time in the format of 'dd-MM-yyyy HH:mm X' (e.g:- 25-02-2015 08:00 +05:30). This date and time will be used to return values where the created field is after or equal to this timestamp.	
+		- Request Parameters: (a) stripeTaxPercent - If provided, each invoice created by the subscription will apply the tax rate, increasing the amount billed to the customer.
 		
  02. Payment Handling
  
 	[i] Case-001
-		- Purpose:	(a) 
-					(b) 
+		- Purpose:	(a) Create invoices in ZohoBooks for the invoices created in Stripe within the day of execution of the scenario.
+					(b) Create contacts and items in ZohoBooks related to the invoices (if they don't already exist).
 		
-		- Files:	(a) Proxy - 
+		- Files:	(a) Proxy - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Payment Handling/Case 001/proxy/stripe_sendInvoiceDetailsToClients.xml
 		
-		- Request Parameters:	
+		- Request Parameters:	All parameters are usual and self-explanatory.
 		
-		- Special Notes: 
+		- Special Notes: In order to successfully execute the scenario, there has to be at least one invoice in Stripe created within the day of execution.
 	
 		
 	[ii] Case-002
-		- Purpose:	(a) 
-					(b) 
+		- Purpose:	(a) Create payments in ZohoBooks for charges committed in Stripe within the day of execution of the scenario.
+					(b) Acknowledge the customers for their payment via email.
+					(c) Send a summary of all the processsed charges (during the scenario execution) to the organization via email.
 		
-		- Files:	(a) Proxy - 
+		- Files:	(a) Proxy - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Payment Handling/Case 002/proxy/stripe_retrieveChargesAndCreatePayments.xml
+					(b) Sequence - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Payment Handling/Case 002/sequence/sendPaymentSummaryToOrganization.xml
 		
-		- Request Parameters:	(a)
-		
-		- Special Notes:	(a) 
+		- Request Parameters:	(a) stripeProcessChargesOfAllCustomers - Specify 'true' if charges of all the customers in Stripe should be processed. Specifying 'false' would only process the charges of customers given in array in (b).
+								(b) stripeCustomerIds - Array of Stripe customer IDs whose charges need to be processed. Specifying 'true' for (a) would make this parameter ignored.
+								
+		- Special Notes:	In order to successfully execute the scenario, there has to be at least one charge in Stripe committed within the day of execution.
 	
  03. Subscription Updates
 	[i] Case-001
@@ -136,7 +139,8 @@ Environment Set-up:
 		
 		- Files:	(a) Proxy - <Stripe_Connector_Home>/stripe-integrated-scenarios/src/scenarios/Subscription Updates/Case 001/proxy/stripe_changeSubscriptionsWithUpdates.xml
 		
-		- Request Parameters:	(a) stripeCreatedTime - provide a valid date and time in the format of 'dd-MM-yyyy HH:mm X' (e.g:- 25-02-2015 08:00 +05:30). This date and time will be used to return values where the created field is after or equal to this timestamp.
+		- Request Parameters: No special parameters required.
 		
-		- Special Notes: (a) In order to start this case, as a prerequisite, one or more customers' current subscription plan should be changed (updated) to a different plan as an offline process to let this case track the subscription updates.
+		- Special Notes: (a) In order to start this case, as a pre-requisite, one or more customers' current subscription plan should be changed (updated) to a different plan as an offline process to let this case track the subscription updates.
+						 (b) Please note that for one customer there can only be one change/update to his subscription in any given day. The behaviour of the scenario is not guaranteed otherwise.
 	

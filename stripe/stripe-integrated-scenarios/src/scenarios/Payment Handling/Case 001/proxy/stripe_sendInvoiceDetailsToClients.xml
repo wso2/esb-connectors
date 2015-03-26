@@ -2,6 +2,8 @@
 <proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_sendInvoiceDetailsToClients" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
    <target>
       <inSequence onError="faultHandlerSeq">
+		 <sequence key="stripe_sendInvoiceDetailsToClients_messages" />
+	  
          <!-- Stripe Properties. -->
          <property name="stripe.apiVersion" value="v1" />
          <property name="stripe.apiUrl" value="https://api.stripe.com" />
@@ -21,13 +23,13 @@
 			<![CDATA[
 				// Get the current time in milliseconds (Greenwich standard time)
                 var currentTimeInMillis = java.util.Date().getTime();
-                // No. of milliseconds on a day
-                var millisInADay = 24*60*60*1000;
+                // No. of milliseconds on a day (24*60*60*1000)
+                var millisInADay = 86400000;
                 // Remaining time of the day in Milliseconds
                 var remainder = java.lang.Long.parseLong(currentTimeInMillis) % millisInADay;
                 // Milliseconds until start of day
                 var startOfDay = java.lang.Long.parseLong(currentTimeInMillis) - java.lang.Long.parseLong(remainder);
-                //compensating for the difference in time zone
+                
                 mc.setProperty('stripe.startTime', '' + new java.text.SimpleDateFormat("dd-MM-yyyy").format(new Date(java.lang.Long.parseLong(startOfDay))));
                 mc.setProperty('stripe.startTimeStamp', '' + java.lang.Long.parseLong(startOfDay)/1000);
 			]]>
@@ -163,7 +165,7 @@
                                                             <with-param name="activity" value="stripe_updateItem" />
                                                             <with-param name="id" value="{$ctx:id}" />
                                                             <with-param name="status" value="Failure" />
-                                                            <with-param name="message" value="Item was successfully created in ZohoBooks, but an error occured while updating the corresponding item in Stripe." />
+                                                            <with-param name="message" value="{$ctx:stripe.itemUpdateFailed}" />
                                                          </call-template>
                                                       </then>
                                                    </filter>
@@ -189,7 +191,7 @@
                                        <with-param name="activity" value="stripe_verifyInvoice" />
                                        <with-param name="id" value="{$ctx:id}" />
                                        <with-param name="status" value="Skipped" />
-                                       <with-param name="message" value="The invoice has already been created in ZohoBooks." />
+                                       <with-param name="message" value="{$ctx:stripe.invoiceAlreadyCreated}" />
                                     </call-template>
 						
 									<!-- Increment the invoiceIndex Count by 1 -->
@@ -205,7 +207,7 @@
                                  <with-param name="activity" value="stripe_checkInvoiceStatus" />
                                  <with-param name="id" value="{$ctx:id}" />
                                  <with-param name="status" value="Skipped" />
-                                 <with-param name="message" value="The invoice is already closed." />
+                                 <with-param name="message" value="{$ctx:stripe.invoiceAlreadyClosed}" />
                               </call-template>
 						
 							<!-- Increment the invoiceIndex Count by 1 -->
@@ -306,15 +308,15 @@
                                                    <!-- Extracting stripe contact details. -->
                                                    <property name="stripe.email" expression="json-eval($.email)" />
                                                    <property name="stripe.description" expression="json-eval($.description)" />
-                                                   <property name="stripe.name" expression="json-eval($.cards.data[0].name)" />
+                                                   <property name="stripe.name" expression="json-eval($.sources.data[0].name)" />
 												   
                                                    <!-- Extracting stripe billing address details. -->
-                                                   <property name="stripe.addressLine1" expression="json-eval($.cards.data[0].address_line1)" />
-                                                   <property name="stripe.addressLine2" expression="json-eval($.cards.data[0].address_line2)" />
-                                                   <property name="stripe.addressCity" expression="json-eval($.cards.data[0].address_city)" />
-                                                   <property name="stripe.addressState" expression="json-eval($.cards.data[0].address_state)" />
-                                                   <property name="stripe.addressZip" expression="json-eval($.cards.data[0].address_zip)" />
-                                                   <property name="stripe.addressCountry" expression="json-eval($.cards.data[0].address_country)" />
+                                                   <property name="stripe.addressLine1" expression="json-eval($.sources.data[0].address_line1)" />
+                                                   <property name="stripe.addressLine2" expression="json-eval($.sources.data[0].address_line2)" />
+                                                   <property name="stripe.addressCity" expression="json-eval($.sources.data[0].address_city)" />
+                                                   <property name="stripe.addressState" expression="json-eval($.sources.data[0].address_state)" />
+                                                   <property name="stripe.addressZip" expression="json-eval($.sources.data[0].address_zip)" />
+                                                   <property name="stripe.addressCountry" expression="json-eval($.sources.data[0].address_country)" />
                                                    
 												   <!-- Constructing the zohoBooks contactPersons field value. -->
                                                    <property name="zohobooks.contactPersons" expression="fn:concat('[{&quot;first_name&quot;:&quot;', get-property('stripe.name'),'&quot;,&quot;email&quot;:&quot;', get-property('stripe.email'),'&quot;,&quot;is_primary_contact&quot;:true}]')" />
@@ -359,7 +361,7 @@
                                                             <with-param name="activity" value="zohobooks_createContact" />
                                                             <with-param name="id" value="{$ctx:id}" />
                                                             <with-param name="status" value="Success" />
-                                                            <with-param name="message" value="The customer has been successfully created in ZohoBooks." />
+                                                            <with-param name="message" value="{$ctx:stripe.customerCreationSuccessful}" />
                                                          </call-template>
                                                          
 														 <property name="stripe.metadata" expression="fn:concat('{&quot;zohobooks_contact_id&quot;:&quot;', get-property('stripe.zohobooksContactId'), '&quot;,&quot;zohobooks_contact_person_id&quot;:&quot;', get-property('stripe.zohobooksContactPersonId'), '&quot;}')" />
@@ -386,7 +388,7 @@
                                                                   <with-param name="activity" value="zohobooks_updateCustomer" />
                                                                   <with-param name="id" value="{$ctx:id}" />
                                                                   <with-param name="status" value="Failure" />
-                                                                  <with-param name="message" value="Contact was successfully created in ZohoBooks, but an error occured while updating the corresponding customer in Stripe." />
+                                                                  <with-param name="message" value="{$ctx:stripe.customerUpdateFailed}" />
                                                                </call-template>
                                                             </then>
                                                          </filter>
@@ -445,7 +447,7 @@
                                                             <with-param name="activity" value="zohobooks_createInvoice" />
                                                             <with-param name="id" value="{$ctx:id}" />
                                                             <with-param name="status" value="Success" />
-                                                            <with-param name="message" value="The invoice has been generated successfully and emailed to the respective contact." />
+                                                            <with-param name="message" value="{$ctx:stripe.invoiceGenrationAndNotificationSuccessful}" />
                                                          </call-template>
 														 
                                                          <property name="stripe.metadata" expression="fn:concat('{&quot;zohobooks_invoice_id&quot;:&quot;', get-property('zohobooks.invoiceId'), '&quot;}')" />
@@ -473,7 +475,7 @@
                                                                   <with-param name="activity" value="stripe_updateInvoice" />
                                                                   <with-param name="id" value="{$ctx:id}" />
                                                                   <with-param name="status" value="Failure" />
-                                                                  <with-param name="message" value="Unknown error occured while updating the corresponding invoice in Stripe." />
+                                                                  <with-param name="message" value="{$ctx:stripe.invoiceUpdateFailed}" />
                                                                </call-template>
                                                             </then>
                                                          </filter>

@@ -1,15 +1,8 @@
 {
-	"stripeApiVersion":"v1",
-	"stripeApiUrl":"https://api.stripe.com",
-	"stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",
-	"stripeStartTime":"03-03-2015 08:00 +05:30",
+     "stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",
 	"stripeProcessChargesOfAllCustomers":true,
-	"stripeCustomerIds":["cus_5nm36MzIG3vbpd"],
-	
-     "zohobooksApiUrl": "https://books.zoho.com",
+	"stripeCustomerIds":["cus_5q4HLhZ0DGl18J"],
      "zohobooksAuthToken": "7ee35d17c051d7d956c89c2f7fd78115",
      "zohobooksOrganizationId": "49001948",
-     
-	"mandrillApiUrl":"https://mandrillapp.com",
 	"mandrillApiKey":"YkT77awdFCTbvCuwhJo4jw"	
 }

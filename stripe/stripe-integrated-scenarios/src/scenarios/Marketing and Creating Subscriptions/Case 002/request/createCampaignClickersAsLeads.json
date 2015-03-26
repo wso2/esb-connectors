@@ -1,9 +1,8 @@
 {
+	"mailchimpApiUrl":"https://us9.api.mailchimp.com",
 	"mailchimpApiKey":"444e6b63ca5c81d2143d3a161226043b-us9",
-	"mailchimpCampaignId":"0483ea1707",
-	"mailchimpClickURL":"https://dashboard.stripe.com/test/plans",
-	
-	"stripePlanId":"bimbosky_march_0003",
-	
+	"mailchimpCampaignId":"66443e9468",
+	"mailchimpClickURL":"https://dashboard.stripe.com/test/plans",	
+	"stripePlanId":"hsbc_gold_card_b",
 	"zohocrmAccessToken":"8cbeb6ae6a0bfcea917700c1e85bfbb2"
 }

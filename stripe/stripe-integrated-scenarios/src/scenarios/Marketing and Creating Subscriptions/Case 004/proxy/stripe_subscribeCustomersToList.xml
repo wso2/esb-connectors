@@ -3,7 +3,7 @@
    <target>
       <inSequence onError="faultHandlerSeq">
          <!-- MailChimp Properties -->
-         <property name="mailchimp.apiUrl" value="https://us9.api.mailchimp.com" />
+         <property name="mailchimp.apiUrl" expression="json-eval($.mailchimpApiUrl)" />
          <property name="mailchimp.apiKey" expression="json-eval($.mailChimpApiKey)" />
 		 
          <!-- Stripe Properties -->
@@ -29,9 +29,12 @@
 		 
          <!--Removing unused headers -->
          <sequence key="removeResponseHeaders" />
-		 	 
+
+		 <property name="stripe.planId" expression="json-eval($.id)" />
+		<property name="mailchimp.listId" expression="json-eval($.metadata.mailchimp_list_id)" />
+		
          <!--Check whether there occurred an error in retrieving a plan -->
-         <filter source="boolean(get-property('stripe.errorResponse'))" regex="true">
+         <filter source="boolean(get-property('stripe.planId')) and boolean(get-property('mailchimp.listId'))" regex="false">
             <then>
                <property name="errorResponse" expression="json-eval($)" />
                <!--Call the responseHandler template -->
@@ -44,13 +47,13 @@
                <loopback />
             </then>
             <else>
-               <property name="mailchimp.listId" expression="json-eval($.metadata.mailchimp_list_id)" />
+               
                <!-- Process the current date time in order to filter the results on created date and time-->
                <script language="js"><![CDATA[
 							// Get the current time in milliseconds (Greenwich standard time)
 							var currentTimeInMillis = java.util.Date().getTime();
-							// No. of milliseconds on a day
-							var millisInADay = 24*60*60*1000;
+							// No. of milliseconds on a day (24*60*60*1000)
+							var millisInADay = 86400000;
 							// Remaining time of the day in Milliseconds
 							var remainder = java.lang.Long.parseLong(currentTimeInMillis) % millisInADay;
 							// Milliseconds until start of day
@@ -155,70 +158,76 @@
 								   <!--FOR EACH Customer record : END -->
                                     <filter xpath="get-property('operation', 'recordsCount') = get-property('operation', 'recordsIndex')">
                                        <then>
-                                          <property name="mailchimp.batch" expression="fn:concat(fn:substring(get-property('operation', 'emailBuilder'), 0, fn:string-length(get-property('operation', 'emailBuilder')) - 1), ']')" />
-                                          <!-- Adding customer email address to the subscriber list in MailChimp -->
-                                          <mailchimp.init>
-                                             <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
-                                             <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
-                                             <format>json</format>
-                                          </mailchimp.init>
-                                          <mailchimp.addSubscribersToList>
-                                             <listId>{$ctx:mailchimp.listId}</listId>
-                                             <batch>{$ctx:mailchimp.batch}</batch>
-                                             <doubleOptin>false</doubleOptin>
-                                             <updateExisting>true</updateExisting>
-                                             <replaceInterests>false</replaceInterests>
-                                          </mailchimp.addSubscribersToList>
-                                         
-										 <!--Removing unused headers -->
-                                         <sequence key="removeResponseHeaders" />
-                                        
-										<property name="statusCode" expression="$axis2:HTTP_SC" />
-                                          <!--Checking the successful status code -->
-                                          <filter source="get-property('statusCode')" regex="200">
+										  <filter xpath="get-property('operation', 'emailBuilder') != '['">
                                              <then>
-                                                <property name="mailchimp.addCount" expression="json-eval($.add_count)" />
+											 
+												<property name="mailchimp.batch" expression="fn:concat(fn:substring(get-property('operation', 'emailBuilder'), 0, fn:string-length(get-property('operation', 'emailBuilder')) - 1), ']')" />
 												
-                                                <!--Checking the number of customers added to the list is zero  -->
-                                                <filter source="get-property('mailchimp.addCount')" regex="0">
-                                                   <then>
-												   
-                                                      <property name="id" expression="fn:concat('mailchimp_listId:', get-property('mailchimp.listId'))" />
-                                                      <!--Call the responseHandler template -->
-                                                      <call-template target="responseHandlerTemplate">
-                                                         <with-param name="activity" value="mailchimp_addSubscribersToList" />
-                                                         <with-param name="id" value="{$ctx:id}" />
-                                                         <with-param name="status" value="Skipped" />
-                                                         <with-param name="message" value="No customers were added to the subscription list." />
-                                                      </call-template>
-                                                   </then>
-                                                   <else>
-                                                      <property name="mailchimp.response" expression="json-eval($)" />
-                                                      <property name="message" expression="fn:concat('{&quot;subscribersAddedToTheList&quot;:', get-property('mailchimp.response'),'}')" />
-                                                      <property name="id" expression="fn:concat('mailchimp_listId:', get-property('mailchimp.listId'))" />
-                                                  
-													  <!--Call the responseHandler template -->
-                                                      <call-template target="responseHandlerTemplate">
-                                                         <with-param name="activity" value="mailchimp_addSubscribersToList" />
-                                                         <with-param name="id" value="{$ctx:id}" />
-                                                         <with-param name="status" value="Success" />
-                                                         <with-param name="message" value="{$ctx:message}" />
-                                                      </call-template>
-                                                   </else>
-                                                </filter>		<!--END of filter: checking the number of customers added to the list is zero -->
-                                             </then>
-                                             <else>
-                                                <property name="errorResponse" expression="json-eval($)" />
-                                                <property name="id" expression="fn:concat('mailchimp_listId:', get-property('mailchimp.listId'))" />
-                                                <!--Call the responseHandler template -->
-                                                <call-template target="responseHandlerTemplate">
-                                                   <with-param name="activity" value="mailchimp_addSubscribersToList" />
-                                                   <with-param name="id" value="{$ctx:id}" />
-                                                   <with-param name="status" value="Failure" />
-                                                   <with-param name="message" value="{$ctx:errorResponse}" />
-                                                </call-template>
-                                             </else>
-                                          </filter>		<!--END of filter: Checking the successful status code -->
+												<!-- Adding customer email address to the subscriber list in MailChimp -->
+												  <mailchimp.init>
+													 <apiUrl>{$ctx:mailchimp.apiUrl}</apiUrl>
+													 <apiKey>{$ctx:mailchimp.apiKey}</apiKey>
+													 <format>json</format>
+												  </mailchimp.init>
+												  <mailchimp.addSubscribersToList>
+													 <listId>{$ctx:mailchimp.listId}</listId>
+													 <batch>{$ctx:mailchimp.batch}</batch>
+													 <doubleOptin>false</doubleOptin>
+													 <updateExisting>true</updateExisting>
+													 <replaceInterests>false</replaceInterests>
+												  </mailchimp.addSubscribersToList>
+												 
+												 <!--Removing unused headers -->
+												 <sequence key="removeResponseHeaders" />
+												
+												<property name="statusCode" expression="$axis2:HTTP_SC" />
+												  <!--Checking the successful status code -->
+												  <filter source="get-property('statusCode')" regex="200">
+													 <then>
+														<property name="mailchimp.addCount" expression="json-eval($.add_count)" />
+														
+														<!--Checking the number of customers added to the list is zero  -->
+														<filter source="get-property('mailchimp.addCount')" regex="0">
+														   <then>
+														   
+															  <property name="id" expression="fn:concat('mailchimp_listId:', get-property('mailchimp.listId'))" />
+															  <!--Call the responseHandler template -->
+															  <call-template target="responseHandlerTemplate">
+																 <with-param name="activity" value="mailchimp_addSubscribersToList" />
+																 <with-param name="id" value="{$ctx:id}" />
+																 <with-param name="status" value="Skipped" />
+																 <with-param name="message" value="No new customers were added to the subscription list." />
+															  </call-template>
+														   </then>
+														   <else>
+															  <property name="mailchimp.response" expression="json-eval($)" />
+															  <property name="message" expression="fn:concat('{&quot;subscribersAddedToTheList&quot;:', get-property('mailchimp.response'),'}')" />
+															  <property name="id" expression="fn:concat('mailchimp_listId:', get-property('mailchimp.listId'))" />
+														  
+															  <!--Call the responseHandler template -->
+															  <call-template target="responseHandlerTemplate">
+																 <with-param name="activity" value="mailchimp_addSubscribersToList" />
+																 <with-param name="id" value="{$ctx:id}" />
+																 <with-param name="status" value="Success" />
+																 <with-param name="message" value="{$ctx:message}" />
+															  </call-template>
+														   </else>
+														</filter>		<!--END of filter: checking the number of customers added to the list is zero -->
+													 </then>
+													 <else>
+														<property name="errorResponse" expression="json-eval($)" />
+														<property name="id" expression="fn:concat('mailchimp_listId:', get-property('mailchimp.listId'))" />
+														<!--Call the responseHandler template -->
+														<call-template target="responseHandlerTemplate">
+														   <with-param name="activity" value="mailchimp_addSubscribersToList" />
+														   <with-param name="id" value="{$ctx:id}" />
+														   <with-param name="status" value="Failure" />
+														   <with-param name="message" value="{$ctx:errorResponse}" />
+														</call-template>
+													 </else>
+												  </filter>		<!--END of filter: Checking the successful status code -->
+											 </then>
+										  </filter>                                          
                                           <loopback />
                                        </then>
                                     </filter>		<!--END of filter: Ending each iteration  -->

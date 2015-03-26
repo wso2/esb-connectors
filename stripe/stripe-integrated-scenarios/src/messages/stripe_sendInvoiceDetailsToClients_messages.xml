@@ -1,0 +1,10 @@
+<!-- The sequence contains message constants for stripe_sendInvoiceDetailsToClients_messages case of Payment Handling scenario. -->
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="stripe_sendInvoiceDetailsToClients_messages">
+	<property name="stripe.itemUpdateFailed" value="Item was successfully created in ZohoBooks, but an error occured while updating the corresponding item in Stripe."/>
+	<property name="stripe.invoiceAlreadyCreated" value="The invoice has already been created in ZohoBooks."/>
+	<property name="stripe.invoiceAlreadyClosed" value="The invoice is already closed."/>
+	<property name="stripe.customerCreationSuccessful" value="The customer has been successfully created in ZohoBooks."/>
+	<property name="stripe.customerUpdateFailed" value="Contact was successfully created in ZohoBooks, but an error occured while updating the corresponding customer in Stripe."/>
+	<property name="stripe.invoiceGenrationAndNotificationSuccessful" value="The invoice has been generated successfully and emailed to the respective contact."/>
+	<property name="stripe.invoiceUpdateFailed" value="Unknown error occured while updating the corresponding invoice in Stripe."/>
+</sequence>

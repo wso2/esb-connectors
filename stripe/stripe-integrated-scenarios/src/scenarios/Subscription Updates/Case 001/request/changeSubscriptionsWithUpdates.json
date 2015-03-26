@@ -1,8 +1,5 @@
 {
-  "stripeApiUrl":"https://api.stripe.com",
-  "stripeApiVersion":"v1",
-  "stripeApiKey":"sk_test_1VhvEStmFCzAhH8hl6XggQen", 
-  "stripeCreatedTime":"03-03-2015 00:00 +10:00",
-  "mailChimpApiUrl":"https://us9.api.mailchimp.com",
+  "stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",
+  "mailchimpApiUrl":"https://us9.api.mailchimp.com",
   "mailChimpApiKey":"444e6b63ca5c81d2143d3a161226043b-us9"
 }

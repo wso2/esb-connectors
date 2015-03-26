@@ -1,5 +1,6 @@
 {
+	"mailchimpApiUrl":"https://us9.api.mailchimp.com",
 	"mailChimpApiKey":"444e6b63ca5c81d2143d3a161226043b-us9",
-	"stripePlanId":"pln_002",
-	"stripeApiKey":"sk_test_1VhvEStmFCzAhH8hl6XggQen"
+	"stripePlanId":"hsbc_gold_card_a",
+	"stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu"
 }

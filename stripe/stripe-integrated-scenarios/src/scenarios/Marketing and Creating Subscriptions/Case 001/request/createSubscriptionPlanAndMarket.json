@@ -1,15 +1,17 @@
 {
-	"stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",
-	"stripeAmount":1999,
+	"stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",	
+	"stripeAmount":1499,
 	"stripeStatementDescriptor":"Platinum Plan",
 	"stripeInterval":"month",
-	"stripeTrialPeriodDays":14,
-	"stripeIntervalCount":1,
-	"stripePlanName":"Bimbosky Anti-virus 0022",
-	"stripePlanId":"bimbosky_march_0003",
+	"stripeIntervalCount":3,
+	"stripeTrialPeriodDays":30,
+	"stripePlanName":"HSBC Platinum Credit Card A",
+	"stripePlanId":"hsbc_gold_card_a",
 	"stripeCurrency":"USD",
-	"stripeMailchimpListName":"Bimbosky 20",
+	"stripeMailchimpListName":"HSBC Platinum Credit Card A",
 
+    "mailchimpApiUrl":"https://us9.api.mailchimp.com",
 	"mailchimpApiKey":"444e6b63ca5c81d2143d3a161226043b-us9",
-	"mailchimpListName":"Courty Corporation Subscriber List"
+	"mailchimpListName":"Courty Corporation Subscriber List",
+	"mailchimpTemplateId":"237425"
 }
