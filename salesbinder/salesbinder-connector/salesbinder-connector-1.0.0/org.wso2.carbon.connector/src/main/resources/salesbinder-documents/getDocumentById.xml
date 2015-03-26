@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/view-document-details -->
 <template name="getDocumentById" xmlns="http://ws.apache.org/ns/synapse">
    <parameter name="id" description="The id of the document." />
    <sequence>

@@ -17,9 +17,9 @@
          <property name="issueDate" expression="json-eval($.issueDate)" />
          <property name="shippingAddress" expression="json-eval($.shippingAddress)" />
          <property name="officeEmail" expression="json-eval($.officeEmail)" />
-         <property name="cost" expression="json-eval($.cost)"/>
-         <property name="multiple" expression="json-eval($.multiple)"/>
-         <property name="customerId" expression="json-eval($.customerId)"/>
+         <property name="cost" expression="json-eval($.cost)" />
+         <property name="multiple" expression="json-eval($.multiple)" />
+         <property name="customerId" expression="json-eval($.customerId)" />
          <salesbinder.init>
             <apiUrl>{$ctx:apiUrl}</apiUrl>
             <apiKey>{$ctx:apiKey}</apiKey>
@@ -86,6 +86,17 @@
                   <name>{$ctx:name}</name>
                   <officeEmail>{$ctx:officeEmail}</officeEmail>
                </salesbinder.createAccount>
+            </case>
+            <case regex="urn:getAccountById">
+               <salesbinder.getAccountById>
+                  <id>{$ctx:id}</id>
+               </salesbinder.getAccountById>
+            </case>
+            <case regex="urn:listAccounts">
+               <salesbinder.listAccounts>
+                  <contextId>{$ctx:contextId}</contextId>
+                  <page>{$ctx:page}</page>
+               </salesbinder.listAccounts>
             </case>
          </switch>
          <respond></respond>

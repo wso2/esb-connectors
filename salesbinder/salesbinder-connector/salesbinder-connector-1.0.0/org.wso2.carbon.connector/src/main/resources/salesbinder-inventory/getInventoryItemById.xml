@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/view-item-details -->
 <template name="getInventoryItemById" xmlns="http://ws.apache.org/ns/synapse">
    <parameter name="id" description="The id of the item." />
    <sequence>

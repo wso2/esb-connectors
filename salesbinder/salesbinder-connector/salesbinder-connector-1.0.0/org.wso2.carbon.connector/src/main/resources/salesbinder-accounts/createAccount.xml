@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+<!-- API Documentation URL - http://www.salesbinder.com/kb/api-functions/create-new-account -->
 <template name="createAccount" xmlns="http://ws.apache.org/ns/synapse">
    <parameter name="contextId" description="The value to determine what type of account you want to create." />
    <parameter name="name" description="Business Name of the customer." />
@@ -59,10 +60,10 @@
       <payloadFactory media-type="json">
          <format>
             {
-               "Customer":
-                  {
-                     "context_id":"$1"
-                  }
+            "Customer":
+               {
+                  "context_id":"$1"
+               }
             }
          </format>
          <args>
@@ -88,10 +89,8 @@
             var shippingRegion = mc.getProperty('uri.var.shippingRegion');
             var shippingCountry = mc.getProperty('uri.var.shippingCountry');
             var shippingPostalCode = mc.getProperty('uri.var.shippingPostalCode');
-            var customerLabelId = mc.getProperty('uri.var.customerLabelId');
-               
-            payload = mc.getPayloadJSON();
-                
+            var customerLabelId = mc.getProperty('uri.var.customerLabelId');  
+            payload = mc.getPayloadJSON();   
             if (name != null && name!= ""){
                payload.Customer.name = name;
             }
