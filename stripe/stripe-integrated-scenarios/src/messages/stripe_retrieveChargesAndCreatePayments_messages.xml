@@ -1,0 +1,12 @@
+<!-- The sequence contains message constants for stripe_retrieveChargesAndCreatePayments case of Payment Handling scenario. -->
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="stripe_retrieveChargesAndCreatePayments_messages">
+	<property name="stripe.noCustomersFound" value="There are no customers whose charges need to be processed."/>
+	<property name="stripe.customerNotFound" value="Couldn't find the customer in Stripe."/>
+	<property name="stripe.noChargesFound" value="Customer has no associated charges."/>
+	<property name="stripe.chargeProcessedAlready" value="The charge has been already created as payment in ZohoBooks."/>
+	<property name="stripe.invoiceNotCreated" value="The invoice for the charge was not created in ZohoBooks."/>
+	<property name="stripe.paymentSuccessful" value="The payment has been recorded successfully."/>
+	<property name="stripe.errorInUpdatingCharge" value="Unknown error occured while updating the corresponding charge in Stripe."/>
+	<property name="stripe.notificationSuccessful" value="The customer has been successfully notified about the payment via email."/>
+	<property name="stripe.summaryEmailSuccessful" value="Summary of the payments has been emailed to the organization."/>
+</sequence>

@@ -2,7 +2,8 @@
 <proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_retrieveChargesAndCreatePayments" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
    <target>
       <inSequence onError="faultHandlerSeq">
-	  
+		 <sequence key="stripe_retrieveChargesAndCreatePayments_messages" />
+		 
          <!-- Stripe Properties. -->
          <property name="stripe.apiVersion" value="v1" />
          <property name="stripe.apiUrl" value="https://api.stripe.com" />
@@ -30,13 +31,13 @@
 			<![CDATA[
 				// Get the current time in milliseconds (Greenwich standard time)
                 var currentTimeInMillis = java.util.Date().getTime();
-                // No. of milliseconds on a day
-                var millisInADay = 24*60*60*1000;
+                // No. of milliseconds on a day (24*60*60*1000)
+                var millisInADay = 86400000;
                 // Remaining time of the day in Milliseconds
                 var remainder = java.lang.Long.parseLong(currentTimeInMillis) % millisInADay;
                 // Milliseconds until start of day
                 var startOfDay = java.lang.Long.parseLong(currentTimeInMillis) - java.lang.Long.parseLong(remainder);
-                //compensating for the difference in time zone
+                
                 mc.setProperty('stripe.startTime', '' + new java.text.SimpleDateFormat("dd-MM-yyyy").format(new Date(java.lang.Long.parseLong(startOfDay))));
                 mc.setProperty('stripe.startTimeStamp', '' + java.lang.Long.parseLong(startOfDay)/1000);
 			]]>
@@ -91,10 +92,14 @@
 				     {
 						 "Response":{
 							 "activity":"stripe_retrieveChargesAndCreatePayments",
-							 "activityResponse":"There are no customers whose charges need to be processed."
+							 "activityResponse":"$1"
 						 }
                      }
 				  </format>
+					<args>
+					   <arg expression="get-property('stripe.noCustomersFound')" />
+					</args>
+				  
                </payloadFactory>
                <respond />
             </then>
@@ -149,7 +154,7 @@
                                  <with-param name="activity" value="stripe_getCustomerDetails" />
                                  <with-param name="id" value="{$ctx:id}" />
                                  <with-param name="status" value="Failure" />
-                                 <with-param name="message" value="Couldn't find the customer in Stripe." />
+                                 <with-param name="message" value="{$ctx:stripe.customerNotFound}" />
                               </call-template>
 						
 							  <!-- Increment the customerIndex Count by 1 -->
@@ -181,7 +186,7 @@
                                        <with-param name="activity" value="stripe_getChargesForCustomer" />
                                        <with-param name="id" value="{$ctx:id}" />
                                        <with-param name="status" value="Skipped" />
-                                       <with-param name="message" value="Customer has no associated charges." />
+                                       <with-param name="message" value="{$ctx:stripe.noChargesFound}" />
                                     </call-template>
 						
 								    <!-- Increment the customerIndex Count by 1 -->
@@ -209,7 +214,7 @@
                                                       <with-param name="activity" value="zohobooks_createPayment" />
                                                       <with-param name="id" value="{$ctx:id}" />
                                                       <with-param name="status" value="Skipped" />
-                                                      <with-param name="message" value="The charge has been already created as payment in ZohoBooks." />
+                                                      <with-param name="message" value="{$ctx:stripe.chargeProcessedAlready}" />
                                                    </call-template>
                                                 </then>
                                                 <else>
@@ -253,7 +258,7 @@
                                                             <with-param name="activity" value="zohobooks_createPayment" />
                                                             <with-param name="id" value="{$ctx:id}" />
                                                             <with-param name="status" value="Skipped" />
-                                                            <with-param name="message" value="The invoice for the charge was not created in ZohoBooks." />
+                                                            <with-param name="message" value="{$ctx:stripe.invoiceNotCreated}" />
                                                          </call-template>
                                                       </then>
                                                       <else>
@@ -297,7 +302,7 @@
                                                                   <with-param name="activity" value="zohobooks_createPayment" />
                                                                   <with-param name="id" value="{$ctx:id}" />
                                                                   <with-param name="status" value="Success" />
-                                                                  <with-param name="message" value="The payment has been recorded successfully." />
+                                                                  <with-param name="message" value="{$ctx:stripe.paymentSuccessful}" />
                                                                </call-template>
 															   
                                                                <property name="stripe.metadata" expression="fn:concat('{&quot;zohobooks_payment_id&quot;:&quot;', get-property('zohobooks.paymentId'), '&quot;}')" />
@@ -326,7 +331,7 @@
                                                                         <with-param name="activity" value="stripe_updateInvoice" />
                                                                         <with-param name="id" value="{$ctx:id}" />
                                                                         <with-param name="status" value="Failure" />
-                                                                        <with-param name="message" value="Unknown error occured while updating the corresponding charge in Stripe." />
+                                                                        <with-param name="message" value="{$ctx:stripe.errorInUpdatingCharge}" />
                                                                      </call-template>
                                                                   </then>
                                                                </filter>
@@ -392,7 +397,7 @@
                                                                   <then>
                                                                      <property name="id" expression="fn:concat('mandrill_messageId:', get-property('mandrill.id'))" />
                                                                      <property name="status" value="Success" />
-                                                                     <property name="message" value="The customer has been successfully notified about the payment via email." />
+                                                                     <property name="message" expression="get-property('stripe.notificationSuccessful')" />
                                                                   </then>
                                                                   <else>
                                                                      <!-- Failure case: Append an error message to be sent to the user. -->

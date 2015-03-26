@@ -1,0 +1,9 @@
+<!-- The sequence contains message constants for stripe_changeSubscriptionsWithUpdates case of Subscription Updates scenario. -->
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="stripe_changeSubscriptionsWithUpdates_messages">
+	<property name="stripe.noSubscriptionsFound" value="There are no Subscription updates in the account to be retrieved."/>
+	<property name="stripe.mailchimpSubscriptionListIdMissing" value="Could not subscribe the customer to the new list since the Plan is not associated with a Mailchimp subscription list."/>
+	<property name="stripe.customerNotFound" value="Customer does not exist."/>
+	<property name="stripe.customerEmailMissing" value="Cannot add the user to the new subscription list since the email does not exist."/>
+	<property name="stripe.customerUnsubscribeSuccessful" value="Customer is successfully unsubscribed from the list."/>
+	<property name="stripe.mailchimpUnsubscriptionListIdMissing" value="Could not unsubscribe the customer from the previous list since the Plan is not associated with a Mailchimp subscription list."/>
+</sequence>

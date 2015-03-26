@@ -1,10 +1,5 @@
 {
-	"stripeApiVersion":"v1",
-	"stripeApiUrl":"https://api.stripe.com",
-	"stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",
-	"stripeStartTime":"03-02-2015 08:00 +05:30",
-	
-    "zohobooksApiUrl": "https://books.zoho.com",
-    "zohobooksAuthToken": "7ee35d17c051d7d956c89c2f7fd78115",
-    "zohobooksOrganizationId": "49001948"
+	"stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu",	
+     "zohobooksAuthToken": "7ee35d17c051d7d956c89c2f7fd78115",
+     "zohobooksOrganizationId": "49001948"
 }

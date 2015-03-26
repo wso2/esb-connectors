@@ -17,7 +17,7 @@
          <property name="stripe.malchimpListName" expression="json-eval($.stripeMailchimpListName)" />
 		 
          <!-- MailChimp Properties -->
-         <property name="mailchimp.apiUrl" value="https://us9.api.mailchimp.com" />
+         <property name="mailchimp.apiUrl" expression="json-eval($.mailchimpApiUrl)" />
          <property name="mailchimp.apiKey" expression="json-eval($.mailchimpApiKey)" />
          <property name="mailchimp.listName" expression="json-eval($.mailchimpListName)" />
          <property name="mailchimp.templateId" expression="json-eval($.mailchimpTemplateId)" />

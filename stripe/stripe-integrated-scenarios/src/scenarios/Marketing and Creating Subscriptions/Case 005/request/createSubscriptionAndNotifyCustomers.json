@@ -1,6 +1,5 @@
 {
-  "stripeApiKey":"sk_test_1VhvEStmFCzAhH8hl6XggQen", 
-  "stripeApplicationFeePercent":"",  
-  "stripeTaxPercent":"5",
+  "stripeApiKey":"sk_test_sdOCQazloV7EAfdslyHCQPVu", 
+  "stripeTaxPercent":12.0,
   "mandrillApiKey":"YkT77awdFCTbvCuwhJo4jw"      
 }

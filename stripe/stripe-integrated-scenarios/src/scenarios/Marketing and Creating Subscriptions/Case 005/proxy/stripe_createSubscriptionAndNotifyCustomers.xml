@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Proxy Template - Parameters: {proxyName} - Name of the proxy/scenario -->
 <proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_createSubscriptionAndNotifyCustomers" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
    <target>
       <inSequence onError="faultHandlerSeq">
@@ -53,8 +52,8 @@
                <script language="js"><![CDATA[
 							// Get the current time in milliseconds (Greenwich standard time)
 							var currentTimeInMillis = java.util.Date().getTime();
-							// No. of milliseconds on a day
-							var millisInADay = 24*60*60*1000;
+							// No. of milliseconds on a day (24*60*60*1000)
+							var millisInADay = 86400000;
 							// Remaining time of the day in Milliseconds
 							var remainder = java.lang.Long.parseLong(currentTimeInMillis) % millisInADay;
 							// Milliseconds until start of day

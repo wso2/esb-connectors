@@ -42,7 +42,7 @@
             <then>
                <property name="id" expression="fn:concat('mandrill_messageId:', get-property('mandrill.id'))" />
                <property name="status" value="Success" />
-               <property name="message" value="Summary of the payments has been emailed to the organization." />
+               <property name="message" expression="get-property('stripe.summaryEmailSuccessful')" />
             </then>
             <else>
                <!-- Failure case: Append an error message to be sent to the user. -->

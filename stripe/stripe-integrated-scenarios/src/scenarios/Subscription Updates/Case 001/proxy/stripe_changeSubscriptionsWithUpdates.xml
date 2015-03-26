@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Proxy Template - Parameters: {proxyName} - Name of the proxy/scenario -->
 <proxy xmlns="http://ws.apache.org/ns/synapse" name="stripe_changeSubscriptionsWithUpdates" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
    <target>
       <inSequence onError="faultHandlerSeq">
+		 <sequence key="stripe_changeSubscriptionsWithUpdates_messages" />
+		 
          <!-- Stripe Properties -->
-         <property name="stripe.apiUrl" expression="json-eval($.stripeApiUrl)" />
-         <property name="stripe.apiVersion" expression="json-eval($.stripeApiVersion)" />
+         <property name="stripe.apiUrl" value="https://api.stripe.com" />
+         <property name="stripe.apiVersion" value="v1" />
          <property name="stripe.apiKey" expression="json-eval($.stripeApiKey)" />
-         <property name="stripe.stripeCreatedTime" expression="json-eval($.stripeCreatedTime)" />
 		 
          <!-- MailChimp Properties -->
-         <property name="mailchimp.apiUrl" expression="json-eval($.mailChimpApiUrl)" />
+         <property name="mailchimp.apiUrl" expression="json-eval($.mailchimpApiUrl)" />
          <property name="mailchimp.apiKey" expression="json-eval($.mailChimpApiKey)" />
 		 
          <!-- Common Properties -->
          <property name="id.empty" value="{}" />
          <property name="responseString" value="" scope="operation" />
 		 
-		 <!-- Convert the date/time sent by the user to Epoch Unix timestamp. -->
-         <script language="js"><![CDATA[
-				var stripeCreatedTime = '' + mc.getProperty('stripe.stripeCreatedTime');									
-				var timeInSeconds;
-				
-				if(stripeCreatedTime != ""){
-					timeInSeconds = '' + java.lang.Math.round(new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm X").parse(stripeCreatedTime).getTime()/1000);				
-				} else {
-					timeInSeconds = '' + java.lang.Math.round((java.lang.System.currentTimeMillis() - 24*3600*1000)/1000);
-					mc.setProperty('stripe.startTime', new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm").format(new java.util.Date(java.lang.System.currentTimeMillis() - 24*3600*1000)));				
-				}
-				mc.setProperty('stripe.stripeCreatedTimeStamp', '' + timeInSeconds);
-				]]></script>
+		 <!-- Process the current date time in order to filter the results on created date and time-->
+		<script language="js">
+			<![CDATA[
+				// Get the current time in milliseconds (Greenwich standard time)
+				var currentTimeInMillis = java.util.Date().getTime();
+				// No. of milliseconds on a day (24*60*60*1000)
+				var millisInADay = 86400000;
+				// Remaining time of the day in Milliseconds
+				var remainder = java.lang.Long.parseLong(currentTimeInMillis) % millisInADay;
+				// Milliseconds until start of day
+				var startOfDay = java.lang.Long.parseLong(currentTimeInMillis) - java.lang.Long.parseLong(remainder);							
+				mc.setProperty('stripe.stripeCreatedTimeStamp', '' + java.lang.Long.parseLong(startOfDay)/1000);		
+			]]>
+		</script>
         
 		<!--Retrieving the list of updated subscription details -->
          <stripe.init>
             <apiUrl>{$ctx:stripe.apiUrl}</apiUrl>
             <apiVersion>{$ctx:stripe.apiVersion}</apiVersion>
             <apiKey>{$ctx:stripe.apiKey}</apiKey>
-         </stripe.init>
-		 
+         </stripe.init>		 
          <stripe.getListOfEvents>
             <createdGTE>{$ctx:stripe.stripeCreatedTimeStamp}</createdGTE>
             <type>customer.subscription.updated</type>
@@ -74,7 +74,7 @@
                         <with-param name="activity" value="stripe_getListOfEvents" />
                         <with-param name="id" value="{$ctx:id.empty}" />
                         <with-param name="status" value="Skipped" />
-                        <with-param name="message" value="There are no Subscription updates in the account to be retrieved." />
+                        <with-param name="message" value="{$ctx:stripe.noSubscriptionsFound}" />
                      </call-template>
                      <loopback />
                   </then>
@@ -87,6 +87,7 @@
                               <property name="stripe.customerId" expression="json-eval($.data.data.object.customer)" />
                               <property name="stripe.currentSubscriptionId" expression="json-eval($.data.data.object.id)" />
                               <property name="stripe.currentPlanId" expression="json-eval($.data.data.object.plan.id)" />
+                              <property name="stripe.currentQuantity" expression="json-eval($.data.data.object.quantity)" />
                               <property name="stripe.previousPlanId" expression="json-eval($.data.data.previous_attributes.plan.id)" />
 							  
                               <!--Having the planIds of the subscription update retrieving the corresponding plan's details  -->
@@ -132,7 +133,7 @@
                                              <with-param name="activity" value="stripe_retrieveAnExistingPlan" />
                                              <with-param name="id" value="{$ctx:id}" />
                                              <with-param name="status" value="Skipped" />
-                                             <with-param name="message" value="Could not subscribe the customer to the new list since the Plan is not associated with a Mailchimp subscription list." />
+                                             <with-param name="message" value="{$ctx:stripe.mailchimpSubscriptionListIdMissing}" />
                                           </call-template>
                                        </then>
                                        <else>
@@ -162,7 +163,7 @@
                                                    <with-param name="activity" value="stripe_retrieveAnExistingCustomer" />
                                                    <with-param name="id" value="{$ctx:stripe.customerId}" />
                                                    <with-param name="status" value="Skipped" />
-                                                   <with-param name="message" value="Customer does not exist." />
+                                                   <with-param name="message" value="{$ctx:stripe.customerNotFound}" />
                                                 </call-template>																						
 											</then>
 											<else>
@@ -191,7 +192,7 @@
 																 <with-param name="activity" value="mailchimp_addSubscribersToList" />
 																 <with-param name="id" value="{$ctx:id}" />
 																 <with-param name="status" value="Skipped" />
-																 <with-param name="message" value="Cannot add the user to the new subscription list since the email does not exist." />
+																 <with-param name="message" value="{$ctx:stripe.customerEmailMissing}" />
 															  </call-template>
 														   </then>
 														   <else>
@@ -218,12 +219,13 @@
 															  
 															  <property name="statusCode" expression="$axis2:HTTP_SC" />
 															  
+															  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'),',mailchimp_listId:', get-property('stripe.currentMailChimpListId'))" />
+														  
 															  <!--Checking the successful status code -->
 															  <filter source="get-property('statusCode')" regex="200">
 																 <then>                                                          
 																	  <property name="mailchimp.adds" expression="json-eval($.adds)" />
 																	  <property name="message" expression="fn:concat('{&quot;subscriberAddedToTheList&quot;:', get-property('mailchimp.adds'),'}')" />
-																	  <property name="id" expression="fn:concat('mailchimp_listId:', get-property('stripe.currentMailChimpListId'))" />
 																	  
 																	  <!--Call the responseHandler template -->
 																	  <call-template target="responseHandlerTemplate">
@@ -232,6 +234,8 @@
 																		 <with-param name="status" value="Success" />
 																		 <with-param name="message" value="{$ctx:message}" />
 																	  </call-template>
+																	  
+																	  <property name="stripe.metadata" expression="fn:concat('{&quot;plan_id&quot;:&quot;', get-property('stripe.currentPlanId') ,'&quot;,&quot;', get-property('stripe.previousPlanId'), '&quot;:&quot;&quot;,&quot;', get-property('stripe.currentPlanId'), '&quot;:&quot;', get-property('stripe.currentSubscriptionId'), '&quot;,&quot;subscription_quantity&quot;:&quot;', get-property('stripe.currentQuantity'), '&quot;}')" />
 																	 
 																	 <!--Update the Customer's meta-data with the subscription details in Stripe-->
 																	  <stripe.init>
@@ -308,7 +312,7 @@
 																						   <with-param name="activity" value="stripe_retrieveAnExistingPlan" />
 																						   <with-param name="id" value="{$ctx:id}" />
 																						   <with-param name="status" value="Skipped" />
-																						   <with-param name="message" value="Could not unsubscribe the customer from the new previous list since the Plan is not associated with a Mailchimp subscription list." />
+																						   <with-param name="message" value="{$ctx:stripe.mailchimpUnsubscriptionListIdMissing}" />
 																						</call-template>
 																					 </then>
 																					 <else>
@@ -331,25 +335,22 @@
 																						</mailchimp.removeSubscribersFromList>
 																						
 																						<property name="mailchimp.errorCount" expression="json-eval($.error_count)" />
-																						
+																						<property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'),',mailchimp_listId:', get-property('stripe.currentMailChimpListId'))" />
+
 																						<!--Checking whether the error count returns a zero value -->
 																						<filter source="get-property('mailchimp.errorCount')" regex="0">
-																						   <then>
-																							  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
-																							  <property name="message" expression="fn:concat('Customer is successfully unsubscribed from the list [', get-property('stripe.previousMailChimpListId'),']')" />
-																							 
+																						   <then>																							  
 																							 <!--Call the responseHandler template -->
 																							  <call-template target="responseHandlerTemplate">
 																								 <with-param name="activity" value="mailchimp_removeSubscribersFromList" />
 																								 <with-param name="id" value="{$ctx:id}" />
 																								 <with-param name="status" value="Success" />
-																								 <with-param name="message" value="{$ctx:message}" />
+																								 <with-param name="message" value="{$ctx:stripe.customerUnsubscribeSuccessful}" />
 																							  </call-template>
 																						   </then>
 																						   <else>
 																							  <property name="errorResponse" expression="json-eval($.errors[0])" />
-																							  <property name="id" expression="fn:concat('stripe_customerId:', get-property('stripe.customerId'))" />
-																							 
+																							  
 																							 <!--Call the responseHandler template -->
 																							  <call-template target="responseHandlerTemplate">
 																								 <with-param name="activity" value="mailchimp_removeSubscribersFromList" />
@@ -368,7 +369,6 @@
 																 </then>
 																 <else>
 																	<property name="errorResponse" expression="json-eval($)" />
-																	<property name="id" expression="fn:concat('mailchimp_listId:', get-property('stripe.currentMailChimpListId'))" />
 																   
 																   <!--Call the responseHandler template -->
 																	<call-template target="responseHandlerTemplate">
