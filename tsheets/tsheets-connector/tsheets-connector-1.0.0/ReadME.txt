@@ -47,7 +47,7 @@ Steps to follow in setting integration test.
 	ii)		accessToken					-	Place the accesstoken obtained in step 5[i].
 	iii)	jobCodeOneName 				-	Name of a job code.
 	iv)		jobCodeTwoName				-	Name of a job code.
-	v)		timeSheetType				-	Type of the tSheet.
+	v)		timeSheetType				-	Type of the Timesheet.
 	vi)		timeSheetOneStart			-	Starting time of a time sheet to be created (Unique).
 	vii)	timeSheetOneEnd			 	-	Ending time of a time sheet to be created (Unique).
 	viii)	timeSheetTwoStart			-	Starting time of a time sheet to be created (Unique).
