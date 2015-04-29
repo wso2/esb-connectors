@@ -21,7 +21,7 @@
 	<subComponents>
 		<component name="init">
 			<file>init.xml</file>
-			<description>Configuration for Kafka producer</description>
+			<description>Configure the Kafka producer</description>
 		</component>
 	</subComponents>
 </component>

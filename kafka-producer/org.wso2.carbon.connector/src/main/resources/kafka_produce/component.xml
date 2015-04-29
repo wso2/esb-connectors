@@ -21,7 +21,7 @@
     <subComponents>
         <component name="kafkaproduce-operation">
             <file>kafkaProduce-template.xml</file>
-            <description>Send messages to Kafka brokers</description>
+            <description>Send the messages to the Kafka brokers</description>
         </component>
     </subComponents>
 </component>

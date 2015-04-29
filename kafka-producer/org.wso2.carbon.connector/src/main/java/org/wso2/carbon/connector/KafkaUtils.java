@@ -18,11 +18,6 @@
 
 package org.wso2.carbon.connector;
 
-import java.io.IOException;
-
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.Properties;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.ProducerConfig;
 import org.apache.axiom.om.OMOutputFormat;
@@ -35,53 +30,83 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.wso2.carbon.connector.core.util.ConnectorUtils;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.Properties;
+
 public class KafkaUtils {
 
+    /**
+     * Read the value from the input parameter
+     */
 	public static String lookupTemplateParamater(MessageContext ctxt,
 			String paramName) {
 		return (String) ConnectorUtils.lookupTemplateParamater(ctxt, paramName);
 	}
 
+    /**
+     * The ProducerConfig class encapsulates the values required for establishing the connection with brokers such as the broker list, message
+     * partition class, serializer class for the message, and partition key,etc.
+     */
 	public static Producer<String, String> getProducer(MessageContext ctxt) {
 
 		Axis2MessageContext axis2mc = (Axis2MessageContext) ctxt;
 		axis2mc.getAxis2MessageContext();
+
 		String brokers = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.brokerlist");
+
 		String serializationClass = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.serializationClass");
+
 		String requiredAcks = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.requiredAcks");
+
 		String producerType = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.producertype");
+
 		String compressionCodec = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.compressioncodec");
+
 		String keySerializerClass = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.keyserializerclass");
+
 		String partitionerClass = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.partitionerclass");
+
 		String compressedTopics = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.compressedtopics");
+
 		String messagesendMaxRetries = (String) axis2mc
 				.getAxis2MessageContext().getOperationContext()
 				.getProperty("kafka.messagesendmaxretries");
+
 		String retryBackoff = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.retrybackoff");
+
 		String refreshInterval = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.refreshinterval");
+
 		String bufferingMaxMessages = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext()
 				.getProperty("kafka.bufferingmaxmessages");
+
 		String batchNoMessages = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.batchnomessages");
+
 		String sendBufferSize = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.sendbuffersize");
+
 		String requestTimeout = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.requestTimeout");
+
 		String bufferingmaxtime = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.bufferingmaxtime");
+
 		String enqueueTimeout = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.enqueueTimeout");
+
 		String clientId = (String) axis2mc.getAxis2MessageContext()
 				.getOperationContext().getProperty("kafka.clientId");
 
@@ -112,13 +137,16 @@ public class KafkaUtils {
 		return new Producer<String, String>(new ProducerConfig(prop));
 	}
 
-	public static String formateMessage(
+   /**
+    * Format the messages when the messages are sent to the kafka broker
+    */
+	public static String formatMessage(
 			org.apache.axis2.context.MessageContext ctxt) throws AxisFault {
 		OMOutputFormat format = BaseUtils.getOMOutputFormat(ctxt);
 		MessageFormatter messageFormatter = null;
 		messageFormatter = MessageProcessorSelector.getMessageFormatter(ctxt);
-		OutputStream out = null;
-		StringWriter sw = null;
+		OutputStream out;
+		StringWriter sw;
 		sw = new StringWriter();
 		out = new WriterOutputStream(sw, format.getCharSetEncoding());
 		try {

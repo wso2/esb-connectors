@@ -27,11 +27,15 @@ import org.apache.synapse.SynapseLog;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.wso2.carbon.connector.core.*;
 
+/**
+ * Produce the messages to the kafka brokers
+ */
 public class KafkaProduce extends AbstractConnector {
 	public void connect(MessageContext messageContext) throws ConnectException {
 
 		SynapseLog log = getLog(messageContext);
 		log.auditLog("SEND : send message to  Broker lists");
+        //Get the producer with the configuration
 		Producer<String, String> producer = KafkaUtils
 				.getProducer(messageContext);
 		String topic = this.getTopic(messageContext);
@@ -44,10 +48,14 @@ public class KafkaProduce extends AbstractConnector {
 			throw new ConnectException(e);
 		}
         finally {
+            //Close the producer pool connections to all kafka brokers.Also closes the zookeeper client connection if any
             producer.close();
         }
     }
 
+    /**
+     * Read the topic from the parameter,if the topic is null, topic is set to test
+     */
 	public String getTopic(MessageContext messageContext) {
 		String topic = KafkaUtils.lookupTemplateParamater(messageContext,
 				KafkaConnectConstants.PARAM_TOPIC);
@@ -57,22 +65,31 @@ public class KafkaProduce extends AbstractConnector {
 		}
 		return topic;
 	}
-	
+
+    /**
+     * Read the key from the parameter
+     */
 	public String getKey(MessageContext messageContext) {
 		String key = KafkaUtils.lookupTemplateParamater(messageContext,
 				KafkaConnectConstants.PARAM_KEY);
 		return key;
 	}
 
+    /**
+     * Get the messages from the message context and format the messages
+     */
 	public String getMessage(MessageContext messageContext) throws AxisFault {
 		Axis2MessageContext axisMsgContext = (Axis2MessageContext) messageContext;
 		org.apache.axis2.context.MessageContext msgContext = axisMsgContext
 				.getAxis2MessageContext();
 		String messages = KafkaUtils
-				.formateMessage((org.apache.axis2.context.MessageContext) msgContext);
+				.formatMessage((org.apache.axis2.context.MessageContext) msgContext);
 		return messages;
 	}
 
+    /**
+     * Send the messages to the kafka broker with topic and the key that is optional
+     */
 	public static void send(Producer<String, String> producer, String topic,
 			String key, String message) {
 		if (key == null) {
