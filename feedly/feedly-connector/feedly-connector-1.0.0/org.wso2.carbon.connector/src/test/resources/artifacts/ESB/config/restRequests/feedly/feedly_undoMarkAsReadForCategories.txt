@@ -1,0 +1,9 @@
+{
+  "accessToken":"%s",
+  "action": "undoMarkAsRead",
+  "type": "categories",
+  "categoryIds": [
+    "%s",
+    "%s"
+  ]
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="feedly_createAndTagEntry"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="accessToken" expression="json-eval($.accessToken)"/>
+            <property name="keywords" expression="json-eval($.keywords)"/>
+            <property name="tags" expression="json-eval($.tags)"/>
+            <property name="alternate" expression="json-eval($.alternate)"/>
+            <property name="title" expression="json-eval($.title)"/>
+            <property name="author" expression="json-eval($.author)"/>
+            <property name="origin" expression="json-eval($.origin)"/>
+            <property name="content" expression="json-eval($.content)"/>
+            <feedly.test_init>
+                <accessToken>{$ctx:accessToken}</accessToken>
+            </feedly.test_init>
+            <feedly.createAndTagEntry>
+                <keywords>{$ctx:keywords}</keywords>
+                <tags>{$ctx:tags}</tags>
+                <alternate>{$ctx:alternate}</alternate>
+                <title>{$ctx:title}</title>
+                <author>{$ctx:author}</author>
+                <origin>{$ctx:origin}</origin>
+                <content>{$ctx:content}</content>
+            </feedly.createAndTagEntry>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
+</proxy>
