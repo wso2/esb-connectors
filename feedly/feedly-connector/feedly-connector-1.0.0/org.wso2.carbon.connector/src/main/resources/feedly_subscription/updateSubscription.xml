@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="updateSubscription" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="title" description="Title of the Feed." />
+    <parameter name="categories" description="Categories subscribed to the feed." />
+    <parameter name="feedId" description="Id of the feed." />
+
+    <sequence>
+        <property name="uri.var.title" expression="$func:title" />
+        <property name="uri.var.categories" expression="$func:categories" />
+        <property name="uri.var.feedId" expression="$func:feedId" />
+
+        <property name="uri.var.feedId"
+                  expression="fn:concat('feed/', get-property('uri.var.feedId'))" />
+
+        <script language="js">
+            <![CDATA[
+
+			var title = mc.getProperty('uri.var.title');
+			var categoryString = '{"categories":' + mc.getProperty('uri.var.categories') + '}';
+			var feedId = mc.getProperty('uri.var.feedId');
+
+
+			var added = 0;
+            var query = "";
+
+			if (title != null && title != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"title\":\"' + title + '\"';
+			    }else {
+			        query = query + '\"title\":\"' + title + '\"';
+			        added = 1;
+			    }
+			}
+
+			if (mc.getProperty('uri.var.categories') != null && mc.getProperty('uri.var.categories') != "") {
+
+                var categoryObj = eval ("(" + categoryString + ")");
+
+				if(Boolean(added)) {
+				    query = query + ',"categories":[';
+			    }else {
+			        query = query + '"categories":[';
+			        added = 1;
+			    }
+
+                var count = 0;
+			    for (var key in categoryObj.categories) {
+                    if (categoryObj.categories.hasOwnProperty(key)) {
+                        if(count == 0 ) {
+                            query = query + '{\"id\":\"user/'+mc.getProperty('uri.var.userId')+'/category/' + categoryObj.categories[key].id + '\",';
+                            query = query + '\"label\":\"' + categoryObj.categories[key].label + '\"}';
+                            count =1;
+                        }else {
+                            query = query + ',{\"id\":\"user/'+mc.getProperty('uri.var.userId')+'/category/' + categoryObj.categories[key].id + '\",';
+                            query = query + '\"label\":\"' + categoryObj.categories[key].label + '\"}';
+                        }
+
+                    }
+                }
+
+                query = query + ']';
+			}
+
+			if (feedId != null && feedId != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"id\":\"' + feedId + '\"';
+			    }else {
+			        query = query + '\"id\":\"' + feedId + '\"';
+			        added = 1;
+			    }
+			}
+
+			mc.setProperty('uri.var.query', query);
+
+	 	]]>
+        </script>
+
+        <log level="custom">
+            <property name="json" expression="get-property('uri.var.query')"/>
+        </log>
+
+        <header name="Content-Type" value="application/json"
+                scope="transport" />
+        <property name="messageType" value="application/json"
+                  scope="axis2" />
+
+
+        <payloadFactory media-type="json">
+            <format>
+                {
+                $1
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.query')" />
+
+            </args>
+        </payloadFactory>
+
+
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}/v3/subscriptions" />
+            </endpoint>
+        </call>
+
+    </sequence>
+</template>

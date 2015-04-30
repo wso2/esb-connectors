@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<component name="feedly_markers" type="synapse/template">
+    <subComponents>
+        <component name="getListOfUnreadCount">
+            <file>getListOfUnreadCount.xml</file>
+            <description>List the list of unread counts.</description>
+        </component>
+        <component name="markArticleAsRead">
+            <file>markArticleAsRead.xml</file>
+            <description>Mark one or multiple articles as read.</description>
+        </component>
+        <component name="markArticleAsUnread">
+            <file>markArticleAsUnread.xml</file>
+            <description>Mark one or multiple articles as read.</description>
+        </component>
+        <component name="markFeedAsRead">
+            <file>markFeedAsRead.xml</file>
+            <description>Mark a feed as read.</description>
+        </component>
+        <component name="markCategoryAsRead">
+            <file>markCategoryAsRead.xml</file>
+            <description>Mark a category as read.</description>
+        </component>
+        <component name="undoMarkAsRead">
+            <file>undoMarkAsRead.xml</file>
+            <description>Undo mark as read.</description>
+        </component>
+        <component name="markArticleAsSaved">
+            <file>markArticleAsSaved.xml</file>
+            <description>Mark one or multiple articles as saved.</description>
+        </component>
+        <component name="markArticlesAsUnsaved">
+            <file>markArticlesAsUnsaved.xml</file>
+            <description>Mark one or multiple articles as unsaved.</description>
+        </component>
+        <component name="getLatestReadOperations">
+            <file>getLatestReadOperations.xml</file>
+            <description>List the latest read operations.</description>
+        </component>
+        <component name="getLatestTagEntryIds">
+            <file>getLatestTagEntryIds.xml</file>
+            <description>List the latest tagged entry ids.</description>
+        </component>
+        <component name="keepArticlesAsUnread">
+            <file>keepArticlesAsUnread.xml</file>
+            <description>Keep one or multiple articles as unread.</description>
+        </component>
+    </subComponents>
+</component>

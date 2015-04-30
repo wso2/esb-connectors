@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="deleteCategory" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="label" description="Label of the Category to be deleted."/>
+    <sequence>
+        <property name="uri.var.label" expression="$func:label"/>
+        <log level="custom">
+            <property name="requestMethod" expression="get-property('uri.var.label')"/>
+        </log>
+
+
+        <property name="feedly.categoryId"
+                  expression="fn:concat('user/', get-property('uri.var.userId'),'/category/',get-property('uri.var.label') )"/>
+
+        <script language="js"><![CDATA[
+
+            var message = mc.getProperty('feedly.categoryId');
+            var encoded = encodeURIComponent(message);
+
+            mc.setProperty('uri.var.id', encoded);
+
+
+         ]]></script>
+
+        <log level="custom">
+            <property name="requestMethod" expression="get-property('uri.var.id')"/>
+        </log>
+        <call>
+            <endpoint>
+                <http method="delete"
+                      uri-template="{uri.var.apiUrl}/v3/categories/{uri.var.id}"/>
+            </endpoint>
+        </call>
+    </sequence>
+</template>

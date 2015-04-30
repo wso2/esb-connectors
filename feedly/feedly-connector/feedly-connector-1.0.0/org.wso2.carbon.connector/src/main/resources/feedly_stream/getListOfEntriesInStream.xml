@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="getListOfEntriesInStream" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="streamId" description="Id of the Entry." />
+    <parameter name="count" description="default is 20" />
+    <parameter name="ranked" description="newest or oldest" />
+    <parameter name="unreadOnly" description="Optional boolean default value is false." />
+    <parameter name="newerThan" description="long timestamp in ms." />
+    <parameter name="continuation" description="a continuation id is used to page through the entry ids." />
+
+    <sequence>
+        <property name="uri.var.id" expression="$func:streamId" />
+        <property name="uri.var.count" expression="$func:count" />
+        <property name="uri.var.ranked" expression="$func:ranked" />
+        <property name="uri.var.unreadOnly" expression="$func:unreadOnly" />
+        <property name="uri.var.newerThan" expression="$func:newerThan" />
+        <property name="uri.var.continuation" expression="$func:continuation" />
+
+        <property name="feedly.streamId"
+                  expression="fn:concat('user/', get-property('uri.var.userId'),'/category/',get-property('uri.var.id'))" />
+
+        <filter
+                xpath="get-property('uri.var.count') = '' or  (not(string(get-property('uri.var.count'))))">
+            <then>
+                <property name="uri.var.count" value="20" />
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.unreadOnly') = '' or  (not(string(get-property('uri.var.unreadOnly'))))">
+            <then>
+                <property name="uri.var.unreadOnly" value="false" />
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.ranked') = '' or  (not(string(get-property('uri.var.ranked'))))">
+            <then>
+                <property name="uri.var.ranked" value="newest" />
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.newerThan') = '' or  (not(string(get-property('uri.var.newerThan'))))">
+            <then>
+                <property name="uri.var.newerThan" value="30" />
+            </then>
+        </filter>
+
+        <script language="js"><![CDATA[
+
+			var continuation = mc.getProperty('uri.var.continuation');
+
+			var stream = encodeURIComponent(mc.getProperty('feedly.streamId'));
+			mc.setProperty('uri.var.streamId', stream);
+
+            var query = "";
+
+			if (continuation != null && continuation != "") {
+			     query = query + '&amp;continuation='+continuation;
+			}
+
+			mc.setProperty('uri.var.params', query);
+
+         ]]></script>
+
+        <log level="custom">
+            <property name="params" expression="get-property('uri.var.params')"/>
+        </log>
+
+
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="http://cloud.feedly.com/v3/streams/{uri.var.streamId}/ids?count={uri.var.count}&amp;unreadOnly={uri.var.unreadOnly}&amp;ranked={uri.var.ranked}&amp;newerThan={uri.var.newerThan}{uri.var.params}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>
