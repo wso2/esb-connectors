@@ -1,0 +1,9 @@
+{
+  "accessToken":"%s",
+  "action": "markAsRead",
+  "type": "feeds",
+  "lastReadEntryId": "%s",
+  "feedIds": [
+    "%s"
+  ]
+}

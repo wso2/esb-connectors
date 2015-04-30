@@ -1,0 +1,8 @@
+{
+  "accessToken":"%s",
+  "preference":
+    {
+        "category/reviews/entryOverviewSize": "0",
+        "category/photography/entryOverviewSize": "6"
+    }
+}

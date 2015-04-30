@@ -1,0 +1,9 @@
+{
+  "accessToken":"%s",
+  "action": "markAsSaved",
+  "entryIds": [
+    "%s",
+    "%s"
+  ],
+  "type": "entries"
+}
