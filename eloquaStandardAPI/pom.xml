@@ -27,7 +27,7 @@ under the License.
     <name>Building wso2 CARBON connectors</name>
     <url>http://wso2.org</url>
     <modules>
-        <module>eloqua</module>
+        <module>eloquaStandardAPI-connector/eloquaStandardAPI-connector-1.0.0/org.wso2.carbon.connector</module>
     </modules>
     <dependencies>
         <dependency>
@@ -176,3 +176,4 @@ under the License.
         <emma.version>2.1.5320</emma.version>
     </properties>
 </project>
+
