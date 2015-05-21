@@ -19,7 +19,9 @@ Steps to follow in setting integration test.
 	Apply the patches found in https://www.dropbox.com/s/bs83ll1m8kwgylq/patch0009.zip?dl=0 by copying the extracted files into <ESB_HOME>/repository/components/patches.
 
  2. Compress the modified ESB as wso2esb-4.9.0.zip and copy that zip file in to location "<SUPPORTBEE_CONNECTOR_HOME>/supportbee-connector/supportbee-connector-1.0.0/org.wso2.carbon.connector/repository/".
-	If required install the supportbee security certificate (extracted from https://<account-name>.supportbee.com) to client-truststore.jks located in the <ESB_HOME>/repository/resources/security directory.
+	If required install the supportbee security certificate (extracted from https://<account-name>.supportbee.com -  refer section 3 for informaion on how to get an account-name) to the following keystores:
+		i) 	client-truststore.jks located in the <ESB_HOME>/repository/resources/security directory.
+		ii) wso2carbon.jks located in the <SUPPORTBEE_CONNECTOR_HOME>/supportbee-connector/supportbee-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/keystores/products directory.
 
  3. Create a supportbee trial account and derive the API Token.
 	i) 	 Using the URL "https://app.supportbee.com/" create an supportbee trial account.
