@@ -60,6 +60,21 @@ public final class GmailConstants {
     public static final String GMAIL_PARAM_OAUTH_ACCESS_TOKEN = "oauthAccessToken";
 
     /**
+     * Name of the "OAuth oauth consumer key" parameter in synapse configuration.
+     */
+    public static final String GMAIL_OAUTH_CONSUMER_KEY = "consumerKey";
+
+    /**
+     * Name of the "OAuth oauth consumer secret" parameter in synapse configuration.
+     */
+    public static final String GMAIL_OAUTH_CONSUMER_SECRET = "consumerSecret";
+
+    /**
+     * Name of the "OAuth oauth refresh token" parameter in synapse configuration.
+     */
+    public static final String GMAIL_OAUTH_REFRESH_TOKEN = "refreshToken";
+
+    /**
      * Property name to store the user name for SASL authentication.
      */
     public static final String GMAIL_USER_USERNAME = "gmail.user.username";

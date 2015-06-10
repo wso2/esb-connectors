@@ -19,10 +19,15 @@
 package org.wso2.carbon.connector;
 
 import com.google.code.javax.mail.MessagingException;
+import org.apache.axiom.om.OMText;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.config.Entry;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.apache.synapse.registry.Registry;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
+
+import java.util.Properties;
 
 /**
  * Class which reads OAuth access token and user name parameters from the
@@ -38,12 +43,52 @@ public class GmailConfig extends AbstractConnector {
     public void connect(MessageContext messageContext) throws ConnectException {
         try {
             // Reading OAuth access token and user name from the message context
-            String oauthAccessToken =
-                    GmailUtils.lookupFunctionParam(messageContext,
-                            GmailConstants.GMAIL_PARAM_OAUTH_ACCESS_TOKEN);
+            String oauthAccessToken = null;
+            String registryTokenValue = "";
             String username =
                     GmailUtils.lookupFunctionParam(messageContext,
                             GmailConstants.GMAIL_PARAM_USERNAME);
+
+            String oauthConsumerKey =
+                    GmailUtils.lookupFunctionParam(messageContext,
+                            GmailConstants.GMAIL_OAUTH_CONSUMER_KEY);
+
+            String oauthConsumerSecret =
+                    GmailUtils.lookupFunctionParam(messageContext,
+                            GmailConstants.GMAIL_OAUTH_CONSUMER_SECRET);
+
+            String oauthRefreshToken =
+                    GmailUtils.lookupFunctionParam(messageContext,
+                            GmailConstants.GMAIL_OAUTH_REFRESH_TOKEN);
+
+            Registry registry = messageContext.getConfiguration().getRegistry();
+            Entry regEntry = messageContext.getConfiguration().getEntryDefinition("gov:/AccessTokens/gmail");
+
+            if (registry.getResource(regEntry, new Properties()) == null){
+                registryTokenValue = null;
+            }
+            else {
+                registryTokenValue = ((OMText) registry.getResource(regEntry, new Properties())).getText();
+            }
+
+            if (registryTokenValue == null) {
+                registry.newNonEmptyResource("gov:/AccessTokens/gmail", false, "text/plain", oauthAccessToken, "");
+                oauthAccessToken = GmailUtils.lookupFunctionParam(
+                        messageContext, GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN);
+            }
+            else {
+                oauthAccessToken = registryTokenValue;
+            }
+
+            if (GmailUtils.validateToken(oauthAccessToken)) {
+                log.info("TOKEN VALID");
+            }
+            else {
+                log.info("Invalid Access Token Found");
+                oauthAccessToken = GmailUtils.getNewAccessToken(messageContext);
+                log.info("Retrieved Access Token Successfully");
+                registry.newNonEmptyResource("gov:/AccessTokens/gmail", false, "text/plain", oauthAccessToken, "");
+            }
 
             // Validating the user name and OAuth access token provided by the
             // user
@@ -60,7 +105,8 @@ public class GmailConfig extends AbstractConnector {
             }
 
             // Storing OAuth user login details in the message context
-            this.storeOauthUserLogin(messageContext, username, oauthAccessToken);
+            this.storeOauthUserLogin(messageContext, username, oauthAccessToken, oauthConsumerKey,
+                    oauthConsumerSecret, oauthRefreshToken);
         } catch (MessagingException e) {
             GmailUtils.storeErrorResponseStatus(messageContext,
                     e,
@@ -86,7 +132,8 @@ public class GmailConfig extends AbstractConnector {
      * @throws com.google.code.javax.mail.MessagingException
      */
     private void storeOauthUserLogin(MessageContext messageContext, String username,
-                                     String oauthAccessToken) throws MessagingException {
+                                     String oauthAccessToken, String oauthConsumerKey,
+                                     String oauthConsumerSecret, String oauthRefreshToken) throws MessagingException {
         org.apache.axis2.context.MessageContext axis2MessageContext =
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
@@ -95,7 +142,13 @@ public class GmailConfig extends AbstractConnector {
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_USERNAME).toString()
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN).toString()
-                        .equals(oauthAccessToken)) {
+                        .equals(oauthAccessToken) &&
+                messageContext.getProperty(GmailConstants.GMAIL_OAUTH_CONSUMER_SECRET).toString()
+                        .equals(oauthConsumerSecret) &&
+                messageContext.getProperty(GmailConstants.GMAIL_OAUTH_CONSUMER_KEY).toString()
+                        .equals(oauthConsumerKey) &&
+                messageContext.getProperty(GmailConstants.GMAIL_OAUTH_REFRESH_TOKEN).toString()
+                        .equals(oauthRefreshToken)) {
             log.info("The same authentication is already available. Hence no changes are needed.");
             return;
         }
@@ -109,5 +162,8 @@ public class GmailConfig extends AbstractConnector {
         log.info("Storing new username and access token");
         messageContext.setProperty(GmailConstants.GMAIL_OAUTH_USERNAME, username);
         messageContext.setProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN, oauthAccessToken);
+        messageContext.setProperty(GmailConstants.GMAIL_OAUTH_CONSUMER_KEY, oauthConsumerKey);
+        messageContext.setProperty(GmailConstants.GMAIL_OAUTH_CONSUMER_SECRET, oauthConsumerSecret);
+        messageContext.setProperty(GmailConstants.GMAIL_OAUTH_REFRESH_TOKEN, oauthRefreshToken);
     }
 }
