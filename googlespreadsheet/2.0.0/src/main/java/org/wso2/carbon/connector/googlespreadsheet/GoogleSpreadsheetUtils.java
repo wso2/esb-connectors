@@ -17,18 +17,33 @@
 */
 package org.wso2.carbon.connector.googlespreadsheet;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
+import com.google.api.client.json.Json;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
+import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.wso2.carbon.connector.core.util.ConnectorUtils;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class GoogleSpreadsheetUtils {
 
@@ -89,6 +104,79 @@ public class GoogleSpreadsheetUtils {
             log.debug("No transport headers found for the message");
         }
 
+    }
+
+    public static String getNewAccessToken (MessageContext messageContext) {
+        String validationUrl = "https://www.googleapis.com/oauth2/v3/token";
+        try {
+            URL urlObj = new URL(validationUrl);
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) urlObj.openConnection();
+
+            httpsURLConnection.setRequestMethod("POST");
+            String refreshToken = lookupFunctionParam(messageContext, "oauthRefreshToken");
+            String clientId = lookupFunctionParam(messageContext, "oauthConsumerKey");
+            String clientSecret = lookupFunctionParam(messageContext, "oauthConsumerSecret");
+            String grantType = "refresh_token";
+
+            String urlParameters = "refresh_token=" + refreshToken + "&client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=" + grantType;
+
+            httpsURLConnection.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(httpsURLConnection.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+
+            int responseCode = httpsURLConnection.getResponseCode();
+            String inputLine;
+            StringBuffer input = new StringBuffer("");
+
+            if (responseCode == 200) {
+                BufferedReader inputReader = new BufferedReader(new InputStreamReader(httpsURLConnection.getInputStream()));
+
+                while ((inputLine = inputReader.readLine()) != null) {
+                    input.append(inputLine);
+                }
+
+                Gson jsonResponse = new Gson();
+                JsonObject jsonObject = jsonResponse.fromJson(input.toString(), JsonObject.class);
+
+                return jsonObject.get("access_token").getAsString();
+            }
+            else {
+                log.error("Could not Retrieve the Access token Via Refresh Token");
+                return "";
+            }
+
+        } catch (MalformedURLException e) {
+            System.out.println("Failed to validate access Token");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+    public static boolean validateToken (String accessToken) {
+        String validationUrl = "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" + accessToken;
+        try {
+            URL urlObj = new URL(validationUrl);
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) urlObj.openConnection();
+
+            httpsURLConnection.setRequestMethod("GET");
+            if (httpsURLConnection.getResponseCode() == 400){
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        } catch (MalformedURLException e) {
+            System.out.println("Failed to validate access Token");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

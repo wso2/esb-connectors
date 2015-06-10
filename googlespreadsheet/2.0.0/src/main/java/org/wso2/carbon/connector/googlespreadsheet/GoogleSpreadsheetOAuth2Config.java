@@ -1,10 +1,15 @@
 package org.wso2.carbon.connector.googlespreadsheet;
 
+import org.apache.axiom.om.OMText;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.config.Entry;
+import org.apache.synapse.registry.Registry;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
+
+import java.util.Properties;
 
 /*
  *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -44,12 +49,43 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 	@Override
 	public void connect(MessageContext messageContext) throws ConnectException {
 		try {
+
+
 			String consumerKey = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_KEY);
 			String consumerSecret = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_SECRET);
-			String accessToken = GoogleSpreadsheetUtils.lookupFunctionParam(
-					messageContext, ACCESS_TOKEN);
+			String accessToken = "";
+			String registryTokenValue = "";
+
+			Registry registry = messageContext.getConfiguration().getRegistry();
+			Entry regEntry = messageContext.getConfiguration().getEntryDefinition("gov:/AccessTokens/googlespreadsheet");
+
+			if (registry.getResource(regEntry, new Properties()) == null) {
+				registryTokenValue = null;
+			}
+			else {
+				registryTokenValue = ((OMText) registry.getResource(regEntry, new Properties())).getText();
+			}
+
+			if (registryTokenValue == null) {
+				registry.newNonEmptyResource("gov:/AccessTokens/googlespreadsheet", false, "text/plain", GoogleSpreadsheetUtils.lookupFunctionParam(messageContext, ACCESS_TOKEN), "");
+				accessToken = GoogleSpreadsheetUtils.lookupFunctionParam(
+						messageContext, ACCESS_TOKEN);
+			}
+			else {
+				accessToken = registryTokenValue;
+			}
+
+			if (GoogleSpreadsheetUtils.validateToken(accessToken)) {
+				log.info("TOKEN VALID");
+			}
+			else {
+				log.info("Invalid Access Token Found");
+				accessToken = GoogleSpreadsheetUtils.getNewAccessToken(messageContext);
+				log.info("Retrieved Access Token Successfully");
+				registry.newNonEmptyResource("gov:/AccessTokens/googlespreadsheet", false, "text/plain", accessToken, "");
+			}
 			String refreshToken = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, REFRESH_TOKEN);
 
