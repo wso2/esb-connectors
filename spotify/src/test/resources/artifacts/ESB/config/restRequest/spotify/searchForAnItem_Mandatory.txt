@@ -1,4 +1,4 @@
 {
-"searchQuery":"Tania bowra",
+"searchQuery":"%s",
 "typeOfItem":"artist"
 }

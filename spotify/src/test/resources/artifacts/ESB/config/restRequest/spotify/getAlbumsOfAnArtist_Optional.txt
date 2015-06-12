@@ -1,5 +1,5 @@
 {
-"artistId":"1vCWHaC5f2uS3yhpwWbIA6",
+"artistId":"%s",
 "albumType":"single",
 "albumLimit":"10",
 "albumOffset":"1",
