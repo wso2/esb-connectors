@@ -18,54 +18,54 @@
 -->
 <!-- API Doc: https://developers.podio.com/doc/tasks/get-tasks-77949 -->
 <template name="listTasks" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="grouping" description="The group name" />
-   <parameter name="app" description="The application name" />
-   <parameter name="completed" description="If true retrieve only completed tasks" />
-   <parameter name="completedBy" description="The name of assignee" />
-   <parameter name="completedOn" description="The completed date" />
-   <parameter name="createdBy" description="The name of the ticket creater" />
-   <parameter name="createdOn" description="The created date" />
-   <parameter name="createdVia" description="The id of the client the task was created via" />
-   <parameter name="dueDate" description="The dueDate" />
-   <parameter name="externalId" description="The external id of the task" />
-   <parameter name="files" description="True if there should be files on the task" />
-   <parameter name="label" description="The id of the a required label on the tasks" />
-   <parameter name="limit" description="The maximum number of tasks to return" />
-   <parameter name="offset" description="The offset into the tasks to return" />
-   <parameter name="org" description="The ids of the orgs the tasks are related to." />
-   <parameter name="reassigned" description="True to only return tasks the active user has assigned to someone else" />
-   <parameter name="reference" description="The list of references on the form " />
-   <parameter name="responsible" description="The user ids that are responsible for the task" />
-   <parameter name="sortBy" description="The sort order of the tasks" />
-   <parameter name="sortDesc" description="true if tasks should be sorted descending" />
-   <parameter name="space" description="The ids of the spaces the tasks are related to" />
-   <parameter name="view" description="The level of information to return" />
-   <sequence>
-      <property name="uri.var.grouping" expression="$func:grouping" />
-      <property name="uri.var.app" expression="$func:app" />
-      <property name="uri.var.completed" expression="$func:completed" />
-      <property name="uri.var.completedBy" expression="$func:completedBy" />
-      <property name="uri.var.completedOn" expression="$func:completedOn" />
-      <property name="uri.var.createdBy" expression="$func:createdBy" />
-      <property name="uri.var.createdOn" expression="$func:createdOn" />
-      <property name="uri.var.createdVia" expression="$func:createdVia" />
-      <property name="uri.var.dueDate" expression="$func:dueDate" />
-      <property name="uri.var.externalId" expression="$func:externalId" />
-      <property name="uri.var.files" expression="$func:files" />
-      <property name="uri.var.label" expression="$func:label" />
-      <property name="uri.var.limit" expression="$func:limit" />
-      <property name="uri.var.offset" expression="$func:offset" />
-      <property name="uri.var.org" expression="$func:org" />
-      <property name="uri.var.reassigned" expression="$func:reassigned" />
-      <property name="uri.var.reference" expression="$func:reference" />
-      <property name="uri.var.responsible" expression="$func:responsible" />
-      <property name="uri.var.sortBy" expression="$func:sortBy" />
-      <property name="uri.var.sortDesc" expression="$func:sortDesc" />
-      <property name="uri.var.space" expression="$func:space" />
-      <property name="uri.var.view" expression="$func:view" />
-      <property name="uri.var.urlQuery" value="" />
-      <script language="js">
-         <![CDATA[
+    <parameter name="grouping" description="The group name"/>
+    <parameter name="app" description="The application name"/>
+    <parameter name="completed" description="If true retrieve only completed tasks"/>
+    <parameter name="completedBy" description="The name of assignee"/>
+    <parameter name="completedOn" description="The completed date"/>
+    <parameter name="createdBy" description="The name of the ticket creater"/>
+    <parameter name="createdOn" description="The created date"/>
+    <parameter name="createdVia" description="The id of the client the task was created via"/>
+    <parameter name="dueDate" description="The dueDate"/>
+    <parameter name="externalId" description="The external id of the task"/>
+    <parameter name="files" description="True if there should be files on the task"/>
+    <parameter name="label" description="The id of the a required label on the tasks"/>
+    <parameter name="limit" description="The maximum number of tasks to return"/>
+    <parameter name="offset" description="The offset into the tasks to return"/>
+    <parameter name="org" description="The ids of the orgs the tasks are related to."/>
+    <parameter name="reassigned" description="True to only return tasks the active user has assigned to someone else"/>
+    <parameter name="reference" description="The list of references on the form "/>
+    <parameter name="responsible" description="The user ids that are responsible for the task"/>
+    <parameter name="sortBy" description="The sort order of the tasks"/>
+    <parameter name="sortDesc" description="true if tasks should be sorted descending"/>
+    <parameter name="space" description="The ids of the spaces the tasks are related to"/>
+    <parameter name="view" description="The level of information to return"/>
+    <sequence>
+        <property name="uri.var.grouping" expression="$func:grouping"/>
+        <property name="uri.var.app" expression="$func:app"/>
+        <property name="uri.var.completed" expression="$func:completed"/>
+        <property name="uri.var.completedBy" expression="$func:completedBy"/>
+        <property name="uri.var.completedOn" expression="$func:completedOn"/>
+        <property name="uri.var.createdBy" expression="$func:createdBy"/>
+        <property name="uri.var.createdOn" expression="$func:createdOn"/>
+        <property name="uri.var.createdVia" expression="$func:createdVia"/>
+        <property name="uri.var.dueDate" expression="$func:dueDate"/>
+        <property name="uri.var.externalId" expression="$func:externalId"/>
+        <property name="uri.var.files" expression="$func:files"/>
+        <property name="uri.var.label" expression="$func:label"/>
+        <property name="uri.var.limit" expression="$func:limit"/>
+        <property name="uri.var.offset" expression="$func:offset"/>
+        <property name="uri.var.org" expression="$func:org"/>
+        <property name="uri.var.reassigned" expression="$func:reassigned"/>
+        <property name="uri.var.reference" expression="$func:reference"/>
+        <property name="uri.var.responsible" expression="$func:responsible"/>
+        <property name="uri.var.sortBy" expression="$func:sortBy"/>
+        <property name="uri.var.sortDesc" expression="$func:sortDesc"/>
+        <property name="uri.var.space" expression="$func:space"/>
+        <property name="uri.var.view" expression="$func:view"/>
+        <property name="uri.var.urlQuery" value=""/>
+        <script language="js">
+            <![CDATA[
             var grouping = mc.getProperty('uri.var.grouping');
             var app = mc.getProperty('uri.var.app');
             var completed = mc.getProperty('uri.var.completed');
@@ -160,17 +160,17 @@
                mc.setProperty('uri.var.urlQuery', urlQuery);
             } 
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}/task{uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Podio-Auth-Ref" scope="transport" action="remove" />
-      <header name="X-Podio-Request-Id" scope="transport" action="remove" />
-      <header name="X-Rate-Limit-Limit" scope="transport" action="remove" />
-      <header name="X-Rate-Limit-Remaining" scope="transport" action="remove" />
-      <header name="X-Served-By" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get" uri-template="{uri.var.apiUrl}/task{uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Podio-Auth-Ref" scope="transport" action="remove"/>
+        <header name="X-Podio-Request-Id" scope="transport" action="remove"/>
+        <header name="X-Rate-Limit-Limit" scope="transport" action="remove"/>
+        <header name="X-Rate-Limit-Remaining" scope="transport" action="remove"/>
+        <header name="X-Served-By" scope="transport" action="remove"/>
+    </sequence>
 </template>
