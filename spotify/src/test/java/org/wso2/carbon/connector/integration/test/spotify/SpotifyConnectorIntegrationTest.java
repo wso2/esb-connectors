@@ -48,7 +48,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
 
     private String repoLocation = null;
 
-    private String spotifyConnectorFileName = CONNECTOR_NAME+".zip";
+    private String spotifyConnectorFileName = CONNECTOR_NAME + ".zip";
 
     private Properties spotifyConnectorProperties = null;
 
@@ -116,9 +116,9 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Mandatory parameter test case for getToken from code method.
      */
-    @Test(enabled = false, groups = {"wso2.esb"},dependsOnMethods = { "testGetCode" },
-            description = "spotify {getCodeForAccessToken} integration test " +
-            "with mandatory parameter.")
+    @Test(enabled = false, groups = {"wso2.esb"}, dependsOnMethods = {"testGetCode"},
+            description = "spotify {testTokenFromCode} integration test " +
+                    "with mandatory parameter.")
     public void testTokenFromCode() throws Exception {
         // Invoking the testTokenFromCode method to derive the code which will be used to get access token
         String jsonRequestFilePath = pathToRequestsDirectory + "getAccessTokenFromAuthorization.txt";
@@ -146,10 +146,11 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("artistId1"));
         JSONObject jsonResponse;
         try {
-            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             Assert.assertEquals(jsonObject.getString("artistId"), jsonResponse.get("id"));
         } finally {
             proxyAdmin.deleteProxy(methodName);
@@ -184,9 +185,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("artistId1") + "," + spotifyConnectorProperties.getProperty("artistId2"));
         try {
-            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             String[] ids = jsonObject.getString("artistIds").split(",");
             JSONArray artists = jsonResponse.getJSONArray("artists");
             boolean exi = false;
@@ -231,8 +233,9 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("artistIdToGetAlbums"));
         try {
-            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
+            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonResponse.has("items"));
         } finally {
             proxyAdmin.deleteProxy(methodName);
@@ -267,8 +270,9 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("artistIdToGetAlbums"));
         try {
-            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
+            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonResponse.has("items"));
         } finally {
             proxyAdmin.deleteProxy(methodName);
@@ -286,9 +290,11 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+//        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("artistIdToGetTopTracks"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("artistId1"));
         try {
-            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             JSONArray artists = ((JSONObject) jsonResponse.getJSONArray("tracks").get(0)).getJSONArray("artists");
             boolean exi = false;
             for (int i = 0; i < artists.length(); i++) {
@@ -332,8 +338,9 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("artistId1"));
         try {
-            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
+            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonResponse.has("artists"));
         } finally {
             proxyAdmin.deleteProxy(methodName);
@@ -368,9 +375,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("trackId1"));
         try {
-            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             Assert.assertEquals(jsonObject.getString("trackId"), jsonResponse.get("id"));
         } finally {
             proxyAdmin.deleteProxy(methodName);
@@ -405,9 +413,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("trackId1") + "," + spotifyConnectorProperties.getProperty("trackId2"));
         try {
-            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             String[] ids = jsonObject.getString("trackIds").split(",");
             JSONArray tracks = jsonResponse.getJSONArray("tracks");
             boolean exi = false;
@@ -445,7 +454,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Test case for getProfileOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {getProfileOfCurrentUser} " +
+    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {getProfileOfCurrentUser} " +
             "integration test.")
     public void getProfileOfCurrentUser() throws Exception {
         String methodName = "spotify_getProfileOfCurrentUser";
@@ -466,14 +475,14 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Mandatory parameter test case for checkTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {checkTracksOfCurrentUser} integration test.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"getTracksOfCurrentUser"}, description = "spotify {checkTracksOfCurrentUser} integration test.")
     public void checkTracksOfCurrentUserWithMandatoryCase() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "checkTracksOfCurrentUser_Mandatory.txt";
         String methodName = "spotify_checkTracksOfCurrentUser";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("myTrackId") + "," + spotifyConnectorProperties.getProperty("myTrackId1"));
         try {
             String jsonResponse = ConnectorIntegrationUtil.sendRequestString(getProxyServiceURL(methodName), modifiedJsonString).toString();
             Assert.assertTrue(jsonResponse.contains("[ true, true ]"));
@@ -485,7 +494,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Invalid parameter test case for checkTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {checkTracksOfCurrentUser} integration test.")
+    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {checkTracksOfCurrentUser} integration test.")
     public void checkTracksOfCurrentUserWithInvalidCase() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "checkTracksOfCurrentUser_Invalid.txt";
         String methodName = "spotify_checkTracksOfCurrentUser";
@@ -504,7 +513,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Negative parameter test case for checkTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {checkTracksOfCurrentUser} integration test.")
+    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {checkTracksOfCurrentUser} integration test.")
     public void checkTracksOfCurrentUserWithNegativeCase() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "checkTracksOfCurrentUser_Negative.txt";
         String methodName = "spotify_checkTracksOfCurrentUser";
@@ -523,7 +532,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Optional parameter test case for getTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {getTracksOfCurrentUser} integration test.")
+    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {getTracksOfCurrentUser} integration test.")
     public void getTracksOfCurrentUserWithOptionalParameters() throws Exception {
         String methodName = "spotify_getTracksOfCurrentUser";
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
@@ -544,7 +553,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Test case for getTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {getTracksOfCurrentUser} integration test.")
+    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {getTracksOfCurrentUser} integration test.")
     public void getTracksOfCurrentUser() throws Exception {
         String methodName = "spotify_getTracksOfCurrentUser";
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
@@ -555,6 +564,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         JSONObject jsonResponse = null;
         try {
             jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            String myTrackId = ((JSONObject) jsonResponse.getJSONArray("items").get(0)).getJSONObject("track").getString("id");
+            String myTrackId1 = ((JSONObject) jsonResponse.getJSONArray("items").get(1)).getJSONObject("track").getString("id");
+            spotifyConnectorProperties.setProperty("myTrackId", myTrackId);
+            spotifyConnectorProperties.setProperty("myTrackId1", myTrackId1);
             String jsonObj = jsonResponse.getString("total");
             Assert.assertNotEquals(jsonObj, 0);
         } finally {
@@ -565,14 +578,14 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Mandatory parameter test case for saveTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {saveTracksOfCurrentUser} integration test.")
+    @Test(enabled = false, groups = {"wso2.esb"}, description = "spotify {saveTracksOfCurrentUser} integration test.")
     public void saveTracksOfCurrentUser() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "saveTracksForCurrentUser_Mandatory.txt";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         String methodName = "spotify_saveTracksForCurrentUser";
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("trackId1") + "," + spotifyConnectorProperties.getProperty("trackId2"));
         try {
             int responseHeader = ConnectorIntegrationUtil.sendRequestToRetriveHeaders(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(responseHeader == 200);
@@ -584,7 +597,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Invalid parameter test case for saveTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {saveTracksOfCurrentUser} integration test.")
+    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {saveTracksOfCurrentUser} integration test.")
     public void saveTracksOfCurrentUserWithInvalidCase() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "saveTracksForCurrentUser_Invalid.txt";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
@@ -603,14 +616,14 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Mandatory parameter test case for removeTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {removeTracksOfCurrentUser} integration test.")
+    @Test(enabled = false, groups = {"wso2.esb"}, dependsOnMethods = {"getTracksOfCurrentUser"}, description = "spotify {removeTracksOfCurrentUser} integration test.")
     public void removeTracksOfCurrentUserWithMandatoryParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "removeTracksOfCurrentUser_Mandatory.txt";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         String methodName = "spotify_removeTracksOfCurrentUser";
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("myTrackId"));
         try {
             int responseHeader = ConnectorIntegrationUtil.sendRequestToRetriveHeaders(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(responseHeader == 200);
@@ -622,7 +635,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Invalid test case for removeTracksOfCurrentUser method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, priority = 2, description = "spotify {removeTracksOfCurrentUser} integration test.")
+    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {removeTracksOfCurrentUser} integration test.")
     public void removeTracksOfCurrentUserWithInvalidCase() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "removeTracksOfCurrentUser_Invalid.txt";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
@@ -648,10 +661,11 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("albumId1"));
         JSONObject jsonResponse;
         try {
-            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             Assert.assertEquals(jsonResponse.getString("id"), jsonObject.get("albumId"));
         } finally {
             proxyAdmin.deleteProxy(methodName);
@@ -688,9 +702,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("albumId1") + "," + spotifyConnectorProperties.getProperty("albumId2"));
         JSONObject jsonResponse;
         try {
-            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
+            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonResponse.length() > 0);
         } finally {
 
@@ -730,9 +745,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("albumId1"));
         JSONObject jsonResponse;
         try {
-            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
+            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonResponse.length() > 0);
         } finally {
 
@@ -750,10 +766,11 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("albumId1"));
         JSONObject jsonResponse;
         try {
-            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             Assert.assertEquals(jsonResponse.getString("limit"), jsonObject.get("spotifylimit"));
         } finally {
 
@@ -791,9 +808,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("searchQueryForArtist"));
         JSONObject jsonResponse;
         try {
-            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
+            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonResponse.length() > 0);
         } finally {
             proxyAdmin.deleteProxy(methodName);
@@ -810,9 +828,10 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("albumId1"));
         JSONObject jsonResponse;
         try {
-            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), jsonString);
+            jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             JSONObject jsonObject = new JSONObject(jsonString);
             Assert.assertEquals(jsonResponse.getJSONObject("albums").getString("limit"), jsonObject.get("spotifylimit"));
         } finally {
@@ -849,7 +868,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         String jsonRequestFilePath = pathToRequestsDirectory + "getAListUsersPlaylists_Mandatory.txt";
         String methodName = "spotify_getAListUsersPlaylists";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         JSONObject jsonResponse;
@@ -870,7 +889,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         String jsonRequestFilePath = pathToRequestsDirectory + "getAListUsersPlaylists_Optional.txt";
         String methodName = "spotify_getAListUsersPlaylists";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         JSONObject jsonResponse;
@@ -907,18 +926,18 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Mandatory parameter test case for getAPlaylist method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {getAListUsersLPlaylists} integration test with mandatory parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {getAListUsersLPlaylists} integration test with mandatory parameter.")
     public void testGetAPlaylistMandatoryParameter() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getAPlaylist_Mandatory.txt";
         String methodName = "spotify_getAPlaylist";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         JSONObject jsonResponse;
         try {
             jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject jsonObject = new JSONObject(modifiedJsonString);
             Assert.assertEquals(jsonResponse.getString("id"), jsonObject.get("playListId"));
         } finally {
 
@@ -929,12 +948,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Optional parameter test case for getALPlaylist method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {getAPlaylist} integration test with optional parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {getAPlaylist} integration test with optional parameter.")
     public void testGetAPlaylistOptionalParameter() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getAPlaylist_Optional.txt";
         String methodName = "spotify_getAPlaylist";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         JSONObject jsonResponse;
@@ -975,12 +994,13 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         String jsonRequestFilePath = pathToRequestsDirectory + "createAPlaylist_Mandatory.txt";
         String methodName = "spotify_createAPlaylist";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         JSONObject jsonResponse;
         try {
             jsonResponse = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
+            spotifyConnectorProperties.setProperty("playListId", jsonResponse.getString("id"));
             JSONObject jsonObject = new JSONObject(jsonString);
             Assert.assertEquals(jsonResponse.getString("name"), jsonObject.get("name"));
         } finally {
@@ -996,7 +1016,7 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
         String jsonRequestFilePath = pathToRequestsDirectory + "createAPlaylist_Optional.txt";
         String methodName = "spotify_createAPlaylist";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         JSONObject jsonResponse;
@@ -1032,12 +1052,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Positive test case for addTracksToAPlaylist from queryParameter method with mandatory parameters.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {addTracksToAPlaylistFromURI} integration test with mandatory parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {addTracksToAPlaylistFromURI} integration test with mandatory parameter.")
     public void testAddTracksToAPlaylistFromURIWithMandatory() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "addTracksToAPlaylistFromURI_Mandatory.txt";
         String methodName = "spotify_addTraksToAPlaylist";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"), "spotify:track:" + spotifyConnectorProperties.getProperty("trackId1") + ",spotify:track:" + spotifyConnectorProperties.getProperty("trackId2"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;
@@ -1052,12 +1072,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Positive test case for addTracksToAPlaylistFromURI from queryParameter method with optional parameters.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {addTracksToAPlaylistFromURI} integration test with optional parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {addTracksToAPlaylistFromURI} integration test with optional parameter.")
     public void testAddTracksToAPlaylistFromURIWithOptional() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "addTracksToAPlaylistFromURI_Optional.txt";
         String methodName = "spotify_addTraksToAPlaylist";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"), "spotify:track:" + spotifyConnectorProperties.getProperty("trackId1") + ",spotify:track:" + spotifyConnectorProperties.getProperty("trackId2"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;
@@ -1092,12 +1112,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Positive test case for addTracksToAPlaylist from requestBody method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {addTracksToAPlaylistFromRequestBody} integration test with mandatory parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {addTracksToAPlaylistFromRequestBody} integration test with mandatory parameter.")
     public void testAddTracksToAPlaylistFromRequestBody() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "addTracksToAPlaylistFromRequestBody.txt";
         String methodName = "spotify_addTraksToAPlaylist";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"), "[\"spotify:track:" + spotifyConnectorProperties.getProperty("trackId1") + "\",\"spotify:track:" + spotifyConnectorProperties.getProperty("trackId2") + "\"]");
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;
@@ -1132,12 +1152,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Mandatory parameter test case for changeAPlaylistsDetails method.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {changeAPlaylistsDetails} integration test with mandatory parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {changeAPlaylistsDetails} integration test with mandatory parameter.")
     public void testChangeAPlaylistsDetailsMandatoryParameter() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "changeAPlaylistsDetails_Mandatory.txt";
         String methodName = "spotify_changeAPlaylistsDetails";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;
@@ -1152,12 +1172,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Positive test case for changeAPlaylistsDetails method with optional parameter name.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {changeAPlaylistsDetails} integration test with optional parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {changeAPlaylistsDetails} integration test with optional parameter.")
     public void testChangeAPlaylistsDetailsOptionalParameterName() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "changeAPlaylistsDetails_OptionalName.txt";
         String methodName = "spotify_changeAPlaylistsDetails";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;
@@ -1172,12 +1192,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Positive test case for changeAPlaylistsDetails method with optional parameter public.
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {changeAPlaylistsDetails} integration test with optional parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {changeAPlaylistsDetails} integration test with optional parameter.")
     public void testChangeAPlaylistsDetailsOptionalParameterPublic() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "changeAPlaylistsDetails_OptionalPublic.txt";
         String methodName = "spotify_changeAPlaylistsDetails";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;
@@ -1210,41 +1230,14 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     }
 
     /**
-     * Positive test case for removeTracksFromPlaylist method
-     *
-     * @Test(enabled=false,groups = { "wso2.esb" }, description = "spotify {removeTracksFromPlaylist} integration test with mandatory parameter.")
-     * public void testRemoveTracksFromPlaylist() throws Exception {
-     * <p/>
-     * String jsonRequestFilePath = pathToRequestsDirectory + "removeTracksFromAPlaylist_Positive.txt";
-     * String methodName = "spotify_removeTracksFromAPlaylist";
-     * <p/>
-     * final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-     * String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"),spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
-     * <p/>
-     * final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
-     * proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
-     * <p/>
-     * int headerResponse;
-     * try {
-     * headerResponse = ConnectorIntegrationUtil.sendRequestToRetriveHeaders(getProxyServiceURL(methodName), modifiedJsonString);
-     * Assert.assertEquals(headerResponse,200);
-     * <p/>
-     * }finally {
-     * <p/>
-     * proxyAdmin.deleteProxy(methodName);
-     * }
-     * <p/>
-     * }
-     * <p/>
-     * /**
      * Positive test case for replaceAPlaylistsTracksFromURI method
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {replaceAPlaylistsTracksFromURI} integration test with mandatory parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {replaceAPlaylistsTracksFromURI} integration test with mandatory parameter.")
     public void testReplaceAPlaylistsTracksWithPositiveCase() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "replaceAPlaylistsTracksFromURI_Positive.txt";
         String methodName = "spotify_replaceAPlaylistsTracks";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"), "spotify:track:" + spotifyConnectorProperties.getProperty("trackId3") + ",spotify:track:" + spotifyConnectorProperties.getProperty("trackId4"));
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;
@@ -1279,12 +1272,12 @@ public class SpotifyConnectorIntegrationTest extends ESBIntegrationTest {
     /**
      * Positive test case for replaceAPlaylistsTracksFromRequestBody method
      */
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "spotify {replaceAPlaylistsTracksFromURI} integration test with mandatory parameter.")
+    @Test(enabled = true, groups = {"wso2.esb"}, dependsOnMethods = {"testCreateAPlaylistMandatoryParameter"}, description = "spotify {replaceAPlaylistsTracksFromURI} integration test with mandatory parameter.")
     public void testReplaceAPlaylistsTracksFromRequestBodyWithPositiveCase() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "replaceAPlaylistsTracksFromRequestBody_Positive.txt";
         String methodName = "spotify_replaceAPlaylistsTracks";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
-        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"));
+        String modifiedJsonString = String.format(jsonString, spotifyConnectorProperties.getProperty("clientId"), spotifyConnectorProperties.getProperty("clientSecret"), spotifyConnectorProperties.getProperty("grantType"), spotifyConnectorProperties.getProperty("refreshToken"), spotifyConnectorProperties.getProperty("userId"), spotifyConnectorProperties.getProperty("playListId"), "[\"spotify:track:" + spotifyConnectorProperties.getProperty("trackId3") + "\",\"spotify:track:" + spotifyConnectorProperties.getProperty("trackId4") + "\"]");
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         int headerResponse;

@@ -27,7 +27,7 @@ under the License.
         <dependency component="spotify_albums"/>
         <dependency component="spotify_search"/>
         <dependency component="spotify_playlists"/>
-        <description>wso2 sample connector library</description>
+        <description>wso2 connector library for Spotify</description>
         <icon>icon/Yahooicon.png</icon>
     </component>
 </connector>
