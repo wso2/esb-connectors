@@ -50,41 +50,31 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 	public void connect(MessageContext messageContext) throws ConnectException {
 		try {
 
-
 			String consumerKey = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_KEY);
 			String consumerSecret = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_SECRET);
 			String accessToken = "";
-			String registryTokenValue = "";
-
-			Registry registry = messageContext.getConfiguration().getRegistry();
-			Entry regEntry = messageContext.getConfiguration().getEntryDefinition("gov:/AccessTokens/googlespreadsheet");
-
-			if (registry.getResource(regEntry, new Properties()) == null) {
-				registryTokenValue = null;
-			}
-			else {
-				registryTokenValue = ((OMText) registry.getResource(regEntry, new Properties())).getText();
-			}
+			String registryTokenValue = GoogleSpreadsheetUtils.getRegistryResourceValue(messageContext, "gov:/AccessTokens/googlespreadsheet");
 
 			if (registryTokenValue == null) {
-				registry.newNonEmptyResource("gov:/AccessTokens/googlespreadsheet", false, "text/plain", GoogleSpreadsheetUtils.lookupFunctionParam(messageContext, ACCESS_TOKEN), "");
 				accessToken = GoogleSpreadsheetUtils.lookupFunctionParam(
 						messageContext, ACCESS_TOKEN);
+				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet", accessToken, messageContext);
+
 			}
 			else {
 				accessToken = registryTokenValue;
 			}
 
 			if (GoogleSpreadsheetUtils.validateToken(accessToken)) {
-				log.info("TOKEN VALID");
+				log.info("Token Valid ...");
 			}
 			else {
-				log.info("Invalid Access Token Found");
+				log.info("Invalid Access Token Found ...");
 				accessToken = GoogleSpreadsheetUtils.getNewAccessToken(messageContext);
-				log.info("Retrieved Access Token Successfully");
-				registry.newNonEmptyResource("gov:/AccessTokens/googlespreadsheet", false, "text/plain", accessToken, "");
+				log.info("Retrieved Access Token Successfully ...");
+				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet", accessToken, messageContext);
 			}
 			String refreshToken = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, REFRESH_TOKEN);

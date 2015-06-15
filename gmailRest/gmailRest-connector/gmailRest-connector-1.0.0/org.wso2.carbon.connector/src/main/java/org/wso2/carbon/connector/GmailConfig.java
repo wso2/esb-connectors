@@ -44,7 +44,6 @@ public class GmailConfig extends AbstractConnector {
         try {
             // Reading OAuth access token and user name from the message context
             String oauthAccessToken = null;
-            String registryTokenValue = "";
             String username =
                     GmailUtils.lookupFunctionParam(messageContext,
                             GmailConstants.GMAIL_PARAM_USERNAME);
@@ -61,18 +60,10 @@ public class GmailConfig extends AbstractConnector {
                     GmailUtils.lookupFunctionParam(messageContext,
                             GmailConstants.GMAIL_OAUTH_REFRESH_TOKEN);
 
-            Registry registry = messageContext.getConfiguration().getRegistry();
-            Entry regEntry = messageContext.getConfiguration().getEntryDefinition("gov:/AccessTokens/gmail");
-
-            if (registry.getResource(regEntry, new Properties()) == null){
-                registryTokenValue = null;
-            }
-            else {
-                registryTokenValue = ((OMText) registry.getResource(regEntry, new Properties())).getText();
-            }
+            String registryTokenValue = GmailUtils.getRegistryResourceValue(messageContext, "gov:/AccessTokens/gmail");
 
             if (registryTokenValue == null) {
-                registry.newNonEmptyResource("gov:/AccessTokens/gmail", false, "text/plain", oauthAccessToken, "");
+                GmailUtils.storeAccessToken("gov:/AccessTokens/gmail", oauthAccessToken, messageContext);
                 oauthAccessToken = GmailUtils.lookupFunctionParam(
                         messageContext, GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN);
             }
@@ -81,13 +72,13 @@ public class GmailConfig extends AbstractConnector {
             }
 
             if (GmailUtils.validateToken(oauthAccessToken)) {
-                log.info("TOKEN VALID");
+                log.info("Access Token Valid ...");
             }
             else {
-                log.info("Invalid Access Token Found");
+                log.info("Invalid Access Token Found ...");
                 oauthAccessToken = GmailUtils.getNewAccessToken(messageContext);
                 log.info("Retrieved Access Token Successfully");
-                registry.newNonEmptyResource("gov:/AccessTokens/gmail", false, "text/plain", oauthAccessToken, "");
+                GmailUtils.storeAccessToken("gov:/AccessTokens/gmail", oauthAccessToken, messageContext);
             }
 
             // Validating the user name and OAuth access token provided by the

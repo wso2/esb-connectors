@@ -50,17 +50,16 @@ import com.google.code.javax.mail.search.SearchTerm;
 import com.google.code.javax.mail.util.ByteArrayDataSource;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.*;
 import org.apache.axis2.context.OperationContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
+import org.apache.synapse.config.Entry;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.apache.synapse.registry.Registry;
 import org.wso2.carbon.connector.core.ConnectException;
 import org.wso2.carbon.connector.core.util.ConnectorUtils;
 
@@ -69,6 +68,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Properties;
 
 public  final class GmailUtils {
 
@@ -906,5 +906,25 @@ public  final class GmailUtils {
         }
 
         return "";
+    }
+
+    public static String getRegistryResourceValue (MessageContext msgCtx, String location) {
+        Registry registry = msgCtx.getConfiguration().getRegistry();
+        Entry regEntry = msgCtx.getConfiguration().getEntryDefinition(location);
+        String registryTokenValue;
+
+        if (registry.getResource(regEntry, new Properties()) == null){
+            registryTokenValue = null;
+        }
+        else {
+            registryTokenValue = ((OMText) registry.getResource(regEntry, new Properties())).getText();
+        }
+
+        return registryTokenValue;
+    }
+
+    public static void storeAccessToken (String location, String tokenValue, MessageContext msgCtx) {
+        Registry registry = msgCtx.getConfiguration().getRegistry();
+        registry.newNonEmptyResource(location, false, "text/plain", tokenValue, "");
     }
 }
