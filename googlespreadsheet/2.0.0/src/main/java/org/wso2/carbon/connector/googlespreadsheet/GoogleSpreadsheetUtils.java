@@ -24,21 +24,15 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Properties;
 
-import com.google.api.client.json.Json;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.axiom.om.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
-import org.apache.synapse.commons.json.JsonUtil;
-import org.apache.synapse.config.Entry;
+import org.apache.synapse.SynapseException;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.registry.Registry;
 import org.wso2.carbon.connector.core.util.ConnectorUtils;
@@ -148,9 +142,9 @@ public class GoogleSpreadsheetUtils {
             }
 
         } catch (MalformedURLException e) {
-            System.out.println("Failed to validate access Token");
+            handleException("Error While Retrieving the Access Token", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            handleException("Error While reading Response", e);
         }
 
         return "";
@@ -163,17 +157,17 @@ public class GoogleSpreadsheetUtils {
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) urlObj.openConnection();
 
             httpsURLConnection.setRequestMethod("GET");
-            if (httpsURLConnection.getResponseCode() == 400){
-                return false;
+            if (httpsURLConnection.getResponseCode() == 200){
+                return true;
             }
             else {
-                return true;
+                return false;
             }
 
         } catch (MalformedURLException e) {
-            System.out.println("Failed to validate access Token");
+            handleException("Error While Validating the Access Token", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            handleException("Error While reading Response", e);
         }
 
         return false;
@@ -196,6 +190,11 @@ public class GoogleSpreadsheetUtils {
     public static void storeAccessToken (String location, String tokenValue, MessageContext msgCtx, String username) {
         Registry registry = msgCtx.getConfiguration().getRegistry();
         registry.newNonEmptyResource(location, false, "text/plain", tokenValue, username);
+    }
+
+    public static void handleException(String msg, Exception e) {
+        log.error(msg, e);
+        throw new SynapseException(msg, e);
     }
 
 }
