@@ -1,15 +1,10 @@
 package org.wso2.carbon.connector.googlespreadsheet;
 
-import org.apache.axiom.om.OMText;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
-import org.apache.synapse.config.Entry;
-import org.apache.synapse.registry.Registry;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
-
-import java.util.Properties;
 
 /*
  *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -33,7 +28,7 @@ import java.util.Properties;
  * This class persists all the Google OAuth 2 related parameters such as
  * <code>ConsumerKey</code>, <code>ConsumerSecret</code>,
  * <code>AccessToken</code> and <code>RefreshToken</code>
- * 
+ *
  * @author ravindra
  *
  */
@@ -45,22 +40,27 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 	public static final String CONSUMER_SECRET = "oauthConsumerSecret";
 	public static final String ACCESS_TOKEN = "oauthAccessToken";
 	public static final String REFRESH_TOKEN = "oauthRefreshToken";
+	public static final String USERNAME = "username";
 
 	@Override
 	public void connect(MessageContext messageContext) throws ConnectException {
 		try {
 
+			String username = GoogleSpreadsheetUtils.lookupFunctionParam(
+					messageContext, USERNAME);
 			String consumerKey = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_KEY);
 			String consumerSecret = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_SECRET);
 			String accessToken = "";
-			String registryTokenValue = GoogleSpreadsheetUtils.getRegistryResourceValue(messageContext, "gov:/AccessTokens/googlespreadsheet");
+			String registryTokenValue = GoogleSpreadsheetUtils.getRegistryResourceValue(messageContext,
+					"gov:/AccessTokens/googlespreadsheet", username);
 
 			if (registryTokenValue == null) {
 				accessToken = GoogleSpreadsheetUtils.lookupFunctionParam(
 						messageContext, ACCESS_TOKEN);
-				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet", accessToken, messageContext);
+				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet",
+						accessToken, messageContext, username);
 
 			}
 			else {
@@ -74,7 +74,8 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 				log.info("Invalid Access Token Found ...");
 				accessToken = GoogleSpreadsheetUtils.getNewAccessToken(messageContext);
 				log.info("Retrieved Access Token Successfully ...");
-				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet", accessToken, messageContext);
+				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet",
+						accessToken, messageContext, username);
 			}
 			String refreshToken = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, REFRESH_TOKEN);
