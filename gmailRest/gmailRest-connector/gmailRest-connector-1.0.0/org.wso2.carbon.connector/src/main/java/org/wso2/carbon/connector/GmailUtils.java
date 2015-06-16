@@ -908,23 +908,22 @@ public  final class GmailUtils {
         return "";
     }
 
-    public static String getRegistryResourceValue (MessageContext msgCtx, String location) {
+    public static String getRegistryResourceValue (MessageContext msgCtx, String location, String username) {
         Registry registry = msgCtx.getConfiguration().getRegistry();
-        Entry regEntry = msgCtx.getConfiguration().getEntryDefinition(location);
         String registryTokenValue;
 
-        if (registry.getResource(regEntry, new Properties()) == null){
+        if (registry.getResourceProperties(location) == null) {
             registryTokenValue = null;
         }
         else {
-            registryTokenValue = ((OMText) registry.getResource(regEntry, new Properties())).getText();
+            registryTokenValue = registry.getResourceProperties(location).getProperty(username);
         }
 
         return registryTokenValue;
     }
 
-    public static void storeAccessToken (String location, String tokenValue, MessageContext msgCtx) {
+    public static void storeAccessToken (String location, String tokenValue, MessageContext msgCtx, String username) {
         Registry registry = msgCtx.getConfiguration().getRegistry();
-        registry.newNonEmptyResource(location, false, "text/plain", tokenValue, "");
+        registry.newNonEmptyResource(location, false, "text/plain", tokenValue, username);
     }
 }
