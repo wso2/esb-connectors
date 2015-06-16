@@ -855,7 +855,6 @@ public  final class GmailUtils {
         } catch (MalformedURLException e) {
             handleException("Error While Validating the Access Token", e);
         } catch (IOException e) {
-            e.printStackTrace();
             handleException("Error while reading response", e);
         }
 
@@ -904,9 +903,9 @@ public  final class GmailUtils {
             }
 
         } catch (MalformedURLException e) {
-            System.out.println("Failed to validate access Token");
+            handleException("Error While Retrieving the Access Token", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            handleException("Error While reading Response", e);
         }
 
         return "";
