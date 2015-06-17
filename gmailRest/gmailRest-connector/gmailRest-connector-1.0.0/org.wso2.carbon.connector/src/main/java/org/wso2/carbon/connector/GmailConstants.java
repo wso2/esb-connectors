@@ -96,6 +96,11 @@ public final class GmailConstants {
     public static final String GMAIL_OAUTH_ACCESS_TOKEN = "gmail.oauth.accessToken";
 
     /**
+     * Property name to store the access token location in registry
+     */
+    public static final String GMAIL_ACCESS_TOKEN_REG_LOCATION = "conf:/AccessTokens/gmail";
+
+    /**
      * Property name to store whether the OAuth2 provider is initialized or not.
      */
     public static final String GMAIL_OAUTH2_PROVIDER = "gmail.oauth2.provider";

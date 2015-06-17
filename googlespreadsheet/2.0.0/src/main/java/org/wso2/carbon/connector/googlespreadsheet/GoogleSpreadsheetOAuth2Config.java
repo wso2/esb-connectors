@@ -41,6 +41,7 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 	public static final String ACCESS_TOKEN = "oauthAccessToken";
 	public static final String REFRESH_TOKEN = "oauthRefreshToken";
 	public static final String USERNAME = "username";
+	public static final String ACCESS_TOKEN_REG_LOCATION = "conf:/AccessTokens/googlespreadsheet";
 
 	@Override
 	public void connect(MessageContext messageContext) throws ConnectException {
@@ -54,12 +55,12 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 					messageContext, CONSUMER_SECRET);
 			String accessToken = "";
 			String registryTokenValue = GoogleSpreadsheetUtils.getRegistryResourceValue(messageContext,
-					"gov:/AccessTokens/googlespreadsheet", username);
+					ACCESS_TOKEN_REG_LOCATION, username);
 
 			if (registryTokenValue == null) {
 				accessToken = GoogleSpreadsheetUtils.lookupFunctionParam(
 						messageContext, ACCESS_TOKEN);
-				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet",
+				GoogleSpreadsheetUtils.storeAccessToken(ACCESS_TOKEN_REG_LOCATION,
 						accessToken, messageContext, username);
 
 			}
@@ -74,7 +75,7 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 				log.info("Invalid Access Token Found ...");
 				accessToken = GoogleSpreadsheetUtils.getNewAccessToken(messageContext);
 				log.info("Retrieved Access Token Successfully ...");
-				GoogleSpreadsheetUtils.storeAccessToken("gov:/AccessTokens/googlespreadsheet",
+				GoogleSpreadsheetUtils.storeAccessToken(ACCESS_TOKEN_REG_LOCATION,
 						accessToken, messageContext, username);
 			}
 			String refreshToken = GoogleSpreadsheetUtils.lookupFunctionParam(

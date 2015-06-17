@@ -60,10 +60,12 @@ public class GmailConfig extends AbstractConnector {
                     GmailUtils.lookupFunctionParam(messageContext,
                             GmailConstants.GMAIL_OAUTH_REFRESH_TOKEN);
 
-            String registryTokenValue = GmailUtils.getRegistryResourceValue(messageContext, "gov:/AccessTokens/gmail", username);
+            String accessTokenLocation = GmailConstants.GMAIL_ACCESS_TOKEN_REG_LOCATION;
+
+            String registryTokenValue = GmailUtils.getRegistryResourceValue(messageContext, accessTokenLocation, username);
 
             if (registryTokenValue == null) {
-                GmailUtils.storeAccessToken("gov:/AccessTokens/gmail", oauthAccessToken, messageContext, username);
+                GmailUtils.storeAccessToken(accessTokenLocation, oauthAccessToken, messageContext, username);
                 oauthAccessToken = GmailUtils.lookupFunctionParam(
                         messageContext, GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN);
             }
@@ -78,7 +80,7 @@ public class GmailConfig extends AbstractConnector {
                 log.info("Invalid Access Token Found ...");
                 oauthAccessToken = GmailUtils.getNewAccessToken(messageContext);
                 log.info("Retrieved Access Token Successfully");
-                GmailUtils.storeAccessToken("gov:/AccessTokens/gmail", oauthAccessToken, messageContext, username);
+                GmailUtils.storeAccessToken(accessTokenLocation, oauthAccessToken, messageContext, username);
             }
 
             // Validating the user name and OAuth access token provided by the
