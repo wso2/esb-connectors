@@ -660,7 +660,7 @@ public  final class GmailUtils {
         message.setSubject(subject);
         MimeMultipart content = new MimeMultipart();
         MimeBodyPart mainPart = new MimeBodyPart();
-        mainPart.setText(textContent);
+        mainPart.setText(textContent, "UTF-8", "html");
         content.addBodyPart(mainPart);
 
         for (String attachment : attachmentList) {
