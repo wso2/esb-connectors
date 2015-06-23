@@ -48,24 +48,29 @@ import com.google.code.javax.mail.internet.MimeMessage;
 import com.google.code.javax.mail.internet.MimeMultipart;
 import com.google.code.javax.mail.search.SearchTerm;
 import com.google.code.javax.mail.util.ByteArrayDataSource;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import org.apache.axiom.om.*;
 import org.apache.axis2.context.OperationContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
+import org.apache.synapse.SynapseException;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.apache.synapse.registry.Registry;
 import org.wso2.carbon.connector.core.ConnectException;
 import org.wso2.carbon.connector.core.util.ConnectorUtils;
 
-import java.io.BufferedReader;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.DataOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 
 public  final class GmailUtils {
@@ -655,7 +660,7 @@ public  final class GmailUtils {
         message.setSubject(subject);
         MimeMultipart content = new MimeMultipart();
         MimeBodyPart mainPart = new MimeBodyPart();
-        mainPart.setText(textContent);
+        mainPart.setText(textContent, "UTF-8", "html");
         content.addBodyPart(mainPart);
 
         for (String attachment : attachmentList) {
@@ -830,5 +835,103 @@ public  final class GmailUtils {
                         (javax.activation.DataSource) source);
         axis2mc.addAttachment(attachmentContentID, handler);
         log.info("Added an attachemnt named \"" + attachmentContentID + "\" to message context");
+    }
+
+
+    public static boolean validateToken (String accessToken) {
+        String validationUrl = "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" + accessToken;
+        try {
+            URL urlObj = new URL(validationUrl);
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) urlObj.openConnection();
+
+            httpsURLConnection.setRequestMethod("GET");
+            if (httpsURLConnection.getResponseCode() == 200){
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        } catch (MalformedURLException e) {
+            handleException("Error While Validating the Access Token", e);
+        } catch (IOException e) {
+            handleException("Error while reading response", e);
+        }
+
+        return false;
+    }
+
+    public static String getNewAccessToken (MessageContext messageContext) {
+        String validationUrl = "https://www.googleapis.com/oauth2/v3/token";
+        try {
+            URL urlObj = new URL(validationUrl);
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) urlObj.openConnection();
+
+            httpsURLConnection.setRequestMethod("POST");
+            String refreshToken = lookupFunctionParam(messageContext, GmailConstants.GMAIL_OAUTH_REFRESH_TOKEN);
+            String clientId = lookupFunctionParam(messageContext, GmailConstants.GMAIL_OAUTH_CONSUMER_KEY);
+            String clientSecret = lookupFunctionParam(messageContext, GmailConstants.GMAIL_OAUTH_CONSUMER_SECRET);
+            String grantType = "refresh_token";
+
+            String urlParameters = "refresh_token=" + refreshToken + "&client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=" + grantType;
+
+            httpsURLConnection.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(httpsURLConnection.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+
+            int responseCode = httpsURLConnection.getResponseCode();
+            String inputLine;
+            StringBuffer input = new StringBuffer("");
+
+            if (responseCode == 200) {
+                BufferedReader inputReader = new BufferedReader(new InputStreamReader(httpsURLConnection.getInputStream()));
+
+                while ((inputLine = inputReader.readLine()) != null) {
+                    input.append(inputLine);
+                }
+
+                Gson jsonResponse = new Gson();
+                JsonObject jsonObject = jsonResponse.fromJson(input.toString(), JsonObject.class);
+
+                return jsonObject.get("access_token").getAsString();
+            }
+            else {
+                log.error("Could not Retrieve the Access token Via Refresh Token");
+                return "";
+            }
+
+        } catch (MalformedURLException e) {
+            handleException("Error While Retrieving the Access Token", e);
+        } catch (IOException e) {
+            handleException("Error While reading Response", e);
+        }
+
+        return "";
+    }
+
+    public static String getRegistryResourceValue (MessageContext msgCtx, String location, String username) {
+        Registry registry = msgCtx.getConfiguration().getRegistry();
+        String registryTokenValue;
+
+        if (registry.getResourceProperties(location) == null) {
+            registryTokenValue = null;
+        }
+        else {
+            registryTokenValue = registry.getResourceProperties(location).getProperty(username);
+        }
+
+        return registryTokenValue;
+    }
+
+    public static void storeAccessToken (String location, String tokenValue, MessageContext msgCtx, String username) {
+        Registry registry = msgCtx.getConfiguration().getRegistry();
+        registry.newNonEmptyResource(location, false, "text/plain", tokenValue, username);
+    }
+
+    public static void handleException(String msg, Exception e) {
+        log.error(msg, e);
+        throw new SynapseException(msg, e);
     }
 }

@@ -13,6 +13,7 @@
 
 <!-- Splitter eip library function template shipped with the Apache Synapse -->
 <template xmlns="http://ws.apache.org/ns/synapse" name="oAuth2init">
+	<parameter name="username" />
 	<parameter name="oauthConsumerKey" />
 	<parameter name="oauthConsumerSecret" />
 	<parameter name="oauthAccessToken" />

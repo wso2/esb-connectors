@@ -28,7 +28,7 @@ import org.wso2.carbon.connector.core.ConnectException;
  * This class persists all the Google OAuth 2 related parameters such as
  * <code>ConsumerKey</code>, <code>ConsumerSecret</code>,
  * <code>AccessToken</code> and <code>RefreshToken</code>
- * 
+ *
  * @author ravindra
  *
  */
@@ -40,16 +40,44 @@ public class GoogleSpreadsheetOAuth2Config extends AbstractConnector {
 	public static final String CONSUMER_SECRET = "oauthConsumerSecret";
 	public static final String ACCESS_TOKEN = "oauthAccessToken";
 	public static final String REFRESH_TOKEN = "oauthRefreshToken";
+	public static final String USERNAME = "username";
+	public static final String ACCESS_TOKEN_REG_LOCATION = "conf:/AccessTokens/googlespreadsheet";
 
 	@Override
 	public void connect(MessageContext messageContext) throws ConnectException {
 		try {
+
+			String username = GoogleSpreadsheetUtils.lookupFunctionParam(
+					messageContext, USERNAME);
 			String consumerKey = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_KEY);
 			String consumerSecret = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, CONSUMER_SECRET);
-			String accessToken = GoogleSpreadsheetUtils.lookupFunctionParam(
-					messageContext, ACCESS_TOKEN);
+			String accessToken = "";
+			String registryTokenValue = GoogleSpreadsheetUtils.getRegistryResourceValue(messageContext,
+					ACCESS_TOKEN_REG_LOCATION, username);
+
+			if (registryTokenValue == null) {
+				accessToken = GoogleSpreadsheetUtils.lookupFunctionParam(
+						messageContext, ACCESS_TOKEN);
+				GoogleSpreadsheetUtils.storeAccessToken(ACCESS_TOKEN_REG_LOCATION,
+						accessToken, messageContext, username);
+
+			}
+			else {
+				accessToken = registryTokenValue;
+			}
+
+			if (GoogleSpreadsheetUtils.validateToken(accessToken)) {
+				log.info("Token Valid ...");
+			}
+			else {
+				log.info("Invalid Access Token Found ...");
+				accessToken = GoogleSpreadsheetUtils.getNewAccessToken(messageContext);
+				log.info("Retrieved Access Token Successfully ...");
+				GoogleSpreadsheetUtils.storeAccessToken(ACCESS_TOKEN_REG_LOCATION,
+						accessToken, messageContext, username);
+			}
 			String refreshToken = GoogleSpreadsheetUtils.lookupFunctionParam(
 					messageContext, REFRESH_TOKEN);
 
