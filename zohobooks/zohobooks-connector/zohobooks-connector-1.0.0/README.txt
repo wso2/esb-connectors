@@ -46,7 +46,7 @@ Steps to follow in setting integration test.
 							  class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
 
 
- 4. Compress the modified ESB as wso2esb-4.9.0.zip and copy that zip file in to location "<Zohobooks_Connector_Home>/zohobooks-connector/zohobooks-connector-1.0.0/org.wso2.carbon.connector/repository/".
+ 4. Compress the modified ESB as wso2esb-4.9.0.zip and copy that zip file in to location "<ZOHOBOOKS_CONNECTOR_HOME>/zohobooks-connector/zohobooks-connector-1.0.0/org.wso2.carbon.connector/repository/".
 
  5. Create a Zohobooks trial account and derive the API Key.
 	i) 	Using the URL "https://www.zoho.com/books/signup/" create a Zohobooks trial account.
@@ -54,9 +54,10 @@ Steps to follow in setting integration test.
 	
  6. Prerequisites for ZohoBooks Connector Integration Testing
 
-	i) 	Navigate to the URL "https://books.zoho.com/app#/accountant/chartofaccounts" and create at least one accountant with the Account type 'Expense'.
-	ii) Navigate to "Users" under the settings, and invite to new user as a timesheet staff by clicking "Invite User" button.
-	iii)Log in to newly created user's email (created in step 6 ii) ) and click "Join Account" URL to join with zohobooks account.
+	i)	Navigate to https://books.zoho.com/app#/settings/preferences , make sure to enable all the modules and to uncheck 'Set max hours/day' under 'General' tab.
+	ii) Navigate to the URL "https://books.zoho.com/app#/accountant/chartofaccounts" and create at least one accountant with the Account type 'Expense'.
+	iii)Navigate to "Users" under the settings, and invite to new user as a timesheet staff by clicking "Invite User" button.
+	iv)	Log in to newly created user's email (created in step 6 ii) ) and click "Join Account" URL to join with zohobooks account.
 
  7. Update the Zohobooks properties file at location "<ZOHOBOOKS_CONNECTOR_HOME>/zohobooks-connector/zohobooks-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/artifacts/ESB/connector/config" as below.
 	
@@ -88,8 +89,8 @@ Steps to follow in setting integration test.
 	xxvi)*	userName						-	Use a unique and valid string as the user name (e.g. jamesgoslin).
 	xxvii)*	email							-	Use a unique and valid email address to create user.
 	xxviii)	userRole						-	Use a valid user role value (e.g. timesheetstaff).
-	xxix)*	taskName						-	Use a unique string as the task name.
-	xxx)*	taskNameOpt						-   Use a unique string as the task name to create task with optional parameters.
+	xxix)	taskName						-	Use a unique string as the task name.
+	xxx)	taskNameOpt						-   Use a unique string as the task name to create task with optional parameters.
 	xxxi)	taskDescription					-   Use a string value as the task description.
 	xxxii)	taskRate						-	Use a valid numeric value as the task rate	(e.g. 30.0).
 	xxxiii)	logDate							-	Use a valid date string for the time entries log date with the format of 'yyyy-mm-dd' (e.g. 2014-05-30).
