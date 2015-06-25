@@ -57,9 +57,10 @@ Steps to follow in setting integration test.
 	
  7. Prerequisites for ZohoBooks Connector Integration Testing
 
-	i) 	Navigate to the URL "https://books.zoho.com/app#/accountant/chartofaccounts" and create at least one accountant with the Account type 'Expense'.
-	ii) Navigate to "Users" under the settings, and invite to new user as a timesheet staff by clicking "Invite User" button.
-	iii)Log in to newly created user's email (created in step 7 ii) ) and click "Join Account" URL to join with zohobooks account.
+	i)	Navigate to https://books.zoho.com/app#/settings/preferences , make sure to enable all the modules and to uncheck 'Set max hours/day' under 'General' tab.
+	ii) Navigate to the URL "https://books.zoho.com/app#/accountant/chartofaccounts" and create at least one accountant with the Account type 'Expense'.
+	iii)Navigate to "Users" under the settings, and invite to new user as a timesheet staff by clicking "Invite User" button.
+	iv)	Log in to newly created user's email (created in step 6 ii) ) and click "Join Account" URL to join with zohobooks account.
 
  8. Update the Zohobooks properties file at location "<ZOHOBOOKS_CONNECTOR_HOME>/zohobooks-connector/zohobooks-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/artifacts/ESB/connector/config" as below.
 	
@@ -91,15 +92,15 @@ Steps to follow in setting integration test.
 	xxvi)*	userName						-	Use a unique and valid string as the user name (e.g. jamesgoslin).
 	xxvii)*	email							-	Use a unique and valid email address to create user.
 	xxviii)	userRole						-	Use a valid user role value (e.g. timesheetstaff).
-	xxix)*	taskName						-	Use a unique string as the task name.
-	xxx)*	taskNameOpt						-   Use a unique string as the task name to create task with optional parameters.
+	xxix)	taskName						-	Use a string as the task name.
+	xxx)	taskNameOpt						-   Use a string as the task name to create task with optional parameters.
 	xxxi)	taskDescription					-   Use a string value as the task description.
 	xxxii)	taskRate						-	Use a valid numeric value as the task rate	(e.g. 30.0).
 	xxxiii)	logDate							-	Use a valid date string for the time entries log date with the format of 'yyyy-mm-dd' (e.g. 2014-05-30).
 	xxxiv)	logTime							-   Use a valid time for the time entries log time with the format of 'hh:mm' (e.g.08:30)
 	xxxv)	isBillable						-	Use a boolean value ("true" or "false") to assign the time enties as billable or not.
 	xxxvi)	timeEntryNotes					-   Use a string as the time entry note (e.g. Foo Bar Baz).
-	xxxvii)	taskUserId						-	Place the user ID created under step 7 ii).
+	xxxvii)	taskUserId						-	Place the user ID created under step 7 iii).
 	
 	* Values need to be changed for each execution of the Test Suite. Please make sure the values are unique in the context of the same account.
 	
