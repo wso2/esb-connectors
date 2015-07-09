@@ -75,9 +75,7 @@
             </endpoint>
         </call>
 
-        <log level="custom">
-            <property name="8987788987879887879887879878798787987978" expression="get-property('resultsCount')"/>
-        </log>
+
         <property expression="//ns:result/ns:done/text()"
                   name="salesforce.query.done" scope="default" type="STRING" xmlns:ns="urn:partner.soap.sforce.com"/>
         <property expression="//ns:result/ns:queryLocator/text()"
