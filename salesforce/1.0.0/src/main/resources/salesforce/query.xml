@@ -84,9 +84,7 @@
 
         <property xmlns:sfp="urn:partner.soap.sforce.com" xmlns:sfo="urn:sobject.partner.soap.sforce.com"
                   xmlns:ns="http://org.apache.synapse/xsd" name="resultsCount" expression="//sfp:records"/>
-        <log level="custom">
-            <property name="8987788987879887879887879878798787987978" expression="get-property('resultsCount')"/>
-        </log>
+
         <property name="RESULTS" expression="fn:concat(get-property('RESULTS'),get-property('resultsCount'))"/>
         <filter xpath="(not(get-property('salesforce.query.queryLocator') = '' or (not(string(get-property('salesforce.query.queryLocator')))))) and get-property('uri.var.queryMore')='true'">
             <then>
