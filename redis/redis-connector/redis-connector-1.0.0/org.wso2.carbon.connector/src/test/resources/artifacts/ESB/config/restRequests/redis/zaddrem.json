@@ -1,0 +1,5 @@
+{
+    "key":"%s(zremkey)",
+    "score":"%s(zaddscore)",
+    "members":"%s(zremkeyvalue)"
+}
