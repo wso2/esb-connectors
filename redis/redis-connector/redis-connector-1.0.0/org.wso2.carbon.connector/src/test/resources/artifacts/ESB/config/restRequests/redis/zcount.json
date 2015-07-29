@@ -1,5 +1,0 @@
-{
-    "key":"%s(zaddkey)",
-    "min":"%s(zaddscore)",
-    "max":"%s(zmax)"
-}

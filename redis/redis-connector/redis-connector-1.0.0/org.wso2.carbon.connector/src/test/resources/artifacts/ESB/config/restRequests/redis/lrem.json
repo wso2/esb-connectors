@@ -1,5 +1,0 @@
-{
-    "key":"%s(mylist)",
-    "count":"%s(start)",
-    "value":"%s(lremvalue)"
-}

@@ -1,4 +1,0 @@
-{
-    "key":"%s(zaddkey)",
-    "member":"%s(zaddmember)"
-}
