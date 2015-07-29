@@ -17,15 +17,14 @@
 package org.wso2.carbon.connector;
 
 import org.apache.synapse.MessageContext;
-import org.apache.synapse.SynapseException;
+import org.apache.synapse.mediators.AbstractMediator;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 import redis.clients.jedis.Jedis;
 
-public class Get extends AbstractConnector {
+public class Get extends AbstractMediator {
 
-    @Override
-    public void connect(MessageContext messageContext) throws ConnectException {
+    public boolean mediate(MessageContext messageContext) {
         try {
             Jedis jedis;
             RedisServer serverobj = new RedisServer();
@@ -39,7 +38,7 @@ public class Get extends AbstractConnector {
             }
         } catch (Exception e) {
             log.error(e);
-            throw new SynapseException("Error while connecting the server or calling the redis method",e);
         }
+        return true;
     }
 }
