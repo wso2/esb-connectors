@@ -17,14 +17,17 @@
 package org.wso2.carbon.connector;
 
 import org.apache.synapse.MessageContext;
-import org.apache.synapse.mediators.AbstractMediator;
+import org.apache.synapse.SynapseException;
+import org.wso2.carbon.connector.core.AbstractConnector;
+import org.wso2.carbon.connector.core.ConnectException;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
-public class Brpop extends AbstractMediator {
+public class Brpop extends AbstractConnector {
 
-    public boolean mediate(MessageContext messageContext) {
+    @Override
+    public void connect(MessageContext messageContext) throws ConnectException {
         try {
             Jedis jedis;
             RedisServer serverobj = new RedisServer();
@@ -34,10 +37,9 @@ public class Brpop extends AbstractMediator {
                 Integer brpopTimeout = Integer.parseInt(messageContext.getProperty(RedisConstants.BRPOPTIMEOUT).toString());
                 List<String> response = null;
                 String[] keyvalue = key.split(" ");
-                ABC:
                 for (int i = 0; i <= keyvalue.length; i++) {
                     if (i == keyvalue.length) {
-                        break ABC;
+                        break;
                     }
                     response = jedis.brpop(brpopTimeout, keyvalue[i]);
                 }
@@ -47,7 +49,7 @@ public class Brpop extends AbstractMediator {
             }
         } catch (Exception e) {
             log.error(e);
+            throw new SynapseException("Error while connecting the server or calling the redis method",e);
         }
-        return true;
     }
 }
