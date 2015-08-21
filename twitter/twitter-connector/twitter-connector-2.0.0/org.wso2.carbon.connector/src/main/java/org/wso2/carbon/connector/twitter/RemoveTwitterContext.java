@@ -37,6 +37,10 @@ public class RemoveTwitterContext extends AbstractConnector {
         }
     }
 
+    /**
+     * Remove the previous twiter method's context
+     * @param messageContext
+     */
     private void RemoveContext(final MessageContext messageContext) {
         log.debug("Removing the unneeded properties of the already run methods");
         Object[] keys = messageContext.getPropertyKeySet().toArray();

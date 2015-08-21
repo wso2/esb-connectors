@@ -18,28 +18,27 @@
   -->
 
 <proxy xmlns="http://ws.apache.org/ns/synapse"
-       name="getAccountSettings"
+       name="twitter_getAccountSettings"
        transports="https,http"
        statistics="disable"
        trace="disable"
        startOnLoad="true">
     <target>
-        <inSequence>
+        <inSequence onError="faultHandlerSeq">
             <property name="consumerKey" expression="json-eval($.consumerKey)"/>
             <property name="consumerSecret" expression="json-eval($.consumerSecret)"/>
             <property name="accessToken" expression="json-eval($.accessToken)"/>
             <property name="accessTokenSecret" expression="json-eval($.accessTokenSecret)"/>
-            <twitter.init>
+            <twitter.signatureInit>
                 <consumerKey>{$ctx:consumerKey}</consumerKey>
                 <consumerSecret>{$ctx:consumerSecret}</consumerSecret>
                 <accessToken>{$ctx:accessToken}</accessToken>
                 <accessTokenSecret>{$ctx:accessTokenSecret}</accessTokenSecret>
-            </twitter.init>
+            </twitter.signatureInit>
             <twitter.getAccountSettings/>
             <respond/>
         </inSequence>
         <outSequence>
-            <log/>
             <send/>
         </outSequence>
     </target>

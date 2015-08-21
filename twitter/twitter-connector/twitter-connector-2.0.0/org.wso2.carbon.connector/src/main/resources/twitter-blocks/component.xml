@@ -17,14 +17,28 @@
 -->
 
 <component name="twitter-blocks" type="synapse/template">
-	<subComponents>
-		<component name="getBlockIds">
-			<file>getBlockIds.xml</file>
-			<description>Returns an array of numeric user ids the authenticating user is blocking.</description>
-		</component>
-		<component name="getBlocksList">
-			<file>getBlocksList.xml</file>
-			<description>Returns a collection of user objects that the authenticating user is blocking.</description>
-		</component>
-	</subComponents>
+    <subComponents>
+        <component name="getBlockIds">
+            <file>getBlockIds.xml</file>
+            <description>Returns an array of numeric user ids the authenticating user is blocking.</description>
+        </component>
+        <component name="getBlocksList">
+            <file>getBlocksList.xml</file>
+            <description>Returns a collection of user objects that the authenticating user is blocking.</description>
+        </component>
+        <component name="blockUser">
+            <file>blockUser.xml</file>
+            <description>Blocks the specified user from following the authenticating user. In addition the blocked user
+                will not show in the authenticating users mentions or timeline (unless retweeted by another user). If a
+                follow or friend relationship exists it is destroyed.
+            </description>
+        </component>
+        <component name="destroyBlock">
+            <file>destroyBlock.xml</file>
+            <description>Un-blocks the user specified in the ID parameter for the authenticating user. Returns the
+                un-blocked user in the requested format when successful. If relationships existed before the block was
+                instated, they will not be restored.
+            </description>
+        </component>
+    </subComponents>
 </component>
