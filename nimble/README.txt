@@ -61,7 +61,7 @@ STEPS:
     username: testnimble33@gmail.com
     password: 0777498522Me!
 
-7. Make sure that nimble is specified as a module in ESB_Connector_Parent pom.
+7. Make sure that nimble is specified as a module in ESBConnector_Parent pom.
     <module>nimble/nimble-connector/nimble-connector-1.0.0/org.wso2.carbon.connector</module>
 
 8. Navigate to "{ESB_Connector_Home}/" and run the following command.
