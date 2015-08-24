@@ -32,7 +32,6 @@ STEPS:
 4.  Follow the below mentioned steps to create a new Nimble account:
      - login https://www.nimble.com/login/ - you may use the dummy Account details below
      - request access token - To get the access token you have to follow the steps in this documentation manually http://nimble.readthedocs.org/en/latest/obtaining_key/ then use the values obtained for refresh token,client id, client secret.
-
 5.Update the property file onstantcontact.properties found in {Connector_Home}/nimble/nimble-connector/nimble-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/artifacts/ESB/connector/config as follows::
 
   i) apiUrl=https://api.nimble.com/api/v1
