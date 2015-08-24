@@ -66,3 +66,6 @@ STEPS:
 
 8. Navigate to "{ESB_Connector_Home}/" and run the following command.
       $ mvn clean install
+
+      note
+      Trail account allows to create 3 groups and 3 fields So the integration test will run only 3 times.
