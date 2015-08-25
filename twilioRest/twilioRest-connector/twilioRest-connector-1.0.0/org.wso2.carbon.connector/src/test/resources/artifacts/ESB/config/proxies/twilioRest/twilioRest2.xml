@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="twilioRest2"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence onError="faultHandlerSeq">
+            <!--<log level="custom">-->
+                <!--<property name="test1" value="beforeeeeeeeeeeeeee" />-->
+            <!--</log>-->
+
+            <property name="Smsid" expression="//Smsid/text()" />
+            <property name="authToken" expression="//authToken/text()" />
+            <property name="apiUrl" expression="//apiUrl/text()" />
+            <property name="apiVersion" expression="//apiVersion/text()" />
+            <property name="friendlyName" expression="//friendlyName/text()" />
+            <property name="subSmsid" expression="//subSmsid/text()" />
+
+            <!--<log level="custom">-->
+                <!--<property name="test" value="88888888888888888888888888888888888888888" />-->
+            <!--</log>-->
+            <twilioRest.init>
+                <Smsid>{$ctx:Smsid}</Smsid>
+                <authToken>{$ctx:authToken}</authToken>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+                <apiVersion>{$ctx:apiVersion}</apiVersion>
+            </twilioRest.init>
+            <switch source="get-property('transport', 'Action')">
+            <case regex="urn:sendSms">
+                <twilioRest.sendSms>
+                    <friendlyName>{$ctx:friendlyName}</friendlyName>
+                </twilioRest.sendSms>
+            </case>
+            <case regex="urn:removeOutgoingPhoneNumberList">
+                <twilioRest.removeOutgoingPhoneNumberList>
+                    <subSmsid>{$ctx:subSmsid}</subSmsid>
+                </twilioRest.removeOutgoingPhoneNumberList>
+            </case>
+            </switch>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
+</proxy>
+
+
+
+
+
+
+
+
+
+
