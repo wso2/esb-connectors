@@ -47,7 +47,7 @@ Steps to follow in setting integration test.
        i)  Using the URL "http://openweathermap.org" create a openWeatherMap.
 
 
- 6. Make sure that sirportly is specified as a module in ESB Connector Parent pom.
+ 6. Make sure that openweathermap is specified as a module in ESB Connector Parent pom.
             <module>openweathermap/openweathermap-connector/openweathermap-connector-1.0.0/org.wso2.carbon.connector</module>
 
  7. Update the openweathermap properties file at location "<OPENWEATHERMAP_CONNECTOR_HOME>/openweathermap-connector/openweathermap-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/artifacts/ESB/connector/config" as below.
