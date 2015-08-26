@@ -32,7 +32,6 @@
         <property name="uri.var.bbox" expression="$func:bbox"/>
         <property name="uri.var.cnt" expression="$func:cnt"/>
         <property name="uri.var.callback" expression="$func:callback"/>
-
         <filter xpath="(not(get-property('uri.var.cnt') = '' or (not(string(get-property('uri.var.cnt'))))))">
             <then>
                 <property name="uri.var.apiParameters"
