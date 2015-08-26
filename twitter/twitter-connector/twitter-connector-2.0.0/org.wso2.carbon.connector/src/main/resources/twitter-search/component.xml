@@ -32,18 +32,26 @@
                 user must be the owner of saved search ID being requested.
             </description>
         </component>
-        <component name="postSavedSearchesCreate">
-            <file>postSavedSearchesCreate.xml</file>
+        <component name="createSavedSearches">
+            <file>createSavedSearches.xml</file>
             <description>Create a new saved search for the authenticated user. A user may only have 25 saved searches.</description>
         </component>
-        <component name="postSavedSearchesDestroyId">
-            <file>postSavedSearchesDestroyId.xml</file>
+        <component name="destroySavedSearchesId">
+            <file>destroySavedSearchesId.xml</file>
             <description>Destroys a saved search for the authenticating user. The authenticating user must be the owner
                 of saved search id being destroyed.
             </description>
         </component>
         <component name="getUsersSearch">
             <file>getUsersSearch.xml</file>
+            <description>Provides a simple, relevance-based search interface to public user accounts on Twitter. Try
+                querying by topical interest, full name, company name, location, or other criteria. Exact match searches
+                are not supported.
+                Only the first 1,000 matching results are available.
+            </description>
+        </component>
+        <component name="getGeoSearch">
+            <file>getGeoSearch.xml</file>
             <description>Provides a simple, relevance-based search interface to public user accounts on Twitter. Try
                 querying by topical interest, full name, company name, location, or other criteria. Exact match searches
                 are not supported.

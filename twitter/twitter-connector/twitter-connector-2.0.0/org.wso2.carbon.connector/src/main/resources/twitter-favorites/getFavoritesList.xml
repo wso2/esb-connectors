@@ -48,7 +48,6 @@
 			    var maxId  = mc.getProperty('uri.var.maxId');
 			    var includeUserEntities  = mc.getProperty('uni.var.includeUserEntities');
 
-
 				var uriParams = '';
 
 				if (screenName != null && screenName != "") {
@@ -119,7 +118,6 @@
         <header name="x-rate-limit-remaining" scope="transport" action="remove"/>
         <header name="x-rate-limit-reset" scope="transport" action="remove"/>
         <header name="x-xss-protection" scope="transport" action="remove"/>
-
 
     </sequence>
 </template>

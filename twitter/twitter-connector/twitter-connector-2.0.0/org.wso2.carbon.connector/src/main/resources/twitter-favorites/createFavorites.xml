@@ -16,16 +16,47 @@
    under the License.
 -->
 
-<template xmlns="http://ws.apache.org/ns/synapse" name="postSavedSearchesDestroyId">
-    <parameter name="id" description="The ID of the saved search."/>
+<template xmlns="http://ws.apache.org/ns/synapse" name="createFavorites">
+    <parameter name="id"
+               description="The numerical ID of the desired status."/>
+    <parameter name="includeUserEntities"
+               description="The user object entities node will be excluded when set to false."/>
     <sequence>
 
         <class name="org.wso2.carbon.connector.twitter.RemoveTwitterContext"/>
 
-        <property name="uri.var.id" expression="$func:id" />
+        <property name="uri.var.id" expression="$func:id"/>
+        <property name="uni.var.includeUserEntities" expression="$func:includeUserEntities"/>
+
+        <script language="js">
+            <![CDATA[
+				// optional url param variables
+			    var id  = mc.getProperty('uri.var.id');
+			    var includeUserEntities  = mc.getProperty('uni.var.includeUserEntities');
+
+
+				var uriParams = '';
+
+				if (id != null && id != "") {
+					uriParams += 'id=' + id + '&';
+					id = 'id=' + encodeURIComponent(id);
+					mc.setProperty('uri.var.id', id)
+				}
+			    if (includeUserEntities != null && includeUserEntities != "") {
+					uriParams += 'include_user_entities=' + includeUserEntities + '&';
+					includeUserEntities = 'include_user_entities=' + encodeURIComponent(includeUserEntities);
+					mc.setProperty('uri.var.includeUserEntities', includeUserEntities)
+				}
+
+				if(uriParams != ''){
+					mc.setProperty('uri.var.uriParams' , uriParams.substring(0, uriParams.length-1));
+				}
+			]]>
+        </script>
+
 
         <property name="uri.var.apiUrl.final"
-                  expression="fn:concat(get-property('uri.var.apiUrl'),'/1.1/saved_searches/destroy/{uri.var.id}.json')"/>
+                  expression="fn:concat(get-property('uri.var.apiUrl'),'/1.1/favorites/create.json')"/>
 
         <property name="uri.var.httpMethod"
                   value="POST"/>
@@ -38,7 +69,7 @@
         <call>
             <endpoint>
                 <http method="post"
-                      uri-template="legacy-encoding:{uri.var.apiUrl}/1.1/saved_searches/destroy/{uri.var.id}.json"/>
+                      uri-template="legacy-encoding:{uri.var.apiUrl}/1.1/favorites/create.json?{uri.var.uriParams}"/>
             </endpoint>
         </call>
 

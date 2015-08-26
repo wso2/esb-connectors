@@ -23,22 +23,20 @@ package org.wso2.carbon.connector.twitter;
  */
 public final class TwitterConstants {
 
-    //property key for twitter consumer key
+    //property key for the twitter credential
     public static final String TWITTER_CONSUMER_KEY="twitter.consumerKey";
-    //property key for twitter consumer key
     public static final String TWITTER_CONSUMER_SECRET="twitter.consumerSecret";
-    //property key for twitter consumer key
     public static final String TWITTER_ACCESS_TOKEN="twitter.accessToken";
-    //property key for twitter consumer key
     public static final String TWITTER_ACCESS_TOKEN_SECRET="twitter.accessTokenSecret";
+
     //property key for the endpoint
     public static final String TWITTER_ENDPOINT="uri.var.apiUrl.final";
     //property key for the http method
     public static final String HTTP_METHOD="uri.var.httpMethod";
-    //encording type
-    public static final String ENC= "UTF-8";
     //signature method
     public static final String SIGNATURE_METHOD= "HMAC-SHA1";
+    //encording type
+    public static final String ENC= "UTF-8";
     //Constant for empty string.
     public static final String EMPTY_STR = "";
 

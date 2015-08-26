@@ -23,8 +23,8 @@
             <description>Returns the 20 most recent Tweets favorited by the authenticating or specified user.
             </description>
         </component>
-        <component name="postFavoritesCreate">
-            <file>postFavoritesCreate.xml</file>
+        <component name="createFavorites">
+            <file>createFavorites.xml</file>
             <description>Favorites the status specified in the ID parameter as the authenticating user. Returns the
                 favorite status when successful.
                 This process invoked by this method is asynchronous. The immediately returned status may not indicate
@@ -32,8 +32,8 @@
                 the intended action was successful or not.
             </description>
         </component>
-        <component name="postFavoritesDestroy">
-            <file>postFavoritesDestroy.xml</file>
+        <component name="destroyFavorites">
+            <file>destroyFavorites.xml</file>
             <description>Un-favorites the status specified in the ID parameter as the authenticating user. Returns the
                 un-favorited status in the requested format when successful.
                 This process invoked by this method is asynchronous. The immediately returned status may not indicate

@@ -16,33 +16,40 @@
    under the License.
 -->
 
-<template xmlns="http://ws.apache.org/ns/synapse" name="postFriendshipsDestroy">
+<template xmlns="http://ws.apache.org/ns/synapse" name="sendNewDirectMessages">
     <parameter name="userID" description="The ID of the user for whom to return results for." />
     <parameter name="screenName" description="The screen name of the user for whom to return results for."/>
+    <parameter name="text" description="The text of your direct message. Be sure to URL encode as necessary, and keep the message under 140 characters."/>
     <sequence>
 
         <class name="org.wso2.carbon.connector.twitter.RemoveTwitterContext"/>
 
         <property name="uri.var.screenName" expression="$func:screenName" />
         <property name="uri.var.userID" expression="$func:userID" />
+        <property name="uri.var.text" expression="$func:text" />
         <script language="js">
             <![CDATA[
 				// optional url param variables
 				var screenName = mc.getProperty('uri.var.screenName');
 				var userID = mc.getProperty('uri.var.userID');
-				var follow  = mc.getProperty('uri.var.follow');
+				var text  = mc.getProperty('uri.var.text');
 
 				var uriParams = '';
 
-                if (screenName != null && screenName != "") {
+				if (screenName != null && screenName != "") {
 					uriParams = 'screen_name=' + screenName + '&';
-					screenName = 'screen_name=' + encodeURIComponent(screenName);
-					mc.setProperty('uri.var.screenName', screenName)
+					screenName='screen_name=' + encodeURIComponent(screenName);
+                    mc.setProperty('uri.var.screenName',screenName)
 				}
 				if (userID != null && userID != "") {
 					uriParams += 'user_id=' + userID + '&';
-					userID = 'user_id=' + encodeURIComponent(userID);
-					mc.setProperty('uri.var.userID', userID)
+					userID='user_id=' + encodeURIComponent(userID);
+                    mc.setProperty('uri.var.userID',userID)
+				}
+				if (text != null && text != "") {
+					uriParams += 'text=' + text + '&';
+					text='text=' + encodeURIComponent(text);
+                    mc.setProperty('uri.var.text',text)
 				}
 
 				if(uriParams != ''){
@@ -52,7 +59,7 @@
         </script>
 
         <property name="uri.var.apiUrl.final"
-                  expression="fn:concat(get-property('uri.var.apiUrl'),'/1.1/friendships/destroy.json')"/>
+                  expression="fn:concat(get-property('uri.var.apiUrl'),'/1.1/direct_messages/new.json')"/>
 
         <property name="uri.var.httpMethod"
                   value="POST"/>
@@ -65,7 +72,7 @@
         <call>
             <endpoint>
                 <http method="post"
-                      uri-template="legacy-encoding:{uri.var.apiUrl}/1.1/friendships/destroy.json?{uri.var.uriParams}"/>
+                      uri-template="legacy-encoding:{uri.var.apiUrl}/1.1/direct_messages/new.json?{uri.var.uriParams}"/>
             </endpoint>
         </call>
 

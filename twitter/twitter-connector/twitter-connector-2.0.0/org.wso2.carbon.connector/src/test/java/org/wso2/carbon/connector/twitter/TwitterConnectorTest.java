@@ -24,7 +24,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 import org.wso2.connector.integration.test.base.RestResponse;
-import org.wso2.carbon.connector.common.Base64Coder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,20 +40,15 @@ public class TwitterConnectorTest extends ConnectorIntegrationTestBase {
 	@BeforeClass(alwaysRun = true)
 	public void setEnvironment() throws Exception {
 
-		init("twitterRest-connector-1.0.0");
+		init("twitter-connector-2.0.0");
 
 		esbRequestHeadersMap.put("Accept-Charset", "UTF-8");
 		esbRequestHeadersMap.put("Content-Type", "application/json");
 
 		apiRequestHeadersMap.putAll(esbRequestHeadersMap);
 
-		String authHeader = connectorProperties.getProperty("siteName") + "\\" + connectorProperties.getProperty("username") + ":" + connectorProperties.getProperty("password");
-		String encodedAuthorization = Base64Coder.encodeString(authHeader);
-
-		apiRequestHeadersMap.put("Authorization", "Basic " + encodedAuthorization);
 		apiRequestHeadersMap.put("Content-Type", "application/json");
 		apiRequestHeadersMap.put("Accept", "application/json");
-		;
 	}
 
 	/**
@@ -63,44 +57,14 @@ public class TwitterConnectorTest extends ConnectorIntegrationTestBase {
 	@Test(enabled = true, description = "twitter {getContactFields} integration test with mandatory parameters.")
 	public void testGetContactFieldsWithMandatoryParameters() throws IOException, JSONException {
 
-		String methodName = "getContactFields";
-		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "contacts/fields";
+		String methodName = "getAccountSettings";
+		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/1.1/account/settings.json";
 		RestResponse<JSONObject> esbRestResponse =
-				sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFields.json");
-		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+				sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountSettings.json");
+		//RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
-		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
+		Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
 	}
 
-	/**
-	 * Positive test case for getContactFields method with optional parameters.
-	 */
-	@Test(enabled = true, dependsOnMethods = {"testGetContactFieldsWithMandatoryParameters"}, description = "twitter {getContactFields} integration test with optional parameters.")
-	public void testGetContactFieldsWithOptionalParameters() throws IOException, JSONException {
-
-		String methodName = "getContactFields";
-		String apiEndPoint =
-				connectorProperties.getProperty("apiUrl") + "contacts/fields?totalResults=" + connectorProperties.getProperty("totalResults") + "&q=" + connectorProperties.getProperty("q") +
-						"&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
-		RestResponse<JSONObject> esbRestResponse =
-				sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFieldsOptional.json");
-
-		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-		System.out.println(apiRestResponse.getBody().toString());
-		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
-	}
-
-	/**
-	 * Positive test case for getContactFieldById method with mandatory parameters.
-	 */
-	@Test(enabled = true, dependsOnMethods = {"testGetContactFieldsWithOptionalParameters"}, description = "twitter {getContactFieldById} integration test with mandatory parameters.")
-	public void testGetContactFieldByIdWithMandatoryParameters() throws IOException, JSONException {
-		String methodName = "getContactFieldById";
-		String apiEndPoint = connectorProperties.getProperty("apiUrl") + "contacts/fields/" + connectorProperties.getProperty("contactFieldId");
-		RestResponse<JSONObject> esbRestResponse =
-				sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFieldById.json");
-		RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-		Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
-	}
 
 }

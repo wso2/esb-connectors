@@ -30,24 +30,16 @@
                 screen_name parameter. The author’s most recent Tweet will be returned inline when possible.
             </description>
         </component>
-        <component name="getUsersProfileBanner">
-            <file>getUsersProfileBanner.xml</file>
-            <description>Returns a map of the available size variations of the specified user’s profile banner. If the
-                user has not uploaded a profile banner, a HTTP 404 will be served instead. This method can be used
-                instead of string manipulation on the profile_banner_url returned in user objects as described in
-                Profile Images and Banners.
-            </description>
-        </component>
-        <component name="postMutesUsersCreate">
-            <file>postMutesUsersCreate.xml</file>
+        <component name="createMutesUsers">
+            <file>createMutesUsers.xml</file>
             <description>Mutes the user specified in the ID parameter for the authenticating user.
                 Returns the muted user in the requested format when successful. Returns a string describing the failure
                 condition when unsuccessful.
                 Actions taken in this method are asynchronous and changes will be eventually consistent.
             </description>
         </component>
-        <component name="postMutesUsersDestroy">
-            <file>postMutesUsersDestroy.xml</file>
+        <component name="destroyMutesUsers">
+            <file>destroyMutesUsers.xml</file>
             <description>Un-mutes the user specified in the ID parameter for the authenticating user.
                 Returns the unmuted user in the requested format when successful. Returns a string describing the
                 failure condition when unsuccessful.

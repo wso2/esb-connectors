@@ -74,7 +74,7 @@
         <call>
             <endpoint>
                 <http method="get"
-                      uri-template="legacy-encoding:{uri.var.apiUrl}/blocks/list.json?{uri.var.uriParams}"/>
+                      uri-template="legacy-encoding:{uri.var.apiUrl}/1.1/blocks/list.json?{uri.var.uriParams}"/>
             </endpoint>
         </call>
 

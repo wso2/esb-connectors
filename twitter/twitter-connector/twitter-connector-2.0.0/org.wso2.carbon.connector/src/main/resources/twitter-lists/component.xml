@@ -25,76 +25,14 @@
                 user is used.
             </description>
         </component>
-        <component name="getListsStatuses">
-            <file>getListsStatuses.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsMembersDestroy">
-            <file>postListsMembersDestroy.xml</file>
-            <description></description>
-        </component>
         <component name="getListsMemberships">
             <file>getListsMemberships.xml</file>
             <description>Returns the lists the specified user has been added to. If user_id or screen_name are not
                 provided the memberships for the authenticating user are returned.
             </description>
         </component>
-        <component name="getListsSubscribers">
-            <file>getListsSubscribers.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsSubscribersCreate">
-            <file>postListsSubscribersCreate.xml</file>
-            <description></description>
-        </component>
-        <component name="getListsSubscribersShow">
-            <file>getListsSubscribersShow.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsSubscribersDestroy">
-            <file>postListsSubscribersDestroy.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsMembersCreateAll">
-            <file>postListsMembersCreateAll.xml</file>
-            <description></description>
-        </component>
-        <component name="getListsMembersShow">
-            <file>getListsMembersShow.xml</file>
-            <description></description>
-        </component>
-        <component name="getListsMembers">
-            <file>getListsMembers.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsMembersCreate">
-            <file>postListsMembersCreate.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsDestroy">
-            <file>postListsDestroy.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsUpdate">
-            <file>postListsUpdate.xml</file>
-            <description></description>
-        </component>
-        <component name="postListsCreate">
-            <file>postListsCreate.xml</file>
-            <description>Creates a new list for the authenticated user. Note that you can create up to 1000 lists per
-                account.
-            </description>
-        </component>
-        <component name="getListsShow">
-            <file>getListsShow.xml</file>
-            <description></description>
-        </component>
-        <component name="getListsSubscriptions">
-            <file>getListsSubscriptions.xml</file>
-            <description></description>
-        </component>
-        <component name="PostListsMembersDestroyAll">
-            <file>PostListsMembersDestroyAll.xml</file>
+        <component name="createLists">
+            <file>createLists.xml</file>
             <description></description>
         </component>
         <component name="getListsOwnerships">

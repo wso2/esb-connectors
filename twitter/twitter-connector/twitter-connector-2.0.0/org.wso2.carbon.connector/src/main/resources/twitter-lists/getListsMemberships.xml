@@ -106,6 +106,5 @@
         <header name="x-rate-limit-reset" scope="transport" action="remove"/>
         <header name="x-xss-protection" scope="transport" action="remove"/>
 
-
     </sequence>
 </template>

@@ -20,23 +20,15 @@
 	<subComponents>
 		<component name="getDirectMessages">
 			<file>getDirectMessages.xml</file>
-			<description></description>
+			<description>Returns the 20 most recent direct messages sent to the authenticating user</description>
 		</component>
 		<component name="getDirectMessagesSent">
 			<file>getDirectMessagesSent.xml</file>
-			<description></description>
+			<description>Returns the 20 most recent direct messages sent by the authenticating user</description>
 		</component>
-		<component name="getDirectMessagesShow">
-			<file>getDirectMessagesShow.xml</file>
-			<description></description>
-		</component>
-		<component name="postDirectMessagesDestroy">
-			<file>postDirectMessagesDestroy.xml</file>
-			<description></description>
-		</component>
-		<component name="postDirectMessagesNew">
-			<file>postDirectMessagesNew.xml</file>
-			<description></description>
+		<component name="sendNewDirectMessages">
+			<file>sendNewDirectMessages.xml</file>
+			<description>Sends a new direct message to the specified user from the authenticating user. </description>
 		</component>
 	</subComponents>
 </component>

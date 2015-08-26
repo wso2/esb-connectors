@@ -20,7 +20,7 @@
     <parameter name="sourceId" description="The user_id of the subject user." />
     <parameter name="sourceScreenName" description="The screen_name of the subject user."/>
     <parameter name="targetId" description="The user_id of the target user."/>
-    <parameter name="targetScreenName" description="The number of users to return per page, up to a maximum of 200. Defaults to 20." />
+    <parameter name="targetScreenName" description="The screen_name of the target user." />
     <sequence>
 
         <class name="org.wso2.carbon.connector.twitter.RemoveTwitterContext"/>

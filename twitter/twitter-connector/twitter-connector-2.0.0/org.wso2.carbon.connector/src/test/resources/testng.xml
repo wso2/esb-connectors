@@ -7,9 +7,9 @@
         <listener class-name="org.wso2.carbon.automation.core.PlatformTestManager"/>
         <listener class-name="org.wso2.carbon.automation.core.PlatformReportManager"/>
     </listeners>
-   <test name="Eloqua-Connector-Test" preserve-order="true" verbose="2">
+   <test name="Twitter-Connector-Test" preserve-order="true" verbose="2">
         <packages>
-            <package name="org.wso2.carbon.connector.integration.test.eloqua"/>
+            <package name="org.wso2.carbon.connector.twitter"/>
         </packages>
     </test>
 </suite>

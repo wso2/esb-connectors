@@ -73,7 +73,7 @@
                   expression="fn:concat(get-property('uri.var.apiUrl'),'/1.1/blocks/create.json')"/>
 
         <property name="uri.var.httpMethod"
-                  value="GET"/>
+                  value="POST"/>
 
         <class name="org.wso2.carbon.connector.twitter.TwitterSignatureGeneration"/>
 
@@ -82,7 +82,7 @@
 
         <call>
             <endpoint>
-                <http method="get"
+                <http method="post"
                       uri-template="legacy-encoding:{uri.var.apiUrl}/1.1/blocks/create.json?{uri.var.uriParams}"/>
             </endpoint>
         </call>

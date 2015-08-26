@@ -21,8 +21,7 @@
     <parameter name="screenName" description="The screen name of the user for whom to return results for."/>
     <parameter name="cursor" description="The response from the API will include a previous_cursor and next_cursor to allow paging back and forth"/>
     <parameter name="count" description="The number of users to return per page, up to a maximum of 200. Defaults to 20." />
-    <parameter name="skipStatus" description="When set to either true, t or 1 statuses will not be included in the returned user objects."/>
-    <parameter name="includeUserEntities" description="The user object entities node will be disincluded when set to false."/>
+    <parameter name="stringifyIds" description="Many programming environments will not consume our Tweet ids due to their size. Provide this option to have ids returned as strings instead"/>
     <sequence>
 
         <class name="org.wso2.carbon.connector.twitter.RemoveTwitterContext"/>
@@ -31,8 +30,7 @@
         <property name="uri.var.userID" expression="$func:userID" />
         <property name="uri.var.cursor" expression="$func:cursor" />
         <property name="uni.var.count" expression="$func:count" />
-        <property name="uri.var.skipStatus" expression="$func:skipStatus" />
-        <property name="uni.var.includeUserEntities" expression="$func:includeUserEntities" />
+        <property name="uri.var.stringifyIds" expression="$func:stringifyIds" />
 
         <script language="js">
             <![CDATA[
@@ -41,9 +39,7 @@
 				var userID = mc.getProperty('uri.var.userID');
 				var cursor  = mc.getProperty('uri.var.cursor');
 				var count  = mc.getProperty('uni.var.count');
-			    var skipStatus  = mc.getProperty('uri.var.skipStatus');
-			    var includeUserEntities  = mc.getProperty('uni.var.includeUserEntities');
-
+				var stringifyIds = mc.getProperty('uri.var.stringifyIds');
 
 				var uriParams = '';
 
@@ -67,15 +63,10 @@
 					count = 'count=' + encodeURIComponent(count);
 					mc.setProperty('uri.var.lang', count)
 				}
-				if (skipStatus != null && skipStatus != "") {
-					uriParams += 'skip_status=' + skipStatus + '&';
-					skipStatus = 'skip_status=' + encodeURIComponent(skipStatus);
-					mc.setProperty('uri.var.skipStatus', skipStatus)
-				}
-			    if (includeUserEntities != null && includeUserEntities != "") {
-					uriParams += 'include_user_entities=' + includeUserEntities + '&';
-					includeUserEntities = 'include_user_entities=' + encodeURIComponent(includeUserEntities);
-					mc.setProperty('uri.var.includeUserEntities', includeUserEntities)
+                if (stringifyIds != null && stringifyIds != "") {
+					uriParams += 'stringify_ids =' + stringifyIds + '&';
+					stringifyIds = 'stringify_ids =' + encodeURIComponent(stringifyIds);
+					mc.setProperty('uri.var.stringifyIds', stringifyIds)
 				}
 
 				if(uriParams != ''){

@@ -33,12 +33,12 @@
 
 				var uriParams = '';
 
-                uriParams = 'screen_name=' + id + '&';
+                uriParams = 'id=' + id + '&';
                 id = 'id=' + encodeURIComponent(id);
                 mc.setProperty('uri.var.id', id)
 
 				if (exclude != null && exclude != "") {
-					uriParams += 'user_id=' + exclude + '&';
+					uriParams += 'exclude=' + exclude + '&';
 					exclude = 'exclude=' + encodeURIComponent(exclude);
 					mc.setProperty('uri.var.exclude', exclude)
 				}

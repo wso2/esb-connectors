@@ -9,8 +9,6 @@
 		<dependency component="twitter-favorites"/>
 		<dependency component="twitter-help"/>
 		<dependency component="twitter-lists"/>
-		<dependency component="twitter-media"/>
-		<dependency component="twitter-place"/>
 		<dependency component="twitter-search"/>
 		<dependency component="twitter-statuses"/>
 		<dependency component="twitter-trends"/>

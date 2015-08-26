@@ -27,20 +27,20 @@
                 has a pending follow request.
             </description>
         </component>
-        <component name="postFriendshipsCreate">
-            <file>postFriendshipsCreate.xml</file>
+        <component name="CreateFriendships">
+            <file>CreateFriendships.xml</file>
             <description>Allows the authenticating users to follow the user specified in the ID parameter.</description>
         </component>
-        <component name="postFriendshipsDestroy">
-            <file>postFriendshipsDestroy.xml</file>
+        <component name="destroyFriendships">
+            <file>destroyFriendships.xml</file>
             <description>Allows the authenticating user to un follow the user specified in the ID parameter.
                 Returns the un followed user in the requested format when successful. Returns a string describing the
                 failure condition when unsuccessful.
                 Actions taken in this method are asynchronous and changes will be eventually consistent.
             </description>
         </component>
-        <component name="postFriendshipsUpdate">
-            <file>postFriendshipsUpdate.xml</file>
+        <component name="updateFriendships">
+            <file>updateFriendships.xml</file>
             <description>Allows one to enable or disable re tweets and device notifications from the specified user.
             </description>
         </component>

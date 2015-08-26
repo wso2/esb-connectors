@@ -38,7 +38,7 @@ public class RemoveTwitterContext extends AbstractConnector {
     }
 
     /**
-     * Remove the previous twiter method's context
+     * Remove the previous twitter method's context
      * @param messageContext
      */
     private void RemoveContext(final MessageContext messageContext) {
