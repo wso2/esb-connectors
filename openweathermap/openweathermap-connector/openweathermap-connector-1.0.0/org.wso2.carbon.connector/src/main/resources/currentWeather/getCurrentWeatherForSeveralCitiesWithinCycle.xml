@@ -26,7 +26,6 @@
     <parameter name="lang" description="language "/>
     <parameter name="cluster" description="Use server clustering of points. Possible values ​​are [yes, no]"/>
     <parameter name="callback" description=" Javascript functionName"/>
-
     <sequence>
         <property name="uri.var.apiParameters" value=""/>
         <property name="uri.var.lat" expression="$func:lat"/>
@@ -73,6 +72,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
