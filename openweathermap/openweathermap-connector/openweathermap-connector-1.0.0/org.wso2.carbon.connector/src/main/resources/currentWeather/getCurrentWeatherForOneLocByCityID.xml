@@ -20,7 +20,6 @@
 <template name="getCurrentWeatherForOneLocByCityID" xmlns="http://ws.apache.org/ns/synapse">
     <!-- Required parameters -->
     <parameter name="cityID" description="City ID "/>
-
     <sequence>
             <property name="uri.var.cityID" expression="$func:cityID"/>
         <call>
@@ -29,7 +28,6 @@
                       uri-template="{uri.var.apiUrl}/data/{uri.var.apiVersion}/weather?id={uri.var.cityID}"/>
             </endpoint>
         </call>
-
         <!-- Remove response custom header information -->
         <header name="x-li-format" scope="transport" action="remove" />
         <header name="X-LI-UUID" scope="transport" action="remove" />
@@ -37,7 +35,6 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
 
