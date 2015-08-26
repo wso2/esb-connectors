@@ -22,12 +22,10 @@
     <parameter name="cityID" description="City ID "/>
     <!-- Optional parameters -->
     <parameter name="count" description="Number of days forecast data returned (from 1 to 16)"/>
-
     <sequence>
         <property name="uri.var.apiParameters" value=""/>
         <property name="uri.var.cityID" expression="$func:cityID"/>
         <property name="uri.var.count" expression="$func:count"/>
-
         <filter xpath="(not(get-property('uri.var.count') = '' or (not(string(get-property('uri.var.count'))))))">
             <then>
                 <property name="uri.var.apiParameters"
@@ -47,6 +45,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
