@@ -22,7 +22,6 @@
     <parameter name="cityIDs" description="City ID "/>
     <!-- Optional parameters -->
     <parameter name="units" description="units metric, imperial. When you do not use units parameter, units is Standard by default."/>
-
     <sequence>
         <property name="uri.var.cityIDs" expression="$func:cityIDs"/>
         <property name="uri.var.units" expression="$func:units"/>
@@ -38,7 +37,6 @@
                       uri-template="{uri.var.apiUrl}/data/{uri.var.apiVersion}/group?id={+uri.var.cityIDs}{+uri.var.apiParameters}"/>
             </endpoint>
         </call>
-
         <!-- Remove response custom header information -->
         <header name="x-li-format" scope="transport" action="remove" />
         <header name="X-LI-UUID" scope="transport" action="remove" />
@@ -46,6 +44,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
