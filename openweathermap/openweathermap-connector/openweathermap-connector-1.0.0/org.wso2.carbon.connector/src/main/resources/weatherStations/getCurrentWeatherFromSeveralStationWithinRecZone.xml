@@ -19,7 +19,6 @@
 
 <template name="getCurrentWeatherFromSeveralStationWithinRecZone" xmlns="http://ws.apache.org/ns/synapse">
     <!-- Required parameters -->
-
     <parameter name="bbox" description=" Bounding box [lat of the top left point, lon of the top left point,
      lat of the bottom right point, lon of the bottom right point, map zoom] "/>
     <!-- Optional parameters -->
