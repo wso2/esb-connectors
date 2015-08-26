@@ -71,7 +71,7 @@ Steps to follow in setting integration test.
 	xv)actionName                    				-       The action name.
 	xvi)rowId                					-       The Id of a record to get the basic information about it.
 	xvii)queryString                                                -       The SOQL query string.
-	xviii)nextRecordsUrl 						-       The url is return at the query or queryMore response to retrieve additional query results.
+	xviii)nextRecordsUrl 						-       The url is return at the query or queryAll response to retrieve additional query results. If the records is too large only it will return at the query/queryAll response
 	xix)newPassword 					        -       The new password of saesforce to be set to access.
         xx)fields         						-       The comma separated fields of a particular sObject.
 	xxi)searchString                                                -       The SOQL search string.
