@@ -23,7 +23,6 @@
     <parameter name="lat" description="City geographic location, latitude"/>
     <!-- Optional parameters -->
     <parameter name="count" description="Number of days forecast data returned (from 1 to 16)"/>
-
     <sequence>
         <property name="uri.var.apiParameters" value=""/>
         <property name="uri.var.lon" expression="$func:lon"/>
@@ -39,7 +38,6 @@
             <endpoint>
                 <http method="get"
                       uri-template="{uri.var.apiUrl}/data/{uri.var.apiVersion}/forecast/daily?lat={uri.var.lat}&amp;lon={uri.var.lon}{+uri.var.apiParameters}"/>
-
             </endpoint>
         </call>
         <!-- Remove response custom header information -->
@@ -49,9 +47,7 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
 
-//String apiEndPoint = connectorProperties.getProperty("apiUrl")+"/data/"+connectorProperties.getProperty("apiVersion")+"/forecast/?lat="+
-     //   connectorProperties.getProperty("lat")+"&lon="+connectorProperties.getProperty("lon");
+
