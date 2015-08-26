@@ -21,7 +21,6 @@
     <!-- Required parameters -->
     <parameter name="lon" description="City geographic location, longitude"/>
     <parameter name="lat" description="City geographic location, latitude"/>
-
     <sequence>
         <property name="uri.var.lon" expression="$func:lon"/>
         <property name="uri.var.lat" expression="$func:lat"/>
@@ -31,7 +30,6 @@
                       uri-template="{uri.var.apiUrl}/data/{uri.var.apiVersion}/forecast?lat={uri.var.lat}&amp;lon={uri.var.lon}"/>
             </endpoint>
         </call>
-
         <!-- Remove response custom header information -->
         <header name="x-li-format" scope="transport" action="remove" />
         <header name="X-LI-UUID" scope="transport" action="remove" />
@@ -39,6 +37,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
