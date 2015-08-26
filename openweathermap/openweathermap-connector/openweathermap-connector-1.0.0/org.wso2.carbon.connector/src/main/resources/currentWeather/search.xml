@@ -24,13 +24,11 @@
     <!-- Optional parameters -->
     <parameter name="type" description="Accuracy level either use the 'accurate' or 'like'"/>
     <parameter name="mode" description="mode - possible values are xml and html. If mode parameter is empty the format is JSON by default."/>
-
     <sequence>
         <property name="uri.var.apiParameters" value=""/>
         <property name="uri.var.cityName" expression="$func:cityName"/>
         <property name="uri.var.type" expression="$func:type"/>
         <property name="uri.var.mode" expression="$func:mode"/>
-
         <filter xpath="(not(get-property('uri.var.type') = '' or (not(string(get-property('uri.var.type'))))))">
             <then>
                 <property name="uri.var.apiParameters"
