@@ -26,7 +26,6 @@
     <parameter name="start" description="Start date (unix time, UTC time zone)"/>
     <parameter name="end" description="End date (unix time, UTC time zone)"/>
     <parameter name="cnt" description="Amount of returned data (one per hour, can be used instead of 'end')"/>
-
     <sequence>
         <property name="uri.var.apiParameters" value=""/>
         <property name="uri.var.lon" expression="$func:lon"/>
@@ -72,6 +71,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
