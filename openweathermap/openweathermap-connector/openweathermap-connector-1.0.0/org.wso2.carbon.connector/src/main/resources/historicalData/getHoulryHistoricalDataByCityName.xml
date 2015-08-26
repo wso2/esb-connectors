@@ -36,13 +36,6 @@
         <property name="uri.var.start" expression="$func:start"/>
         <property name="uri.var.end" expression="$func:end"/>
         <property name="uri.var.cnt" expression="$func:cnt"/>
-
-        <!--<filter xpath="(not(get-property('uri.var.countryCode') = '' or (not(string(get-property('uri.var.countryCode'))))))">-->
-            <!--<then>-->
-                <!--<property name="uri.var.apiParameters"-->
-                          <!--expression="fn:concat(get-property('uri.var.apiParameters'),',get-property('uri.var.countryCode'))"/>-->
-            <!--</then>-->
-        <!--</filter>-->
         <filter xpath="(not(get-property('uri.var.types') = '' or (not(string(get-property('uri.var.types'))))))">
             <then>
                 <property name="uri.var.apiParameters"
@@ -73,7 +66,6 @@
                       uri-template="{uri.var.apiUrl}/data/{uri.var.apiVersion}/history/city?q={uri.var.cityName},{uri.var.countryCode}{+uri.var.apiParameters}"/>
             </endpoint>
         </call>
-
         <!-- Remove response custom header information -->
         <header name="x-li-format" scope="transport" action="remove" />
         <header name="X-LI-UUID" scope="transport" action="remove" />
@@ -81,6 +73,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
