@@ -33,7 +33,6 @@
         <property name="uri.var.mode" expression="$func:mode"/>
         <property name="uri.var.units" expression="$func:units"/>
         <property name="uri.var.count" expression="$func:count"/>
-
         <filter xpath="(not(get-property('uri.var.countryCode') = '' or (not(string(get-property('uri.var.countryCode'))))))">
             <then>
                 <property name="uri.var.apiParameters"
@@ -71,6 +70,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
