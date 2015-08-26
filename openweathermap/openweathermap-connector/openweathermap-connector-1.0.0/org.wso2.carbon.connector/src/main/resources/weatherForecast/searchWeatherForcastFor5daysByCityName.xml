@@ -21,7 +21,6 @@
     <!-- Required parameters -->
     <parameter name="cityName" description="City name "/>
     <parameter name="countryCode" description="Country Code"/>
-
     <sequence>
         <!--<property name="uri.var.apiParameters" value=""/>-->
         <property name="uri.var.cityName" expression="$func:cityName"/>
@@ -32,7 +31,6 @@
                       uri-template="{uri.var.apiUrl}/data/{uri.var.apiVersion}/forecast?q={uri.var.cityName},{uri.var.countryCode}"/>
             </endpoint>
         </call>
-
         <!-- Remove response custom header information -->
         <header name="x-li-format" scope="transport" action="remove" />
         <header name="X-LI-UUID" scope="transport" action="remove" />
@@ -40,6 +38,5 @@
         <header name="x-li-request-id" scope="transport" action="remove" />
         <header name="X-Li-Pop" scope="transport" action="remove" />
         <header name="Set-Cookie" scope="transport" action="remove" />
-
     </sequence>
 </template>
