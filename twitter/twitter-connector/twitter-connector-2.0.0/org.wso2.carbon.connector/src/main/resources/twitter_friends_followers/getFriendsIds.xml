@@ -59,7 +59,7 @@
 					mc.setProperty('uri.var.cursor', cursor)
 				}
 				if (stringifyIds != null && stringifyIds != "") {
-					uriParams += 'stringify_ids =' + stringifyIds + '&';
+					uriParams += 'stringify_ids=' + stringifyIds + '&';
 					stringifyIds = 'stringify_ids=' + encodeURIComponent(stringifyIds);
 					mc.setProperty('uri.var.stringifyIds', stringifyIds)
 				}

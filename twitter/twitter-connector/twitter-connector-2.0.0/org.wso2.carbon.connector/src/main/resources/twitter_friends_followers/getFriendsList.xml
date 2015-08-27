@@ -67,7 +67,7 @@
 					mc.setProperty('uri.var.count', count)
 				}
 				if (skipStatus != null && skipStatus != "") {
-					uriParams += 'skip_status =' + skipStatus + '&';
+					uriParams += 'skip_status=' + skipStatus + '&';
 					skipStatus = 'skip_status=' + encodeURIComponent(skipStatus);
 					mc.setProperty('uri.var.skipStatus', skipStatus)
 				}

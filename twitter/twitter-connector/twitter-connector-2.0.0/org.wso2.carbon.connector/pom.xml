@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.wso2.carbon.connector</groupId>
-    <artifactId>org.wso2.carbon.connector.twitterRest</artifactId>
+    <artifactId>org.wso2.carbon.connector.twitter</artifactId>
     <version>${connector.version}</version>
     <packaging>jar</packaging>
     <name>WSO2 Carbon - Mediation Library Connector For ${connector.name}</name>

@@ -23,7 +23,7 @@
                description="Specifies the page of results to retrieve."/>
     <parameter name="count"
                description="The number of potential user results to retrieve per page. This value has a maximum of 20."/>
-    <parameter name="includeEntities" description="The entities node will be disincluded when set to false."/>
+    <parameter name="includeEntities" description="The entities node will be excluded when set to false."/>
 
     <sequence>
 

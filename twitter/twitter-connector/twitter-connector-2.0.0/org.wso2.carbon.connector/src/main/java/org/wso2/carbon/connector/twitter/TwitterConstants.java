@@ -35,7 +35,7 @@ public final class TwitterConstants {
     public static final String HTTP_METHOD="uri.var.httpMethod";
     //signature method
     public static final String SIGNATURE_METHOD= "HMAC-SHA1";
-    //encording type
+    //encoding type
     public static final String ENC= "UTF-8";
     //Constant for empty string.
     public static final String EMPTY_STR = "";

@@ -16,7 +16,7 @@
  *  under the License.
  */
 
-package org.wso2.carbon.inbound.custom.poll;
+package org.wso2.carbon.inbound.twitter.poll;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

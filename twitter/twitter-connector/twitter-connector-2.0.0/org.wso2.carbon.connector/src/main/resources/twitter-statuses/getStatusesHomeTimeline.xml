@@ -72,13 +72,13 @@
 					mc.setProperty('uri.var.count', count)
 				}
 				if (maxId != null && maxId != "") {
-					uriParams += 'max_id =' + maxId + '&';
+					uriParams += 'max_id=' + maxId + '&';
 					maxId = 'max_id=' + encodeURIComponent(maxId);
 					mc.setProperty('uri.var.maxId', maxId)
 				}
 			    if (trimUser != null && trimUser != "") {
-					uriParams += 'trim_user =' + trimUser + '&';
-					trimUser = 'trim_user =' + encodeURIComponent(trimUser);
+					uriParams += 'trim_user=' + trimUser + '&';
+					trimUser = 'trim_user=' + encodeURIComponent(trimUser);
 					mc.setProperty('uri.var.trimUser', trimUser)
 				}
 				if (excludeReplies != null && excludeReplies != "") {

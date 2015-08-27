@@ -53,7 +53,7 @@
 					mc.setProperty('uri.var.userID', userID)
 				}
 				if (skipStatus != null && skipStatus != "") {
-					uriParams += 'skip_status =' + skipStatus + '&';
+					uriParams += 'skip_status=' + skipStatus + '&';
 					skipStatus = 'skip_status=' + encodeURIComponent(skipStatus);
 					mc.setProperty('uri.var.skipStatus', skipStatus)
 				}

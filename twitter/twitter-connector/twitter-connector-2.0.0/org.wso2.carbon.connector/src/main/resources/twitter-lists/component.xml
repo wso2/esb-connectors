@@ -33,11 +33,11 @@
         </component>
         <component name="createLists">
             <file>createLists.xml</file>
-            <description></description>
+            <description>Creates a new list for the authenticated user.</description>
         </component>
         <component name="getListsOwnerships">
             <file>getListsOwnerships.xml</file>
-            <description></description>
+            <description>Get the lists owned by the specified Twitter user.</description>
         </component>
     </subComponents>
 </component>

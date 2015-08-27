@@ -64,8 +64,8 @@
 					mc.setProperty('uri.var.lang', count)
 				}
                 if (stringifyIds != null && stringifyIds != "") {
-					uriParams += 'stringify_ids =' + stringifyIds + '&';
-					stringifyIds = 'stringify_ids =' + encodeURIComponent(stringifyIds);
+					uriParams += 'stringify_ids=' + stringifyIds + '&';
+					stringifyIds = 'stringify_ids=' + encodeURIComponent(stringifyIds);
 					mc.setProperty('uri.var.stringifyIds', stringifyIds)
 				}
 

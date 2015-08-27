@@ -64,7 +64,7 @@
 					mc.setProperty('uri.var.count', count)
 				}
 				if (filterToOwnedLists != null && filterToOwnedLists != "") {
-					uriParams += 'filter_to_owned_lists =' + filterToOwnedLists + '&';
+					uriParams += 'filter_to_owned_lists=' + filterToOwnedLists + '&';
 					filterToOwnedLists = 'filter_to_owned_lists=' + encodeURIComponent(filterToOwnedLists);
 					mc.setProperty('uri.var.filterToOwnedLists', filterToOwnedLists)
 				}

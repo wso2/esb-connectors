@@ -22,7 +22,7 @@
 
         <class name="org.wso2.carbon.connector.twitter.RemoveTwitterContext"/>
 
-        <property name="uri.var.cursor" expression="$func:cursor" />
+        <property name="uri.var.query" expression="$func:query" />
 
         <script language="js">
             <![CDATA[
@@ -30,7 +30,7 @@
 				var query = mc.getProperty('uri.var.query');
 				var uriParams = '';
 
-                uriParams = 'cursor=' + cursor + '&';
+                uriParams = 'query=' + query + '&';
                 query = 'query=' + encodeURIComponent(query);
                 mc.setProperty('uri.var.query', query)
 

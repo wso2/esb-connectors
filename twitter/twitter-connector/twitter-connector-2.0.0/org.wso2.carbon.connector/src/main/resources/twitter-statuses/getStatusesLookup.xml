@@ -38,7 +38,7 @@
 
 				var uriParams = '';
 
-                uriParams += 'id =' + id + '&';
+                uriParams += 'id=' + id + '&';
                 id = 'id=' + encodeURIComponent(id);
                 mc.setProperty('uri.var.id', id)
 

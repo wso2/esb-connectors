@@ -19,5 +19,5 @@
 package org.wso2.carbon.inbound.integration.test.twitter;
 
 public class TwitterInboundIntegrationTest {
-    //TODO
+
 }

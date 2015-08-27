@@ -50,13 +50,13 @@
 					mc.setProperty('uri.var.sinceId', sinceId)
 				}
 				if (count != null && count != "") {
-					uriParams += 'count =' + count + '&';
+					uriParams += 'count=' + count + '&';
 					count = 'count=' + encodeURIComponent(count);
 					mc.setProperty('uri.var.count', count)
 
 				}
 				if (maxId != null && maxId != "") {
-					uriParams += 'max_id =' + maxId + '&';
+					uriParams += 'max_id=' + maxId + '&';
 					maxId = 'max_id=' + encodeURIComponent(maxId);
 					mc.setProperty('uri.var.maxId', maxId)
 				}

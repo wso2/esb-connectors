@@ -16,68 +16,33 @@
  *  under the License.
  */
 
-package org.wso2.carbon.inbound.custom.poll;
+package org.wso2.carbon.inbound.twitter.poll;
 
 public class TwitterConstant {
 
-    //property key in the InBoundEP properties file for the twitter api consumer key
+    //property key for the twitter inbound endpoint
     public static final String CONSUMER_KEY = "connection.twitter.consumerKey";
-
-    //property key in the InBoundEP properties file for the twitter api consumer secret
     public static final String CONSUMER_SECRET = "connection.twitter.consumerSecret";
-
-    //property key in the InBoundEP properties file for the twitter api access token
     public static final String ACCESS_TOKEN = "connection.twitter.accessToken";
-
-    //property key in the InBoundEP properties file for the twitter api access secret
     public static final String ACCESS_SECRET = "connection.twitter.accessSecret";
-
-    //property key in the InBoundEP properties file for the twitter api access secret
     public static final String TWITTER_OPERATION = "twitter.operation";
-
-    //property key in the InBoundEP properties file for the twitter count
     public static final String TWITTER_COUNT = "twitter.count";
-
-    //property key in the InBoundEP properties file for the twitter follow
     public static final String TWITTER_FOLLOW = "twitter.follow";
-
-    //property key in the InBoundEP properties file for the twitter track
     public static final String TWITTER_TRACK = "twitter.track";
-
-    //property key in the InBoundEP properties file for the twitter locations
     public static final String TWITTER_LOCATIONS = "twitter.locations";
-
-    //property key in the InBoundEP properties file for the twitter language
     public static final String TWITTER_LANGUAGE = "twitter.language";
-
-    //property key in the InBoundEP properties file for the twitter filter level
     public static final String TWITTER_FILTER_LEVEL = "twitter.filterLevel";
-
-    //property key in the InBoundEP properties file for the twitter withFollowings
     public static final String TWITTER_WITH_FOLLOWINGS = "twitter.withFollowings";
+
+    //operation for the twitter inbound endpoint
+    public static final String FILTER_STREAM_OPERATION = "filter";
+    public static final String FIREHOSE_STREAM_OPERATION = "firehose";
+    public static final String LINK_STREAM_OPERATION = "link";
+    public static final String SAMPLE_STREAM_OPERATION = "sample";
+    public static final String SITE_STREAM_OPERATION = "site";
+    public static final String USER_STREAM_OPERATION = "user";
+    public static final String RETWEET_STREAM_OPERATION = "retweet";
 
     //content type of the message
     public static final String CONTENT_TYPE = "application/json";
-
-    //property key in the InBoundEP properties file for the twitter firehose operation
-    public static final String FILTER_STREAM_OPERATION = "filter";
-
-    //property key in the InBoundEP properties file for the twitter firehose operation
-    public static final String FIREHOSE_STREAM_OPERATION = "firehose";
-
-    //property key in the InBoundEP properties file for the twitter link operation
-    public static final String LINK_STREAM_OPERATION = "link";
-
-    //property key in the InBoundEP properties file for the twitter sample operation
-    public static final String SAMPLE_STREAM_OPERATION = "sample";
-
-    //property key in the InBoundEP properties file for the twitter site operation
-    public static final String SITE_STREAM_OPERATION = "site";
-
-    //property key in the InBoundEP properties file for the twitter user operation
-    public static final String USER_STREAM_OPERATION = "user";
-
-    //property key in the InBoundEP properties file for the twitter retweet operation
-    public static final String RETWEET_STREAM_OPERATION = "retweet";
-
 }
