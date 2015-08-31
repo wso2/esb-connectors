@@ -75,7 +75,7 @@ public class FileDelete extends AbstractConnector implements Connector {
 
 	/**
 	 * Generate the result
-	 * 
+	 *
 	 * @param messageContext
 	 * @param resultStatus
 	 */
@@ -103,7 +103,7 @@ public class FileDelete extends AbstractConnector implements Connector {
 
 	/**
 	 * Delete the file
-	 * 
+	 *
 	 * @param fileLocation
 	 * @param filename
 	 * @param filebeforepprocess

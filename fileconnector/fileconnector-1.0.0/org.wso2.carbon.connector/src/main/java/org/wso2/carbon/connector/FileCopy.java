@@ -133,20 +133,10 @@ public class FileCopy extends AbstractConnector implements Connector {
 		if (isFolder) {
 			remoteFile.copyFrom(localFile, Selectors.SELECT_SELF_AND_CHILDREN);
 		} else {
-			InputStream fin = null;
-			OutputStream fout = null;
-			try {
-				fin = localFile.getContent().getInputStream();
-				fout = remoteFile.getContent().getOutputStream();
-				IOUtils.copy(fin, fout);
-			} finally {
-				if (fout != null) {
-					fout.close();
-				}
-				if (fin != null) {
-					fin.close();
-				}
-			}
+			InputStream fin = localFile.getContent().getInputStream();
+			OutputStream fout = remoteFile.getContent().getOutputStream();
+
+			IOUtils.copy(fin, fout);
 		}
 
 		resultStatus = true;
