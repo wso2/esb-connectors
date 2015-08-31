@@ -1,0 +1,7 @@
+{
+  "accountSid" :"%s(accountSidNeg)",
+  "authToken" : "%s(authToken)",
+  "apiUrl" :"%s(apiUrl)",
+  "apiVersion" :"%s(apiVersion)",
+  "friendlyName":""
+}
