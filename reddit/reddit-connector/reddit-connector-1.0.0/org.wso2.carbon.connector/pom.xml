@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <!-- this is for developing withing the carbon context -->
     <!--<parent>-->
     <!--<groupId>org.wso2.carbon</groupId>-->
@@ -13,21 +12,17 @@
         <version>4.3.0-SNAPSHOT</version>
         <relativePath>../../../../pom.xml</relativePath>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.wso2.carbon.connector</groupId>
     <artifactId>org.wso2.carbon.connector.reddit</artifactId>
     <version>4.2.0</version>
     <packaging>jar</packaging>
     <name>WSO2 Carbon - Mediation Library Connector For reddit</name>
     <url>http://wso2.org</url>
-
     <properties>
         <connector.name>reddit</connector.name>
         <connector.version>1.0.0</connector.version>
     </properties>
-
     <dependencies/>
     <build>
         <plugins>
@@ -108,7 +103,6 @@
                             </value>
                             <properties>
                                 <test.framework.version>${carbon.platform.version}</test.framework.version>
-
                             </properties>
                         </property>
                         <property>
@@ -217,7 +211,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
