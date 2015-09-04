@@ -202,7 +202,6 @@ public class redditConnectorIntegrationTest extends ConnectorIntegrationTestBase
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
-
     /**
      * Positive test case for getAnyUserPublicMultisList method with mandatory parameters.
      * @throws IOException
@@ -220,7 +219,6 @@ public class redditConnectorIntegrationTest extends ConnectorIntegrationTestBase
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
-
     /**
      * Positive test case for search method with mandatory parameters.
      * @throws IOException
@@ -596,7 +594,6 @@ public class redditConnectorIntegrationTest extends ConnectorIntegrationTestBase
         boolean foundResponse = searchResponse.contains(find);
         Assert.assertEquals(foundResponse , true);
     }
-
     /**
      * Negative test case for getUserSavedHistory.
      * @throws IOException
