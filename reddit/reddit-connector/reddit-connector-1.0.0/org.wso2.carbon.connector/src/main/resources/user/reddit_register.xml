@@ -1,5 +1,5 @@
 <template name="reddit_register" xmlns="http://ws.apache.org/ns/synapse">
-    <!--
+<!--
   ~ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
   ~
   ~ WSO2 Inc. licenses this file to you under the Apache License,
@@ -39,5 +39,3 @@
         </call>
     </sequence>
 </template>
-
-
