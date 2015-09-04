@@ -31,15 +31,15 @@ STEPS:
 							class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
 	 <messageBuilder contentType="text/html"
 							class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
-     <messageFormatter contentType="text/plain"
+     	<messageFormatter contentType="text/plain"
                             class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
-     <messageBuilder contentType="text/plain"
+     	<messageBuilder contentType="text/plain"
                             class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
 
 4. Compress modified ESB as wso2esb-4.9.0-BETA.zip and copy that zip file in to location "{ESB_Connector_Home}/repository/".
 
 5. Make sure that reddit is specified as a module in ESB_Connector_Parent pom.
-     <module>reddit/reddit-connector/reddit-connector-1.0.0/org.wso2.carbon.connector</module>
+     	<module>reddit/reddit-connector/reddit-connector-1.0.0/org.wso2.carbon.connector</module>
 
 6. Create a reddit account and create a secret app.
    	i) 	Using the URL "https://www.reddit.com" create a reddit  account.
@@ -59,7 +59,7 @@ STEPS:
      apiUrl: public methods URL
      apiUrlOauth: Authorized methods URL
      apiVersion: Version of API
-	 after: Fullname of a thing
+     after: Fullname of a thing
      before: Fullname of a thing
      count: A positive integer (default: 0)
      userName: Existing Reddit user name
