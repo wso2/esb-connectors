@@ -1,0 +1,20 @@
+{
+  "accountSid" :"%s(accountSid)",
+  "authToken" : "%s(authToken)",
+  "apiUrl" :"%s(apiUrl)",
+  "apiVersion" :"%s(apiVersion)",
+  "incomingCallerId":"%s(incomingCallerId)",
+  "friendlyName":"%s(friendlyName)",
+  "phoneNumber":"",
+  "voiceUrl":"",
+  "voiceMethod":"",
+  "voiceFallbackUrl":"",
+  "voiceFallbackMethod":"",
+  "statusCallback":"",
+  "statusCallbackMethod":"",
+  "voiceCallerIdLookup":"",
+  "smsUrl":"",
+  "smsMethod":"",
+  "smsFallbackUrl":"",
+  "smsFallbackUrlMethod":""
+}
