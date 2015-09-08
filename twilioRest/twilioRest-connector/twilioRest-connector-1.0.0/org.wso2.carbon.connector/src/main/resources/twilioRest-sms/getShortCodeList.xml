@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+   WSO2 Inc. licenses this file to you under the Apache License,
+   Version 2.0 (the "License"); you may not use this file except
+   in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied. See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+<!-- API Documentation URL -  https://www.twilio.com/docs/api/rest/short-codes#list-get   -->
+<template name="getShortCodeList" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="shortCode" description="Only shows the short code resources that match this pattern. You can specify partial numbers and use * as a wildcard for any digit."/>
+    <parameter name="friendlyName" description=" Only shows short codes whose friendly names exactly match this name." />
+
+    <sequence>
+        <property name="uri.var.shortCode" expression="$func:shortCode" />
+        <property name="uri.var.friendlyName" expression="$func:friendlyName" />
+        <property name="uri.var.optionalParameters" value=""/>
+
+        <filter xpath="(not(get-property('uri.var.shortCode') = '' or (not(string(get-property('uri.var.shortCode'))))))">
+            <then>
+                <property name="uri.var.optionalParameters"
+                          expression="fn:concat(get-property('uri.var.optionalParameters'),'&amp;ShortCode=',get-property('uri.var.shortCode'))"/>
+            </then>
+        </filter>
+        <filter xpath="(not(get-property('uri.var.friendlyName') = '' or (not(string(get-property('uri.var.friendlyName'))))))">
+            <then>
+                <property name="uri.var.optionalParameters"
+                          expression="fn:concat(get-property('uri.var.optionalParameters'),'&amp;FriendlyName=',get-property('uri.var.friendlyName'))"/>
+            </then>
+        </filter>
+
+        <header name="Content-Type" value="application/x-www-form-urlencoded" scope="transport"/>
+
+         <call>
+            <endpoint>
+                <http method="get" uri-template="{uri.var.apiUrl}/{uri.var.apiVersion}/Accounts/{uri.var.accountSid}/SMS/ShortCodes.json" />
+            </endpoint>
+        </call>
+        <!--Removing custom headers from the Response. -->
+        <header name="X-Frame-Options" action="remove" scope="transport" />
+        <header name="Vary" action="remove" scope="transport" />
+        <header name="X-XSS-Protection" action="remove" scope="transport" />
+        <header name="X-Content-Type-Options" action="remove" scope="transport" />
+        <header name="Strict-Transport-Security" action="remove" scope="transport" />
+        <header name="X-RateLimit-Remaining" action="remove" scope="transport" />
+        <header name="X-RateLimit-Limit" action="remove" scope="transport" />
+        <header name="X-RateLimit-Reset" action="remove" scope="transport" />
+    </sequence>
+</template>
