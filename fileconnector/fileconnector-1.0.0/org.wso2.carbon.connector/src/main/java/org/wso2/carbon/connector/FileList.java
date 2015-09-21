@@ -34,6 +34,7 @@ import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 import org.wso2.carbon.connector.core.Connector;
 import org.wso2.carbon.connector.util.FTPSiteUtils;
+
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -53,18 +54,18 @@ public class FileList extends AbstractConnector implements Connector {
                         messageContext,
                         "file").toString();
 
-        list(messageContext, fileLocation,filename);
+        list(messageContext, fileLocation, filename);
         log.info("All files are listed......");
     }
 
-    public void list(MessageContext messageContext, String fileLocation,String fileName) throws SynapseException {
+    public void list(MessageContext messageContext, String fileLocation, String fileName) throws SynapseException {
 
         try {
             FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
             FileSystemManager manager = VFS.getManager();
 
             // Create remote object
-            FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,fileName), opts);
+            FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation, fileName), opts);
             if (remoteFile.exists()) {
                 log.info("Reading a zip File.");
                 // open the zip file

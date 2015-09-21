@@ -42,117 +42,117 @@ import org.wso2.carbon.connector.util.ResultPayloadCreater;
 
 public class FileCopy extends AbstractConnector implements Connector {
 
-	private static Log log = LogFactory.getLog(FileCreate.class);
+    private static Log log = LogFactory.getLog(FileCreate.class);
 
-	public void connect(MessageContext messageContext) throws ConnectException {
+    public void connect(MessageContext messageContext) throws ConnectException {
 
-		String fileLocation =
-		                      getParameter(messageContext, "filelocation") == null ? "" : getParameter(
-		                                                                                               messageContext,
-		                                                                                               "filelocation").toString();
-		String filename =
-		                  getParameter(messageContext, "file") == null ? "" : getParameter(
-		                                                                                   messageContext,
-		                                                                                   "file").toString();
-		String fileBeforeProcess =
-		                           getParameter(messageContext, "filebeforeprocess") == null ? "" : getParameter(
-		                                                                                                         messageContext,
-		                                                                                                         "filebeforeprocess").toString();
-		String newFileLocation =
-		                         getParameter(messageContext, "newfilelocation") == null ? "" : getParameter(
-		                                                                                                     messageContext,
-		                                                                                                     "newfilelocation").toString();
-		boolean isFolder =
-		                   getParameter(messageContext, "isfolder") == null ? false : Boolean.getBoolean(getParameter(
-		                                                                                                              messageContext,
-		                                                                                                              "isfolder").toString());
-		if (log.isDebugEnabled()) {
-			log.info("File creation started..." + filename.toString());
-			log.info("File Location..." + fileLocation.toString());
-			log.info("File content..." + fileBeforeProcess.toString());
-		}
+        String fileLocation =
+                getParameter(messageContext, "filelocation") == null ? "" : getParameter(
+                        messageContext,
+                        "filelocation").toString();
+        String filename =
+                getParameter(messageContext, "file") == null ? "" : getParameter(
+                        messageContext,
+                        "file").toString();
+        String fileBeforeProcess =
+                getParameter(messageContext, "filebeforeprocess") == null ? "" : getParameter(
+                        messageContext,
+                        "filebeforeprocess").toString();
+        String newFileLocation =
+                getParameter(messageContext, "newfilelocation") == null ? "" : getParameter(
+                        messageContext,
+                        "newfilelocation").toString();
+        boolean isFolder =
+                getParameter(messageContext, "isfolder") == null ? false : Boolean.getBoolean(getParameter(
+                        messageContext,
+                        "isfolder").toString());
+        if (log.isDebugEnabled()) {
+            log.info("File creation started..." + filename.toString());
+            log.info("File Location..." + fileLocation.toString());
+            log.info("File content..." + fileBeforeProcess.toString());
+        }
 
-		boolean resultStatus = false;
-		try {
-			resultStatus = copyFile(fileLocation, filename, newFileLocation, isFolder);
-		} catch (IOException e) {
-			handleException(e.getMessage(), messageContext);
-		}
+        boolean resultStatus = false;
+        try {
+            resultStatus = copyFile(fileLocation, filename, newFileLocation, isFolder);
+        } catch (IOException e) {
+            handleException(e.getMessage(), messageContext);
+        }
 
-		ResultPayloadCreater resultPayload = new ResultPayloadCreater();
+        ResultPayloadCreater resultPayload = new ResultPayloadCreater();
 
-		generateResults(messageContext, resultStatus, resultPayload);
+        generateResults(messageContext, resultStatus, resultPayload);
 
-	}
+    }
 
-	/**
-	 * Generate the results
-	 * 
-	 * @param messageContext
-	 * @param resultStatus
-	 * @param resultPayload
-	 */
-	private void generateResults(MessageContext messageContext, boolean resultStatus,
-	                             ResultPayloadCreater resultPayload) {
-		String responce = "<result><copy>" + resultStatus + "</copy></result>";
-		OMElement element;
-		try {
-			element = resultPayload.performSearchMessages(responce);
-			resultPayload.preparePayload(messageContext, element);
-		} catch (XMLStreamException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		} catch (IOException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		} catch (JSONException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		}
+    /**
+     * Generate the results
+     *
+     * @param messageContext
+     * @param resultStatus
+     * @param resultPayload
+     */
+    private void generateResults(MessageContext messageContext, boolean resultStatus,
+                                 ResultPayloadCreater resultPayload) {
+        String responce = "<result><copy>" + resultStatus + "</copy></result>";
+        OMElement element;
+        try {
+            element = resultPayload.performSearchMessages(responce);
+            resultPayload.preparePayload(messageContext, element);
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        } catch (JSONException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        }
 
-	}
+    }
 
-	/**
-	 * Copy files
-	 * 
-	 * @param fileLocation
-	 * @param filename
-	 * @param newFileLocation
-	 * @return
-	 */
-	private boolean copyFile(String fileLocation, String filename, String newFileLocation,
-	                         boolean isFolder) throws IOException {
-		boolean resultStatus = false;
+    /**
+     * Copy files
+     *
+     * @param fileLocation
+     * @param filename
+     * @param newFileLocation
+     * @return
+     */
+    private boolean copyFile(String fileLocation, String filename, String newFileLocation,
+                             boolean isFolder) throws IOException {
+        boolean resultStatus = false;
 
-		String sftpURL = newFileLocation + filename.toString();
-		FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
+        String sftpURL = newFileLocation + filename.toString();
+        FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
 
-		FileSystemManager manager = VFS.getManager();
-		FileObject localFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,filename),opts);
-		FileObject remoteFile = manager.resolveFile(sftpURL, opts);
-		if (isFolder) {
-			remoteFile.copyFrom(localFile, Selectors.SELECT_SELF_AND_CHILDREN);
-		} else {
-			InputStream fin = null;
-			OutputStream fout = null;
-			try {
-				fin = localFile.getContent().getInputStream();
-				fout = remoteFile.getContent().getOutputStream();
-				IOUtils.copy(fin, fout);
-			} finally {
-				if (fout != null) {
-					fout.close();
-				}
-				if (fin != null) {
-					fin.close();
-				}
-			}
-		}
+        FileSystemManager manager = VFS.getManager();
+        FileObject localFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation, filename), opts);
+        FileObject remoteFile = manager.resolveFile(sftpURL, opts);
+        if (isFolder) {
+            remoteFile.copyFrom(localFile, Selectors.SELECT_SELF_AND_CHILDREN);
+        } else {
+            InputStream fin = null;
+            OutputStream fout = null;
+            try {
+                fin = localFile.getContent().getInputStream();
+                fout = remoteFile.getContent().getOutputStream();
+                IOUtils.copy(fin, fout);
+            } finally {
+                if (fout != null) {
+                    fout.close();
+                }
+                if (fin != null) {
+                    fin.close();
+                }
+            }
+        }
 
-		resultStatus = true;
-		if (log.isDebugEnabled()) {
-			log.info("File copying completed..." + filename.toString());
-		}
-		return resultStatus;
-	}
+        resultStatus = true;
+        if (log.isDebugEnabled()) {
+            log.info("File copying completed..." + filename.toString());
+        }
+        return resultStatus;
+    }
 }

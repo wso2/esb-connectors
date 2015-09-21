@@ -55,7 +55,7 @@ public class Fileunzip extends AbstractConnector implements Connector {
 
         boolean resultStatus;
         try {
-            resultStatus = new FileUnzipUtil().unzip(fileLocation,filename, newFileLocation, messageContext);
+            resultStatus = new FileUnzipUtil().unzip(fileLocation, filename, newFileLocation, messageContext);
         } catch (Exception e) {
             handleException(e.getMessage(), messageContext);
             resultStatus = false;

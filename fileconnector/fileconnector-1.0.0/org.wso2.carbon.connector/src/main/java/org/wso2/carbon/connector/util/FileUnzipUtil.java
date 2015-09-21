@@ -28,6 +28,7 @@ import org.apache.commons.vfs2.*;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseException;
 import org.wso2.carbon.connector.FileConnectorConstants;
+
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -38,8 +39,8 @@ public class FileUnzipUtil {
     private static Log log = LogFactory.getLog(FileUnzipUtil.class);
 
     /**
-     * @param fileLocation   : Location of the zip file
-     * @param fileName :file name
+     * @param fileLocation  : Location of the zip file
+     * @param fileName      :file name
      * @param destDirectory Location of the destination folder
      */
     public boolean unzip(String fileLocation, String fileName, String destDirectory, MessageContext messageContext) throws
@@ -53,7 +54,7 @@ public class FileUnzipUtil {
             FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
             FileSystemManager manager = VFS.getManager();
             // Create remote object
-            FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,fileName), opts);
+            FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation, fileName), opts);
             FileObject remoteDesFile = manager.resolveFile(destDirectory, opts);
             // File destDir = new File(destDirectory);
             if (remoteFile.exists()) {
@@ -132,7 +133,7 @@ public class FileUnzipUtil {
                 bos.write(bytesIn, 0, read);
             }
         } catch (IOException e) {
-            log.error("Unable to read an entry.",e);
+            log.error("Unable to read an entry.", e);
         } finally {
             //we must always close the zip file
             if (bos != null) {
