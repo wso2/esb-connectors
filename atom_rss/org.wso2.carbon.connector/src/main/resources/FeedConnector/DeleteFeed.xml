@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://ws.apache.org/ns/synapse" name="DeleteFeed">
+    <parameter name="EntryID"/>
+    <parameter name="HostAddress"/>
+    <sequence>
+        <log level="full">
+            <property name="EntryID" expression="$func:EntryID"/>
+            <property name="HostAddress" expression="$func:HostAddress"/>
+        </log>
+        <class name="org.wso2.carbon.connector.DeleteFeed"/>
+    </sequence>
+</template>

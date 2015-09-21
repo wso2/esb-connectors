@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:esb="http:///org/wso2/developerstudio/eclipse/gmf/esb" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmi:id="_zQmvIFBeEeWEsvCbbzHmtg" type="Esb" name="template_EditFeed.esb_diagram" measurementUnit="Pixel">
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_zQmvIVBeEeWEsvCbbzHmtg"/>
+  <element xmi:type="esb:EsbDiagram" href="template_EditFeed.esb#/"/>
+</notation:Diagram>
