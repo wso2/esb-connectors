@@ -124,13 +124,13 @@ public class FileRename extends AbstractConnector implements Connector {
 		if (manager != null) {
 			// Create remote object
 			FileObject remoteFile =
-			                        manager.resolveFile(fileLocation.toString() +
-			                                                    filename.toString(),
+			                        manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,
+													filename),
 			                                            FTPSiteUtils.createDefaultOptions());
 
 			FileObject reNameFile =
-			                        manager.resolveFile(fileLocation.toString() +
-			                                                    newFileName.toString(),
+			                        manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,
+													newFileName),
 			                                            FTPSiteUtils.createDefaultOptions());
 			if (remoteFile.exists()) {
 				if (!filebeforepprocess.equals("")) {

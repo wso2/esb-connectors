@@ -25,15 +25,15 @@ public class FileCompressUtil {
 
 	/**
 	 * Compress the files based on the archive type
-	 * 
-	 * 
+	 *
 	 * @param files
 	 * @param file
+	 * @param fileName
 	 * @param archiveType
 	 * @throws IOException
 	 */
-	public void compressFiles(Collection files, File file, ArchiveType archiveType)
-	                                                                               throws IOException {
+	public void compressFiles(Collection files, String fileName, File file, ArchiveType archiveType)
+			throws IOException {
 		log.info("Compressing " + files.size() + " to " + file.getAbsoluteFile());
 		// Create the output stream for the output file
 		FileOutputStream fos;
@@ -43,10 +43,10 @@ public class FileCompressUtil {
 				// Wrap the output file stream in streams that will tar and gzip
 				// everything
 				TarArchiveOutputStream taos =
-				                              new TarArchiveOutputStream(
-				                                                         new GZIPOutputStream(
-				                                                                              new BufferedOutputStream(
-				                                                                                                       fos)));
+						new TarArchiveOutputStream(
+								new GZIPOutputStream(
+										new BufferedOutputStream(
+												fos)));
 				// TAR has an 8 gig file limit by default, this gets around that
 				taos.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_STAR);
 				// to get past the 8 gig limit; TAR originally didn't support
@@ -57,8 +57,14 @@ public class FileCompressUtil {
 				Iterator iterator = files.iterator();
 				while (iterator.hasNext()) {
 					File f = (File) iterator.next();
-					addFilesToCompression(taos, f, ".", ArchiveType.TAR_GZIP);
-					// do something to object here...
+					if (!fileName.equals("")) {
+						if (f.toString().equals(fileName)) {
+							addFilesToCompression(taos, f, ".", ArchiveType.TAR_GZIP);
+							// do something to object here...
+						}
+					} else {
+						addFilesToCompression(taos, f, ".", ArchiveType.TAR_GZIP);
+					}
 				}
 
 				// Close everything up
@@ -70,9 +76,9 @@ public class FileCompressUtil {
 				// Wrap the output file stream in streams that will tar and zip
 				// everything
 				ZipArchiveOutputStream zaos =
-				                              new ZipArchiveOutputStream(
-				                                                         new BufferedOutputStream(
-				                                                                                  fos));
+						new ZipArchiveOutputStream(
+								new BufferedOutputStream(
+										fos));
 				zaos.setEncoding("UTF-8");
 				zaos.setCreateUnicodeExtraFields(ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS);
 
@@ -80,8 +86,14 @@ public class FileCompressUtil {
 				Iterator iterator1 = files.iterator();
 				while (iterator1.hasNext()) {
 					File f = (File) iterator1.next();
-					addFilesToCompression(zaos, f, ".", ArchiveType.ZIP);
-					// do something to object here...
+					if (!fileName.equals("")) {
+						if (f.getName().equals(fileName)) {
+							addFilesToCompression(zaos, f, ".", ArchiveType.ZIP);
+							// do something to object here...
+						}
+					} else {
+						addFilesToCompression(zaos, f, ".", ArchiveType.ZIP);
+					}
 				}
 
 				// Close everything up
@@ -93,7 +105,7 @@ public class FileCompressUtil {
 
 	/**
 	 * Add the files to compression
-	 * 
+	 *
 	 * @param taos
 	 * @param file
 	 * @param dir
@@ -101,7 +113,7 @@ public class FileCompressUtil {
 	 * @throws IOException
 	 */
 	private void addFilesToCompression(ArchiveOutputStream taos, File file, String dir,
-	                                   ArchiveType archiveType) throws IOException {
+									   ArchiveType archiveType) throws IOException {
 
 		// Create an entry for the file
 		switch (archiveType) {

@@ -35,4 +35,55 @@ public class FTPSiteUtils {
 		return opts;
 
 	}
+
+
+	/**
+	 * Get file url considering query params, if exists.
+	 *
+	 * @param fileLocation
+	 * @param fileName
+	 * @return
+	 */
+	public static String getFileUrl(String fileLocation, String fileName) {
+		if (fileLocation.contains("?")) {
+			int index = fileLocation.indexOf("?");
+			String path = fileLocation.substring(0, index);
+			String queryParam = fileLocation.substring(index);
+			return path + fileName + queryParam;
+		}
+		return fileLocation + fileName;
+	}
+
+	/**
+	 * Get file path without connection details.
+	 *
+	 * @param fileLocation
+	 * @param fileName
+	 * @return
+	 */
+	public static String getFileUrlWithoutQueryParams(String fileLocation, String fileName) {
+		if (fileLocation.contains("?")) {
+			int index = fileLocation.indexOf("?");
+			String path = fileLocation.substring(0, index);
+			return path + fileName;
+		}
+		return fileLocation + fileName;
+	}
+
+	/**
+	 * Get file path without connection details.
+	 *
+	 * @param fileLocation
+	 * @return
+	 */
+
+	public static String getFileUrl(String fileLocation) {
+		if (fileLocation.contains("?")) {
+			int index = fileLocation.indexOf("?");
+			String path = fileLocation.substring(0, index);
+			String queryParam = fileLocation.substring(index);
+			return path + queryParam;
+		}
+		return fileLocation;
+	}
 }

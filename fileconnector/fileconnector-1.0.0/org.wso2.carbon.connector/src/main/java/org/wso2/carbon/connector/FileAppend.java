@@ -144,7 +144,7 @@ public class FileAppend extends AbstractConnector implements Connector {
 		FileSystemManager manager = VFS.getManager();
 		// if the file does not exist, this method creates it
 		FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
-		FileObject fileObj = manager.resolveFile(fileLocation + filename, opts);
+		FileObject fileObj = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,filename), opts);
 
 		if (!filebeforepprocess.equals("")) {
 			FileObject fBeforeProcess = manager.resolveFile(filebeforepprocess + filename, opts);

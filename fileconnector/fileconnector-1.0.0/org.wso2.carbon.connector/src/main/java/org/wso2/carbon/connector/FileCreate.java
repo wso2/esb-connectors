@@ -120,7 +120,7 @@ public class FileCreate extends AbstractConnector implements Connector {
 	                           String encoding, String fileAProcess, Boolean isFolder)
 	                                                                                  throws FileSystemException,
 	                                                                                  IOException {
-		String sftpURL = fileLocation + filename;
+		String sftpURL = FTPSiteUtils.getFileUrl(fileLocation,filename);
 
 		boolean resultStatus = false;
 

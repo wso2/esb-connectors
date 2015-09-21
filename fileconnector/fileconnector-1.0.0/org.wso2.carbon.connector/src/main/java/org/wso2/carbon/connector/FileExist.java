@@ -118,7 +118,7 @@ public class FileExist extends AbstractConnector implements Connector {
 
 		// Create remote object
 		FileObject remoteFile =
-		                        manager.resolveFile(fileLocation.toString() + filename.toString(),
+		                        manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,filename),
 		                                            FTPSiteUtils.createDefaultOptions());
 
 		if (remoteFile.exists()) {

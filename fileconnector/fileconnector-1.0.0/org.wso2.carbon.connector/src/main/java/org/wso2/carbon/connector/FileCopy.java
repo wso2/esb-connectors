@@ -128,7 +128,7 @@ public class FileCopy extends AbstractConnector implements Connector {
 		FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
 
 		FileSystemManager manager = VFS.getManager();
-		FileObject localFile = manager.resolveFile(fileLocation + filename,opts);
+		FileObject localFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,filename),opts);
 		FileObject remoteFile = manager.resolveFile(sftpURL, opts);
 		if (isFolder) {
 			remoteFile.copyFrom(localFile, Selectors.SELECT_SELF_AND_CHILDREN);

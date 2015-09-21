@@ -38,10 +38,11 @@ public class FileUnzipUtil {
     private static Log log = LogFactory.getLog(FileUnzipUtil.class);
 
     /**
-     * @param zipFilePath   : Location of the zip file
+     * @param fileLocation   : Location of the zip file
+     * @param fileName :file name
      * @param destDirectory Location of the destination folder
      */
-    public boolean unzip(String zipFilePath, String destDirectory, MessageContext messageContext) throws
+    public boolean unzip(String fileLocation, String fileName, String destDirectory, MessageContext messageContext) throws
             SynapseException, IOException {
 
         OMFactory factory = OMAbstractFactory.getOMFactory();
@@ -52,7 +53,7 @@ public class FileUnzipUtil {
             FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
             FileSystemManager manager = VFS.getManager();
             // Create remote object
-            FileObject remoteFile = manager.resolveFile(zipFilePath, opts);
+            FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,fileName), opts);
             FileObject remoteDesFile = manager.resolveFile(destDirectory, opts);
             // File destDir = new File(destDirectory);
             if (remoteFile.exists()) {

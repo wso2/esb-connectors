@@ -47,39 +47,43 @@ public class FileArchives extends AbstractConnector implements Connector {
 
 	public void connect(MessageContext messageContext) throws ConnectException {
 		String fileLocation =
-		                      getParameter(messageContext, "filelocation") == null ? "" : getParameter(
-		                                                                                               messageContext,
-		                                                                                               "filelocation").toString();
+				getParameter(messageContext, "filelocation") == null ? "" : getParameter(
+						messageContext,
+						"filelocation").toString();
 		String filename =
-		                  getParameter(messageContext, "file") == null ? "" : getParameter(
-		                                                                                   messageContext,
-		                                                                                   "file").toString();
+				getParameter(messageContext, "file") == null ? "" : getParameter(
+						messageContext,
+						"file").toString();
 		String suffixs =
-		                 getParameter(messageContext, "suffixs") == null ? "" : getParameter(
-		                                                                                     messageContext,
-		                                                                                     "suffixs").toString();
-		String newFileName =
-		                     getParameter(messageContext, "archivefilename") == null ? "" : getParameter(
-		                                                                                                 messageContext,
-		                                                                                                 "archivefilename").toString();
+				getParameter(messageContext, "suffixs") == null ? "" : getParameter(
+						messageContext,
+						"suffixs").toString();
+		String archiveFileLocation =
+				getParameter(messageContext, "archiveFileLocation") == null ? "" : getParameter(
+						messageContext,
+						"archiveFileLocation").toString();
 
+		String newFileName =
+				getParameter(messageContext, "newfilename") == null ? "" : getParameter(
+						messageContext,
+						"newfilename").toString();
 		String archiveType =
-		                     getParameter(messageContext, "archivetype") == null ? "" : getParameter(
-		                                                                                             messageContext,
-		                                                                                             "archivetype").toString();
+				getParameter(messageContext, "archivetype") == null ? "" : getParameter(
+						messageContext,
+						"archivetype").toString();
 
 		String filepattern =
-		                     getParameter(messageContext, "filepattern") == null ? "" : getParameter(
-		                                                                                             messageContext,
-		                                                                                             "filepattern").toString();
+				getParameter(messageContext, "filepattern") == null ? "" : getParameter(
+						messageContext,
+						"filepattern").toString();
 		String dirpattern =
-		                    getParameter(messageContext, "dirpattern") == null ? "" : getParameter(
-		                                                                                           messageContext,
-		                                                                                           "dirpattern").toString();
+				getParameter(messageContext, "dirpattern") == null ? "" : getParameter(
+						messageContext,
+						"dirpattern").toString();
 		boolean archivedirectory =
-		                           getParameter(messageContext, "archivedirectory") == null ? false : Boolean.parseBoolean(getParameter(
-		                                                                                                                                messageContext,
-		                                                                                                                                "archivedirectory").toString());
+				getParameter(messageContext, "archivedirectory") == null ? false : Boolean.parseBoolean(getParameter(
+						messageContext,
+						"archivedirectory").toString());
 		if (log.isDebugEnabled()) {
 			log.info("File creation started..." + filename.toString());
 			log.info("File Location..." + fileLocation.toString());
@@ -88,67 +92,75 @@ public class FileArchives extends AbstractConnector implements Connector {
 
 		boolean resultStatus = false;
 
-		File file = new File(newFileName.toString());
+		File newFile = new File(archiveFileLocation);
+			if (!newFile.exists())  {
+					newFile.mkdir();
+			}
+String str=archiveFileLocation + newFileName;
+			File file = new File(str);
 
-		File inputDirectory = new File(fileLocation.toString());
 
-		File[] subdirs = inputDirectory.listFiles();
-		Collection<File> fileList = new ArrayList<File>();
-		if (suffixs.equals("")) {
-			if (archivedirectory) {
-				for (File f : subdirs) {
-					fileList.add(f);
+			File inputDirectory = new File(fileLocation.toString());
+
+			File[] subdirs = inputDirectory.listFiles();
+			Collection<File> fileList = new ArrayList<File>();
+			if (suffixs.equals("")) {
+				if (archivedirectory) {
+					for (File f : subdirs) {
+						fileList.add(f);
+					}
+				} else {
+					fileList =
+							FileUtils.listFiles(inputDirectory, TrueFileFilter.INSTANCE,
+									TrueFileFilter.INSTANCE);
 				}
+
 			} else {
-				fileList =
-				           FileUtils.listFiles(inputDirectory, TrueFileFilter.INSTANCE,
-				                               TrueFileFilter.INSTANCE);
+
+				final String[] SUFFIX = suffixs.split(",".toString());// { "xls" };
+				fileList = FileUtils.listFiles(inputDirectory, SUFFIX, true);
 			}
 
-		} else {
-
-			final String[] SUFFIX = suffixs.split(",".toString());// { "xls" };
-			fileList = FileUtils.listFiles(inputDirectory, SUFFIX, true);
-		}
-
-		Collection<File> filteredList = new ArrayList<File>();
-		if (filepattern.equals("") && dirpattern.equals("")) {
-			filteredList = fileList;
-		} else {
-			if (!filepattern.equals("")) {
-				FILE_PATTERN = filepattern;
-			}
-			if (!dirpattern.equals("")) {
-				DIR_PATTERN = dirpattern;
-			}
-			for (File filterFile : fileList) {
-				if (new FilePattenMatcher(FILE_PATTERN).validate(filterFile.getName())) {
-					filteredList.add(filterFile);
-				} else if (filterFile.isDirectory() &&
-				           new FilePattenMatcher(DIR_PATTERN).validate(filterFile.getName())) {
-					filteredList.add(filterFile);
+			Collection<File> filteredList = new ArrayList<File>();
+			if (filepattern.equals("") && dirpattern.equals("")) {
+				filteredList = fileList;
+			} else {
+				if (!filepattern.equals("")) {
+					FILE_PATTERN = filepattern;
+				}
+				if (!dirpattern.equals("")) {
+					DIR_PATTERN = dirpattern;
+				}
+				for (File filterFile : fileList) {
+					if (new FilePattenMatcher(FILE_PATTERN).validate(filterFile.getName())) {
+						filteredList.add(filterFile);
+					} else if (filterFile.isDirectory() &&
+							new FilePattenMatcher(DIR_PATTERN).validate(filterFile.getName())) {
+						filteredList.add(filterFile);
+					}
 				}
 			}
-		}
-		try {
-			if (archiveType.equals(ArchiveType.TAR_GZIP.toString())) {
-				new FileCompressUtil().compressFiles(filteredList, file, ArchiveType.TAR_GZIP);
-			} else {
-				new FileCompressUtil().compressFiles(filteredList, file, ArchiveType.ZIP);
-			}
-			resultStatus = true;
-		} catch (IOException e) {
+			try {
+				if (archiveType.equals(ArchiveType.TAR_GZIP.toString())) {
+					new FileCompressUtil().compressFiles(filteredList, filename, file, ArchiveType.TAR_GZIP);
+				} else {
+					new FileCompressUtil().compressFiles(filteredList, filename, file, ArchiveType.ZIP);
+				}
+				resultStatus = true;
+			} catch (IOException e) {
 
-			handleException(e.getMessage(), messageContext);
-			log.error(e.getMessage());
-			resultStatus = false;
-		}
-		generateResults(messageContext, resultStatus);
-		if (log.isDebugEnabled()) {
-			log.info("File archived......");
-		}
+				handleException(e.getMessage(), messageContext);
+				log.error(e.getMessage());
+				resultStatus = false;
+			}
+			generateResults(messageContext, resultStatus);
+			if (log.isDebugEnabled()) {
+				log.info("File archived......");
+			}
 
 	}
+
+
 
 	/**
 	 * Generate the results

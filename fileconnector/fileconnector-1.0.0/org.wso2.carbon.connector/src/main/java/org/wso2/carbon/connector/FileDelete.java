@@ -118,7 +118,7 @@ public class FileDelete extends AbstractConnector implements Connector {
 		FileSystemManager manager = VFS.getManager();
 
 		// Create remote object
-		FileObject remoteFile = manager.resolveFile(fileLocation + filename, opts);
+		FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,filename), opts);
 		if (!filebeforepprocess.equals("")) {
 			FileObject fBeforeProcess = manager.resolveFile(filebeforepprocess + filename, opts);
 			fBeforeProcess.copyFrom(remoteFile, Selectors.SELECT_SELF);

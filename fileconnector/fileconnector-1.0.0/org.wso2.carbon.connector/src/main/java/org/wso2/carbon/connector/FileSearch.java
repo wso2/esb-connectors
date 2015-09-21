@@ -175,7 +175,7 @@ public class FileSearch extends AbstractConnector implements Connector {
 		FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
 		FileSystemManager manager = VFS.getManager();
 
-		FileObject remoteFile = manager.resolveFile(fileLocation, opts);
+		FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation), opts);
 		FileObject[] children = remoteFile.getChildren();
 
 		final String FILE_PATTERN = filepattern;

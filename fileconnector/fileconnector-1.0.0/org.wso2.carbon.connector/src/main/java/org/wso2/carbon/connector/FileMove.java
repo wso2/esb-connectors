@@ -128,7 +128,7 @@ public class FileMove extends AbstractConnector implements Connector {
 		FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
 		FileSystemManager manager = VFS.getManager();
 		// Create remote object
-		FileObject remoteFile = manager.resolveFile(fileLocation + filename, opts);
+		FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,filename), opts);
 		FileObject newFile = manager.resolveFile(newFileLocation + filename, opts);
 		if (!filebeforepprocess.equals("")) {
 			FileObject fBeforeProcess = manager.resolveFile(filebeforepprocess + filename, opts);

@@ -48,19 +48,23 @@ public class FileList extends AbstractConnector implements Connector {
                 getParameter(messageContext, "filelocation") == null ? "" : getParameter(
                         messageContext,
                         "filelocation").toString();
+        String filename =
+                getParameter(messageContext, "file") == null ? "" : getParameter(
+                        messageContext,
+                        "file").toString();
 
-        list(messageContext, fileLocation);
+        list(messageContext, fileLocation,filename);
         log.info("All files are listed......");
     }
 
-    public void list(MessageContext messageContext, String fileLocation) throws SynapseException {
+    public void list(MessageContext messageContext, String fileLocation,String fileName) throws SynapseException {
 
         try {
             FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
             FileSystemManager manager = VFS.getManager();
 
             // Create remote object
-            FileObject remoteFile = manager.resolveFile(fileLocation, opts);
+            FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,fileName), opts);
             if (remoteFile.exists()) {
                 log.info("Reading a zip File.");
                 // open the zip file

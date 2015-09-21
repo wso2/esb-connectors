@@ -52,7 +52,7 @@ public class FileRead extends AbstractConnector implements Connector {
         try {
             fsManager = VFS.getManager();
             FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
-            fileObj = fsManager.resolveFile(fileLocation, opts);
+            fileObj = fsManager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation), opts);
             if (fileObj.exists()) {
                 if (fileObj.getType() == FileType.FOLDER) {
                     FileObject[] children = fileObj.getChildren();
