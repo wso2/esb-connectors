@@ -58,7 +58,7 @@ public class FileCompressUtil {
                 while (iterator.hasNext()) {
                     File f = (File) iterator.next();
                     if (!fileName.equals("")) {
-                        if (f.toString().equals(fileName)) {
+                        if (f.getName().equals(fileName)) {
                             addFilesToCompression(taos, f, ".", ArchiveType.TAR_GZIP);
                             // do something to object here...
                         }
