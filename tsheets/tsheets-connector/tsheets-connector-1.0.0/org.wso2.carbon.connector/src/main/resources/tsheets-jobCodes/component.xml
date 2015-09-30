@@ -17,14 +17,14 @@
    under the License.
 -->
 <component name="tsheets-jobCodes" type="synapse/template">
-   <subComponents>
-      <component name="listJobCodes">
-         <file>listJobCodes.xml</file>
-         <description>Retrieves list of all jobCodes associated with your company </description>
-      </component>
-      <component name="addJobCodes">
-         <file>addJobCodes.xml</file>
-         <description>Add jobCodes to your company</description>
-      </component>
-   </subComponents>
+    <subComponents>
+        <component name="listJobCodes">
+            <file>listJobCodes.xml</file>
+            <description>Retrieves list of all jobCodes associated with your company</description>
+        </component>
+        <component name="addJobCodes">
+            <file>addJobCodes.xml</file>
+            <description>Add jobCodes to your company</description>
+        </component>
+    </subComponents>
 </component>

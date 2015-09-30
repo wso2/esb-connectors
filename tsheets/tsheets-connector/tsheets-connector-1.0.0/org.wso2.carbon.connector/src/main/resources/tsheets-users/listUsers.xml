@@ -17,31 +17,33 @@
    under the License.
 -->
 <template name="listUsers" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="ids" description="Integer. Comma separated list of one or more user ids to filter on." />
-   <parameter name="userNames" description="String. Comma separated list of one or more usernames to filter on." />
-   <parameter name="activeStatus" description="String. 'yes', 'no', or 'both'. Default is 'yes'." />
-   <parameter name="firstName"
-      description="String. First name to filter on. * will be interpreted as a wild card. Starts matching from the beginning of the string. " />
-   <parameter name="lastName"
-      description="String. Last name to filter on. * will be interpreted as a wild card. Starts matching from the beginning of the string. " />
-   <parameter name="modifiedBefore" description="String (ISO8601 format). Only users modified before this date/time will be returned." />
-   <parameter name="modifiedSince" description="String (ISO8601 format). Only users modified since this date/time will be returned." />
-   <parameter name="perPage"
-      description="Integer. Represents how many results to retrieve per request (page). Default is 50. Max is 50. " />
-   <parameter name="page" description="Integer. Represents the page of results to retrieve." />
-   <sequence>
-      <property name="uri.var.ids" expression="$func:ids" />
-      <property name="uri.var.userNames" expression="$func:userNames" />
-      <property name="uri.var.activeStatus" expression="$func:activeStatus" />
-      <property name="uri.var.firstName" expression="$func:firstName" />
-      <property name="uri.var.lastName" expression="$func:lastName" />
-      <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore" />
-      <property name="uri.var.modifiedSince" expression="$func:modifiedSince" />
-      <property name="uri.var.perPage" expression="$func:perPage" />
-      <property name="uri.var.page" expression="$func:page" />
-      <!--Construct endpoint with optional url parameters -->
-      <script language="js">
-      <![CDATA[  
+    <parameter name="ids" description="Integer. Comma separated list of one or more user ids to filter on."/>
+    <parameter name="userNames" description="String. Comma separated list of one or more usernames to filter on."/>
+    <parameter name="activeStatus" description="String. 'yes', 'no', or 'both'. Default is 'yes'."/>
+    <parameter name="firstName"
+               description="String. First name to filter on. * will be interpreted as a wild card. Starts matching from the beginning of the string. "/>
+    <parameter name="lastName"
+               description="String. Last name to filter on. * will be interpreted as a wild card. Starts matching from the beginning of the string. "/>
+    <parameter name="modifiedBefore"
+               description="String (ISO8601 format). Only users modified before this date/time will be returned."/>
+    <parameter name="modifiedSince"
+               description="String (ISO8601 format). Only users modified since this date/time will be returned."/>
+    <parameter name="perPage"
+               description="Integer. Represents how many results to retrieve per request (page). Default is 50. Max is 50. "/>
+    <parameter name="page" description="Integer. Represents the page of results to retrieve."/>
+    <sequence>
+        <property name="uri.var.ids" expression="$func:ids"/>
+        <property name="uri.var.userNames" expression="$func:userNames"/>
+        <property name="uri.var.activeStatus" expression="$func:activeStatus"/>
+        <property name="uri.var.firstName" expression="$func:firstName"/>
+        <property name="uri.var.lastName" expression="$func:lastName"/>
+        <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore"/>
+        <property name="uri.var.modifiedSince" expression="$func:modifiedSince"/>
+        <property name="uri.var.perPage" expression="$func:perPage"/>
+        <property name="uri.var.page" expression="$func:page"/>
+        <!--Construct endpoint with optional url parameters -->
+        <script language="js">
+            <![CDATA[
         var urlQuery="";
         var ids = mc.getProperty("uri.var.ids");
         var userNames = mc.getProperty("uri.var.userNames");
@@ -85,13 +87,13 @@
            mc.setProperty('uri.var.urlQuery', urlQuery);    
         } 
       ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="legacy-encoding:{uri.var.apiUrl}/users{uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Removing custom headers -->
-      <header name="Vary" action="remove" scope="transport" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get" uri-template="legacy-encoding:{uri.var.apiUrl}/users{uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Removing custom headers -->
+        <header name="Vary" action="remove" scope="transport"/>
+    </sequence>
 </template>

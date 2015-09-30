@@ -17,10 +17,10 @@
    under the License.
 -->
 <component name="tsheets-users" type="synapse/template">
-   <subComponents>
-      <component name="listUsers">
-         <file>listUsers.xml</file>
-         <description>Retrieves a list of all users associated with your company</description>
-      </component>
-   </subComponents>
+    <subComponents>
+        <component name="listUsers">
+            <file>listUsers.xml</file>
+            <description>Retrieves a list of all users associated with your company</description>
+        </component>
+    </subComponents>
 </component>

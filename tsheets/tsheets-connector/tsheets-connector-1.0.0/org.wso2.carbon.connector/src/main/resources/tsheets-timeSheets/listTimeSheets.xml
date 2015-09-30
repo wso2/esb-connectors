@@ -17,37 +17,43 @@
    under the License.
 -->
 <template name="listTimeSheets" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="ids" description="Integer.Only timesheets with an id set to one of these values will be returned." />
-   <parameter name="startDate" description="String. Any timesheets with a date falling on or after this date will be returned." />
-   <parameter name="endDate" description="String. Any timesheets with a date falling on or before this date will be returned." />
-   <parameter name="jobCodeIds"
-      description="Integer. A comma-separated string of jobcode ids. Only time recorded against these jobcodes or one of their children will be returned." />
-   <parameter name="userIds"
-      description="Integer. A comma-separated list of user ids. Only timesheets linked to these users will be returned." />
-   <parameter name="groupIds"
-      description="Integer. A comma-separated list of group ids. Only timesheets linked to users from these groups will be returned." />
-   <parameter name="onTheClock" description="String.Whether user is currently working on the timesheets or not." />
-   <parameter name="jobCodeType" description="String. Only timesheets linked to a jobcode of the given type are returned." />
-   <parameter name="modifiedBefore" description="String. Only timesheets modified before this date/time will be returned." />
-   <parameter name="modifiedSince" description="String. Only timesheets modified since this date/time will be returned. " />
-   <parameter name="perPage" description="Integer. Represents how many results you'd like to retrieve per request. " />
-   <parameter name="page" description="Integer.Represents the page of results you'd like to retrieve. " />
-   <sequence>
-      <property name="uri.var.ids" expression="$func:ids" />
-      <property name="uri.var.startDate" expression="$func:startDate" />
-      <property name="uri.var.endDate" expression="$func:endDate" />
-      <property name="uri.var.jobCodeIds" expression="$func:jobCodeIds" />
-      <property name="uri.var.userIds" expression="$func:userIds" />
-      <property name="uri.var.groupIds" expression="$func:groupIds" />
-      <property name="uri.var.onTheClock" expression="$func:onTheClock" />
-      <property name="uri.var.jobCodeType" expression="$func:jobCodeType" />
-      <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore" />
-      <property name="uri.var.modifiedSince" expression="$func:modifiedSince" />
-      <property name="uri.var.perPage" expression="$func:perPage" />
-      <property name="uri.var.page" expression="$func:page" />
-      <!--Construct endpoint with optional url parameters -->
-      <script language="js">
-      <![CDATA[
+    <parameter name="ids"
+               description="Integer.Only timesheets with an id set to one of these values will be returned."/>
+    <parameter name="startDate"
+               description="String. Any timesheets with a date falling on or after this date will be returned."/>
+    <parameter name="endDate"
+               description="String. Any timesheets with a date falling on or before this date will be returned."/>
+    <parameter name="jobCodeIds"
+               description="Integer. A comma-separated string of jobcode ids. Only time recorded against these jobcodes or one of their children will be returned."/>
+    <parameter name="userIds"
+               description="Integer. A comma-separated list of user ids. Only timesheets linked to these users will be returned."/>
+    <parameter name="groupIds"
+               description="Integer. A comma-separated list of group ids. Only timesheets linked to users from these groups will be returned."/>
+    <parameter name="onTheClock" description="String.Whether user is currently working on the timesheets or not."/>
+    <parameter name="jobCodeType"
+               description="String. Only timesheets linked to a jobcode of the given type are returned."/>
+    <parameter name="modifiedBefore"
+               description="String. Only timesheets modified before this date/time will be returned."/>
+    <parameter name="modifiedSince"
+               description="String. Only timesheets modified since this date/time will be returned. "/>
+    <parameter name="perPage" description="Integer. Represents how many results you'd like to retrieve per request. "/>
+    <parameter name="page" description="Integer.Represents the page of results you'd like to retrieve. "/>
+    <sequence>
+        <property name="uri.var.ids" expression="$func:ids"/>
+        <property name="uri.var.startDate" expression="$func:startDate"/>
+        <property name="uri.var.endDate" expression="$func:endDate"/>
+        <property name="uri.var.jobCodeIds" expression="$func:jobCodeIds"/>
+        <property name="uri.var.userIds" expression="$func:userIds"/>
+        <property name="uri.var.groupIds" expression="$func:groupIds"/>
+        <property name="uri.var.onTheClock" expression="$func:onTheClock"/>
+        <property name="uri.var.jobCodeType" expression="$func:jobCodeType"/>
+        <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore"/>
+        <property name="uri.var.modifiedSince" expression="$func:modifiedSince"/>
+        <property name="uri.var.perPage" expression="$func:perPage"/>
+        <property name="uri.var.page" expression="$func:page"/>
+        <!--Construct endpoint with optional url parameters -->
+        <script language="js">
+            <![CDATA[
         var urlQuery="";
         var ids = mc.getProperty("uri.var.ids");
         var startDate = mc.getProperty("uri.var.startDate");
@@ -104,13 +110,13 @@
            mc.setProperty('uri.var.urlQuery', urlQuery);    
         } 
       ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="legacy-encoding:{uri.var.apiUrl}/timesheets{uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove custom Headers from the API Response -->
-      <header name="Vary" action="remove" scope="transport" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get" uri-template="legacy-encoding:{uri.var.apiUrl}/timesheets{uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove custom Headers from the API Response -->
+        <header name="Vary" action="remove" scope="transport"/>
+    </sequence>
 </template>
