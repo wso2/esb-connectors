@@ -17,34 +17,34 @@
    under the License.
 -->
 <template name="addJobCodeAssignments" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="jobCodeAssignments" description="Job code assignment details JSON object or array." />
-   <sequence>
-      <property name="uri.var.jobCodeAssignments" expression="$func:jobCodeAssignments" />
-      <script language="js">
-        <![CDATA[
+    <parameter name="jobCodeAssignments" description="Job code assignment details JSON object or array."/>
+    <sequence>
+        <property name="uri.var.jobCodeAssignments" expression="$func:jobCodeAssignments"/>
+        <script language="js">
+            <![CDATA[
            var jobCodeAssignments = mc.getProperty('uri.var.jobCodeAssignments');
            if(jobCodeAssignments != null && jobCodeAssignments != "" && jobCodeAssignments.charCodeAt(0) != '91'){
               jobCodeAssignments="["+jobCodeAssignments+"]";
               mc.setProperty('uri.var.jobCodeAssignments', jobCodeAssignments);
            } 
         ]]>
-      </script>
-      <payloadFactory media-type="json">
-         <format>
-            {
-               "data": $1
-            }
-         </format>
-         <args>
-            <arg expression="get-property('uri.var.jobCodeAssignments')" />
-         </args>
-      </payloadFactory>
-      <call>
-         <endpoint>
-            <http method="post" uri-template="{uri.var.apiUrl}/jobcode_assignments" />
-         </endpoint>
-      </call>
-      <!-- Removing custom headers -->
-      <header name="Vary" action="remove" scope="transport" />
-   </sequence>
+        </script>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "data": $1
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.jobCodeAssignments')"/>
+            </args>
+        </payloadFactory>
+        <call>
+            <endpoint>
+                <http method="post" uri-template="{uri.var.apiUrl}/jobcode_assignments"/>
+            </endpoint>
+        </call>
+        <!-- Removing custom headers -->
+        <header name="Vary" action="remove" scope="transport"/>
+    </sequence>
 </template>

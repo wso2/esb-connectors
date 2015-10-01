@@ -17,30 +17,32 @@
    under the License.
 -->
 <template name="listJobCodeAssignments" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="userIds" description="Integer. Comma separated string of one or more user ids." />
-   <parameter name="type" description="String. Refers to the jobcode type - regular, pto, or all. Defaults to regular." />
-   <parameter name="jobcodeParentId" description="Integer. When omitted, all jobcode assignments are returned regardless of jobcode parent." />
-   <parameter name="active"
-      description="String. yes, no, or both. Default is both. Yes means the assignment is active, no means it is deleted/inactive." />
-   <parameter name="modifiedBefore"
-      description="String (ISO8601 format). Only jobcode assignments modified before this date/time will be returned (i.e. 2004-02-12T15:19:21+00:00)." />
-   <parameter name="modifiedSince"
-      description="String (ISO8601 format). Only jobcode assignments modified since this date/time will be returned (i.e. 2004-02-12T15:19:21+00:00)." />
-   <parameter name="perPage"
-      description="Integer. Represents how many results like to retrieve per request (page). Default is 50. Max is 50." />
-   <parameter name="page" description="Integer. Represents the page of results like to retrieve." />
-   <sequence>
-      <property name="uri.var.userIds" expression="$func:userIds" />
-      <property name="uri.var.type" expression="$func:type" />
-      <property name="uri.var.active" expression="$func:active" />
-      <property name="uri.var.jobcodeParentId" expression="$func:jobcodeParentId" />
-      <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore" />
-      <property name="uri.var.modifiedSince" expression="$func:modifiedSince" />
-      <property name="uri.var.perPage" expression="$func:perPage" />
-      <property name="uri.var.page" expression="$func:page" />
-      <!--Construct endpoint with optional url parameters -->
-      <script language="js">
-      <![CDATA[
+    <parameter name="userIds" description="Integer. Comma separated string of one or more user ids."/>
+    <parameter name="type"
+               description="String. Refers to the jobcode type - regular, pto, or all. Defaults to regular."/>
+    <parameter name="jobcodeParentId"
+               description="Integer. When omitted, all jobcode assignments are returned regardless of jobcode parent."/>
+    <parameter name="active"
+               description="String. yes, no, or both. Default is both. Yes means the assignment is active, no means it is deleted/inactive."/>
+    <parameter name="modifiedBefore"
+               description="String (ISO8601 format). Only jobcode assignments modified before this date/time will be returned (i.e. 2004-02-12T15:19:21+00:00)."/>
+    <parameter name="modifiedSince"
+               description="String (ISO8601 format). Only jobcode assignments modified since this date/time will be returned (i.e. 2004-02-12T15:19:21+00:00)."/>
+    <parameter name="perPage"
+               description="Integer. Represents how many results like to retrieve per request (page). Default is 50. Max is 50."/>
+    <parameter name="page" description="Integer. Represents the page of results like to retrieve."/>
+    <sequence>
+        <property name="uri.var.userIds" expression="$func:userIds"/>
+        <property name="uri.var.type" expression="$func:type"/>
+        <property name="uri.var.active" expression="$func:active"/>
+        <property name="uri.var.jobcodeParentId" expression="$func:jobcodeParentId"/>
+        <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore"/>
+        <property name="uri.var.modifiedSince" expression="$func:modifiedSince"/>
+        <property name="uri.var.perPage" expression="$func:perPage"/>
+        <property name="uri.var.page" expression="$func:page"/>
+        <!--Construct endpoint with optional url parameters -->
+        <script language="js">
+            <![CDATA[
         var urlQuery="";
         var userIds = mc.getProperty("uri.var.userIds");
         var type = mc.getProperty("uri.var.type");
@@ -83,13 +85,14 @@
            mc.setProperty('uri.var.urlQuery', urlQuery);    
         } 
       ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="legacy-encoding:{uri.var.apiUrl}/jobcode_assignments{uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Removing custom headers -->
-      <header name="Vary" action="remove" scope="transport" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="legacy-encoding:{uri.var.apiUrl}/jobcode_assignments{uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Removing custom headers -->
+        <header name="Vary" action="remove" scope="transport"/>
+    </sequence>
 </template>

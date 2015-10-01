@@ -17,11 +17,11 @@
    under the License.
 -->
 <template name="addJobCodes" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="jobCodes" description="Job code details JSON object or array." />
-   <sequence>
-      <property name="uri.var.jobCodes" expression="$func:jobCodes" />
-      <script language="js">
-        <![CDATA[
+    <parameter name="jobCodes" description="Job code details JSON object or array."/>
+    <sequence>
+        <property name="uri.var.jobCodes" expression="$func:jobCodes"/>
+        <script language="js">
+            <![CDATA[
            var jobCodes = mc.getProperty('uri.var.jobCodes');
            
            if(jobCodes != null && jobCodes != "" && jobCodes.charCodeAt(0) != '91'){
@@ -29,22 +29,22 @@
               mc.setProperty('uri.var.jobCodes', jobCodes);
            } 
         ]]>
-      </script>
-      <payloadFactory media-type="json">
-         <format>
-            {
-               "data": $1
-            }
-         </format>
-         <args>
-            <arg expression="get-property('uri.var.jobCodes')" />
-         </args>
-      </payloadFactory>
-      <call>
-         <endpoint>
-            <http method="post" uri-template="{uri.var.apiUrl}/jobcodes" />
-         </endpoint>
-      </call>
-      <!-- Removing custom headers -->
-   </sequence>
+        </script>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "data": $1
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.jobCodes')"/>
+            </args>
+        </payloadFactory>
+        <call>
+            <endpoint>
+                <http method="post" uri-template="{uri.var.apiUrl}/jobcodes"/>
+            </endpoint>
+        </call>
+        <!-- Removing custom headers -->
+    </sequence>
 </template>

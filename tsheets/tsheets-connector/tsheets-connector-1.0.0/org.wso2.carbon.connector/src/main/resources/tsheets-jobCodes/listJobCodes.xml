@@ -17,28 +17,30 @@
    under the License.
 -->
 <template name="listJobCodes" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="ids" description="Integer. Comma separated list of one or more jobcode ids to filter on." />
-   <parameter name="parentIds"
-      description="Integer. Default is -1. Comma separated list of one or more jobcode parent ids to filter on." />
-   <parameter name="type" description="String. regular, pto, or all. Default is regular." />
-   <parameter name="activeStatus" description="String. 'yes', 'no', or 'both'. Default is 'yes'." />
-   <parameter name="modifiedBefore" description="String (ISO8601 format). Only users modified before this date/time will be returned." />
-   <parameter name="modifiedSince" description="String (ISO8601 format). Only users modified since this date/time will be returned." />
-   <parameter name="perPage"
-      description="Integer. Represents how many results to retrieve per request (page). Default is 50. Max is 50. " />
-   <parameter name="page" description="Integer. Represents the page of results to retrieve." />
-   <sequence>
-      <property name="uri.var.ids" expression="$func:ids" />
-      <property name="uri.var.parentIds" expression="$func:parentIds" />
-      <property name="uri.var.type" expression="$func:type" />
-      <property name="uri.var.activeStatus" expression="$func:activeStatus" />
-      <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore" />
-      <property name="uri.var.modifiedSince" expression="$func:modifiedSince" />
-      <property name="uri.var.perPage" expression="$func:perPage" />
-      <property name="uri.var.page" expression="$func:page" />
-      <!--Construct endpoint with optional url parameters -->
-      <script language="js">
-      <![CDATA[
+    <parameter name="ids" description="Integer. Comma separated list of one or more jobcode ids to filter on."/>
+    <parameter name="parentIds"
+               description="Integer. Default is -1. Comma separated list of one or more jobcode parent ids to filter on."/>
+    <parameter name="type" description="String. regular, pto, or all. Default is regular."/>
+    <parameter name="activeStatus" description="String. 'yes', 'no', or 'both'. Default is 'yes'."/>
+    <parameter name="modifiedBefore"
+               description="String (ISO8601 format). Only users modified before this date/time will be returned."/>
+    <parameter name="modifiedSince"
+               description="String (ISO8601 format). Only users modified since this date/time will be returned."/>
+    <parameter name="perPage"
+               description="Integer. Represents how many results to retrieve per request (page). Default is 50. Max is 50. "/>
+    <parameter name="page" description="Integer. Represents the page of results to retrieve."/>
+    <sequence>
+        <property name="uri.var.ids" expression="$func:ids"/>
+        <property name="uri.var.parentIds" expression="$func:parentIds"/>
+        <property name="uri.var.type" expression="$func:type"/>
+        <property name="uri.var.activeStatus" expression="$func:activeStatus"/>
+        <property name="uri.var.modifiedBefore" expression="$func:modifiedBefore"/>
+        <property name="uri.var.modifiedSince" expression="$func:modifiedSince"/>
+        <property name="uri.var.perPage" expression="$func:perPage"/>
+        <property name="uri.var.page" expression="$func:page"/>
+        <!--Construct endpoint with optional url parameters -->
+        <script language="js">
+            <![CDATA[
         var urlQuery="";
         var ids = mc.getProperty("uri.var.ids");
         var parentIds = mc.getProperty("uri.var.parentIds");
@@ -78,13 +80,13 @@
            mc.setProperty('uri.var.urlQuery', urlQuery);    
         } 
       ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="legacy-encoding:{uri.var.apiUrl}/jobcodes{uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Removing custom headers -->
-      <header name="Vary" action="remove" scope="transport" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get" uri-template="legacy-encoding:{uri.var.apiUrl}/jobcodes{uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Removing custom headers -->
+        <header name="Vary" action="remove" scope="transport"/>
+    </sequence>
 </template>

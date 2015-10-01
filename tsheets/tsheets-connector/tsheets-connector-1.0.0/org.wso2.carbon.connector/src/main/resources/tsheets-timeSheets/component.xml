@@ -17,14 +17,14 @@
    under the License.
 -->
 <component name="tsheets-timeSheets" type="synapse/template">
-   <subComponents>
-      <component name="listTimeSheets">
-         <file>listTimeSheets.xml</file>
-         <description>Retrieve list of all timesheets associated with your company</description>
-      </component>
-      <component name="addTimeSheets">
-         <file>addTimeSheets.xml</file>
-         <description>Add timesheets to your company</description>
-      </component>
-   </subComponents>
+    <subComponents>
+        <component name="listTimeSheets">
+            <file>listTimeSheets.xml</file>
+            <description>Retrieve list of all timesheets associated with your company</description>
+        </component>
+        <component name="addTimeSheets">
+            <file>addTimeSheets.xml</file>
+            <description>Add timesheets to your company</description>
+        </component>
+    </subComponents>
 </component>
