@@ -69,6 +69,6 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
         System.out.println("APIAPIAPIAPIAPIAPIAPIAPIAPIAPIAPI" + apiRestResponse.getBody().toString());
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
-//        Assert.assertEquals(esbRestResponse.getBody().getString("sobjects"), apiRestResponse.getBody().getString("sobjects"));
+//        Assert.assertEquals(esbRestResponse.getBody().getString(""), apiRestResponse.getBody().getString(""));
     }
 }
