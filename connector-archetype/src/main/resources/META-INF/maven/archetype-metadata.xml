@@ -24,7 +24,7 @@
       </includes>
     </fileSet>
     <fileSet filtered="true" encoding="UTF-8">
-      <directory>src/test/java/org/wso2/carbon/connector/integration</directory>
+      <directory>src/test/java/org/wso2/carbon/connector</directory>
       <includes>
         <include>**/*.java</include>
       </includes>

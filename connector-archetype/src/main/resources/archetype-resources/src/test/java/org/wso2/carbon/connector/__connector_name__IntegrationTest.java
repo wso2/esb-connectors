@@ -20,22 +20,24 @@
 */
 package ${package};
 
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import org.wso2.carbon.esb.ESBIntegrationTest;
 
-public class ${connector_name}IntegrationTest extends extends ESBIntegrationTest {
+public class ${connector_name}IntegrationTest extends ESBIntegrationTest {
 
-    @BeforeClass(alwaysRun = true)
-    public void setEnvironment() throws Exception {
-        super.init();
-    }
+//    @BeforeClass(alwaysRun = true)
+//    public void setEnvironment() throws Exception {
+//        super.init();
+//    }
+//
+//    @Override
+//    protected void cleanup() {
+//        axis2Client.destroy();
+//    }
 
-    @Override
-    protected void cleanup() {
-        axis2Client.destroy();
-    }
-
-    @Test(enabled = true, groups = {"wso2.esb"}, description = "Sample test case")
-    public void testSample() throws Exception {
-
-    }
-}
+@Test(enabled = true, groups = {"wso2.esb"}, description = "Sample test case")
+public void testSample() throws Exception {
+        log.info("IntegrationTest Success");
+        }
+        }

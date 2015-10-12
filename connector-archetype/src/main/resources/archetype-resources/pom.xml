@@ -49,6 +49,18 @@
             <artifactId>org.wso2.carbon.connector.core</artifactId>
             <version>4.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.esb.integration</groupId>
+            <artifactId>integration-base</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
    <build>
