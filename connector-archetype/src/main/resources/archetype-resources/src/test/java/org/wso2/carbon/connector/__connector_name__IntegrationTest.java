@@ -38,6 +38,6 @@ public class ${connector_name}IntegrationTest extends ESBIntegrationTest {
 
 @Test(enabled = true, groups = {"wso2.esb"}, description = "Sample test case")
 public void testSample() throws Exception {
-        log.info("IntegrationTest Success");
+        log.info("IntegrationTest Success ${connector_name}");
         }
         }

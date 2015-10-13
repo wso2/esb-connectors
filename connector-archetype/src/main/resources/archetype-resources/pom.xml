@@ -24,9 +24,7 @@
     </parent>	
 
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>${artifactId}</artifactId>
-
+    <artifactId>org.wso2.carbon.connector.${connector_name}</artifactId>
     <groupId>${groupId}</groupId>
     <packaging>bundle</packaging>
     <version>${version}</version>
@@ -58,7 +56,7 @@
         <dependency>
             <groupId>org.wso2.esb.integration</groupId>
             <artifactId>integration-base</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -85,7 +83,7 @@
                             <goal>attached</goal>
                         </goals>
                         <configuration>
-                            <finalName>${connector_name.toLowerCase()}</finalName>
+                            <finalName>${connector_name.toLowerCase()}-connector-${version}</finalName>
                             <appendAssemblyId>true</appendAssemblyId>
 	
                             <filters>
@@ -94,8 +92,6 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/assemble-connector.xml</descriptor>
                             </descriptors>
-
-
                         </configuration>
                     </execution>
                 </executions>
