@@ -39,8 +39,6 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
     private String multipartProxyUrl;
 
-    private String apiRequestUrl;
-
     /**
      * Set up the environment.
      */
@@ -52,8 +50,6 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
         esbRequestHeadersMap.put("Content-Type", "application/json");
 
         apiRequestHeadersMap.putAll(esbRequestHeadersMap);
-
-        apiRequestUrl=connectorProperties.getProperty("base");
         apiRequestHeadersMap.put("Content-Type", "application/x-www-form-urlencoded");
     }
 
@@ -65,7 +61,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "readResource";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "readResource.json");
-        final String apiEndPoint =  apiRequestUrl + "/" + connectorProperties.getProperty("type") + "?_format=" + connectorProperties.getProperty("format");
+        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
