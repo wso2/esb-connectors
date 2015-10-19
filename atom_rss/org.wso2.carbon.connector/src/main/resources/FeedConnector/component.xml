@@ -3,15 +3,15 @@
 	<subComponents>
 		<component name="CreateFeed">
 			<file>CreateFeed.xml</file>
-			<description>sample wso2 connector library</description>
+			<description>Create a New Feen Entry</description>
 		</component>
 		<component name="EditFeed">
 			<file>EditFeed.xml</file>
-			<description>sample wso2 connector library</description>
+			<description>Edit/Modify Existing feed Entry </description>
 		</component>
 		<component name="DeleteFeed">
 			<file>DeleteFeed.xml</file>
-			<description>sample wso2 connector library</description>
+			<description>Delete Existing Feed Entry</description>
 		</component>
 	</subComponents>
 </component>

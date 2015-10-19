@@ -4,4 +4,5 @@
         <dependency component="FeedConnector"/>
         <description>wso2 sample connector library</description>
     </component>
+    <icon>icon/icon-feed.gif</icon>
 </connector>
