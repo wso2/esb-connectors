@@ -43,9 +43,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * ConsumeFeed uses to feeds from given Backend
  */
-
 public class ConsumeFeed  {
-
     private static final Log log = LogFactory.getLog(ConsumeFeed.class.getName());
     private long scanInterval;
     private long scanIntervalDefined;
@@ -54,8 +52,8 @@ public class ConsumeFeed  {
     private String feedType;
     private Feed feed = null;
     private java.util.Date lastUpdated;
-    RssInject rssInject;
-    FeedRegistryHandler feedRegistryHandler;
+    private RssInject rssInject;
+    private FeedRegistryHandler feedRegistryHandler;
     private String pathName;
     private String dateFormat;
 
@@ -69,7 +67,6 @@ public class ConsumeFeed  {
         this.pathName = name;
         this.dateFormat = dateFormat;
         this.scanIntervalDefined=scanInterval;
-
     }
 
     //check time interval
@@ -95,7 +92,6 @@ public class ConsumeFeed  {
 
     //consume feeds
     private void consume() throws IOException {
-
         DateFormat format = new SimpleDateFormat(FeedEPConstant.RSS_FEED_DATE_FORMAT, Locale.ENGLISH);
         Parser parser = Abdera.getNewParser();
         //set filter
@@ -177,7 +173,6 @@ public class ConsumeFeed  {
                             return;
                         }
                     }
-
                     Iterator values5 = omElement.getChildrenWithName(FeedEPConstant.FEED_GUID);
                     OMElement guid1 = (OMElement) values5.next();
                     entry.setId(guid1.getText());
@@ -185,7 +180,6 @@ public class ConsumeFeed  {
                     Iterator values6 = omElement.getChildrenWithName(FeedEPConstant.FEED_LINK);
                     OMElement link = (OMElement) values6.next();
                     entry.setBaseUri(link.getText());
-
                 }
             } else if (feedType.equalsIgnoreCase(FeedEPConstant.FEED_TYPE_ATOM)) {
                 feed = doc.getRoot();
@@ -222,5 +216,4 @@ public class ConsumeFeed  {
         }
         input.close();
     }
-
 }
