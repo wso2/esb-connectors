@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * ConsumeFeed uses to feeds from given Backend
  */
-public class ConsumeFeed  {
+public class ConsumeFeed {
     private static final Log log = LogFactory.getLog(ConsumeFeed.class.getName());
     private long scanInterval;
     private long scanIntervalDefined;
@@ -66,7 +66,7 @@ public class ConsumeFeed  {
         this.feedRegistryHandler = feedRegistryHandler;
         this.pathName = name;
         this.dateFormat = dateFormat;
-        this.scanIntervalDefined=scanInterval;
+        this.scanIntervalDefined = scanInterval;
     }
 
     //check time interval
@@ -203,7 +203,7 @@ public class ConsumeFeed  {
                     rssInject.invoke(feed);
                     feedRegistryHandler.writeToRegistry(pathName, newUpdated);
                     log.debug("New Entry was Added");
-                    scanInterval=scanIntervalDefined;
+                    scanInterval = scanIntervalDefined;
                 } else {
                     log.debug("there Is No New Feed");
                     return;

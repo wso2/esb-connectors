@@ -17,7 +17,5 @@
 package org.wso2.carbon.inbound.feedep;
 
 interface InjectHandler {
-
-	boolean invoke(Object object);
-
+    boolean invoke(Object object);
 }

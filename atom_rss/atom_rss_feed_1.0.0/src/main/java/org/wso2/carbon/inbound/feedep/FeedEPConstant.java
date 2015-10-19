@@ -18,7 +18,6 @@ package org.wso2.carbon.inbound.feedep;
 import javax.xml.namespace.QName;
 
 class FeedEPConstant {
-
     public static final String FEED_URL = "feed.url";
     public static final String FEED_TYPE = "feed.type";
     public static final String FEED_TIMEFORMAT = "TimeFormat";

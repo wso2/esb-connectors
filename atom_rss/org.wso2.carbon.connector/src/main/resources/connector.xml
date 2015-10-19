@@ -14,7 +14,7 @@
    under the License.
 -->
 <connector>
-    <component name="Atom_RSS" package="org.wso2.carbon.connector" >
+    <component name="Atom_RSS" package="org.wso2.carbon.connector">
         <dependency component="FeedConnector"/>
         <description>wso2 sample connector library</description>
     </component>

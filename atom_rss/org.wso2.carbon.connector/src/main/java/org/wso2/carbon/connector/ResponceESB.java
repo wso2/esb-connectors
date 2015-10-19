@@ -22,21 +22,19 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.synapse.MessageContext;
 
 public class ResponceESB {
+    static OMFactory OMfactory;
+    static OMNamespace ns;
+    static OMElement result;
+    static OMElement messageElement;
 
-	static OMFactory OMfactory;
-	static OMNamespace ns;
-	static OMElement result;
-	static OMElement messageElement;
+    public void InjectMessage(MessageContext messageContext, String Text) {
+        OMfactory = OMAbstractFactory.getOMFactory();
+        ns = OMfactory.createOMNamespace("status", "ns");
+        result = OMfactory.createOMElement("result", ns);
+        messageElement = OMfactory.createOMElement("Result", ns);
+        messageElement.setText(Text);
+        result.addChild(messageElement);
+        messageContext.getEnvelope().getBody().addChild(result);
 
-	public void InjectMessage(MessageContext messageContext, String Text) {
-		OMfactory = OMAbstractFactory.getOMFactory();
-		ns = OMfactory.createOMNamespace("status", "ns");
-		result = OMfactory.createOMElement("result", ns);
-
-		messageElement = OMfactory.createOMElement("Result", ns);
-		messageElement.setText(Text);
-		result.addChild(messageElement);
-		messageContext.getEnvelope().getBody().addChild(result);
-
-	}
+    }
 }

@@ -25,7 +25,6 @@ import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
 
 
 public class FeedEP extends GenericPollingConsumer {
-
     private static final Log log = LogFactory.getLog(FeedEP.class.getName());
     private String injectingSeq;
     private String onErrorSeq;
@@ -40,15 +39,15 @@ public class FeedEP extends GenericPollingConsumer {
     private RssInject rssInject;
 
     public FeedEP(Properties properties, String name,
-                   SynapseEnvironment synapseEnvironment, long scanInterval,
-                   String injectingSeq, String onErrorSeq, boolean coordination,
-                   boolean sequential) {
+                  SynapseEnvironment synapseEnvironment, long scanInterval,
+                  String injectingSeq, String onErrorSeq, boolean coordination,
+                  boolean sequential) {
         super(properties, name, synapseEnvironment, scanInterval,
                 injectingSeq, onErrorSeq, coordination, sequential);
         registryHandler = new FeedRegistryHandler();
         this.name = name;
         rssProperties = properties;
-        log.info("Scan Interval Passing "+scanInterval);
+        log.info("Scan Interval Passing " + scanInterval);
         this.scanInterval = scanInterval;
         this.sequential = true;
         this.host = rssProperties.getProperty(FeedEPConstant.FEED_URL);
@@ -80,16 +79,12 @@ public class FeedEP extends GenericPollingConsumer {
     public Object poll() {
         consume.execute();
         return null;
-
     }
 
-
     private void init1() {
-       rssInject =
+        rssInject =
                 new RssInject(injectingSeq, onErrorSeq, sequential,
                         synapseEnvironment, FeedEPConstant.FEED_FORMAT);
         consume = new ConsumeFeed(rssInject, scanInterval, host, feedType, registryHandler, name, dateFormat);
     }
-
-
 }

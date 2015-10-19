@@ -37,7 +37,6 @@ import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 @SuppressWarnings("deprecation")
 public class RssInject implements InjectHandler {
     private static final Log log = LogFactory.getLog(RssInject.class);
-
     private final String injectingSeq;
     private final String onErrorSeq;
     private final boolean sequential;
@@ -79,14 +78,12 @@ public class RssInject implements InjectHandler {
         } catch (AxisFault axisFault) {
             log.error("Error while creating message builder :: " + axisFault.getMessage(),
                     axisFault);
-
         }
         if (builder == null) {
             if (log.isDebugEnabled()) {
                 log.info("No message builder found for type '" + contentType +
                         "'. Falling back to SOAP.");
             }
-
         }
 
 

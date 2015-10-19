@@ -27,48 +27,43 @@ import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
 public class DeleteFeed extends AbstractConnector {
-	ConnectException connectException;
-	Abdera abdera;
-	AbderaClient abderaClient;
-	Factory factory;
-	Entry entry;
-	RequestOptions opts;
-	ClientResponse resp;
-	ResponceESB responce;
+    private ConnectException connectException;
+    private Abdera abdera;
+    private AbderaClient abderaClient;
+    private Factory factory;
+    private Entry entry;
+    private RequestOptions opts;
+    private ClientResponse resp;
+    private ResponceESB responce;
+    private Document<Entry> doc;
+    private String entryUri;
+    private Object HostAddress;
+    private Object EntryID;
 
-	Document<Entry> doc;
-	String entryUri;
-
-	private Object HostAddress;
-	private Object EntryID;
-
-	@Override
-	public void connect(MessageContext messageContext) throws ConnectException {
-		EntryID = getParameter(messageContext, "EntryID");
-		HostAddress = getParameter(messageContext, "HostAddress");
-
-		abdera = new Abdera();
-		abderaClient = new AbderaClient(abdera);
-		// Delete the entry. Again, we need to make sure that we have the
-		// current
-		// edit link for the entry
-		entryUri = HostAddress.toString() + "/" + EntryID.toString() + "-";
-		log.info(entryUri);
-
-		opts = new RequestOptions();
-		opts.setContentType("application/atom+xml;type=entry");
-
-		if (entryUri != null) {
-			try {
-				resp = abderaClient.delete(entryUri.toString());
-				responce = new ResponceESB();
-				responce.InjectMessage(messageContext, resp.getStatusText());
-			} catch (Exception e) {
-				log.error(e.getMessage());
-			}
-		} else {
-			log.error("The Entry cannot be Null");
-			return;
-		}
-	}
+    @Override
+    public void connect(MessageContext messageContext) throws ConnectException {
+        EntryID = getParameter(messageContext, "EntryID");
+        HostAddress = getParameter(messageContext, "HostAddress");
+        abdera = new Abdera();
+        abderaClient = new AbderaClient(abdera);
+        // Delete the entry. Again, we need to make sure that we have the
+        // current
+        // edit link for the entry
+        entryUri = HostAddress.toString() + "/" + EntryID.toString() + "-";
+        log.info(entryUri);
+        opts = new RequestOptions();
+        opts.setContentType("application/atom+xml;type=entry");
+        if (entryUri != null) {
+            try {
+                resp = abderaClient.delete(entryUri.toString());
+                responce = new ResponceESB();
+                responce.InjectMessage(messageContext, resp.getStatusText());
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        } else {
+            log.error("The Entry cannot be Null");
+            return;
+        }
+    }
 }

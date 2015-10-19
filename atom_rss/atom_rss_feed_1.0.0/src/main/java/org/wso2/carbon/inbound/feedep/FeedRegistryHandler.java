@@ -53,8 +53,7 @@ public class FeedRegistryHandler {
                     obj = toObject(content);
                 } catch (ClassNotFoundException e) {
                     log.error(e.getMessage());
-                }
-                catch ( IOException e) {
+                } catch (IOException e) {
                     log.error(e.getMessage());
                 }
             }
@@ -71,11 +70,9 @@ public class FeedRegistryHandler {
     }
 
     private byte[] toByteArray(Object object) throws IOException {
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(object);
-
         oos.flush();
         oos.close();
         bos.close();
@@ -83,12 +80,11 @@ public class FeedRegistryHandler {
     }
 
     public void writeToRegistry(String resourceID, Object object) {
-
         try {
             resource = registry.newResource();
             try {
                 resource.setContent(toByteArray(object));
-            } catch ( IOException e) {
+            } catch (IOException e) {
                 log.error(e.getMessage());
             }
             registry.put(resourceID, resource);

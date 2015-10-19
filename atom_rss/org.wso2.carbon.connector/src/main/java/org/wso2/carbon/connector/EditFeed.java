@@ -27,63 +27,55 @@ import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
 public class EditFeed extends AbstractConnector {
-	ConnectException connectException;
-	Abdera abdera;
-	AbderaClient abderaClient;
-	Factory factory;
-	Entry entry;
-	RequestOptions opts;
-	ClientResponse resp;
-	ResponceESB responce;
+    private ConnectException connectException;
+    private Abdera abdera;
+    private AbderaClient abderaClient;
+    private Factory factory;
+    private Entry entry;
+    private RequestOptions opts;
+    private ClientResponse resp;
+    private ResponceESB responce;
+    private Object HostAddress;
+    private Object EntryID;
+    private Object Title;
+    private Object Content;
+    private Object Author;
+    private Document<Entry> doc;
+    private String entryUri;
 
-	private Object HostAddress;
-	private Object EntryID;
-	private Object Title;
-	private Object Content;
-	private Object Author;
-
-	Document<Entry> doc;
-	String entryUri;
-
-	@Override
-	public void connect(MessageContext messageContext) throws ConnectException {
-		EntryID = getParameter(messageContext, "EntryID");
-		HostAddress = getParameter(messageContext, "HostAddress");
-		Title = getParameter(messageContext, "Title");
-		Content = getParameter(messageContext, "Content");
-		Author = getParameter(messageContext, "Author");
-		entryUri = HostAddress.toString() + "/" + EntryID.toString() + "-";
-
-
-		abdera = new Abdera();
-		abderaClient = new AbderaClient(abdera);
-		try {
-			// Get the Entry from Server
-			doc = abderaClient.get(entryUri).getDocument();
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		if (Title.toString() != null) {
-			doc.getRoot().getTitleElement().setText(Title.toString());
-		}
-		if (Content.toString() != null) {
-			doc.getRoot().getContentElement().setText(Content.toString());
-		}
-		if (Author.toString() != null) {
-			doc.getRoot().getAuthor().setText(Author.toString());
-		}
-
-		opts = new RequestOptions();
-		opts.setContentType("application/atom+xml;type=entry");
-
-		try {
-			resp = abderaClient.put(entryUri.toString(), doc.getRoot(), opts);
-			responce = new ResponceESB();
-			responce.InjectMessage(messageContext, resp.getStatusText());
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-	}
-
+    @Override
+    public void connect(MessageContext messageContext) throws ConnectException {
+        EntryID = getParameter(messageContext, "EntryID");
+        HostAddress = getParameter(messageContext, "HostAddress");
+        Title = getParameter(messageContext, "Title");
+        Content = getParameter(messageContext, "Content");
+        Author = getParameter(messageContext, "Author");
+        entryUri = HostAddress.toString() + "/" + EntryID.toString() + "-";
+        abdera = new Abdera();
+        abderaClient = new AbderaClient(abdera);
+        try {
+            // Get the Entry from Server
+            doc = abderaClient.get(entryUri).getDocument();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        if (Title.toString() != null) {
+            doc.getRoot().getTitleElement().setText(Title.toString());
+        }
+        if (Content.toString() != null) {
+            doc.getRoot().getContentElement().setText(Content.toString());
+        }
+        if (Author.toString() != null) {
+            doc.getRoot().getAuthor().setText(Author.toString());
+        }
+        opts = new RequestOptions();
+        opts.setContentType("application/atom+xml;type=entry");
+        try {
+            resp = abderaClient.put(entryUri.toString(), doc.getRoot(), opts);
+            responce = new ResponceESB();
+            responce.InjectMessage(messageContext, resp.getStatusText());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
 }

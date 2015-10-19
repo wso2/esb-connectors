@@ -16,7 +16,6 @@
 package org.wso2.carbon.connector;
 
 import java.util.Date;
-
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Entry;
@@ -31,69 +30,64 @@ import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
 public class CreateFeed extends AbstractConnector {
-	ConnectException connectException;
-	Abdera abdera;
-	AbderaClient abderaClient;
-	Factory factory;
-	Entry entry;
-	RequestOptions opts;
-	ClientResponse resp;
-	ResponceESB responce;
+    ConnectException connectException;
+    Abdera abdera;
+    AbderaClient abderaClient;
+    Factory factory;
+    Entry entry;
+    RequestOptions opts;
+    ClientResponse resp;
+    ResponceESB responce;
 
-	Object Title;
-	Object Content;
-	Object HostAddress;
-	Object Author;
-	Object FeedID;
+    Object Title;
+    Object Content;
+    Object HostAddress;
+    Object Author;
+    Object FeedID;
 
-	OMFactory OMfactory;
-	OMNamespace ns;
-	OMElement result;
-	OMElement messageElement;
+    OMFactory OMfactory;
+    OMNamespace ns;
+    OMElement result;
+    OMElement messageElement;
 
-	public void connect(MessageContext messageContext) throws ConnectException {
-
-		try {
-			HostAddress = getParameter(messageContext, "HostAddress");
-			Title = getParameter(messageContext, "Title");
-			Content = getParameter(messageContext, "Content");
-			Author = getParameter(messageContext, "Author");
-			FeedID = getParameter(messageContext, "FeedID");
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-
-		if (HostAddress == null) {
-			String errorLog = "No Host found";
-			log.error(errorLog);
-			connectException = new ConnectException(errorLog);
-			handleException(connectException.getMessage(), connectException, messageContext);
-		}
-
-		try {
-			abdera = new Abdera();
-			abderaClient = new AbderaClient(abdera);
-			factory = abdera.getFactory();
-			entry = factory.newEntry();
-			entry.setId(FeedID.toString());
-			entry.setTitle(Title.toString());
-			entry.setUpdated(new Date());
-			entry.addAuthor(Author.toString());
-			entry.setContent(Content.toString());
-
-			opts = new RequestOptions();
-			opts.setContentType("application/atom+xml;type=entry");
-
-			try {
-				resp = abderaClient.post(HostAddress.toString(), entry, opts);
-				responce = new ResponceESB();
-				responce.InjectMessage(messageContext, resp.getStatusText());
-			} catch (Exception e) {
-				log.error(e.getMessage());
-			}
-		} catch (Exception e) {
-			// log.error(e.getMessage());
-			throw new ConnectException(e);
-		}
-	}
+    public void connect(MessageContext messageContext) throws ConnectException {
+        try {
+            HostAddress = getParameter(messageContext, "HostAddress");
+            Title = getParameter(messageContext, "Title");
+            Content = getParameter(messageContext, "Content");
+            Author = getParameter(messageContext, "Author");
+            FeedID = getParameter(messageContext, "FeedID");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        if (HostAddress == null) {
+            String errorLog = "No Host found";
+            log.error(errorLog);
+            connectException = new ConnectException(errorLog);
+            handleException(connectException.getMessage(), connectException, messageContext);
+        }
+        try {
+            abdera = new Abdera();
+            abderaClient = new AbderaClient(abdera);
+            factory = abdera.getFactory();
+            entry = factory.newEntry();
+            entry.setId(FeedID.toString());
+            entry.setTitle(Title.toString());
+            entry.setUpdated(new Date());
+            entry.addAuthor(Author.toString());
+            entry.setContent(Content.toString());
+            opts = new RequestOptions();
+            opts.setContentType("application/atom+xml;type=entry");
+            try {
+                resp = abderaClient.post(HostAddress.toString(), entry, opts);
+                responce = new ResponceESB();
+                responce.InjectMessage(messageContext, resp.getStatusText());
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        } catch (Exception e) {
+            // log.error(e.getMessage());
+            throw new ConnectException(e);
+        }
+    }
 }
