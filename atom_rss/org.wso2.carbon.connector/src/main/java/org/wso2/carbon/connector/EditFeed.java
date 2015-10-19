@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,22 +26,25 @@ import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
+/**
+ * Edit Existing Feed By ID
+ */
 public class EditFeed extends AbstractConnector {
-    private ConnectException connectException;
-    private Abdera abdera;
-    private AbderaClient abderaClient;
-    private Factory factory;
-    private Entry entry;
-    private RequestOptions opts;
-    private ClientResponse resp;
-    private ResponceESB responce;
-    private Object HostAddress;
-    private Object EntryID;
-    private Object Title;
-    private Object Content;
-    private Object Author;
-    private Document<Entry> doc;
-    private String entryUri;
+    static ConnectException connectException;
+    static Abdera abdera;
+    static AbderaClient abderaClient;
+    static Factory factory;
+    static Entry entry;
+    static RequestOptions opts;
+    static ClientResponse resp;
+    static ResponceESB responce;
+    static Object HostAddress;
+    static Object EntryID;
+    static Object Title;
+    static Object Content;
+    static Object Author;
+    static Document<Entry> doc;
+    static String entryUri;
 
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {

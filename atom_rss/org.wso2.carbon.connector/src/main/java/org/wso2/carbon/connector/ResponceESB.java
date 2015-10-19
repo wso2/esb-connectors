@@ -21,6 +21,9 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.synapse.MessageContext;
 
+/**
+ * Sent Responce to ESB
+ */
 public class ResponceESB {
     static OMFactory OMfactory;
     static OMNamespace ns;
@@ -35,6 +38,5 @@ public class ResponceESB {
         messageElement.setText(Text);
         result.addChild(messageElement);
         messageContext.getEnvelope().getBody().addChild(result);
-
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,26 +29,27 @@ import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
+/**
+ * Create the Feeds
+ */
 public class CreateFeed extends AbstractConnector {
-    ConnectException connectException;
-    Abdera abdera;
-    AbderaClient abderaClient;
-    Factory factory;
-    Entry entry;
-    RequestOptions opts;
-    ClientResponse resp;
-    ResponceESB responce;
-
-    Object Title;
-    Object Content;
-    Object HostAddress;
-    Object Author;
-    Object FeedID;
-
-    OMFactory OMfactory;
-    OMNamespace ns;
-    OMElement result;
-    OMElement messageElement;
+    static ConnectException connectException;
+    static Abdera abdera;
+    static AbderaClient abderaClient;
+    static Factory factory;
+    static Entry entry;
+    static RequestOptions opts;
+    static ClientResponse resp;
+    static ResponceESB responce;
+    static Object Title;
+    static Object Content;
+    static Object HostAddress;
+    static Object Author;
+    static Object FeedID;
+    static OMFactory OMfactory;
+    static OMNamespace ns;
+    static OMElement result;
+    static OMElement messageElement;
 
     public void connect(MessageContext messageContext) throws ConnectException {
         try {
