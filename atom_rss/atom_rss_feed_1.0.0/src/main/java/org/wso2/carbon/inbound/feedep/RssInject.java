@@ -58,13 +58,13 @@ public class RssInject implements InjectHandler {
      * inject the message to the sequence
      */
     public boolean invoke(Object object) {
-        org.apache.synapse.MessageContext msgCtx = null;
+        org.apache.synapse.MessageContext msgCtx;
         try {
             msgCtx = createMessageContext();
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        MessageContext axis2MsgCtx = null;
+        MessageContext axis2MsgCtx;
         try {
             axis2MsgCtx =
                     ((org.apache.synapse.core.axis2.Axis2MessageContext) msgCtx).getAxis2MessageContext();
@@ -111,14 +111,10 @@ public class RssInject implements InjectHandler {
             log.error(e.getMessage(), e);
         }
 
-        if (seq != null) {
-            if (log.isDebugEnabled()) {
-                log.info("injecting message to sequence : " + injectingSeq);
-            }
-            synapseEnvironment.injectInbound(msgCtx, seq, sequential);
-        } else {
-            log.error("Sequence: " + injectingSeq + " not found");
+        if (log.isDebugEnabled()) {
+            log.info("injecting message to sequence : " + injectingSeq);
         }
+        synapseEnvironment.injectInbound(msgCtx, seq, sequential);
 
         return true;
     }

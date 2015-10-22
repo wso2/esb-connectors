@@ -13,20 +13,13 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<template xmlns="http://ws.apache.org/ns/synapse" name="EditFeed">
+<template xmlns="http://ws.apache.org/ns/synapse" name="editFeed">
     <parameter name="HostAddress"/>
     <parameter name="Title"/>
     <parameter name="Content"/>
     <parameter name="Author"/>
     <parameter name="EntryID"/>
     <sequence>
-        <log level="full">
-            <property name="HostAddress" expression="$func:HostAddress"/>
-            <property name="Title" expression="$func:Title"/>
-            <property name="Content" expression="$func:Content"/>
-            <property name="Author" expression="$func:Author"/>
-            <property name="EntryID" expression="$func:EntryID"/>
-        </log>
         <class name="org.wso2.carbon.connector.EditFeed"/>
     </sequence>
 </template>

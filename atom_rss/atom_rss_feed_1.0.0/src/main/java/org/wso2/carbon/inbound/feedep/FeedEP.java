@@ -21,7 +21,6 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.core.SynapseEnvironment;
-import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
 
 
 public class FeedEP extends GenericPollingConsumer {
@@ -35,8 +34,6 @@ public class FeedEP extends GenericPollingConsumer {
     private final FeedRegistryHandler registryHandler;
     private String dateFormat;
     private long scanInterval;
-    private Properties rssProperties;
-    private RssInject rssInject;
 
     public FeedEP(Properties properties, String name,
                   SynapseEnvironment synapseEnvironment, long scanInterval,
@@ -46,15 +43,14 @@ public class FeedEP extends GenericPollingConsumer {
                 injectingSeq, onErrorSeq, coordination, sequential);
         registryHandler = new FeedRegistryHandler();
         this.name = name;
-        rssProperties = properties;
         log.info("Scan Interval Passing " + scanInterval);
         this.scanInterval = scanInterval;
         this.sequential = true;
-        this.host = rssProperties.getProperty(FeedEPConstant.FEED_URL);
-        this.feedType = rssProperties.getProperty(FeedEPConstant.FEED_TYPE);
+        this.host = properties.getProperty(FeedEPConstant.FEED_URL);
+        this.feedType = properties.getProperty(FeedEPConstant.FEED_TYPE);
         log.info("URL : " + host + "Feed Type : " + feedType);
-        if (rssProperties.getProperty(FeedEPConstant.FEED_TIMEFORMAT) != null) {
-            this.dateFormat = rssProperties.getProperty(FeedEPConstant.FEED_TIMEFORMAT);
+        if (properties.getProperty(FeedEPConstant.FEED_TIMEFORMAT) != null) {
+            this.dateFormat = properties.getProperty(FeedEPConstant.FEED_TIMEFORMAT);
         }
         this.sequential = sequential;
         this.coordination = true;
@@ -68,7 +64,7 @@ public class FeedEP extends GenericPollingConsumer {
 //    public void destroy() {
 //        try {
 //            if (registryHandler.readFromRegistry(name) != null) {
-//                registryHandler.deleteFromRegitry(name);
+//                registryHandler.deleteFromRegistry(name);
 //            }
 //        } catch (Exception e) {
 //            log.error(e.getMessage());
@@ -82,9 +78,8 @@ public class FeedEP extends GenericPollingConsumer {
     }
 
     private void init1() {
-        rssInject =
-                new RssInject(injectingSeq, onErrorSeq, sequential,
-                        synapseEnvironment, FeedEPConstant.FEED_FORMAT);
+        RssInject rssInject = new RssInject(injectingSeq, onErrorSeq, sequential,
+                synapseEnvironment, FeedEPConstant.FEED_FORMAT);
         consume = new ConsumeFeed(rssInject, scanInterval, host, feedType, registryHandler, name, dateFormat);
     }
 }

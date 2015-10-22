@@ -16,9 +16,6 @@
 package org.wso2.carbon.connector;
 
 import org.apache.abdera.Abdera;
-import org.apache.abdera.factory.Factory;
-import org.apache.abdera.model.Document;
-import org.apache.abdera.model.Entry;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.abdera.protocol.client.RequestOptions;
@@ -30,43 +27,31 @@ import org.wso2.carbon.connector.core.ConnectException;
  * Delete the Existing feed by ID
  */
 public class DeleteFeed extends AbstractConnector {
-    static ConnectException connectException;
-    static Abdera abdera;
-    static AbderaClient abderaClient;
-    static Factory factory;
-    static Entry entry;
-    static RequestOptions opts;
-    static ClientResponse resp;
-    static ResponceESB responce;
-    static Document<Entry> doc;
-    static String entryUri;
-    static Object HostAddress;
-    static Object EntryID;
-
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {
-        EntryID = getParameter(messageContext, "EntryID");
-        HostAddress = getParameter(messageContext, "HostAddress");
-        abdera = new Abdera();
-        abderaClient = new AbderaClient(abdera);
-        // Delete the entry. Again, we need to make sure that we have the
-        // current
-        // edit link for the entry
-        entryUri = HostAddress.toString() + "/" + EntryID.toString() + "-";
-        log.info(entryUri);
-        opts = new RequestOptions();
-        opts.setContentType("application/atom+xml;type=entry");
-        if (entryUri != null) {
+        String entryID = getParameter(messageContext, FeedConstant.entryID).toString();
+        String hostAddress = getParameter(messageContext, FeedConstant.hostAddress).toString();
+
+        if (!entryID.equals("") || !hostAddress.equals("")) {
+            Abdera abdera = new Abdera();
+            AbderaClient abderaClient = new AbderaClient(abdera);
+            String entryUri = hostAddress + "/" + entryID + "-";
+            if (log.isDebugEnabled()) {
+                log.debug("Requester entry URL is " + entryUri);
+            }
+            RequestOptions opts = new RequestOptions();
+            opts.setContentType(FeedConstant.contentType);
             try {
-                resp = abderaClient.delete(entryUri.toString());
-                responce = new ResponceESB();
-                responce.InjectMessage(messageContext, resp.getStatusText());
-            } catch (Exception e) {
-                log.error(e.getMessage());
+                ClientResponse resp = abderaClient.delete(entryUri);
+                ResponseESB response = new ResponseESB();
+                response.InjectMessage(messageContext, resp.getStatusText());
+            } catch (Exception ex) {
+                log.error(ex.getMessage());
             }
         } else {
-            log.error("The Entry cannot be Null");
+            log.error("Check hostAddress & entryId can not be empty");
             return;
         }
+
     }
 }

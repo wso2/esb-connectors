@@ -13,14 +13,19 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<template xmlns="http://ws.apache.org/ns/synapse" name="DeleteFeed">
-    <parameter name="EntryID"/>
-    <parameter name="HostAddress"/>
-    <sequence>
-        <log level="full">
-            <property name="EntryID" expression="$func:EntryID"/>
-            <property name="HostAddress" expression="$func:HostAddress"/>
-        </log>
-        <class name="org.wso2.carbon.connector.DeleteFeed"/>
-    </sequence>
-</template>
+<component name="feedConnector" type="synapse/template">
+    <subComponents>
+        <component name="createFeed">
+            <file>createFeed.xml</file>
+            <description>Create a new feed entry</description>
+        </component>
+        <component name="editFeed">
+            <file>editFeed.xml</file>
+            <description>Edit/Modify existing feed entry</description>
+        </component>
+        <component name="deleteFeed">
+            <file>deleteFeed.xml</file>
+            <description>Delete existing feed entry</description>
+        </component>
+    </subComponents>
+</component>

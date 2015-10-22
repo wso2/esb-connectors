@@ -27,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.api.RegistryException;
 import org.wso2.carbon.registry.api.Resource;
-import org.wso2.carbon.inbound.endpoint.persistence.ServiceReferenceHolder;
 
 public class FeedRegistryHandler {
     private static final Log log = LogFactory.getLog(FeedRegistryHandler.class.getName());
@@ -44,10 +43,10 @@ public class FeedRegistryHandler {
 
     }
 
-    public Object readFromRegistry(String ResorcePath) {
+    public Object readFromRegistry(String resourcePath) {
         try {
-            if (registry.resourceExists(ResorcePath)) {
-                resource = registry.get(ResorcePath);
+            if (registry.resourceExists(resourcePath)) {
+                resource = registry.get(resourcePath);
                 byte[] content = (byte[]) resource.getContent();
                 try {
                     obj = toObject(content);
@@ -93,10 +92,10 @@ public class FeedRegistryHandler {
         }
     }
 
-    public void deleteFromRegitry(String ResorcePath) {
+    public void deleteFromRegistry(String resourcePath) {
         try {
-            registry.delete(ResorcePath);
-            log.debug(ResorcePath + " Rigistry Deleted");
+            registry.delete(resourcePath);
+            log.debug(resourcePath + " Registry Deleted");
         } catch (RegistryException e) {
             log.error(e.getMessage());
         }

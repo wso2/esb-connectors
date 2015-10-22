@@ -13,19 +13,13 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<component name="FeedConnector" type="synapse/template">
-    <subComponents>
-        <component name="CreateFeed">
-            <file>CreateFeed.xml</file>
-            <description>Create a New Feen Entry</description>
-        </component>
-        <component name="EditFeed">
-            <file>EditFeed.xml</file>
-            <description>Edit/Modify Existing feed Entry</description>
-        </component>
-        <component name="DeleteFeed">
-            <file>DeleteFeed.xml</file>
-            <description>Delete Existing Feed Entry</description>
-        </component>
-    </subComponents>
-</component>
+<template xmlns="http://ws.apache.org/ns/synapse" name="createFeed">
+    <parameter name="HostAddress"/>
+    <parameter name="Title"/>
+    <parameter name="Content"/>
+    <parameter name="Author"/>
+    <parameter name="FeedID"/>
+    <sequence>
+        <class name="org.wso2.carbon.connector.CreateFeed"/>
+    </sequence>
+</template>

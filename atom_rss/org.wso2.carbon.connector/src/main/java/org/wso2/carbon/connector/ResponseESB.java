@@ -22,20 +22,16 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.synapse.MessageContext;
 
 /**
- * Sent Responce to ESB
+ * Response to ESB
  */
-public class ResponceESB {
-    static OMFactory OMfactory;
-    static OMNamespace ns;
-    static OMElement result;
-    static OMElement messageElement;
+public class ResponseESB {
 
-    public void InjectMessage(MessageContext messageContext, String Text) {
-        OMfactory = OMAbstractFactory.getOMFactory();
-        ns = OMfactory.createOMNamespace("status", "ns");
-        result = OMfactory.createOMElement("result", ns);
-        messageElement = OMfactory.createOMElement("Result", ns);
-        messageElement.setText(Text);
+    public void InjectMessage(MessageContext messageContext, String text) {
+        OMFactory omFactory = OMAbstractFactory.getOMFactory();
+        OMNamespace ns = omFactory.createOMNamespace("status", "ns");
+        OMElement result = omFactory.createOMElement("result", ns);
+        OMElement messageElement = omFactory.createOMElement("Result", ns);
+        messageElement.setText(text);
         result.addChild(messageElement);
         messageContext.getEnvelope().getBody().addChild(result);
     }
