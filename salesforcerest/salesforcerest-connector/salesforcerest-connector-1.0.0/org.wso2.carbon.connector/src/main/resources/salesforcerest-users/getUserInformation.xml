@@ -18,7 +18,7 @@
 <template name="getUserInformation" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="userId" description="The Id of the user."/>
     <sequence>
-        <property name="uri.var.userId" expression="$func:sobject"/>
+        <property name="uri.var.userId" expression="$func:userId"/>
         <call>
             <endpoint>
                 <http method="Get"

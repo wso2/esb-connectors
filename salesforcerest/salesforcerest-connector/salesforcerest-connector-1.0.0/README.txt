@@ -11,45 +11,29 @@ Product: WSO2 ESB Connector for Salesforce REST API + Integration Tests
 
     - Microsoft WINDOWS V-7
     - Ubuntu 13.04
-    - WSO2 ESB 4.9.0-BETA
+    - WSO2 ESB 4.9.0
 
 
 
 Steps to follow in setting integration test.
 
 
- 1. Download ESB 4.9.0-BETA-SNAPSHOT by navigating to the following URL: http://svn.wso2.org/repos/wso2/people/malaka/ESB/beta/
+ 1. Download ESB 4.9.0 by navigating to the following URL: http://wso2.com/products/enterprise-service-bus/.
 
 
  2. Deploy relevant patches, if applicable. Place the patch files into location <ESB_HOME>/repository/components/patches.
 
- 3. ESB should be configured as below.
-    Please make sure that the below mentioned Axis configurations are enabled (\repository\conf\axis2\axis2.xml)
 
-	    Message Formatters
-            <messageFormatter contentType="application/json"
-							  class="org.apache.synapse.commons.json.JsonStreamFormatter"/>
-	    <messageFormatter contentType="text/html"
-        						  class="org.wso2.carbon.relay.ExpandingMessageFormatter"/>
-
-	    Message Builders
-	    <messageBuilder contentType="application/json"
-							  class="org.apache.synapse.commons.json.JsonStreamBuilder"/>
-	    <messageBuilder contentType="text/html"
-							  class="org.wso2.carbon.relay.BinaryRelayBuilder"/>
+ 3. Compress modified ESB as wso2esb-4.9.0.zip and copy that zip file in to location "<ESB_CONNECTORS_HOME>/repository/".
 
 
-
- 4. Compress modified ESB as wso2esb-4.9.0-BETA.zip and copy that zip file in to location "<ESB_CONNECTORS_HOME>/repository/".
-
-
- 5. Create a Salesforce account and create a connected app.
+ 4. Create a Salesforce account and create a connected app.
        i)  Using the URL "https://salesforce.com" create an account.
        ii) Create a connected app to get the clientId and clientSecret. Refer below link to create connected app.
             https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_defining_remote_access_applications.htm.
 
  Follow the below URL to 
- 6.Before you start performing various operations with the connector, make sure to import the Salesforce certificate to your ESB client keystore.
+ 5.Before you start performing various operations with the connector, make sure to import the Salesforce certificate to your ESB client keystore.
 
    Follow the steps below to import the Salesforce certificate into the ESB client keystone:
 
@@ -59,10 +43,10 @@ Steps to follow in setting integration test.
 
        keytool -importcert -file <certificate file> -keystore <ESB>/repository/resources/security/client-truststore.jks -alias "SFDCCertImport"
 
- 7. Make sure that salesforcerest is specified as a module in ESB Connector Parent pom.
+ 6. Make sure that salesforcerest is specified as a module in ESB Connector Parent pom.
             <module>salesforcerest/salesforcerest-connector/salesforcerest-connector-1.0.0/org.wso2.carbon.connector</module>
 
- 8. Update the salesforcerest properties file at location "<SALESFORCEREST_CONNECTOR_HOME>/salesforcerest-connector/salesforcerest-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/artifacts/ESB/connector/config" as below.
+ 7. Update the salesforcerest properties file at location "<SALESFORCEREST_CONNECTOR_HOME>/salesforcerest-connector/salesforcerest-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/artifacts/ESB/connector/config" as below.
 
         i)apiUrl 							- 	The URL of the salesforce connected app.
         ii)apiVersion                                                   -       The api version for the connected app(New version is better because some of the features are supported only on the new 											          version).
@@ -96,5 +80,5 @@ You can put the value for nextRecordsUrl(xviii) property when the results/respon
 Don't put the same value to xiv) and (xiii, xvi).
 
 
- 9.  Navigate to "{ESB_Connector_Home}/" and run the following command.
+ 8.  Navigate to "{ESB_Connector_Home}/" and run the following command.
              $ mvn clean install
