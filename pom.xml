@@ -110,8 +110,9 @@
         <module>formstack/formstack-connector/formstack-connector-1.0.0/org.wso2.carbon.connector</module>
         <module>tumblr/tumblr-connector/tumblr-connector-1.0.0</module>
         <module>insightly/insightly-connector/insightly-connector-1.0.0/org.wso2.carbon.connector</module>
+        <module>salesforcerest/salesforcerest-connector/salesforcerest-connector-1.0.0/org.wso2.carbon.connector</module>
         -->
-	    <module>salesforcerest/salesforcerest-connector/salesforcerest-connector-1.0.0/org.wso2.carbon.connector</module>
+        <module>fhir/fhir-connector/fhir-connector-1.0.0/org.wso2.carbon.connector</module>
 
 
     </modules>

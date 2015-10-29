@@ -22,7 +22,7 @@
         <call>
             <endpoint>
                 <http method="Get"
-                      uri-template="{uri.var.salesforce.url}/services/data/{uri.var.apiVersion}/sobjects/User/{userId}" />
+                      uri-template="{uri.var.salesforce.url}/services/data/{uri.var.apiVersion}/sobjects/User/{uri.var.userId}" />
             </endpoint>
         </call>
     </sequence>
