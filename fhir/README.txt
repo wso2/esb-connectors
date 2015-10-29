@@ -22,14 +22,14 @@ Steps to follow in setting integration test.
 
  3. Go to FHIR root URL and then  Extract the certificate from browser and place the certificate file in following locations.
 
-   i)    "<FHIR_CONNECTOR_HOME>/contactform-connector/contactform-connector-1.0.0/org wso2.carbon.connector/src/test/resources/keystores/products"
+   i)    "<FHIR_CONNECTOR_HOME>/fhir-connector/fhir-connector-1.0.0/org wso2.carbon.connector/src/test/resources/keystores/products"
 
-      Navigate to the above location from command prompt and execute 'keytool -importcert -file CERT_FILE_NAME -keystore wso2carbon.jks -alias "contactform"' in command line to import FHIR certificate in to keystore. Give "wso2carbon" as password.
+      Navigate to the above location from command prompt and execute 'keytool -importcert -file CERT_FILE_NAME -keystore wso2carbon.jks -alias "fhircert"' in command line to import FHIR certificate in to keystore. Give "wso2carbon" as password.
       NOTE : CERT_FILE_NAME is the file name which was extracted from FHIR with  the extension, change it accordingly. Remove the copied certificate.
 
    ii)   "<ESB_HOME>/repository/resources/security"
    
-      Navigate to the above location from command prompt and execute 'keytool -importcert -file CERT_FILE_NAME -keystore client-truststore.jks -alias "contactform"' in command line to import FHIR certificate in to keystore. Give "wso2carbon" as password.
+      Navigate to the above location from command prompt and execute 'keytool -importcert -file CERT_FILE_NAME -keystore client-truststore.jks -alias "fhircert"' in command line to import FHIR certificate in to keystore. Give "wso2carbon" as password.
       NOTE : CERT_FILE_NAME is the file name which was extracted from FHIR with  the extension, change it accordingly. Remove the copied certificate.
 
 
