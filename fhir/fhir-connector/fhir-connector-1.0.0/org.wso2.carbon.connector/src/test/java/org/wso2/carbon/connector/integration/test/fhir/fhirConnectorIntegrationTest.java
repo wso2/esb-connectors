@@ -18,6 +18,7 @@ package org.wso2.carbon.connector.integration.test.fhir;
  *  under the License.
  * /
  */
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -398,7 +399,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "historyType";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyTypeOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/_history?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/_history?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);

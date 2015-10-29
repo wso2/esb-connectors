@@ -32,11 +32,15 @@
         </component>
         <component name="update">
             <file>update.xml</file>
-            <description>The update interaction creates a new current version for an existing resource or creates an initial version if no resource already exists for the given id.</description>
+            <description>The update interaction creates a new current version for an existing resource or creates an
+                initial version if no resource already exists for the given id.
+            </description>
         </component>
         <component name="conditionalUpdate">
             <file>conditionalUpdate.xml</file>
-            <description>Allows a client to update an existing resource based on some identification criteria, rather than by logical id.</description>
+            <description>Allows a client to update an existing resource based on some identification criteria, rather
+                than by logical id.
+            </description>
         </component>
         <component name="create">
             <file>create.xml</file>
@@ -48,7 +52,9 @@
         </component>
         <component name="conditionalDelete">
             <file>conditionalDelete.xml</file>
-            <description>Allows a client to delete an existing resource based on some selection criteria, rather than by a specific logical id.</description>
+            <description>Allows a client to delete an existing resource based on some selection criteria, rather than by
+                a specific logical id.
+            </description>
         </component>
     </subComponents>
 </component>

@@ -27,14 +27,6 @@
     <parameter name="dependency"/>
     <parameter name="dependency.element"/>
     <parameter name="dependency.concept"/>
-    <!--<parameter name="result"/>-->
-    <!--<parameter name="message"/>-->
-    <!--<parameter name="match"/>-->
-    <!--<parameter name="match.equivalence"/>-->
-    <!--<parameter name="match.concept"/>-->
-    <!--<parameter name="match.product"/>-->
-    <!--<parameter name="match.product.element"/>-->
-    <!--<parameter name="match.product.concept"/>-->
     <sequence>
         <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.code" expression="$func:code"/>
@@ -47,14 +39,6 @@
         <property name="uri.var.dependency" expression="$func:dependency"/>
         <property name="uri.var.dependency.element" expression="$func:dependency.element"/>
         <property name="uri.var.dependency.concept" expression="$func:dependency.concept"/>
-        <!--<property name="uri.var.result" expression="$func:result"/>-->
-        <!--<property name="uri.var.message" expression="$func:message"/>-->
-        <!--<property name="uri.var.match" expression="$func:match"/>-->
-        <!--<property name="uri.var.match.equivalent" expression="$func:match.equivalent"/>-->
-        <!--<property name="uri.var.match.concept" expression="$func:match.concept"/>-->
-        <!--<property name="uri.var.match.product" expression="$func:match.product"/>-->
-        <!--<property name="uri.var.match.product.element" expression="$func:match.product.element"/>-->
-        <!--<property name="uri.var.match.product.concept" expression="$func:match.product.concept"/>-->
         <script language="js">
             <![CDATA[
             var code=mc.getProperty('uri.var.code');
@@ -67,14 +51,6 @@
             var dependency=mc.getProperty('uri.var.dependency');
             var dependencyElement=mc.getProperty('uri.var.code');
             var dependencyConcept=mc.getProperty('uri.var.code');
-            <!--var result=mc.getProperty('uri.var.result');-->
-            <!--var message=mc.getProperty('uri.var.message');-->
-            <!--var match=mc.getProperty('uri.var.match');-->
-            <!--var matchEquivalent=mc.getProperty('uri.var.match.equivalent');-->
-            <!--var matchConcept=mc.getProperty('uri.var.match.concept');-->
-            <!--var matchProduct=mc.getProperty('uri.var.match.product');-->
-            <!--var matchProductElement=mc.getProperty('uri.var.match.product.element');-->
-            <!--var matchProductConcept=mc.getProperty('uri.var.match.product.concept');-->
             urlQuery='';
             if(code != null && code != ""){
             urlQuery += 'code=' + code + '&';
@@ -106,31 +82,7 @@
              if(dependencyConcept != null && dependencyConcept != ""){
             urlQuery += 'dependency.concept=' + dependencyConcept + '&';
             }
-             <!--if(result != null && result != ""){-->
-            <!--urlQuery += 'result=' + result + '&';-->
-            <!--}-->
-             <!--if(message != null && message != ""){-->
-            <!--urlQuery += 'message=' + message + '&';-->
-            <!--}-->
-             <!--if(match != null && match != ""){-->
-            <!--urlQuery += 'match=' + match + '&';-->
-            <!--}-->
-             <!--if(matchEquivalent != null && matchEquivalent != ""){-->
-            <!--urlQuery += 'match.equivalent=' + matchEquivalent + '&';-->
-            <!--}-->
-             <!--if(matchConcept != null && matchConcept != ""){-->
-            <!--urlQuery += 'match.concept=' + matchConcept + '&';-->
-            <!--}-->
-             <!--if(matchProduct != null && matchProduct != ""){-->
-            <!--urlQuery += 'match.product=' + matchProduct + '&';-->
-            <!--}-->
-             <!--if(matchProductElement != null && matchProductElement != ""){-->
-            <!--urlQuery += 'match.product.element=' + matchProductElement + '&';-->
-            <!--}-->
-             <!--if(matchProductConcept != null && matchProductConcept != ""){-->
-            <!--urlQuery += 'match.product.concept=' + matchProductConcept + '&';-->
-            <!--}-->
-              if(urlQuery != null && urlQuery != ""){
+             if(urlQuery != null && urlQuery != ""){
             urlQuery = '?' + urlQuery.substring(0,urlQuery.length-1);
             }
             mc.setProperty('uri.var.urlQuery',urlQuery);
