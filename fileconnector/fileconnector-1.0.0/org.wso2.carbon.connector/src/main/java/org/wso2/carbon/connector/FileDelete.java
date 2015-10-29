@@ -40,98 +40,98 @@ import org.wso2.carbon.connector.util.ResultPayloadCreater;
 
 public class FileDelete extends AbstractConnector implements Connector {
 
-	private static Log log = LogFactory.getLog(FileCreate.class);
+    private static Log log = LogFactory.getLog(FileCreate.class);
 
-	public void connect(MessageContext messageContext) throws ConnectException {
-		System.out.println("File deletion started...");
-		String fileLocation =
-		                      getParameter(messageContext, "filelocation") == null ? "" : getParameter(
-		                                                                                               messageContext,
-		                                                                                               "filelocation").toString();
-		String filename =
-		                  getParameter(messageContext, "file") == null ? "" : getParameter(
-		                                                                                   messageContext,
-		                                                                                   "file").toString();
+    public void connect(MessageContext messageContext) throws ConnectException {
+        System.out.println("File deletion started...");
+        String fileLocation =
+                getParameter(messageContext, "filelocation") == null ? "" : getParameter(
+                        messageContext,
+                        "filelocation").toString();
+        String filename =
+                getParameter(messageContext, "file") == null ? "" : getParameter(
+                        messageContext,
+                        "file").toString();
 
-		String filebeforepprocess =
-		                            getParameter(messageContext, "filebeforeprocess") == null ? "" : getParameter(
-		                                                                                                          messageContext,
-		                                                                                                          "filebeforeprocess").toString();
-		if (log.isDebugEnabled()) {
-			log.info("File deletion started..." + filename.toString());
-			log.info("File Location..." + fileLocation);
-		}
+        String filebeforepprocess =
+                getParameter(messageContext, "filebeforeprocess") == null ? "" : getParameter(
+                        messageContext,
+                        "filebeforeprocess").toString();
+        if (log.isDebugEnabled()) {
+            log.info("File deletion started..." + filename.toString());
+            log.info("File Location..." + fileLocation);
+        }
 
-		boolean resultStatus = false;
-		try {
-			resultStatus = deleteFile(fileLocation, filename, filebeforepprocess);
-		} catch (FileSystemException e) {
-			generateResults(messageContext, resultStatus);
-		}
+        boolean resultStatus = false;
+        try {
+            resultStatus = deleteFile(fileLocation, filename, filebeforepprocess);
+        } catch (FileSystemException e) {
+            generateResults(messageContext, resultStatus);
+        }
 
-		generateResults(messageContext, resultStatus);
+        generateResults(messageContext, resultStatus);
 
-	}
+    }
 
-	/**
-	 * Generate the result
-	 * 
-	 * @param messageContext
-	 * @param resultStatus
-	 */
-	private void generateResults(MessageContext messageContext, boolean resultStatus) {
-		ResultPayloadCreater resultPayload = new ResultPayloadCreater();
+    /**
+     * Generate the result
+     *
+     * @param messageContext
+     * @param resultStatus
+     */
+    private void generateResults(MessageContext messageContext, boolean resultStatus) {
+        ResultPayloadCreater resultPayload = new ResultPayloadCreater();
 
-		String responce = "<result><success>" + resultStatus + "</success></result>";
+        String responce = "<result><success>" + resultStatus + "</success></result>";
 
-		try {
-			OMElement element = resultPayload.performSearchMessages(responce);
-			resultPayload.preparePayload(messageContext, element);
+        try {
+            OMElement element = resultPayload.performSearchMessages(responce);
+            resultPayload.preparePayload(messageContext, element);
 
-		} catch (XMLStreamException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		} catch (IOException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		} catch (JSONException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		}
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        } catch (JSONException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        }
 
-	}
+    }
 
-	/**
-	 * Delete the file
-	 * 
-	 * @param fileLocation
-	 * @param filename
-	 * @param filebeforepprocess
-	 * @return
-	 */
-	private boolean deleteFile(String fileLocation, String filename, String filebeforepprocess)
-	                                                                                           throws FileSystemException {
+    /**
+     * Delete the file
+     *
+     * @param fileLocation
+     * @param filename
+     * @param filebeforepprocess
+     * @return
+     */
+    private boolean deleteFile(String fileLocation, String filename, String filebeforepprocess)
+            throws FileSystemException {
 
-		boolean resultStatus = false;
+        boolean resultStatus = false;
 
-		FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
-		FileSystemManager manager = VFS.getManager();
+        FileSystemOptions opts = FTPSiteUtils.createDefaultOptions();
+        FileSystemManager manager = VFS.getManager();
 
-		// Create remote object
-		FileObject remoteFile = manager.resolveFile(fileLocation + filename, opts);
-		if (!filebeforepprocess.equals("")) {
-			FileObject fBeforeProcess = manager.resolveFile(filebeforepprocess + filename, opts);
-			fBeforeProcess.copyFrom(remoteFile, Selectors.SELECT_SELF);
-		}
+        // Create remote object
+        FileObject remoteFile = manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation, filename), opts);
+        if (!filebeforepprocess.equals("")) {
+            FileObject fBeforeProcess = manager.resolveFile(filebeforepprocess + filename, opts);
+            fBeforeProcess.copyFrom(remoteFile, Selectors.SELECT_SELF);
+        }
 
-		if (remoteFile.exists()) {
-			remoteFile.delete();
-			resultStatus = true;
-			if (log.isDebugEnabled()) {
-				log.info("Delete remote file success");
-			}
-		}
+        if (remoteFile.exists()) {
+            remoteFile.delete();
+            resultStatus = true;
+            if (log.isDebugEnabled()) {
+                log.info("Delete remote file success");
+            }
+        }
 
-		return resultStatus;
-	}
+        return resultStatus;
+    }
 }

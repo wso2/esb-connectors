@@ -39,114 +39,114 @@ import org.wso2.carbon.connector.util.ResultPayloadCreater;
 
 public class FileRename extends AbstractConnector implements Connector {
 
-	private static Log log = LogFactory.getLog(FileRename.class);
+    private static Log log = LogFactory.getLog(FileRename.class);
 
-	public void connect(MessageContext messageContext) throws ConnectException {
+    public void connect(MessageContext messageContext) throws ConnectException {
 
-		String fileLocation =
-		                      getParameter(messageContext, "filelocation") == null ? "" : getParameter(
-		                                                                                               messageContext,
-		                                                                                               "filelocation").toString();
-		String filename =
-		                  getParameter(messageContext, "file") == null ? "" : getParameter(
-		                                                                                   messageContext,
-		                                                                                   "file").toString();
-		String content =
-		                 getParameter(messageContext, "content") == null ? "" : getParameter(
-		                                                                                     messageContext,
-		                                                                                     "content").toString();
-		String newFileName =
-		                     getParameter(messageContext, "newfilename") == null ? "" : getParameter(
-		                                                                                             messageContext,
-		                                                                                             "newfilename").toString();
+        String fileLocation =
+                getParameter(messageContext, "filelocation") == null ? "" : getParameter(
+                        messageContext,
+                        "filelocation").toString();
+        String filename =
+                getParameter(messageContext, "file") == null ? "" : getParameter(
+                        messageContext,
+                        "file").toString();
+        String content =
+                getParameter(messageContext, "content") == null ? "" : getParameter(
+                        messageContext,
+                        "content").toString();
+        String newFileName =
+                getParameter(messageContext, "newfilename") == null ? "" : getParameter(
+                        messageContext,
+                        "newfilename").toString();
 
-		String filebeforepprocess =
-		                            getParameter(messageContext, "filebeforeprocess") == null ? "" : getParameter(
-		                                                                                                          messageContext,
-		                                                                                                          "filebeforeprocess").toString();
-		if (log.isDebugEnabled()) {
-			log.info("File creation started..." + filename.toString());
-			log.info("File Location..." + fileLocation.toString());
-			log.info("File content..." + content.toString());
-		}
+        String filebeforepprocess =
+                getParameter(messageContext, "filebeforeprocess") == null ? "" : getParameter(
+                        messageContext,
+                        "filebeforeprocess").toString();
+        if (log.isDebugEnabled()) {
+            log.info("File creation started..." + filename.toString());
+            log.info("File Location..." + fileLocation.toString());
+            log.info("File content..." + content.toString());
+        }
 
-		boolean resultStatus = false;
-		try {
-			resultStatus = renameFile(fileLocation, filename, newFileName, filebeforepprocess);
-		} catch (FileSystemException e) {
-			handleException(e.getMessage(), messageContext);
-		}
+        boolean resultStatus = false;
+        try {
+            resultStatus = renameFile(fileLocation, filename, newFileName, filebeforepprocess);
+        } catch (FileSystemException e) {
+            handleException(e.getMessage(), messageContext);
+        }
 
-		generateResult(messageContext, resultStatus);
+        generateResult(messageContext, resultStatus);
 
-	}
+    }
 
-	/**
-	 * Generate the output
-	 * 
-	 * @param messageContext
-	 * @param resultStatus
-	 */
-	private void generateResult(MessageContext messageContext, boolean resultStatus) {
-		ResultPayloadCreater resultPayload = new ResultPayloadCreater();
+    /**
+     * Generate the output
+     *
+     * @param messageContext
+     * @param resultStatus
+     */
+    private void generateResult(MessageContext messageContext, boolean resultStatus) {
+        ResultPayloadCreater resultPayload = new ResultPayloadCreater();
 
-		String responce = "<result><success>" + resultStatus + "</success></result>";
+        String responce = "<result><success>" + resultStatus + "</success></result>";
 
-		try {
-			OMElement element = resultPayload.performSearchMessages(responce);
-			resultPayload.preparePayload(messageContext, element);
-		} catch (XMLStreamException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		} catch (IOException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		} catch (JSONException e) {
-			log.error(e.getMessage());
-			handleException(e.getMessage(), messageContext);
-		}
+        try {
+            OMElement element = resultPayload.performSearchMessages(responce);
+            resultPayload.preparePayload(messageContext, element);
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        } catch (JSONException e) {
+            log.error(e.getMessage());
+            handleException(e.getMessage(), messageContext);
+        }
 
-	}
+    }
 
-	/**
-	 * Rename the files
-	 * 
-	 * @param fileLocation
-	 * @param filename
-	 * @param newFileName
-	 * @param filebeforepprocess
-	 * @return
-	 */
-	private boolean renameFile(String fileLocation, String filename, String newFileName,
-	                           String filebeforepprocess) throws FileSystemException {
-		boolean resultStatus = false;
-		FileSystemManager manager = VFS.getManager();
-		if (manager != null) {
-			// Create remote object
-			FileObject remoteFile =
-			                        manager.resolveFile(fileLocation.toString() +
-			                                                    filename.toString(),
-			                                            FTPSiteUtils.createDefaultOptions());
+    /**
+     * Rename the files
+     *
+     * @param fileLocation
+     * @param filename
+     * @param newFileName
+     * @param filebeforepprocess
+     * @return
+     */
+    private boolean renameFile(String fileLocation, String filename, String newFileName,
+                               String filebeforepprocess) throws FileSystemException {
+        boolean resultStatus = false;
+        FileSystemManager manager = VFS.getManager();
+        if (manager != null) {
+            // Create remote object
+            FileObject remoteFile =
+                    manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,
+                                    filename),
+                            FTPSiteUtils.createDefaultOptions());
 
-			FileObject reNameFile =
-			                        manager.resolveFile(fileLocation.toString() +
-			                                                    newFileName.toString(),
-			                                            FTPSiteUtils.createDefaultOptions());
-			if (remoteFile.exists()) {
-				if (!filebeforepprocess.equals("")) {
-					FileObject fBeforeProcess = manager.resolveFile(filebeforepprocess + filename);
-					fBeforeProcess.copyFrom(remoteFile, Selectors.SELECT_SELF_AND_CHILDREN);
-				}
+            FileObject reNameFile =
+                    manager.resolveFile(FTPSiteUtils.getFileUrl(fileLocation,
+                                    newFileName),
+                            FTPSiteUtils.createDefaultOptions());
+            if (remoteFile.exists()) {
+                if (!filebeforepprocess.equals("")) {
+                    FileObject fBeforeProcess = manager.resolveFile(filebeforepprocess + filename);
+                    fBeforeProcess.copyFrom(remoteFile, Selectors.SELECT_SELF_AND_CHILDREN);
+                }
 
-				remoteFile.moveTo(reNameFile);
-				resultStatus = true;
-				if (log.isDebugEnabled()) {
-					log.info("Rename remote file success");
-				}
-			}
-		}
+                remoteFile.moveTo(reNameFile);
+                resultStatus = true;
+                if (log.isDebugEnabled()) {
+                    log.info("Rename remote file success");
+                }
+            }
+        }
 
-		return resultStatus;
-	}
+        return resultStatus;
+    }
 
 }

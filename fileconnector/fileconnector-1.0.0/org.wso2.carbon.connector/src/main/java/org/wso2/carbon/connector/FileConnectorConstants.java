@@ -21,8 +21,8 @@ package org.wso2.carbon.connector;
 public class FileConnectorConstants {
     public static final String NAMESPACE = "ns";
     public static final String RESULT = "result";
-    public static final String FILE="file";
-    public static final String FILECON="http://org.wso2.esbconnectors.FileConnector";
+    public static final String FILE = "file";
+    public static final String FILECON = "http://org.wso2.esbconnectors.FileConnector";
     public static final int BUFFER_SIZE = 4096;
 
 }

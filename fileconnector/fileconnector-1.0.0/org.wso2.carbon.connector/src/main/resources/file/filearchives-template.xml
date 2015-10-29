@@ -2,21 +2,24 @@
     <parameter name="file"/>
     <parameter name="filelocation"/>
     <parameter name="suffixs"/>
-    <parameter name="archivefilename"/>
-    <parameter name="filepattern"/> 
-    <parameter name="dirpattern"/> 
+    <parameter name="archiveFileLocation"/>
+    <parameter name="filepattern"/>
+    <parameter name="dirpattern"/>
     <parameter name="archivetype"/>
     <parameter name="archivedirectory"/>
-      
+    <parameter name="newfilename"/>
+
+
     <sequence>
         <log level="full" category="debug">
-            <property name="file" expression="$func:file" />  
-            <property name="filelocation" expression="$func:filelocation" />
-            <property name="suffixs" expression="$func:suffixs" />
-            <property name="archivefilename" expression="$func:archivefilename" />
-            <property name="filepattern" expression="$func:filepattern" />
-            <property name="dirpattern" expression="$func:dirpattern" />
+            <property name="file" expression="$func:file"/>
+            <property name="filelocation" expression="$func:filelocation"/>
+            <property name="suffixs" expression="$func:suffixs"/>
+            <property name="archiveFileLocation" expression="$func:archiveFileLocation"/>
+            <property name="filepattern" expression="$func:filepattern"/>
+            <property name="dirpattern" expression="$func:dirpattern"/>
+            <property name="newfilename" expression="$func:newfilename"/>
         </log>
-        <class name="org.wso2.carbon.connector.FileArchives" />
+        <class name="org.wso2.carbon.connector.FileArchives"/>
     </sequence>
 </template>

@@ -35,7 +35,7 @@ under the License.
             <property name="newfilename" expression="//newfilename/text()"/>
             <property name="newfilelocation" expression="//newfilelocation/text()"/>
             <property name="addfilelocation" expression="//addfilelocation/text()"/>
-            <property name="archivefilename" expression="//archivefilename/text()"/>
+            <property name="archiveFileLocation" expression="//archiveFileLocation/text()"/>
             <property name="archivetype" expression="//archivetype/text()"/>
             <property name="filebeforeprocess" expression="//filebeforeprocess/text()"/>
             <property name="fileafterprocess" expression="//fileafterprocess/text()"/>
@@ -43,6 +43,7 @@ under the License.
             <property name="dirpattern" expression="//dirpattern/text()"/>
             <property name="suffixs" expression="//suffixs/text()"/>
             <property name="archivedirectory" expression="//archivedirectory/text()"/>
+            <property name="newFileName" expression="//newfilename/text()" />
 
             <switch source="get-property('transport', 'Action')">
                 <case regex="urn:create">
@@ -94,8 +95,9 @@ under the License.
                 <case regex="urn:archive">
                     <fileconnector.archives>
                         <filelocation>/home/vivekananthan/Desktop/file/archives/</filelocation>
-                        <archivefilename>/home/vivekananthan/Desktop/file/archives/archivestestfiletest1
-                        </archivefilename>
+                        <archiveFileLocation>/home/vivekananthan/Desktop/file/archives/
+                        </archiveFileLocation>
+                        <newfilename>archive1</newfilename>
                         <archivetype>TAR_GZIP</archivetype>
                         <filepattern>([^\s]+(\.(?i)(jar|png|gif|bmp|txt))$)</filepattern>
                         <dirpattern>aaaa</dirpattern>

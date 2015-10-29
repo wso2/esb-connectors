@@ -43,6 +43,10 @@ public class Fileunzip extends AbstractConnector implements Connector {
                 getParameter(messageContext, "filelocation") == null ? "" : getParameter(
                         messageContext,
                         "filelocation").toString();
+        String filename =
+                getParameter(messageContext, "file") == null ? "" : getParameter(
+                        messageContext,
+                        "file").toString();
 
         String newFileLocation =
                 getParameter(messageContext, "newfilelocation") == null ? "" : getParameter(
@@ -51,7 +55,7 @@ public class Fileunzip extends AbstractConnector implements Connector {
 
         boolean resultStatus;
         try {
-            resultStatus = new FileUnzipUtil().unzip(fileLocation, newFileLocation, messageContext);
+            resultStatus = new FileUnzipUtil().unzip(fileLocation, filename, newFileLocation, messageContext);
         } catch (Exception e) {
             handleException(e.getMessage(), messageContext);
             resultStatus = false;
