@@ -141,7 +141,11 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
                 apiRestResponse.getBody().getJSONArray("name").getJSONObject(0).getString("use"));
     }
 
+<<<<<<< HEAD
     /**
+=======
+   /**
+>>>>>>> e2d75c6a38d1bb4018356fb98a708f6dab596670
      * Negative test case for readSpecificResourceById method.
      */
     @Test(enabled = true, description = "fhir {readSpecificResourceById} integration test for negative parameters.")
@@ -403,4 +407,8 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e2d75c6a38d1bb4018356fb98a708f6dab596670
