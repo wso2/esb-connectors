@@ -18,7 +18,6 @@
                 <base>{$ctx:base}</base>
             </fhir.init>
             <fhir.historyAll>
-                <base>{$ctx:base}</base>
                 <format>{$ctx:format}</format>
                 <id>{$ctx:id}</id>
                 <content>{$ctx:content}</content>

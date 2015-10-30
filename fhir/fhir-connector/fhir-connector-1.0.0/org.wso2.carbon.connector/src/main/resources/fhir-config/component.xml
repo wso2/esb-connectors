@@ -21,6 +21,6 @@
         <component name="init">
             <file>init.xml</file>
             <description>Initial configuration file for FHIR rest connector.</description>
-        </component>>
+        </component>
     </subComponents>
 </component>

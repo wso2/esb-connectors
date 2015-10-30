@@ -12,7 +12,6 @@
                 <base>{$ctx:base}</base>
             </fhir.init>
             <fhir.readSpecificResourceById>
-                <base>{$ctx:base}</base>
                 <type>{$ctx:type}</type>
                 <id>{$ctx:id}</id>
                 <format>{$ctx:format}</format>

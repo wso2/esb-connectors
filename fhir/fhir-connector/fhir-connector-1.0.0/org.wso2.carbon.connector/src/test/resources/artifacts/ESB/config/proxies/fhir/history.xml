@@ -20,7 +20,6 @@
                 <base>{$ctx:base}</base>
             </fhir.init>
             <fhir.history>
-                <base>{$ctx:base}</base>
                 <type>{$ctx:type}</type>
                 <idForHistory>{$ctx:idForHistory}</idForHistory>
                 <format>{$ctx:format}</format>

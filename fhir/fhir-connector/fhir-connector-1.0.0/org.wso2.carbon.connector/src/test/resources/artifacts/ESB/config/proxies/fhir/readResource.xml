@@ -10,7 +10,6 @@
                 <base>{$ctx:base}</base>
             </fhir.init>
             <fhir.readResource>
-                <base>{$ctx:base}</base>
                 <type>{$ctx:type}</type>
                 <format>{$ctx:format}</format>
             </fhir.readResource>

@@ -19,7 +19,6 @@
                 <base>{$ctx:base}</base>
             </fhir.init>
             <fhir.searchPost>
-                <base>{$ctx:base}</base>
                 <type>{$ctx:type}</type>
                 <format>{$ctx:format}</format>
                 <id>{$ctx:id}</id>
