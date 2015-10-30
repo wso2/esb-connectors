@@ -32,7 +32,6 @@
     <parameter name="filter"
                description="To complement this mechanism, a the _filter search expression parameter can be used"/>
     <sequence>
-        <log level="full"/>
         <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.type" expression="$func:type"/>
         <property name="uri.var.idForHistory" expression="$func:idForHistory"/>

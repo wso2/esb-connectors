@@ -30,7 +30,6 @@
     <parameter name="filter"
                description="To complement this mechanism, a the _filter search expression parameter can be used"/>
     <sequence>
-        <log level="full"/>
         <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.format" expression="$func:format"/>
         <property name="uri.var.id" expression="$func:id"/>
