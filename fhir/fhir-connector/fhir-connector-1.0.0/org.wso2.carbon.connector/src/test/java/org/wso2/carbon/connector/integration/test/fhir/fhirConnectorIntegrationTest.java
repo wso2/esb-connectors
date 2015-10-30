@@ -61,7 +61,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "readResource";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "readResourceMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -75,13 +75,14 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "readResource";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "readResourceOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "?_format=" + connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(esbRestResponse.getBody().getJSONArray("entry").getJSONObject(0).getString("title"),
                 apiRestResponse.getBody().getJSONArray("entry").getJSONObject(0).getString("title"));
     }
+
     /**
      * Negative test case for readResource method.
      */
@@ -90,7 +91,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "readResource";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "readResourceNegative.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") + "?_format=" + connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 500);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 500);
@@ -105,7 +106,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "getConformance";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getConformanceMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/metadata";
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/metadata";
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -119,7 +120,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "getConformance";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getConformanceOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/metadata" + "?_format=" + connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/metadata" + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -133,7 +134,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "readSpecificResourceById";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "readSpecificResourceByIdOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("id") + "?_format=" + connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("id") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -141,11 +142,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
                 apiRestResponse.getBody().getJSONArray("name").getJSONObject(0).getString("use"));
     }
 
-<<<<<<< HEAD
     /**
-=======
-   /**
->>>>>>> e2d75c6a38d1bb4018356fb98a708f6dab596670
      * Negative test case for readSpecificResourceById method.
      */
     @Test(enabled = true, description = "fhir {readSpecificResourceById} integration test for negative parameters.")
@@ -153,7 +150,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "readSpecificResourceById";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "readSpecificResourceByIdNegative.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("wrongId") + "?_format=" + connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("wrongId") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 404);
@@ -167,7 +164,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "vReadResource";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "vReadResourceMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/" +connectorProperties.getProperty("logicalId")+"/_history/"+connectorProperties.getProperty("versionId");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("logicalId") + "/_history/" + connectorProperties.getProperty("versionId");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -181,7 +178,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "vReadResource";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "vReadResourceOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/" +connectorProperties.getProperty("logicalId")+"/_history/"+connectorProperties.getProperty("versionId")+"?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("logicalId") + "/_history/" + connectorProperties.getProperty("versionId") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -197,7 +194,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "vReadResource";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "vReadResourceNegative.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/" +connectorProperties.getProperty("logicalId")+"/_history/"+connectorProperties.getProperty("wrongVersionId")+"?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("logicalId") + "/_history/" + connectorProperties.getProperty("wrongVersionId") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 404);
@@ -211,7 +208,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "search";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "searchMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -225,7 +222,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "search";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "searchOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") +"?_format="+ connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -239,7 +236,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "search";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "searchNegative.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") + "?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") + "?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 500);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 500);
@@ -254,7 +251,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "searchPost";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "searchMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/_search";
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/_search";
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -268,7 +265,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "searchPost";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "searchOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") +"/_search?_format="+ connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/_search?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -282,7 +279,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "searchPost";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "searchNegative.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") + "/_search?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") + "/_search?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 500);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 500);
@@ -297,7 +294,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "history";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/"+ connectorProperties.getProperty("idForHistory")+"/_history";
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("idForHistory") + "/_history";
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -311,7 +308,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "history";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/"+ connectorProperties.getProperty("idForHistory")+"/_history?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("idForHistory") + "/_history?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -327,7 +324,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "history";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyNegative.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") +"/"+ connectorProperties.getProperty("wrongId")+"/_history?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/" + connectorProperties.getProperty("wrongId") + "/_history?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -341,7 +338,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "historyAll";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyAllMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") +"/_history";
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/_history";
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -355,7 +352,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "historyAll";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyAllOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base")+ "/_history?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/_history?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -372,7 +369,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "historyType";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyTypeMandatory.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/_history";
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/_history";
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -386,7 +383,7 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "historyType";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyTypeOptional.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type")+"/_history?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("type") + "/_history?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -402,13 +399,9 @@ public class fhirConnectorIntegrationTest extends ConnectorIntegrationTestBase {
 
         String methodName = "historyType";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "historyTypeNegative.json");
-        final String apiEndPoint =  connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") +"/_history?_format="+connectorProperties.getProperty("format");
+        final String apiEndPoint = connectorProperties.getProperty("base") + "/" + connectorProperties.getProperty("wrongType") + "/_history?_format=" + connectorProperties.getProperty("format");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e2d75c6a38d1bb4018356fb98a708f6dab596670
