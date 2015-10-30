@@ -15,13 +15,9 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<template name="listMetaBySystem" xmlns="http://ws.apache.org/ns/synapse">
+<template name="init" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="base" description="The service Root URL"/>
     <sequence>
-        <call>
-            <endpoint>
-                <http method="Get"
-                      uri-template="{uri.var.base}/$meta"/>
-            </endpoint>
-        </call>
+        <property name="uri.var.base" expression="$func:base"/>
     </sequence>
 </template>

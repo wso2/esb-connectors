@@ -14,6 +14,9 @@
             <property name="tag" expression="json-eval($.tag)"/>
             <property name="text" expression="json-eval($.text)"/>
             <property name="filter" expression="json-eval($.filter)"/>
+            <fhir.init>
+                <base>{$ctx:base}</base>
+            </fhir.init>
             <fhir.historyAll>
                 <base>{$ctx:base}</base>
                 <format>{$ctx:format}</format>

@@ -16,7 +16,6 @@
    under the License.
 -->
 <template name="translateCode" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="code"/>
     <parameter name="system"/>
     <parameter name="version"/>
@@ -28,7 +27,6 @@
     <parameter name="dependency.element"/>
     <parameter name="dependency.concept"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.code" expression="$func:code"/>
         <property name="uri.var.system" expression="$func:system"/>
         <property name="uri.var.version" expression="$func:version"/>

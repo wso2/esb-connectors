@@ -14,8 +14,10 @@
             <property name="tag" expression="json-eval($.tag)"/>
             <property name="text" expression="json-eval($.text)"/>
             <property name="filter" expression="json-eval($.filter)"/>
-            <fhir.getConformance>
+            <fhir.init>
                 <base>{$ctx:base}</base>
+            </fhir.init>
+            <fhir.getConformance>
                 <format>{$ctx:format}</format>
                 <id>{$ctx:id}</id>
                 <content>{$ctx:content}</content>

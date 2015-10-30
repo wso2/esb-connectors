@@ -16,11 +16,9 @@
    under the License.
 -->
 <template name="findFunctionalList" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="patient"/>
     <parameter name="name"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.patient" expression="$func:patient"/>
         <property name="uri.var.name" expression="$func:name"/>
         <script language="js">

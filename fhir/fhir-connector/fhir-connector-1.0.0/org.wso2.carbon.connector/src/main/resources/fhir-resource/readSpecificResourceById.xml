@@ -16,13 +16,11 @@
    under the License.
 -->
 <template name="readSpecificResourceById" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="type" description="The name of a resource type"/>
     <parameter name="id" description="The logical Id of the resource"/>
     <parameter name="format" description="The format of the response"/>
     <parameter name="summary" description="The value of this parameter is either true, false, text or data"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.type" expression="$func:type"/>
         <property name="uri.var.id" expression="$func:id"/>
         <property name="uri.var.format" expression="$func:format"/>

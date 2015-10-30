@@ -16,12 +16,10 @@
    under the License.
 -->
 <template name="fetchPatientRecordById" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="patientId"/>
     <parameter name="start"/>
     <parameter name="end"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.patientId" expression="$func:patientId"/>
         <property name="uri.var.start" expression="$func:start"/>
         <property name="uri.var.end" expression="$func:end"/>

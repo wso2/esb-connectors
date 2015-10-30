@@ -24,6 +24,7 @@
         <dependency component="fhir-history"/>
         <dependency component="fhir-operation"/>
         <dependency component="fhir-search"/>
+        <dependency component="fhir-config"/>
         <description>WSO2 connector for FHIR RESTful API</description>
     </component>
     <icon>icon/icon-small.gif</icon>

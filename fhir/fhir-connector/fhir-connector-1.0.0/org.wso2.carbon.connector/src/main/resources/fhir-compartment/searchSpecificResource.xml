@@ -16,7 +16,6 @@
    under the License.
 -->
 <template name="searchSpecificResource" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="compartment" description="The name of the compartment"/>
     <parameter name="idInCompartment" description="The id of the particular component at the particular Compartment"/>
     <parameter name="type" description="The resource type at a particular compartment"/>
@@ -33,7 +32,6 @@
     <parameter name="filter"
                description="To complement this mechanism, a the _filter search expression parameter can be used"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.compartment" expression="$func:compartment"/>
         <property name="uri.var.idInCompartment" expression="$func:idInCompartment"/>
         <property name="uri.var.type" expression="$func:type"/>

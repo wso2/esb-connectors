@@ -16,11 +16,9 @@
    under the License.
 -->
 <template name="create" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="type" description="The name of a resource type"/>
     <parameter name="format" description="The format of the response"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.type" expression="$func:type"/>
         <property name="uri.var.format" expression="$func:format"/>
         <script language="js">

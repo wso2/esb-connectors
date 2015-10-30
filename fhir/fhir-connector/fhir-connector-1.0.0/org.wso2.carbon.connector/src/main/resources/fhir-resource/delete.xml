@@ -16,11 +16,9 @@
    under the License.
 -->
 <template name="delete" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="type" description="The name of a resource type"/>
     <parameter name="idToDelete" description="The id to be delete"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.type" expression="$func:type"/>
         <property name="uri.var.idToDelete" expression="$func:idToDelete"/>
         <call>

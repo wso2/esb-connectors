@@ -8,6 +8,9 @@
             <property name="logicalId" expression="json-eval($.logicalId)"/>
             <property name="versionId" expression="json-eval($.versionId)"/>
             <property name="format" expression="json-eval($.format)"/>
+            <fhir.init>
+                <base>{$ctx:base}</base>
+            </fhir.init>
             <fhir.vReadResource>
                 <base>{$ctx:base}</base>
                 <type>{$ctx:type}</type>

@@ -16,12 +16,10 @@
    under the License.
 -->
 <template name="closureTableMaintenance" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="name"/>
     <parameter name="concept"/>
     <parameter name="version"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.name" expression="$func:name"/>
         <property name="uri.var.concept" expression="$func:concept"/>
         <property name="uri.var.version" expression="$func:version"/>

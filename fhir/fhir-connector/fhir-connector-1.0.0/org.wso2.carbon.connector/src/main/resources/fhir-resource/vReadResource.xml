@@ -16,13 +16,11 @@
    under the License.
 -->
 <template name="vReadResource" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="base" description="The service Root URL"/>
     <parameter name="type" description="The name of a resource type"/>
     <parameter name="logicalId" description="The logical Id of the resource"/>
     <parameter name="versionId" description="The version Id of the resource"/>
     <parameter name="format" description="The format of the response"/>
     <sequence>
-        <property name="uri.var.base" expression="$func:base"/>
         <property name="uri.var.type" expression="$func:type"/>
         <property name="uri.var.logicalId" expression="$func:logicalId"/>
         <property name="uri.var.versionId" expression="$func:versionId"/>
