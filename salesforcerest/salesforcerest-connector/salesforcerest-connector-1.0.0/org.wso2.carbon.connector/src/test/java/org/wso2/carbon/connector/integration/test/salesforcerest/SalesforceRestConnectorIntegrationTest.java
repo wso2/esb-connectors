@@ -115,7 +115,7 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(esbRestResponse.getBody().getString("deletedRecords"), apiRestResponse.getBody().getString("deletedRecords"));
+        Assert.assertEquals(esbRestResponse.getBody().getJSONArray("deletedRecords").getJSONObject(0).getString("deletedDate"), apiRestResponse.getBody().getJSONArray("deletedRecords").getJSONObject(0).getString("deletedDate"));
     }
 
     /**
@@ -130,7 +130,6 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(esbRestResponse.getBody().getString("ids"), apiRestResponse.getBody().getString("ids"));
     }
 
     /**
@@ -507,5 +506,4 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
 //        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
 //        Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
 //    }
-
 }
