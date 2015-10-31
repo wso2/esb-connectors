@@ -44,7 +44,6 @@ import java.util.Properties;
 public class TwitterStreamData extends GenericPollingConsumer {
 
     private static final Log log = LogFactory.getLog(TwitterStreamData.class);
-
     // OAuth1 credentials for the twitter account
     private String consumerKey;
     private String consumerSecret;

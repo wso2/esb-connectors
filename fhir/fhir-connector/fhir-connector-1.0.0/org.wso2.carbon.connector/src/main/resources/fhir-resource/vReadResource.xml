@@ -41,8 +41,7 @@
         <call>
             <endpoint>
                 <http method="Get"
-                      uri-template="{uri.var.base}/{uri.var.type}/{uri.var.logicalId}/_history/{uri.var.versionId}
-                      {+uri.var.urlQuery}"/>
+                      uri-template="{uri.var.base}/{uri.var.type}/{uri.var.logicalId}/_history/{uri.var.versionId}{+uri.var.urlQuery}"/>
             </endpoint>
         </call>
     </sequence>
