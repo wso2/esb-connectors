@@ -73,8 +73,8 @@ Steps to follow in setting integration test.
 	xxiii)listViewID                                                -       The id of the listview.
 	xxiv)name                                                       -       The name of the newly created record/updated record.
 	xxv)description                				        -       The description of the newly created/updated record.
-     xxvi)apiStartTime                                  -       The start time for api, for that the date and time should be provided in ISO 8601 format.
-       xxvii)apiEndTime                                 -       The end time for api, for that the date and time should be provided in ISO 8601 format.
+     xxvi)apiStartTime                                                  -       The start time for api, for that the date and time should be provided in ISO 8601 format.
+       xxvii)apiEndTime                                                 -       The end time for api, for that the date and time should be provided in ISO 8601 format.
 Properties iii), vii) and xiv) needs to be changed before running the integration test each time.
 You can put the value for nextRecordsUrl(xviii) property when the results/response of query or queryAll have too large of records only. If you have too large of records only you can get passed integration test at queryMore and queryAllMore.
 Don't put the same value to xiv) and (xiii, xvi).
