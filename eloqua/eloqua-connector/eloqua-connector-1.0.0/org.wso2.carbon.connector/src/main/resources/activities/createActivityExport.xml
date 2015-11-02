@@ -60,50 +60,50 @@
             </args>
         </payloadFactory>
         <script language="js"><![CDATA[
-		    //request body param variables
-		    var fields = mc.getProperty('uri.var.fields');
-			var autoDeleteDuration = mc.getProperty('uri.var.autoDeleteDuration');
-			var createdAt = mc.getProperty('uri.var.createdAt');
-			var createdBy = mc.getProperty('uri.var.createdBy');
-			var dataRetentionDuration = mc.getProperty('uri.var.dataRetentionDuration');
-			var kbUsed = mc.getProperty('uri.var.kbUsed');
-			var maxRecords = mc.getProperty('uri.var.maxRecords');
-			var syncActions = mc.getProperty('uri.var.syncActions');
-			var updatedAt = mc.getProperty('uri.var.updatedAt');
-			var updatedBy = mc.getProperty('uri.var.updatedBy');
-			var uri = mc.getProperty('uri.var.uri');
+            //request body param variables
+            var fields = mc.getProperty('uri.var.fields');
+            var autoDeleteDuration = mc.getProperty('uri.var.autoDeleteDuration');
+            var createdAt = mc.getProperty('uri.var.createdAt');
+            var createdBy = mc.getProperty('uri.var.createdBy');
+            var dataRetentionDuration = mc.getProperty('uri.var.dataRetentionDuration');
+            var kbUsed = mc.getProperty('uri.var.kbUsed');
+            var maxRecords = mc.getProperty('uri.var.maxRecords');
+            var syncActions = mc.getProperty('uri.var.syncActions');
+            var updatedAt = mc.getProperty('uri.var.updatedAt');
+            var updatedBy = mc.getProperty('uri.var.updatedBy');
+            var uri = mc.getProperty('uri.var.uri');
 
             //Get the existing payload
-			var payload = mc.getPayloadJSON();
+            var payload = mc.getPayloadJSON();
 
-			if (autoDeleteDuration != null && autoDeleteDuration != "") {
-				payload["autoDeleteDuration"]=autoDeleteDuration;
-			}
+            if (autoDeleteDuration != null && autoDeleteDuration != "") {
+                payload["autoDeleteDuration"]=autoDeleteDuration;
+            }
             if (createdAt != null && createdAt != "") {
                payload["createdAt"]=createdAt;
             }
             if (createdBy != null && createdBy != "") {
-				payload["createdBy"]=createdBy;
-			}
-			if (dataRetentionDuration != null && dataRetentionDuration != "") {
+                payload["createdBy"]=createdBy;
+            }
+            if (dataRetentionDuration != null && dataRetentionDuration != "") {
                payload["dataRetentionDuration"]=dataRetentionDuration;
             }
             if (kbUsed != null && kbUsed != "") {
                payload["kbUsed"]=kbUsed;
             }
             if (maxRecords != null && maxRecords != "") {
-				payload["maxRecords"]=maxRecords;
-			}
-			if (syncActions != null && syncActions != "") {
+                payload["maxRecords"]=maxRecords;
+            }
+            if (syncActions != null && syncActions != "") {
                payload["syncActions"]=syncActions;
             }
             if (updatedAt != null && updatedAt != "") {
                payload["updatedAt"]=updatedAt;
             }
             if (updatedBy != null && updatedBy != "") {
-				payload["updatedBy"]=updatedBy;
-			}
-			if (uri != null && uri != "") {
+                payload["updatedBy"]=updatedBy;
+            }
+            if (uri != null && uri != "") {
                payload["uri"]=uri;
             }
             if (fields != null && fields != "") {
@@ -125,9 +125,9 @@
             var q = eval ("(" + query + ")");
             payload["fields"]=q;
 
-			//Set the newly constructed payload
-			mc.setPayloadJSON(payload);
-        	]]>
+            //Set the newly constructed payload
+            mc.setPayloadJSON(payload);
+            ]]>
         </script>
         <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>
