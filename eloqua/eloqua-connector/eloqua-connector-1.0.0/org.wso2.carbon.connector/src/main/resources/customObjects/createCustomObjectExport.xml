@@ -60,7 +60,7 @@
             </args>
         </payloadFactory>
         <script language="js"><![CDATA[
-		    //request body param variables
+            //request body param variables
             var fields = mc.getProperty('uri.var.fields');
             var autoDeleteDuration = mc.getProperty('uri.var.autoDeleteDuration');
             var filter = mc.getProperty('uri.var.filter');
@@ -78,7 +78,7 @@
             var payload = mc.getPayloadJSON();
 
             if (autoDeleteDuration != null && autoDeleteDuration != "") {
-			    payload["autoDeleteDuration"]=autoDeleteDuration;
+                payload["autoDeleteDuration"]=autoDeleteDuration;
             }
             if (filter != null && filter != "") {
                payload["filter"]=filter;
@@ -89,25 +89,25 @@
             if (createdBy != null && createdBy != "") {
                 payload["createdBy"]=createdBy;
             }
-			if (dataRetentionDuration != null && dataRetentionDuration != "") {
+            if (dataRetentionDuration != null && dataRetentionDuration != "") {
                 payload["dataRetentionDuration"]=dataRetentionDuration;
             }
             if (kbUsed != null && kbUsed != "") {
                payload["kbUsed"]=kbUsed;
             }
             if (maxRecords != null && maxRecords != "") {
-				payload["maxRecords"]=maxRecords;
-			}
-			if (syncActions != null && syncActions != "") {
+                payload["maxRecords"]=maxRecords;
+            }
+            if (syncActions != null && syncActions != "") {
                payload["syncActions"]=syncActions;
             }
             if (updatedAt != null && updatedAt != "") {
                payload["updatedAt"]=updatedAt;
             }
             if (updatedBy != null && updatedBy != "") {
-				payload["updatedBy"]=updatedBy;
-			}
-			if (uri != null && uri != "") {
+                payload["updatedBy"]=updatedBy;
+            }
+            if (uri != null && uri != "") {
                payload["uri"]=uri;
             }
             if (fields != null && fields != "") {
