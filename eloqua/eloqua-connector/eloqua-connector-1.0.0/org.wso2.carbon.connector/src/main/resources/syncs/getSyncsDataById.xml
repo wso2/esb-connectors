@@ -19,8 +19,10 @@
 <template name="getSyncsDataById" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="syncId" description="The id of the sync."/>
     <parameter name="limit" description="Specifies maximum number of records to return."/>
-    <parameter name="offset" description="Specifies an offset that allows to retrieve the next batch of records."/>
-    <parameter name="totalResults" description="the total number of records that satisfy the request."/>
+    <parameter name="offset"
+               description="Specifies an offset that allows to retrieve the next batch of records."/>
+    <parameter name="totalResults"
+               description="the total number of records that satisfy the request."/>
     <sequence>
         <property name="uri.var.syncId" expression="$func:syncId"/>
         <property name="uri.var.limit" expression="$func:limit"/>

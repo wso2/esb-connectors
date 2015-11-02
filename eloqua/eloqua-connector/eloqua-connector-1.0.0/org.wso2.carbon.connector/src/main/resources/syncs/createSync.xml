@@ -24,7 +24,8 @@
     <parameter name="syncedInstanceUri" description="Must specify an existing definition uri."/>
     <parameter name="syncEndedAt" description="Timestamp when the sync ends."/>
     <parameter name="syncStartedAt" description="Timestamp when the sync started."/>
-    <parameter name="uri" description="System- generated URI that defines the definition for future referencing."/>
+    <parameter name="uri"
+               description="System- generated URI that defines the definition for future referencing."/>
     <sequence>
         <property name="uri.var.status" expression="$func:status"/>
         <property name="uri.var.callbackUrl" expression="$func:callbackUrl"/>
@@ -53,7 +54,6 @@
 			var syncEndedAt = mc.getProperty('uri.var.syncEndedAt');
 			var syncStartedAt = mc.getProperty('uri.var.syncStartedAt');
 			var uri = mc.getProperty('uri.var.uri');
-
 
             //Get the existing payload
 			var payload = mc.getPayloadJSON();

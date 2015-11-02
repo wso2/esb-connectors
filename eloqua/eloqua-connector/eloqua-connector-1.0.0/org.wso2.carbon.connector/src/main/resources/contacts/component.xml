@@ -80,7 +80,8 @@
         </component>
         <component name="createContactImportData">
             <file>createContactImportData.xml</file>
-            <description>Submits the data for the contact import with the specified id.</description>
+            <description>Submits the data for the contact import with the specified id.
+            </description>
         </component>
         <component name="deleteContactExport">
             <file>deleteContactExport.xml</file>
@@ -88,7 +89,8 @@
         </component>
         <component name="deleteContactExportData">
             <file>deleteContactExportData.xml</file>
-            <description>Deletes the data for the contact export with the specified id.</description>
+            <description>Deletes the data for the contact export with the specified id.
+            </description>
         </component>
         <component name="deleteContactImport">
             <file>deleteContactImport.xml</file>
@@ -96,7 +98,8 @@
         </component>
         <component name="deleteContactImportData">
             <file>deleteContactImportData.xml</file>
-            <description>Deletes the data for the contact import with the specified id.</description>
+            <description>Deletes the data for the contact import with the specified id.
+            </description>
         </component>
         <component name="updateContactExport">
             <file>updateContactExport.xml</file>

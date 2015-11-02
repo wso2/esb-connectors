@@ -52,7 +52,8 @@
         </component>
         <component name="createActivityImportData">
             <file>createActivityImportData.xml</file>
-            <description>Submits the data for the activity import with the specified id.</description>
+            <description>Submits the data for the activity import with the specified id.
+            </description>
         </component>
         <component name="deleteActivityExport">
             <file>deleteActivityExport.xml</file>
@@ -60,7 +61,8 @@
         </component>
         <component name="deleteActivityExportData">
             <file>deleteActivityExportData.xml</file>
-            <description>Deletes the data for the activity export with the specified id.</description>
+            <description>Deletes the data for the activity export with the specified id.
+            </description>
         </component>
         <component name="deleteActivityImport">
             <file>deleteActivityImport.xml</file>
@@ -68,7 +70,8 @@
         </component>
         <component name="deleteActivityImportData">
             <file>deleteActivityImportData.xml</file>
-            <description>Deletes the data for the activity import with the specified id.</description>
+            <description>Deletes the data for the activity import with the specified id.
+            </description>
         </component>
         <component name="updateActivityExport">
             <file>updateActivityExport.xml</file>
