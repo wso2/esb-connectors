@@ -1,4 +1,3 @@
-package org.wso2.carbon.connector.integration.test.eloqua;
 /*
 Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
@@ -16,15 +15,17 @@ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 * specific language governing permissions and limitations
 * under the License.
 */
+package org.wso2.carbon.connector.integration.test.eloqua;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.apache.commons.codec.binary.Base64;
 import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 import org.wso2.connector.integration.test.base.RestResponse;
-import org.wso2.carbon.connector.integration.test.common.Base64Coder;
+
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,19 +33,13 @@ import java.util.Map;
 
 public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase {
     private Map<String, String> esbRequestHeadersMap = new HashMap<String, String>();
-
     private Map<String, String> apiRequestHeadersMap = new HashMap<String, String>();
-
-    private Map<String, String> mpRequestHeadersMap = new HashMap<String, String>();
-
-    private String multipartProxyUrl;
 
     /**
      * Set up the environment.
      */
     @BeforeClass(alwaysRun = true)
     public void setEnvironment() throws Exception {
-
         init("eloqua-connector-1.0.0");
 
         esbRequestHeadersMap.put("Accept-Charset", "UTF-8");
@@ -53,12 +48,11 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         apiRequestHeadersMap.putAll(esbRequestHeadersMap);
 
         String authHeader = connectorProperties.getProperty("siteName") + "\\" + connectorProperties.getProperty("username") + ":" + connectorProperties.getProperty("password");
-        String encodedAuthorization = Base64Coder.encodeString(authHeader);
+        String encodedAuthorization = new String(Base64.encodeBase64(authHeader.getBytes()));
 
         apiRequestHeadersMap.put("Authorization", "Basic " + encodedAuthorization);
         apiRequestHeadersMap.put("Content-Type", "application/json");
         apiRequestHeadersMap.put("Accept", "application/json");
-        ;
     }
 
     /**
@@ -66,7 +60,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, description = "eloqua {getContactFields} integration test with mandatory parameters.")
     public void testGetContactFieldsWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "getContactFields";
         String apiEndPoint = connectorProperties.getProperty("apiUrl") + "contacts/fields";
         RestResponse<JSONObject> esbRestResponse =
@@ -81,16 +74,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactFieldsWithMandatoryParameters"}, description = "eloqua {getContactFields} integration test with optional parameters.")
     public void testGetContactFieldsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getContactFields";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/fields?totalResults=" + connectorProperties.getProperty("totalResults") + "&q=" + connectorProperties.getProperty("q") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFieldsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -104,6 +95,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFieldById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -115,6 +107,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getContactFieldById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFieldByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -137,15 +130,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactFiltersWithMandatoryParameters"}, description = "eloqua {getContactFilters} integration test with optional parameters.")
     public void testGetContactFiltersWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getContactFilters";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/filters?totalResults=" + connectorProperties.getProperty("totalResults") + "&q=" + connectorProperties.getProperty("q") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFiltersOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -159,6 +151,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFilterById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -170,6 +163,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getContactFilterById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactFilterByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -192,15 +186,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactListsWithMandatoryParameters"}, description = "eloqua {getContactLists} integration test with optional parameters.")
     public void testGetContactListsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getContactLists";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/lists?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactListsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -214,6 +207,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactListById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -225,6 +219,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getContactListById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactListByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -247,16 +242,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactSegmentsWithMandatoryParameters"}, description = "eloqua {getContactSegments} integration test with optional parameters.")
     public void testGetContactSegmentsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getContactSegments";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/segments?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactSegmentsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -270,6 +263,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactSegmentById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -281,6 +275,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getContactSegmentById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactSegmentByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -303,16 +298,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactImportsWithMandatoryParameters"}, description = "eloqua {getContactImports} integration test with optional parameters.")
     public void testGetContactImportsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getContactImports";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/imports?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactImportsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -335,16 +328,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactExportsWithMandatoryParameters"}, description = "eloqua {getContactExports} integration test with optional parameters.")
     public void testGetContactExportsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getContactExports";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/exports?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactExportsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -353,21 +344,18 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactExportsWithOptionalParameters"}, description = "eloqua {createContactExport} integration test with mandatory parameter.")
     public void testCreateContactExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createContactExport";
-
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createContactExport.json");
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
-
         String exportUri = esbRestResponse.getBody().get("uri").toString();
         connectorProperties.put("syncedInstanceUri", exportUri);
         String exportId = exportUri.substring(18, exportUri.length());
         connectorProperties.put("contactExportId", exportId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/exports/" + connectorProperties.getProperty("contactExportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
+        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("contactName"));
     }
 
@@ -376,16 +364,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateContactExportWithMandatoryParameters"}, description = "eloqua {updateContactExport} integration test with mandatory parameter.")
     public void testUpdateContactExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateContactExport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateContactExport.json");
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/exports/" + connectorProperties.getProperty("contactExportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
+        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateContactName"));
     }
 
@@ -399,6 +385,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactExportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -410,6 +397,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getContactExportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactExportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -442,18 +430,16 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetContactExportDataByIdWithNegativeCase"}, description = "eloqua {createContactImport} integration test with mandatory parameter.")
     public void testCreateContactImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createContactImport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createContactImport.json");
        String importUri = esbRestResponse.getBody().get("uri").toString();
-//        connectorProperties.put("syncedInstanceUri", importUri);
         String importId = importUri.substring(18, importUri.length());
         connectorProperties.put("contactImportId", importId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/imports/" + connectorProperties.getProperty("contactImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("contactName"));
     }
@@ -476,15 +462,13 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateContactImportDataWithMandatoryParameters"}, description = "eloqua {updateContactImport} integration test with mandatory parameter.")
     public void testUpdateContactImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateContactImport";
-
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateContactImport.json");
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "contacts/imports/" + connectorProperties.getProperty("contactImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateContactName"));
     }
 
@@ -499,6 +483,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactImportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -510,6 +495,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getContactImportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getContactImportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -532,16 +518,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetEmailGroupsWithMandatoryParameters"}, description = "eloqua {getEmailGroups} integration test with optional parameters.")
     public void testGetEmailGroupsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getEmailGroups";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "emailGroups/?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getEmailGroupsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -555,6 +539,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getEmailGroupById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -566,6 +551,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getEmailGroupById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getEmailGroupByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -588,16 +574,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetExportsWithMandatoryParameters"}, description = "eloqua {getExports} integration test with optional parameters.")
     public void testGetExportsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getExports";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "exports/?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getExportsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -634,16 +618,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetImportsWithMandatoryParameters"}, description = "eloqua {getImports} integration test with optional parameters.")
     public void testGetImportsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getImports";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "imports/?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getImportsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -666,7 +648,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetImportsDataWithMandatoryParameters"}, description = "eloqua {createSync} integration test with mandatory parameter.")
     public void testCreateSyncWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createSync";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createSync.json");
@@ -675,11 +656,11 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         connectorProperties.put("syncId", syncId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "syncs/" + connectorProperties.getProperty("syncId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
-        //Assert.assertEquals(apiRestResponse.getBody().get("uri"), connectorProperties.getProperty("syncUri"));
+;
     }
 
     /**
@@ -701,16 +682,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetSyncsWithMandatoryParameters"}, description = "eloqua {getSyncs} integration test with optional parameters.")
     public void testGetSyncsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getSyncs";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "syncs/?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSyncsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -724,6 +703,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSyncById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -735,6 +715,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getSyncById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSyncByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -757,7 +738,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetSyncsLogsByIdWithMandatoryParameters"}, description = "eloqua {getSyncsLogsById} integration test with optional parameters.")
     public void testGetSyncsLogsByIdWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getSyncsLogsById";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "syncs/" + connectorProperties.getProperty("syncId") + "/logs?totalResults=" + connectorProperties.getProperty("totalResults") +
@@ -765,7 +745,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSyncsLogsByIdOptional.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -779,6 +759,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSyncsRejectsById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -787,16 +768,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetSyncsRejectsByIdWithMandatoryParameters"}, description = "eloqua {getSyncsRejectsById} integration test with optional parameters.")
     public void testGetSyncsRejectsByIdWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getSyncsRejectsById";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "syncs/" + connectorProperties.getProperty("syncId") + "/rejects?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSyncsRejectsByIdOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -808,6 +787,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getSyncsDataById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSyncsDataById.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
     }
 
@@ -818,9 +798,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetSyncsDataByIdWithMandatoryParameters"}, description = "eloqua {createAccountExport} integration test with mandatory parameter.")
     public void testCreateAccountExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createAccountExport";
-
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createAccountExport.json");
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
@@ -829,8 +807,8 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         connectorProperties.put("accountExportId", exportId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/exports/" + connectorProperties.getProperty("accountExportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("accountName"));
     }
 
@@ -839,16 +817,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateAccountExportWithMandatoryParameters"}, description = "eloqua {updateAccountExport} integration test with mandatory parameter.")
     public void testUpdateAccountExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateAccountExport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateAccountExport.json");
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/exports/" + connectorProperties.getProperty("accountExportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateAccountName"));
     }
 
@@ -862,6 +838,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountExportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -873,6 +850,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getAccountExportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountExportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -886,6 +864,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountExportDataById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -897,6 +876,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getAccountExportDataById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountExportDataByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -905,7 +885,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetAccountExportDataByIdWithNegativeCase"}, description = "eloqua {createAccountImport} integration test with mandatory parameter.")
     public void testCreateAccountImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createAccountImport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createAccountImport.json");
@@ -914,8 +893,8 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         connectorProperties.put("accountImportId", importId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/imports/" + connectorProperties.getProperty("accountImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("accountName"));
     }
@@ -925,10 +904,10 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateAccountImportWithMandatoryParameters"}, description = "eloqua {createAccountImportData} integration test with mandatory parameter.")
     public void testCreateAccountImportDataWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createAccountImportData";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createAccountImportData.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 204);
     }
 
@@ -937,15 +916,13 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateAccountImportDataWithMandatoryParameters"}, description = "eloqua {updateAccountImport} integration test with mandatory parameter.")
     public void testUpdateAccountImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateAccountImport";
-
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateAccountImport.json");
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/imports/" + connectorProperties.getProperty("accountImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateAccountName"));
     }
 
@@ -960,6 +937,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountImportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -971,6 +949,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getAccountImportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountImportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -993,16 +972,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetAccountFieldsWithMandatoryParameters"}, description = "eloqua {getAccountFields} integration test with optional parameters.")
     public void testGetAccountFieldsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getAccountFields";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/fields?totalResults=" + connectorProperties.getProperty("totalResults") + "&q=" + connectorProperties.getProperty("q") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountFieldsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1016,6 +993,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountFieldById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1027,6 +1005,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getAccountFieldById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountFieldByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1049,15 +1028,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetAccountListsWithMandatoryParameters"}, description = "eloqua {getAccountLists} integration test with optional parameters.")
     public void testGetAccountListsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getAccountLists";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/lists?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountListsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1071,6 +1049,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountListById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1082,6 +1061,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getAccountListById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountListByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1104,16 +1084,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetAccountImportsWithMandatoryParameters"}, description = "eloqua {getAccountImports} integration test with optional parameters.")
     public void testGetAccountImportsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getAccountImports";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/imports?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountImportsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1136,16 +1114,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetAccountExportsWithMandatoryParameters"}, description = "eloqua {getAccountExports} integration test with optional parameters.")
     public void testGetAccountExportsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getAccountExports";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "accounts/exports?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getAccountExportsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1154,9 +1130,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetAccountExportsWithOptionalParameters"}, description = "eloqua {createActivityExport} integration test with mandatory parameter.")
     public void testCreateActivityExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createActivityExport";
-
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createActivityExport.json");
         String exportUri = esbRestResponse.getBody().get("uri").toString();
@@ -1164,8 +1138,8 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         connectorProperties.put("activityExportId", exportId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "activities/exports/" + connectorProperties.getProperty("activityExportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("activityName"));
     }
@@ -1175,15 +1149,13 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateActivityExportWithMandatoryParameters"}, description = "eloqua {updateActivityExport} integration test with mandatory parameter.")
     public void testUpdateActivityExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateActivityExport";
-
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateActivityExport.json");
-        Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "activities/exports/" + connectorProperties.getProperty("activityExportId");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateActivityName"));
     }
 
@@ -1197,6 +1169,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityExportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1208,6 +1181,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getActivityExportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityExportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1232,6 +1206,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getActivityExportDataById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityExportDataByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1240,7 +1215,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetActivityExportDataByIdWithNegativeCase"}, description = "eloqua {createActivityImport} integration test with mandatory parameter.")
     public void testCreateActivityImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createActivityImport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createActivityImport.json");
@@ -1249,8 +1223,9 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         connectorProperties.put("activityImportId", importId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "activities/imports/" + connectorProperties.getProperty("activityImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("activityName"));
     }
@@ -1260,10 +1235,10 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateActivityImportWithMandatoryParameters"}, description = "eloqua {createActivityImportData} integration test with mandatory parameter.")
     public void testCreateActivityImportDataWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createActivityImportData";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createActivityImportData.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 204);
     }
 
@@ -1272,14 +1247,13 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateActivityImportDataWithMandatoryParameters"}, description = "eloqua {updateActivityImport} integration test with mandatory parameter.")
     public void testUpdateActivityImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateActivityImport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateActivityImport.json");
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "activities/imports/" + connectorProperties.getProperty("activityImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateActivityName"));
     }
 
@@ -1294,6 +1268,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityImportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1305,6 +1280,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getActivityImportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityImportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1327,16 +1303,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetActivityImportsWithMandatoryParameters"}, description = "eloqua {getActivityImports} integration test with optional parameters.")
     public void testGetActivityImportsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getActivityImports";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "activities/imports?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityImportsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-        System.out.println(apiRestResponse.getBody().toString());
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1359,15 +1333,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetActivityTypesWithMandatoryParameters"}, description = "eloqua {getActivityTypes} integration test with optional parameters.")
     public void testGetActivityTypesWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getActivityTypes";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "activities/types?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityTypesOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1381,6 +1354,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityTypeById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1392,6 +1366,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getActivityTypeById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getActivityTypeByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1400,7 +1375,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetActivityTypeByIdWithNegativeCase"}, description = "eloqua {createCustomObjectExport} integration test with mandatory parameter.")
     public void testCreateCustomObjectExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createCustomObjectExport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createCustomObjectExport.json");
@@ -1409,7 +1383,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         connectorProperties.put("customObjectExportId", exportId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects/" + connectorProperties.getProperty("customObjectId") + "/exports/" + connectorProperties.getProperty("customObjectExportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("customObjectName"));
@@ -1420,15 +1393,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateCustomObjectExportWithMandatoryParameters"}, description = "eloqua {updateCustomObjectExport} integration test with mandatory parameter.")
     public void testUpdateCustomObjectExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateCustomObjectExport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateCustomObjectExport.json");
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects/" + connectorProperties.getProperty("customObjectId") + "/exports/" + connectorProperties.getProperty("customObjectExportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateCustomObjectName"));
     }
 
@@ -1442,6 +1414,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectExportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1453,6 +1426,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getCustomObjectExportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectExportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1466,6 +1440,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectExportDataById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1477,6 +1452,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getCustomObjectExportDataById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectExportDataByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1485,7 +1461,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetCustomObjectExportDataByIdWithNegativeCase"}, description = "eloqua {createCustomObjectImport} integration test with mandatory parameter.")
     public void testCreateCustomObjectImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createCustomObjectImport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createCustomObjectImport.json");
@@ -1494,8 +1469,8 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         connectorProperties.put("customObjectImportId", importId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects/" + connectorProperties.getProperty("customObjectId") + "/imports/" + connectorProperties.getProperty("customObjectImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 201);
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("customObjectName"));
     }
@@ -1505,7 +1480,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateCustomObjectImportWithMandatoryParameters"}, description = "eloqua {createCustomObjectImportData} integration test with mandatory parameter.")
     public void testCreateCustomObjectImportDataWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "createCustomObjectImportData";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "createCustomObjectImportData.json");
@@ -1517,14 +1491,13 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testCreateCustomObjectImportDataWithMandatoryParameters"}, description = "eloqua {updateCustomObjectImport} integration test with mandatory parameter.")
     public void testUpdateCustomObjectImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "updateCustomObjectImport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "updateCustomObjectImport.json");
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects/" + connectorProperties.getProperty("customObjectId") + "/imports/" + connectorProperties.getProperty("customObjectImportId");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(apiRestResponse.getBody().get("name"), connectorProperties.getProperty("updateCustomObjectName"));
     }
 
@@ -1538,6 +1511,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectImportById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1549,6 +1523,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getCustomObjectImportById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectImportByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1571,15 +1546,14 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetCustomObjectsWithMandatoryParameters"}, description = "eloqua {getCustomObjects} integration test with optional parameters.")
     public void testGetCustomObjectsWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getCustomObjects";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects?totalResults=" + connectorProperties.getProperty("totalResults") +
                         "&orderBy=" + connectorProperties.getProperty("orderByEncoded") + "&offset=" + connectorProperties.getProperty("offset") + "&limit=" + connectorProperties.getProperty("limit");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectsOptional.json");
-
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1593,6 +1567,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectById.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1604,6 +1579,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         String methodName = "getCustomObjectById";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getCustomObjectByIdNegative.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
     }
 
@@ -1626,7 +1602,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetExportsOfCustomObjectWithMandatoryParameters"}, description = "eloqua {getExportsOfCustomObject} integration test with optional parameters.")
     public void testGetExportsOfCustomObjectWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getExportsOfCustomObject";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects/" + connectorProperties.getProperty("customObjectId") + "/exports?totalResults=" + connectorProperties.getProperty("totalResults") +
@@ -1634,6 +1609,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getExportsOfCustomObjectOptional.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1656,7 +1632,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetImportsOfCustomObjectWithMandatoryParameters"}, description = "eloqua {getImportsOfCustomObject} integration test with optional parameters.")
     public void testGetImportsOfCustomObjectWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getImportsOfCustomObject";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects/" + connectorProperties.getProperty("customObjectId") + "/imports?totalResults=" + connectorProperties.getProperty("totalResults") +
@@ -1664,6 +1639,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getImportsOfCustomObjectOptional.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1686,7 +1662,6 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = true, dependsOnMethods = {"testGetFieldsOfCustomObjectWithMandatoryParameters"}, description = "eloqua {getFieldsOfCustomObject} integration test with optional parameters.")
     public void testGetFieldsOfCustomObjectWithOptionalParameters() throws IOException, JSONException {
-
         String methodName = "getFieldsOfCustomObject";
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "customObjects/" + connectorProperties.getProperty("customObjectId") + "/fields?totalResults=" + connectorProperties.getProperty("totalResults") +
@@ -1694,6 +1669,7 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getFieldsOfCustomObjectOptional.json");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
+
         Assert.assertEquals(esbRestResponse.getBody().toString(), apiRestResponse.getBody().toString());
     }
 
@@ -1702,10 +1678,10 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = false, dependsOnMethods = {"testGetFieldsOfCustomObjectWithOptionalParameters"}, description = "eloqua {deleteContactExportData} integration test.")
     public void testDeleteContactExportDataWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "deleteContactExportData";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "deleteContactExportData.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 204);
     }
 
@@ -1714,10 +1690,10 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = false, dependsOnMethods = {"testDeleteContactExportDataWithMandatoryParameters"}, description = "eloqua {deleteContactExport} integration test.")
     public void testDeleteContactExportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "deleteContactExport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "deleteContactExport.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 204);
     }
 
@@ -1726,10 +1702,10 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = false, dependsOnMethods = {"testDeleteContactExportWithMandatoryParameters"}, description = "eloqua {deleteContactImportData} integration test.")
     public void testDeleteContactImportDataWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "deleteContactImportData";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "deleteContactImportData.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 204);
     }
 
@@ -1738,10 +1714,10 @@ public class EloquaConnectorIntegrationTest extends ConnectorIntegrationTestBase
      */
     @Test(enabled = false, dependsOnMethods = {"testDeleteContactImportDataWithMandatoryParameters"}, description = "eloqua {deleteContactImport} integration test.")
     public void testDeleteContactImportWithMandatoryParameters() throws IOException, JSONException {
-
         String methodName = "deleteContactImport";
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "deleteContactImport.json");
+
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 204);
     }
 }
