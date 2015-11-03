@@ -38,9 +38,9 @@
                 <arg evaluator="xml" expression="$func:parentId"/>
             </args>
         </payloadFactory>
-        <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"></property>
-        <property name="FORCE_HTTP_1.0" value="true" scope="axis2"></property>
-        <property name="DISABLE_CHUNKING" value="true" scope="axis2"></property>
+        <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>
+        <property name="FORCE_HTTP_1.0" value="true" scope="axis2"/>
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <call>
             <endpoint>
                 <http method="PUT"
