@@ -17,7 +17,8 @@
   ~ under the License.
   -->
 <template xmlns="http://ws.apache.org/ns/synapse" name="setActorsToRoleOfProject">
-    <parameter name="projectIdOrKey" description="a String containing of the unique key for a project"/>
+    <parameter name="projectIdOrKey"
+               description="a String containing of the unique key for a project"/>
     <parameter name="roleId" description="role id for the given project"/>
     <parameter name="roles" description="roles for the given project"/>
     <sequence>
@@ -26,10 +27,10 @@
         <property name="uri.var.jira.roles" expression="$func:roles"/>
         <payloadFactory media-type="json">
             <format>
-                    $1
+                $1
             </format>
             <args>
-                <arg  expression="get-property('uri.var.jira.roles')"/>
+                <arg expression="get-property('uri.var.jira.roles')"/>
             </args>
         </payloadFactory>
         <property name="messageType" value="application/json" scope="axis2"/>

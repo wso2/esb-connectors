@@ -28,11 +28,13 @@
         </component>
         <component name="searchAssignableUser">
             <file>searchAssignableUser.xml</file>
-            <description>Returns a list of assignable users that match the given issue.</description>
+            <description>Returns a list of assignable users that match the given issue.
+            </description>
         </component>
         <component name="searchIssueViewableUsers">
             <file>searchIssueViewableUsers.xml</file>
-            <description>Given an issue key this resource will provide a list of users that match the search string and
+            <description>Given an issue key this resource will provide a list of users that match
+                the search string and
                 have the browse issue permission for the issue provided.
             </description>
         </component>

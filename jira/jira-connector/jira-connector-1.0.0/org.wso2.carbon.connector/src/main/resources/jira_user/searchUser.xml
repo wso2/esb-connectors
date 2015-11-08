@@ -17,7 +17,8 @@
   ~ under the License.
   -->
 <template xmlns="http://ws.apache.org/ns/synapse" name="searchUser">
-    <parameter name="usernameForSearch" description="the username of the user for whom we require details"/>
+    <parameter name="usernameForSearch"
+               description="the username of the user for whom we require details"/>
     <parameter name="startAt" description="the index of the first user to return (0-based)"/>
     <parameter name="maxResults"
                desciption="the maximum number of users to return (defaults to 50). The maximum allowed value is 1000."/>

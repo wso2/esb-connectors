@@ -19,7 +19,8 @@
 <template xmlns="http://ws.apache.org/ns/synapse" name="getDashboards">
     <parameter name="maxResults" description="maxium results to be shown."/>
     <parameter name="startAt" description="starts from."/>
-    <parameter name="filter" description="An optional filter that is applied to the list of dashboards."/>
+    <parameter name="filter"
+               description="An optional filter that is applied to the list of dashboards."/>
     <sequence>
         <property name="uri.var.jira.maxResults" expression="$func:maxResults"/>
         <property name="uri.var.jira.startAt" expression="$func:startAt"/>
@@ -48,7 +49,8 @@
         </script>
         <call>
             <endpoint>
-                <http method="GET" uri-template="{uri.var.jira.url}/rest/api/2/dashboard{+uri.var.jira.urlQuery}"/>
+                <http method="GET"
+                      uri-template="{uri.var.jira.url}/rest/api/2/dashboard{+uri.var.jira.urlQuery}"/>
             </endpoint>
         </call>
     </sequence>

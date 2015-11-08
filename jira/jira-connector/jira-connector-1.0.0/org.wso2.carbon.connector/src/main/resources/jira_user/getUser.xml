@@ -17,7 +17,8 @@
   ~ under the License.
   -->
 <template xmlns="http://ws.apache.org/ns/synapse" name="getUser">
-    <parameter name="usernameFilter" description="the username of the user for whom we require details"/>
+    <parameter name="usernameFilter"
+               description="the username of the user for whom we require details"/>
     <parameter name="key" description="the key of the user for whom we require details"/>
     <sequence>
         <property name="uri.var.jira.usernameFilter" expression="$func:usernameFilter"/>
