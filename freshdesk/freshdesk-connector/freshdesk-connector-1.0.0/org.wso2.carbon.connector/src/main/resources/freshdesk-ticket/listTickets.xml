@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,30 +18,30 @@
 -->
 
 <template name="listTickets" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="filterType"
-      description="The type of the filter.Can be defaultfilters,requester,customticketviews,companyname,companyid,requesteremail." />
-   <parameter name="filterName"
-      description="An available filter out of 'all_tickets, new_my_open, monitored_by, spam, deleted'." />
-   <parameter name="requesterId" description="The unique identifier of the requester." />
-   <parameter name="viewId" description="The unique identifier ofthe view." />
-   <parameter name="companyName" description="Name of the company." />
-   <parameter name="companyId" description="The unique identifier of the company." />
-   <parameter name="email" description="The email address." />
-   <parameter name="page" description="The requested page number." />
+    <parameter name="filterType"
+               description="The type of the filter.Can be defaultfilters,requester,customticketviews,companyname,companyid,requesteremail."/>
+    <parameter name="filterName"
+               description="An available filter out of 'all_tickets, new_my_open, monitored_by, spam, deleted'."/>
+    <parameter name="requesterId" description="The unique identifier of the requester."/>
+    <parameter name="viewId" description="The unique identifier ofthe view."/>
+    <parameter name="companyName" description="Name of the company."/>
+    <parameter name="companyId" description="The unique identifier of the company."/>
+    <parameter name="email" description="The email address."/>
+    <parameter name="page" description="The requested page number."/>
 
-   <sequence>
-      <property name="uri.var.filterType" expression="$func:filterType" />
-      <property name="uri.var.filterName" expression="$func:filterName" />
-      <property name="uri.var.requesterId" expression="$func:requesterId" />
-      <property name="uri.var.viewId" expression="$func:viewId" />
-      <property name="uri.var.companyName" expression="$func:companyName" />
-      <property name="uri.var.companyId" expression="$func:companyId" />
-      <property name="uri.var.email" expression="$func:email" />
-      <property name="uri.var.page" expression="$func:page" />
+    <sequence>
+        <property name="uri.var.filterType" expression="$func:filterType"/>
+        <property name="uri.var.filterName" expression="$func:filterName"/>
+        <property name="uri.var.requesterId" expression="$func:requesterId"/>
+        <property name="uri.var.viewId" expression="$func:viewId"/>
+        <property name="uri.var.companyName" expression="$func:companyName"/>
+        <property name="uri.var.companyId" expression="$func:companyId"/>
+        <property name="uri.var.email" expression="$func:email"/>
+        <property name="uri.var.page" expression="$func:page"/>
 
-      <!--Construct endpoint with optional url parameters -->
-      <script language="js">
-      <![CDATA[
+        <!--Construct endpoint with optional url parameters -->
+        <script language="js">
+            <![CDATA[
       
          var apiUrl=mc.getProperty("uri.var.apiUrl") + "/helpdesk/tickets";
          var format=mc.getProperty("uri.var.format");
@@ -117,17 +117,17 @@
          mc.setProperty('uri.var.apiUrl', apiUrl);
 
       ]]>
-      </script>
+        </script>
 
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{+uri.var.apiUrl}" />
-         </endpoint>
-      </call>
+        <call>
+            <endpoint>
+                <http method="get" uri-template="{+uri.var.apiUrl}"/>
+            </endpoint>
+        </call>
 
-      <!-- Remove response custom header information -->
-      <header name="X-Runtime" scope="transport" action="remove" />
-      <header name="X-Powered-By" scope="transport" action="remove" />
+        <!-- Remove response custom header information -->
+        <header name="X-Runtime" scope="transport" action="remove"/>
+        <header name="X-Powered-By" scope="transport" action="remove"/>
 
-   </sequence>
+    </sequence>
 </template>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,26 +18,26 @@
 -->
 
 <template name="getTopic" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="categoryId" description="ID of the Category to which the Forum belongs." />
-   <parameter name="forumId" description="ID of the Forum to which the Topic belongs." />
-   <parameter name="topicId" description="ID of the Forum to retrieve." />
+    <parameter name="categoryId" description="ID of the Category to which the Forum belongs."/>
+    <parameter name="forumId" description="ID of the Forum to which the Topic belongs."/>
+    <parameter name="topicId" description="ID of the Forum to retrieve."/>
 
-   <sequence>
-      <property name="uri.var.categoryId" expression="$func:categoryId" />
-      <property name="uri.var.forumId" expression="$func:forumId" />
-      <property name="uri.var.topicId" expression="$func:topicId" />
+    <sequence>
+        <property name="uri.var.categoryId" expression="$func:categoryId"/>
+        <property name="uri.var.forumId" expression="$func:forumId"/>
+        <property name="uri.var.topicId" expression="$func:topicId"/>
 
-      <call>
-         <endpoint>
-            <http method="get"
-               uri-template="{uri.var.apiUrl}/categories/{uri.var.categoryId}/forums/{uri.var.forumId}/topics/{uri.var.topicId}.{uri.var.format}" />
-         </endpoint>
-      </call>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}/categories/{uri.var.categoryId}/forums/{uri.var.forumId}/topics/{uri.var.topicId}.{uri.var.format}"/>
+            </endpoint>
+        </call>
 
-      <!-- Remove response custom header information -->
-      <header name="X-Runtime" scope="transport" action="remove" />
-      <header name="X-Powered-By" scope="transport" action="remove" />
-      <header name="ETag" scope="transport" action="remove" />
+        <!-- Remove response custom header information -->
+        <header name="X-Runtime" scope="transport" action="remove"/>
+        <header name="X-Powered-By" scope="transport" action="remove"/>
+        <header name="ETag" scope="transport" action="remove"/>
 
-   </sequence>
+    </sequence>
 </template>

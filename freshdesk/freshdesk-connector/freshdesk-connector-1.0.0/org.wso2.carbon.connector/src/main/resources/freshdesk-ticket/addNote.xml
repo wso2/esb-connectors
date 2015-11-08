@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,40 +18,41 @@
 -->
 
 <template name="addNote" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="ticketId" description="The unique identifier of the ticket specific to the account." />
-   <parameter name="noteBody" description="The body of the note" />
-   <parameter name="private" description="True if the note is private" />
-   
-   <sequence>
-      <property name="uri.var.ticketId" expression="$func:ticketId" />
-      <property name="uri.var.noteBody" expression="$func:noteBody" />
-      <property name="uri.var.private" expression="$func:private" />
+    <parameter name="ticketId"
+               description="The unique identifier of the ticket specific to the account."/>
+    <parameter name="noteBody" description="The body of the note"/>
+    <parameter name="private" description="True if the note is private"/>
 
-      <payloadFactory media-type="json">
-         <format>
-            {
-               "helpdesk_note":{
-                  "body":"$1",
-                  "private":"$2"
-               }
-            }
-         </format>
-         <args>
-            <arg expression="get-property('uri.var.noteBody')" />
-            <arg expression="get-property('uri.var.private')" />
-         </args>
-      </payloadFactory>
+    <sequence>
+        <property name="uri.var.ticketId" expression="$func:ticketId"/>
+        <property name="uri.var.noteBody" expression="$func:noteBody"/>
+        <property name="uri.var.private" expression="$func:private"/>
 
-      <call>
-         <endpoint>
-            <http method="post"
-               uri-template="{uri.var.apiUrl}/helpdesk/tickets/{uri.var.ticketId}/conversations/note.{uri.var.format}" />
-         </endpoint>
-      </call>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "helpdesk_note":{
+                "body":"$1",
+                "private":"$2"
+                }
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.noteBody')"/>
+                <arg expression="get-property('uri.var.private')"/>
+            </args>
+        </payloadFactory>
 
-      <!-- Remove response custom header information -->
-      <header name="X-Runtime" scope="transport" action="remove" />
-      <header name="X-Powered-By" scope="transport" action="remove" />
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}/helpdesk/tickets/{uri.var.ticketId}/conversations/note.{uri.var.format}"/>
+            </endpoint>
+        </call>
 
-   </sequence>
+        <!-- Remove response custom header information -->
+        <header name="X-Runtime" scope="transport" action="remove"/>
+        <header name="X-Powered-By" scope="transport" action="remove"/>
+
+    </sequence>
 </template>

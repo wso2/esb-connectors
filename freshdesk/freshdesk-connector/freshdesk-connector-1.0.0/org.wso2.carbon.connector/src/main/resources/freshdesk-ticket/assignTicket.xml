@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,23 +18,24 @@
 -->
 
 <template name="assignTicket" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="userId" description="The unique identifier of the user." />
-   <parameter name="ticketId" description="The unique identifier of the ticket specific to the account." />
-   
-   <sequence>
-      <property name="uri.var.userId" expression="$func:userId" />
-      <property name="uri.var.ticketId" expression="$func:ticketId" />
+    <parameter name="userId" description="The unique identifier of the user."/>
+    <parameter name="ticketId"
+               description="The unique identifier of the ticket specific to the account."/>
 
-      <call>
-         <endpoint>
-            <http method="put"
-               uri-template="{uri.var.apiUrl}/helpdesk/tickets/{uri.var.ticketId}/assign.{uri.var.format}?responder_id={uri.var.userId}" />
-         </endpoint>
-      </call>
+    <sequence>
+        <property name="uri.var.userId" expression="$func:userId"/>
+        <property name="uri.var.ticketId" expression="$func:ticketId"/>
 
-      <!-- Remove response custom header information -->
-      <header name="X-Runtime" scope="transport" action="remove" />
-      <header name="X-Powered-By" scope="transport" action="remove" />
+        <call>
+            <endpoint>
+                <http method="put"
+                      uri-template="{uri.var.apiUrl}/helpdesk/tickets/{uri.var.ticketId}/assign.{uri.var.format}?responder_id={uri.var.userId}"/>
+            </endpoint>
+        </call>
 
-   </sequence>
+        <!-- Remove response custom header information -->
+        <header name="X-Runtime" scope="transport" action="remove"/>
+        <header name="X-Powered-By" scope="transport" action="remove"/>
+
+    </sequence>
 </template>
