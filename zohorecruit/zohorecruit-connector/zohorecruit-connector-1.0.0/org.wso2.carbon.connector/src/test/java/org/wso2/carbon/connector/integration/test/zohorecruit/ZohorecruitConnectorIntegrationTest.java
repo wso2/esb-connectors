@@ -18,11 +18,6 @@
 
 package org.wso2.carbon.connector.integration.test.zohorecruit;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,61 +27,65 @@ import org.testng.annotations.Test;
 import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 import org.wso2.connector.integration.test.base.RestResponse;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTestBase {
-    
+
     private Map<String, String> esbRequestHeadersMap = new HashMap<String, String>();
-    
+
     private Map<String, String> apiRequestHeadersMap = new HashMap<String, String>();
-    
+
     /**
      * Set up the environment.
      */
     @BeforeClass(alwaysRun = true)
     public void setEnvironment() throws Exception {
-    
+
         init("zohorecruit-connector-1.0.0");
-        
+
         esbRequestHeadersMap.put("Accept-Charset", "UTF-8");
         esbRequestHeadersMap.put("Content-Type", "application/json");
-        
+
         apiRequestHeadersMap.putAll(esbRequestHeadersMap);
         apiRequestHeadersMap.put("Content-Type", "application/x-www-form-urlencoded");
-        
+
     }
-    
+
     /**
      * Positive test case for addRecords method with mandatory parameters.
      */
-    @Test(groups = { "wso2.esb" }, description = "zohorecruit {addRecords} integration test with mandatory parameters")
+    @Test(groups = {"wso2.esb"}, description = "zohorecruit {addRecords} integration test with mandatory parameters")
     public void testAddRecordsWithMandatoryParameters() throws IOException, JSONException {
 
         connectorProperties.setProperty("email", System.currentTimeMillis() + connectorProperties
                 .getProperty("email"));
-    	esbRequestHeadersMap.put("Action", "urn:addRecords");
+        esbRequestHeadersMap.put("Action", "urn:addRecords");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_addRecords_mandatory.json");
-        
+
         String recordId =
                 esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                         .getJSONObject("recorddetail").getJSONArray("FL").getJSONObject(0).getString("content");
         connectorProperties.put("recordId1", recordId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("recordId1");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("recordId1");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         String apiRecordId = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result").getJSONObject("Candidates").getJSONObject("row")
-        		.getJSONArray("FL").getJSONObject(0).getString("content");
+                .getJSONArray("FL").getJSONObject(0).getString("content");
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(recordId,apiRecordId);
+        Assert.assertEquals(recordId, apiRecordId);
     }
-    
+
     /**
      * Positive test case for addRecords method with optional parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testAddRecordsWithMandatoryParameters" }, description = "zohorecruit {addRecords} integration test with optional parameters.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testAddRecordsWithMandatoryParameters"}, description = "zohorecruit {addRecords} integration test with optional parameters.")
     public void testAddRecordsWithOptionalParameters() throws IOException, JSONException {
 
         connectorProperties.setProperty("email", System.currentTimeMillis() + connectorProperties
@@ -101,21 +100,21 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
         connectorProperties.put("recordId", recordId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("recordId");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("recordId");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         String apiRecordId = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result").getJSONObject("Candidates").getJSONObject("row")
-        		.getJSONArray("FL").getJSONObject(0).getString("content");
+                .getJSONArray("FL").getJSONObject(0).getString("content");
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(recordId,apiRecordId);
+        Assert.assertEquals(recordId, apiRecordId);
     }
 
     /**
      * Negative test case for addRecords method.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testAddRecordsWithOptionalParameters" }, description = "zohorecruit {addRecords} integration test with negative Case.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testAddRecordsWithOptionalParameters"}, description = "zohorecruit {addRecords} integration test with negative Case.")
     public void testAddRecordsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:addRecords");
@@ -125,12 +124,12 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertTrue(esbRestResponse.getBody().getJSONObject("response").has("error"));
 
-   }
+    }
 
     /**
      * Positive test case for getRecords method with mandatory parameters.
      */
-    @Test(groups = { "wso2.esb" }, description = "zohorecruit {getRecords} integration test with mandatory parameters")
+    @Test(groups = {"wso2.esb"}, description = "zohorecruit {getRecords} integration test with mandatory parameters")
     public void testGetRecordsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getRecords");
@@ -139,8 +138,8 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecords?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -149,13 +148,13 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 .getJSONObject("Candidates").getJSONArray("row").length();
         int apiArrayLenght = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONArray("row").length();
-        String esbContent =   esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String esbContent = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONArray("row").getJSONObject(0).getJSONArray("FL")
                 .getJSONObject(0).getString("content");
         String apiContent = apiRestResponse.getBody().getJSONObject("response")
                 .getJSONObject("result").getJSONObject("Candidates").getJSONArray("row").getJSONObject(0)
                 .getJSONArray("FL").getJSONObject(0).getString("content");
-        String esbVal =  esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String esbVal = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONArray("row").getJSONObject(0).getJSONArray("FL")
                 .getJSONObject(1).getString("val");
         String apiVal = apiRestResponse.getBody().getJSONObject("response")
@@ -163,16 +162,16 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 .getJSONArray("FL").getJSONObject(1).getString("val");
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(esbArrayLength,apiArrayLenght);
+        Assert.assertEquals(esbArrayLength, apiArrayLenght);
         Assert.assertEquals(esbContent, apiContent);
-        Assert.assertEquals(esbVal,apiVal );
+        Assert.assertEquals(esbVal, apiVal);
 
     }
 
     /**
      * Positive test case for getRecords method with optional parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetRecordsWithMandatoryParameters" }, description = "zohorecruit {getRecords} integration test with optional parameters")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetRecordsWithMandatoryParameters"}, description = "zohorecruit {getRecords} integration test with optional parameters")
     public void testGetRecordsWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getRecords");
@@ -181,24 +180,24 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecords?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&fromIndex="
-                        + connectorProperties.getProperty("getRecordsFromIndex") + "&toIndex="
-                        + connectorProperties.getProperty("getRecordsToIndex") + "&sortColumnString="
-                        + connectorProperties.getProperty("getRecordsSortColumnString");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&fromIndex="
+                + connectorProperties.getProperty("getRecordsFromIndex") + "&toIndex="
+                + connectorProperties.getProperty("getRecordsToIndex") + "&sortColumnString="
+                + connectorProperties.getProperty("getRecordsSortColumnString");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         int esbArrayLength = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONArray("row").length();
         int apiArrayLenght = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONArray("row").length();
-        String esbContent =   esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String esbContent = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONArray("row").getJSONObject(0).getJSONArray("FL")
                 .getJSONObject(0).getString("content");
         String apiContent = apiRestResponse.getBody().getJSONObject("response")
                 .getJSONObject("result").getJSONObject("Candidates").getJSONArray("row").getJSONObject(0)
                 .getJSONArray("FL").getJSONObject(0).getString("content");
-        String esbVal =  esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String esbVal = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONArray("row").getJSONObject(0).getJSONArray("FL")
                 .getJSONObject(1).getString("val");
         String apiVal = apiRestResponse.getBody().getJSONObject("response")
@@ -206,15 +205,15 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 .getJSONArray("FL").getJSONObject(1).getString("val");
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(esbArrayLength,apiArrayLenght);
+        Assert.assertEquals(esbArrayLength, apiArrayLenght);
         Assert.assertEquals(esbContent, apiContent);
-        Assert.assertEquals(esbVal,apiVal );
+        Assert.assertEquals(esbVal, apiVal);
     }
 
     /**
      * Negative test case for getRecords method.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetRecordsWithOptionalParameters" }, description = "zohorecruit {getRecords} integration test with negative Case.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetRecordsWithOptionalParameters"}, description = "zohorecruit {getRecords} integration test with negative Case.")
     public void testGetRecordsWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getRecords");
@@ -223,8 +222,8 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/xxx/getRecords?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap);
 
@@ -236,7 +235,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Positive test case for getRecordById method with mandatory parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetRecordsWithNegativeCase" }, description = "zohorecruit {getRecordById} integration test with mandatory parameters")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetRecordsWithNegativeCase"}, description = "zohorecruit {getRecordById} integration test with mandatory parameters")
     public void testGetRecordByIdWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getRecordById");
@@ -245,9 +244,9 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("recordId");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("recordId");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -255,14 +254,14 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 .getJSONObject("Candidates").getJSONObject("row").getString("no");
         String apiNo =
                 apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
-                .getJSONObject("Candidates").getJSONObject("row").getString("no") ;
-        String esbConent =  esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+                        .getJSONObject("Candidates").getJSONObject("row").getString("no");
+        String esbConent = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONObject("row").getJSONArray("FL").getJSONObject(0)
                 .getString("content");
-        String apiContent= apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String apiContent = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONObject("row").getJSONArray("FL").getJSONObject(0)
                 .getString("content");
-        String esbValue =esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String esbValue = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONObject("row").getJSONArray("FL").getJSONObject(0)
                 .getString("val");
         String apiValue = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
@@ -270,15 +269,15 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 .getString("val");
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(esbNo,apiNo);
-        Assert.assertEquals(esbConent,apiContent);
-        Assert.assertEquals(esbValue,apiValue);
+        Assert.assertEquals(esbNo, apiNo);
+        Assert.assertEquals(esbConent, apiContent);
+        Assert.assertEquals(esbValue, apiValue);
     }
 
     /**
      * Positive test case for getRecordById method with optional parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetRecordByIdWithMandatoryParameters" }, description = "zohorecruit {getRecordById} integration test with optional parameters")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetRecordByIdWithMandatoryParameters"}, description = "zohorecruit {getRecordById} integration test with optional parameters")
     public void testGetRecordByIdWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getRecordById");
@@ -287,10 +286,10 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&id="
-                        + connectorProperties.getProperty("recordId") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&version="
-                        + connectorProperties.getProperty("version");
+                + connectorProperties.getProperty("authToken") + "&id="
+                + connectorProperties.getProperty("recordId") + "&scope="
+                + connectorProperties.getProperty("scope") + "&version="
+                + connectorProperties.getProperty("version");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -298,13 +297,13 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 .getJSONObject("Candidates").getJSONObject("row").getString("no");
         String apiNo = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONObject("row").getString("no");
-        String esbContent =esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String esbContent = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONObject("row").getJSONArray("FL").getJSONObject(2)
                 .getString("content");
         String apiContent = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONObject("row").getJSONArray("FL").getJSONObject(2)
                 .getString("content");
-        String esbVal =  esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
+        String esbVal = esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                 .getJSONObject("Candidates").getJSONObject("row").getJSONArray("FL").getJSONObject(2)
                 .getString("val");
         String apiVal = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result")
@@ -312,15 +311,15 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 .getString("val");
 
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
-        Assert.assertEquals(esbNo,apiNo);
-        Assert.assertEquals(esbContent,apiContent);
-        Assert.assertEquals(esbVal ,apiVal);
+        Assert.assertEquals(esbNo, apiNo);
+        Assert.assertEquals(esbContent, apiContent);
+        Assert.assertEquals(esbVal, apiVal);
     }
 
     /**
      * Negative test case for getRecordById method.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetRecordByIdWithOptionalParameters" }, description = "zohorecruit {getRecordById} integration test with negative Case.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetRecordByIdWithOptionalParameters"}, description = "zohorecruit {getRecordById} integration test with negative Case.")
     public void testGetRecordByIdWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getRecordById");
@@ -329,8 +328,8 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id=xxx";
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id=xxx";
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap);
 
@@ -342,7 +341,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Positive test case for updateRecords method with mandatory parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetRecordByIdWithNegativeCase" }, description = "zohorecruit {updateRecords} integration test with mandatory parameters")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetRecordByIdWithNegativeCase"}, description = "zohorecruit {updateRecords} integration test with mandatory parameters")
     public void testUpdateRecordsWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:updateRecords");
@@ -352,9 +351,9 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("recordId");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("recordId");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
         JSONArray jsonAry =
@@ -378,7 +377,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
      * Negative test case for updateRecords method.
      */
 
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateRecordsWithMandatoryParameters" }, description = "zohorecruit {updateRecords} integration test with negative case")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testUpdateRecordsWithMandatoryParameters"}, description = "zohorecruit {updateRecords} integration test with negative case")
     public void testUpdateRecordsWithNegativeCase() throws Exception {
 
         esbRequestHeadersMap.put("Action", "urn:updateRecords");
@@ -390,7 +389,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Positive test case for associateJobOpening method with mandatory parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateRecordsWithNegativeCase" }, description = "zohorecruit {associateJobOpening} integration test with mandatory parameters")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testUpdateRecordsWithNegativeCase"}, description = "zohorecruit {associateJobOpening} integration test with mandatory parameters")
     public void testAssociateJobOpeningWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:associateJobOpening");
@@ -399,19 +398,19 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl")
-                        + "/recruit/private/json/JobOpenings/getAssociatedCandidates?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("jobId");
+                + "/recruit/private/json/JobOpenings/getAssociatedCandidates?authtoken="
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("jobId");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         String candidateId = "";
-        JSONObject resultRow=apiRestResponse.getBody().getJSONObject("response").getJSONObject("result").getJSONObject("JobOpenings");
+        JSONObject resultRow = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result").getJSONObject("JobOpenings");
         //Checking whether row is a JSON object or an array
         if (resultRow.get("row") instanceof JSONObject) {
             candidateId = resultRow.getJSONObject("row").getJSONArray("FL").getJSONObject(0).get("content").toString();
         } else {
-            JSONArray row =	resultRow.getJSONArray("row");
+            JSONArray row = resultRow.getJSONArray("row");
             for (int i = 0; i < row.length(); i++) {
                 if (row.getJSONObject(i).getJSONArray("FL").getJSONObject(0).get("content").toString()
                         .equals(connectorProperties.getProperty("recordId"))) {
@@ -429,7 +428,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Negative test case for associateJobOpening method.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testAssociateJobOpeningWithMandatoryParameters" }, description = "zohorecruit {associateJobOpening} integration test with negative Case.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testAssociateJobOpeningWithMandatoryParameters"}, description = "zohorecruit {associateJobOpening} integration test with negative Case.")
     public void testAssociateJobOpeningWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:associateJobOpening");
@@ -438,9 +437,9 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl")
-                        + "/recruit/private/json/JobOpenings/getAssociatedCandidates?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id=-";
+                + "/recruit/private/json/JobOpenings/getAssociatedCandidates?authtoken="
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id=-";
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -450,19 +449,20 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Positive test case for getAssociatedCandidates method with mandatory parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testAssociateJobOpeningWithMandatoryParameters" }, description = "zohorecruit {getAssociatedCandidates} integration test with mandatory parameters.")
-    public void testGetAssociatedCandidatesWithMadatoryParameters() throws IOException, JSONException {
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testAssociateJobOpeningWithMandatoryParameters"}, description = "zohorecruit {getAssociatedCandidates} integration test with mandatory parameters.")
+    public void testGetAssociatedCandidatesWithMadatoryParameters()
+            throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAssociatedCandidates");
         RestResponse<JSONObject> esbRestResponse =
                 sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
-                        "esb_getAssociatedCandidates_mandatory.json");
+                                    "esb_getAssociatedCandidates_mandatory.json");
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/JobOpenings/getAssociatedCandidates?"
-                        + "authtoken=" + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("jobId");
+                + "authtoken=" + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("jobId");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -477,7 +477,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Negative test case for getAssociatedCandidates method.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetAssociatedCandidatesWithMadatoryParameters" }, description = "zohorecruit {getAssociatedCandidates} integration test with negative case.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetAssociatedCandidatesWithMadatoryParameters"}, description = "zohorecruit {getAssociatedCandidates} integration test with negative case.")
     public void testGetAssociatedCandidatesNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:getAssociatedCandidates");
@@ -486,8 +486,8 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/JobOpenings/getAssociatedCandidates?"
-                        + "authtoken=" + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id=-1";
+                + "authtoken=" + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id=-1";
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -500,7 +500,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Positive test case for changeStatus method with mandatory parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testGetAssociatedCandidatesNegativeCase" }, description = "zohorecruit {changeStatus} integration test with mandatory parameters")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testGetAssociatedCandidatesNegativeCase"}, description = "zohorecruit {changeStatus} integration test with mandatory parameters")
     public void testChangeStatusWithMandatoryParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:changeStatus");
@@ -509,9 +509,9 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         final String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("recordId1");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("recordId1");
 
         final RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -535,7 +535,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Positive test case for changeStatus method with optional parameters.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testChangeStatusWithMandatoryParameters" }, description = "zohorecruit {changeStatus} integration test with optional parameters.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testChangeStatusWithMandatoryParameters"}, description = "zohorecruit {changeStatus} integration test with optional parameters.")
     public void testChangeStatusWithOptionalParameters() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:changeStatus");
@@ -544,9 +544,9 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         final String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
-                        + connectorProperties.getProperty("authToken") + "&scope="
-                        + connectorProperties.getProperty("scope") + "&id="
-                        + connectorProperties.getProperty("recordId1");
+                + connectorProperties.getProperty("authToken") + "&scope="
+                + connectorProperties.getProperty("scope") + "&id="
+                + connectorProperties.getProperty("recordId1");
 
         final RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -570,7 +570,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
     /**
      * Negative test case for changeStatus method.
      */
-    @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testChangeStatusWithOptionalParameters" }, description = "zohorecruit {changeStatus} integration test with negative case.")
+    @Test(groups = {"wso2.esb"}, dependsOnMethods = {"testChangeStatusWithOptionalParameters"}, description = "zohorecruit {changeStatus} integration test with negative case.")
     public void testChangeStatusWithNegativeCase() throws IOException, JSONException {
 
         esbRequestHeadersMap.put("Action", "urn:changeStatus");
@@ -579,7 +579,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
 
         final String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/changeStatus?authtoken="
-                        + connectorProperties.getProperty("authToken");
+                + connectorProperties.getProperty("authToken");
         final RestResponse<JSONObject> apiRestResponse =
                 sendJsonRestRequest(apiEndPoint, "POST", apiRequestHeadersMap, "api_changeStatus_negative.json");
 
@@ -588,5 +588,5 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
         Assert.assertEquals(esbRestResponse.getBody().getString("output"), apiRestResponse.getBody()
                 .getString("output"));
     }
-    
+
 }

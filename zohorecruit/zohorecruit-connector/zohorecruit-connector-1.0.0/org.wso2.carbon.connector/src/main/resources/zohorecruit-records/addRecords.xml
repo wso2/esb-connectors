@@ -25,9 +25,11 @@
                description="The duplicateCheck is used to confirm, whether the record exists or not. e.g. value '1' for error and '2' for update."/>
     <parameter name="wfTrigger"
                description="Set value as true to trigger the workflow rule while inserting record into Recruit account."/>
-    <parameter name="isApproval" description="To keep the records in approval mode, set value as true."/>
-    <parameter name="newFormat" description="To exclude fields with null values while fetching data from your Recruit account." />
-    <parameter name="version" description="This will fetch responses based on the API versions." />
+    <parameter name="isApproval"
+               description="To keep the records in approval mode, set value as true."/>
+    <parameter name="newFormat"
+               description="To exclude fields with null values while fetching data from your Recruit account."/>
+    <parameter name="version" description="This will fetch responses based on the API versions."/>
 
     <sequence>
         <property name="uri.var.module" expression="$func:module"/>
@@ -73,7 +75,7 @@
         </script>
         <payloadFactory media-type="json">
             <format>
-               { }
+                { }
             </format>
         </payloadFactory>
         <property name="FORCE_POST_PUT_NOBODY" value="true" scope="axis2" type="BOOLEAN"/>

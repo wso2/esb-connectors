@@ -27,7 +27,7 @@
         <property name="uri.var.id" expression="$func:id"/>
         <property name="uri.var.xmlData" expression="$func:xmlData"/>
         <script language="js">
-         <![CDATA[
+            <![CDATA[
             var xmlData = mc.getProperty('uri.var.xmlData');
             xmlData = xmlData.replace("\"", "'");
             mc.setProperty('uri.var.xmlData', xmlData);

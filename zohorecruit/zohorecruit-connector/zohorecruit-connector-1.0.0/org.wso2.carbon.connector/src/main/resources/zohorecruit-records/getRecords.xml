@@ -17,30 +17,35 @@
    under the License.
 -->
 <template name="getRecords" xmlns="http://ws.apache.org/ns/synapse">
-	<parameter name="module" description="The module specifies the which section entries should be added. e.g. JobOpenings, Candidates, Clients, ClientContacts." />
-	<parameter name="fromIndex" description="The index position, which specifies the starting point of seraching records." />
-	<parameter name="toIndex" description="The index position, which specifies the ending point for seraching records." />
-	<parameter name="sortColumnString" description="The column to be used to sort records." />
-	<parameter name="sortOrderString" description="The sorting order of the selected column." />
-	<parameter name="lastModifiedTime" description="Specify the time, modified data will be fetched after the configured time." />
-	<parameter name="selectColumns" description="The select columns for displaying records." />
-    <parameter name="newFormat" description="To exclude fields with null values while fetching data from your Recruit account." />
-    <parameter name="version" description="This will fetch responses based on the API versions." />
+    <parameter name="module"
+               description="The module specifies the which section entries should be added. e.g. JobOpenings, Candidates, Clients, ClientContacts."/>
+    <parameter name="fromIndex"
+               description="The index position, which specifies the starting point of seraching records."/>
+    <parameter name="toIndex"
+               description="The index position, which specifies the ending point for seraching records."/>
+    <parameter name="sortColumnString" description="The column to be used to sort records."/>
+    <parameter name="sortOrderString" description="The sorting order of the selected column."/>
+    <parameter name="lastModifiedTime"
+               description="Specify the time, modified data will be fetched after the configured time."/>
+    <parameter name="selectColumns" description="The select columns for displaying records."/>
+    <parameter name="newFormat"
+               description="To exclude fields with null values while fetching data from your Recruit account."/>
+    <parameter name="version" description="This will fetch responses based on the API versions."/>
 
-	<sequence>
-		<property name="uri.var.module" expression="$func:module" />
-		<property name="uri.var.fromIndex" expression="$func:fromIndex" />
-		<property name="uri.var.toIndex" expression="$func:toIndex" />
-		<property name="uri.var.sortColumnString" expression="$func:sortColumnString" />
-		<property name="uri.var.sortOrderString" expression="$func:sortOrderString" />
-		<property name="uri.var.lastModifiedTime" expression="$func:lastModifiedTime" />
-		<property name="uri.var.selectColumns" expression="$func:selectColumns" />
-        <property name="uri.var.newFormat" expression="$func:newFormat" />
-        <property name="uri.var.version" expression="$func:version" />
-		<property name="uri.var.urlQuery" value="" />
+    <sequence>
+        <property name="uri.var.module" expression="$func:module"/>
+        <property name="uri.var.fromIndex" expression="$func:fromIndex"/>
+        <property name="uri.var.toIndex" expression="$func:toIndex"/>
+        <property name="uri.var.sortColumnString" expression="$func:sortColumnString"/>
+        <property name="uri.var.sortOrderString" expression="$func:sortOrderString"/>
+        <property name="uri.var.lastModifiedTime" expression="$func:lastModifiedTime"/>
+        <property name="uri.var.selectColumns" expression="$func:selectColumns"/>
+        <property name="uri.var.newFormat" expression="$func:newFormat"/>
+        <property name="uri.var.version" expression="$func:version"/>
+        <property name="uri.var.urlQuery" value=""/>
 
-		<script language="js">
-			<![CDATA[
+        <script language="js">
+            <![CDATA[
             var fromIndex = mc.getProperty('uri.var.fromIndex');
             var toIndex = mc.getProperty('uri.var.toIndex');
             var sortColumnString = mc.getProperty('uri.var.sortColumnString');
@@ -79,17 +84,18 @@
                mc.setProperty('uri.var.urlQuery', urlQuery);
             }
          ]]>
-		</script>
-		<call>
-			<endpoint>
-				<http method="GET" uri-template="{uri.var.apiUrl}/recruit/private/{uri.var.responseFormat}/{uri.var.module}/getRecords?authtoken={uri.var.authToken}&amp;scope={uri.var.scope}{+uri.var.urlQuery}" />
-			</endpoint>
-		</call>
-		<!-- Removing custom headers -->
-		<header name="Strict-Transport-Security" action="remove" scope="transport" />
-		<header name="X-XSS-Protection" action="remove" scope="transport" />
-		<header name="X-Content-Type-Options" action="remove" scope="transport" />
-		<header name="Pragma" action="remove" scope="transport" />
-		<header name="Cache-Control" action="remove" scope="transport" />
-	</sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="GET"
+                      uri-template="{uri.var.apiUrl}/recruit/private/{uri.var.responseFormat}/{uri.var.module}/getRecords?authtoken={uri.var.authToken}&amp;scope={uri.var.scope}{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Removing custom headers -->
+        <header name="Strict-Transport-Security" action="remove" scope="transport"/>
+        <header name="X-XSS-Protection" action="remove" scope="transport"/>
+        <header name="X-Content-Type-Options" action="remove" scope="transport"/>
+        <header name="Pragma" action="remove" scope="transport"/>
+        <header name="Cache-Control" action="remove" scope="transport"/>
+    </sequence>
 </template>

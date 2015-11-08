@@ -20,15 +20,16 @@
     <parameter name="module"
                description="The module specifies the which section entries should be added. e.g. JobOpenings, Candidates, Clients, ClientContacts."/>
     <parameter name="id" description="The record id to retrieve a record."/>
-    <parameter name="newFormat" description="To exclude fields with null values while fetching data from your Recruit account." />
-    <parameter name="version" description="This will fetch responses based on the API versions." />
+    <parameter name="newFormat"
+               description="To exclude fields with null values while fetching data from your Recruit account."/>
+    <parameter name="version" description="This will fetch responses based on the API versions."/>
 
     <sequence>
         <property name="uri.var.module" expression="$func:module"/>
         <property name="uri.var.id" expression="$func:id"/>
-        <property name="uri.var.newFormat" expression="$func:newFormat" />
-        <property name="uri.var.version" expression="$func:version" />
-        <property name="uri.var.urlQuery" value="" />
+        <property name="uri.var.newFormat" expression="$func:newFormat"/>
+        <property name="uri.var.version" expression="$func:version"/>
+        <property name="uri.var.urlQuery" value=""/>
 
         <script language="js">
             <![CDATA[
@@ -50,7 +51,8 @@
 
         <call>
             <endpoint>
-                <http method="GET" uri-template="{uri.var.apiUrl}/recruit/private/{uri.var.responseFormat}/{uri.var.module}/getRecordById?authtoken={uri.var.authToken}&amp;scope={uri.var.scope}&amp;id={uri.var.id}{uri.var.urlQuery}" />
+                <http method="GET"
+                      uri-template="{uri.var.apiUrl}/recruit/private/{uri.var.responseFormat}/{uri.var.module}/getRecordById?authtoken={uri.var.authToken}&amp;scope={uri.var.scope}&amp;id={uri.var.id}{uri.var.urlQuery}"/>
             </endpoint>
         </call>
         <!-- Removing custom headers -->
