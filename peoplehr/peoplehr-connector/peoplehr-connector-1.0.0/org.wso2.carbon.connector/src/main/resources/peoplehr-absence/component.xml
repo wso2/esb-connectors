@@ -16,18 +16,18 @@
    under the License.
 -->
 <component name="peoplehr-absence" type="synapse/template">
-  <subComponents>
-    	<component name="createAbsenceRecord">
-      <file>createAbsenceRecord.xml</file>
-      <description>Add a leave record for an employee.</description>
-    </component>
-    	<component name="getAbsenceRecord">
-      <file>getAbsenceRecord.xml</file>
-      <description>Get leave details for an employee.</description>
-    </component>
-    	<component name="updateAbsenceRecord">
-      <file>updateAbsenceRecord.xml</file>
-      <description>Update the leave details.</description>
-    </component>
+    <subComponents>
+        <component name="createAbsenceRecord">
+            <file>createAbsenceRecord.xml</file>
+            <description>Add a leave record for an employee.</description>
+        </component>
+        <component name="getAbsenceRecord">
+            <file>getAbsenceRecord.xml</file>
+            <description>Get leave details for an employee.</description>
+        </component>
+        <component name="updateAbsenceRecord">
+            <file>updateAbsenceRecord.xml</file>
+            <description>Update the leave details.</description>
+        </component>
     </subComponents>
 </component>
