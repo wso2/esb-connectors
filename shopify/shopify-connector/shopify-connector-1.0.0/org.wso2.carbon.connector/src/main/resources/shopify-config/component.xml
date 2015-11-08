@@ -16,10 +16,10 @@
    under the License.
 -->
 <component name="shopify-config" type="synapse/template">
-  <subComponents>
-    	<component name="init">
-			<file>init.xml</file>
-			<description>Shopify configuration.</description>
-		</component>
+    <subComponents>
+        <component name="init">
+            <file>init.xml</file>
+            <description>Shopify configuration.</description>
+        </component>
     </subComponents>
 </component>

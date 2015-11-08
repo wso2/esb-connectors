@@ -16,14 +16,14 @@
    under the License.
 -->
 <component name="shopify-orders" type="synapse/template">
-  <subComponents>
-    <component name="createOrder">
-      <file>createOrder.xml</file>
-      <description>Creates a new order</description>
-    </component>
-    <component name="listOrders">
-      <file>listOrders.xml</file>
-      <description>Retrieves a list of Orders according to the given filters</description>
-    </component>
-  </subComponents>
+    <subComponents>
+        <component name="createOrder">
+            <file>createOrder.xml</file>
+            <description>Creates a new order</description>
+        </component>
+        <component name="listOrders">
+            <file>listOrders.xml</file>
+            <description>Retrieves a list of Orders according to the given filters</description>
+        </component>
+    </subComponents>
 </component>

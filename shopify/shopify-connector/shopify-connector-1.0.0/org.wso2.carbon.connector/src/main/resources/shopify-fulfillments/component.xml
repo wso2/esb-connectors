@@ -16,14 +16,14 @@
    under the License.
 -->
 <component name="shopify-fulfillments" type="synapse/template">
-  <subComponents>
-    <component name="createFulfillment">
-      <file>createFulfillment.xml</file>
-      <description>Creates a fulfillment for the specified order and line items</description>
-    </component>
-    <component name="listFulfillments">
-      <file>listFulfillments.xml</file>
-      <description>Retrieves a list of all fulfillments</description>
-    </component>
-  </subComponents>
+    <subComponents>
+        <component name="createFulfillment">
+            <file>createFulfillment.xml</file>
+            <description>Creates a fulfillment for the specified order and line items</description>
+        </component>
+        <component name="listFulfillments">
+            <file>listFulfillments.xml</file>
+            <description>Retrieves a list of all fulfillments</description>
+        </component>
+    </subComponents>
 </component>

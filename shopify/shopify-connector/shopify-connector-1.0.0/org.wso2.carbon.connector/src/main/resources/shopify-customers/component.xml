@@ -16,14 +16,14 @@
    under the License.
 -->
 <component name="shopify-customers" type="synapse/template">
-	<subComponents>
-    	<component name="createCustomer">
-			<file>createCustomer.xml</file>
-			<description>Creates a new customer record</description>
-		</component>
-    	<component name="listCustomers">
-			<file>listCustomers.xml</file>
-			<description>Retrieves all customers of a shop</description>
-		</component>
+    <subComponents>
+        <component name="createCustomer">
+            <file>createCustomer.xml</file>
+            <description>Creates a new customer record</description>
+        </component>
+        <component name="listCustomers">
+            <file>listCustomers.xml</file>
+            <description>Retrieves all customers of a shop</description>
+        </component>
     </subComponents>
 </component>
