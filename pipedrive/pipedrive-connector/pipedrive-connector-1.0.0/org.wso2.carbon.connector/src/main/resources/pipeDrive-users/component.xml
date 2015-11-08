@@ -17,10 +17,10 @@
    under the License.
 -->
 <component name="pipeDrive-users" type="synapse/template">
-  <subComponents>
-    	<component name="getUser">
-      <file>getUser.xml</file>
-      <description>Adds a new user to the company</description>
-    </component>
+    <subComponents>
+        <component name="getUser">
+            <file>getUser.xml</file>
+            <description>Adds a new user to the company</description>
+        </component>
     </subComponents>
 </component>

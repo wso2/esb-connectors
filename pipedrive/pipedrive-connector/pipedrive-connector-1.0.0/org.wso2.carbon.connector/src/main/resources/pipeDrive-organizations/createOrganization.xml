@@ -18,37 +18,39 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="createOrganization" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output." />
-   <parameter name="fields" description="The array of fileds to be returned in the output." />
-   <parameter name="name" description="The name of the organization." />
-   <parameter name="customFields"
-      description="JSON Object specifying the values for the Organization's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields" />
-   <parameter name="ownerId" description="The ID of the user who will be marked as the owner of this organization." />
-   <parameter name="visibility"
-      description="Visibility of the organization. If omitted, visibility will be set to the default visibility, possible values are 0,1,2" />
-   <parameter name="addedTime"
-      description="Optional creation date and time of the organization in UTC. Requires admin user API token. Format: YYYY-MM-DD HH:MM:SS" />
-   <sequence>
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <property name="uri.var.fields" expression="$func:fields" />
-      <property name="uri.var.name" expression="$func:name" />
-      <property expression="$func:customFields" name="uri.var.customFields" />
-      <property name="uri.var.ownerId" expression="$func:ownerId" />
-      <property name="uri.var.visibility" expression="$func:visibility" />
-      <property name="uri.var.addedTime" expression="$func:addedTime" />
-      <!-- Generate the request payload with mandatory parameters -->
-      <payloadFactory media-type="json">
-         <format>
-            {
-            "name":"$1"
-            }
-         </format>
-         <args>
-            <arg expression="get-property('uri.var.name')" />
-         </args>
-      </payloadFactory>
-      <script language="js">
-         <![CDATA[ 
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output."/>
+    <parameter name="fields" description="The array of fileds to be returned in the output."/>
+    <parameter name="name" description="The name of the organization."/>
+    <parameter name="customFields"
+               description="JSON Object specifying the values for the Organization's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields"/>
+    <parameter name="ownerId"
+               description="The ID of the user who will be marked as the owner of this organization."/>
+    <parameter name="visibility"
+               description="Visibility of the organization. If omitted, visibility will be set to the default visibility, possible values are 0,1,2"/>
+    <parameter name="addedTime"
+               description="Optional creation date and time of the organization in UTC. Requires admin user API token. Format: YYYY-MM-DD HH:MM:SS"/>
+    <sequence>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <property name="uri.var.fields" expression="$func:fields"/>
+        <property name="uri.var.name" expression="$func:name"/>
+        <property expression="$func:customFields" name="uri.var.customFields"/>
+        <property name="uri.var.ownerId" expression="$func:ownerId"/>
+        <property name="uri.var.visibility" expression="$func:visibility"/>
+        <property name="uri.var.addedTime" expression="$func:addedTime"/>
+        <!-- Generate the request payload with mandatory parameters -->
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "name":"$1"
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.name')"/>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
             // Generate payload with optional parameters
             var prettyOutPut = mc.getProperty('uri.var.prettyOutput');
             var fields = mc.getProperty('uri.var.fields');
@@ -96,16 +98,17 @@
                }
             }                         
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="post" uri-template="{uri.var.apiUrl}organizations{+uri.var.filter}{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}organizations{+uri.var.filter}{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

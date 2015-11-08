@@ -18,42 +18,48 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="createPerson" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="name" description="The name of the person being created" />
-   <parameter name="customFields"
-      description="JSON Object specifying the values for the Person's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields" />
-   <parameter name="ownerId" description="ID of the user who will be marked as the owner of this person" />
-   <parameter name="organizationId" description="ID of the organization this person will belong to" />
-   <parameter name="emails" description="Email addresses (one or more) associated with the person" />
-   <parameter name="phoneNumbers" description="Phone numbers (one or more) associated with the person" />
-   <parameter name="visibility"
-      description="Visibility of the person. If omitted, visibility will be set to the default visibility, possible values are 0,1,2" />
-   <parameter name="addedTime" description="Optional creation date and time of the person in UTC, Format: YYYY-MM-DD HH:MM:SS" />
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output." />
-   <parameter name="fields" description="The array of fileds to be returned in the output" />
-   <sequence>
-      <property name="uri.var.name" expression="$func:name" />
-      <property name="uri.var.customFields" expression="$func:customFields" />
-      <property name="uri.var.ownerId" expression="$func:ownerId" />
-      <property name="uri.var.organizationId" expression="$func:organizationId" />
-      <property name="uri.var.emails" expression="$func:emails" />
-      <property name="uri.var.phoneNumbers" expression="$func:phoneNumbers" />
-      <property name="uri.var.visibility" expression="$func:visibility" />
-      <property name="uri.var.addedTime" expression="$func:addedTime" />
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <property name="uri.var.fields" expression="$func:fields" />
-      <!-- Generate the request payload with mandatory parameters -->
-      <payloadFactory media-type="json">
-         <format>
-            {
-            "name":"$1"
-            }
-         </format>
-         <args>
-            <arg expression="get-property('uri.var.name')" />
-         </args>
-      </payloadFactory>
-      <script language="js">
-         <![CDATA[ 
+    <parameter name="name" description="The name of the person being created"/>
+    <parameter name="customFields"
+               description="JSON Object specifying the values for the Person's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields"/>
+    <parameter name="ownerId"
+               description="ID of the user who will be marked as the owner of this person"/>
+    <parameter name="organizationId"
+               description="ID of the organization this person will belong to"/>
+    <parameter name="emails"
+               description="Email addresses (one or more) associated with the person"/>
+    <parameter name="phoneNumbers"
+               description="Phone numbers (one or more) associated with the person"/>
+    <parameter name="visibility"
+               description="Visibility of the person. If omitted, visibility will be set to the default visibility, possible values are 0,1,2"/>
+    <parameter name="addedTime"
+               description="Optional creation date and time of the person in UTC, Format: YYYY-MM-DD HH:MM:SS"/>
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output."/>
+    <parameter name="fields" description="The array of fileds to be returned in the output"/>
+    <sequence>
+        <property name="uri.var.name" expression="$func:name"/>
+        <property name="uri.var.customFields" expression="$func:customFields"/>
+        <property name="uri.var.ownerId" expression="$func:ownerId"/>
+        <property name="uri.var.organizationId" expression="$func:organizationId"/>
+        <property name="uri.var.emails" expression="$func:emails"/>
+        <property name="uri.var.phoneNumbers" expression="$func:phoneNumbers"/>
+        <property name="uri.var.visibility" expression="$func:visibility"/>
+        <property name="uri.var.addedTime" expression="$func:addedTime"/>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <property name="uri.var.fields" expression="$func:fields"/>
+        <!-- Generate the request payload with mandatory parameters -->
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "name":"$1"
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.name')"/>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
             // Generate payload with optional parameters
             var customFields = mc.getProperty('uri.var.customFields');
             var ownerId = mc.getProperty('uri.var.ownerId');         
@@ -113,16 +119,17 @@
                }
             }       
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="post" uri-template="{uri.var.apiUrl}persons{+uri.var.filter}{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}persons{+uri.var.filter}{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

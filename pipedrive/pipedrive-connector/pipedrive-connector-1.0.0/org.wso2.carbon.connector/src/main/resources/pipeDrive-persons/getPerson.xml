@@ -17,15 +17,16 @@
    under the License.
 -->
 <template name="getPerson" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="id" description="The identifier of the person to be retrieved" />
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output" />
-   <parameter name="fields" description="The array of fileds to be returned in the output" />
-   <sequence>
-      <property expression="$func:id" name="uri.var.id" />
-      <property expression="$func:prettyOutput" name="uri.var.prettyOutput" />
-      <property expression="$func:fields" name="uri.var.fields" />
-      <script language="js">
-         <![CDATA[
+    <parameter name="id" description="The identifier of the person to be retrieved"/>
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output"/>
+    <parameter name="fields" description="The array of fileds to be returned in the output"/>
+    <sequence>
+        <property expression="$func:id" name="uri.var.id"/>
+        <property expression="$func:prettyOutput" name="uri.var.prettyOutput"/>
+        <property expression="$func:fields" name="uri.var.fields"/>
+        <script language="js">
+            <![CDATA[
             var urlQuery = mc.getProperty('uri.var.urlQuery');
             var prettyOutPut = mc.getProperty('uri.var.prettyOutput');
             var fields = mc.getProperty('uri.var.fields');
@@ -46,16 +47,17 @@
                }
             }
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}persons{+uri.var.filter}/{+uri.var.id}{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}persons{+uri.var.filter}/{+uri.var.id}{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

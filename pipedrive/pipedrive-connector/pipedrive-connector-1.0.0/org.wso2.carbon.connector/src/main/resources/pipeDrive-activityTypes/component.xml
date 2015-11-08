@@ -17,10 +17,10 @@
    under the License.
 -->
 <component name="pipeDrive-activityTypes" type="synapse/template">
-  <subComponents>
-    	<component name="listActivityTypes">
-      <file>listActivityTypes.xml</file>
-      <description>Returns all activity types</description>
-    </component>
+    <subComponents>
+        <component name="listActivityTypes">
+            <file>listActivityTypes.xml</file>
+            <description>Returns all activity types</description>
+        </component>
     </subComponents>
 </component>

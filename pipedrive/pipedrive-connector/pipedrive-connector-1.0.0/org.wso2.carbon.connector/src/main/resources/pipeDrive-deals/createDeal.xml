@@ -18,55 +18,60 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="createDeal" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="title" description="The title of the deal" />
-   <parameter name="customFields"
-      description="JSON Object specifying the values for the Deal's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields" />
-   <parameter name="value" description="The value of the deal. If omitted, value will be set to 0" />
-   <parameter name="currency"
-      description="The currency of the deal, Accepts a 3-character currency code. If omitted, will be set to the default currency of the authorized user" />
-   <parameter name="userId"
-      description="The identifier of the user who will be marked as the owner of this deal. If omitted, the authorized user Identifier will be used" />
-   <parameter name="personId" description="The identifier of the person this deal will be associated with" />
-   <parameter name="organizationId" description="The identifier of the organization this deal will be associated with" />
-   <parameter name="stageId"
-      description="The identifier of the stage this deal will be placed in a pipeline. If omitted, the deal will be placed in the first stage of the default pipeline" />
-   <parameter name="status"
-      description="Specifies the status of the deal, possible values are Open, Won, Lost, Deleted, defaults to Open" />
-   <parameter name="lostReason" description="Optional message about why the deal was lost (to be used when status=lost)" />
-   <parameter name="addedTime"
-      description="Optional creation date and time of the deal in UTC. Requires admin user API token. Format: YYYY-MM-DD HH:MM:SS" />
-   <parameter name="visibility"
-      description="Visibility of the deal. If omitted, visibility will be set to the default visibility, possible values are 0,1,2" />
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output" />
-   <parameter name="fields" description="The array of fileds to be returned in the output" />
-   <sequence>
-      <property name="uri.var.title" expression="$func:title" />
-      <property name="uri.var.customFields" expression="$func:customFields" />
-      <property name="uri.var.value" expression="$func:value" />
-      <property name="uri.var.currency" expression="$func:currency" />
-      <property name="uri.var.userId" expression="$func:userId" />
-      <property name="uri.var.personId" expression="$func:personId" />
-      <property name="uri.var.organizationId" expression="$func:organizationId" />
-      <property name="uri.var.stageId" expression="$func:stageId" />
-      <property name="uri.var.status" expression="$func:status" />
-      <property name="uri.var.lostReason" expression="$func:lostReason" />
-      <property name="uri.var.addedTime" expression="$func:addedTime" />
-      <property name="uri.var.visibility" expression="$func:visibility" />
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <property name="uri.var.fields" expression="$func:fields" />
-      <!-- Generate the request payload with mandatory parameters -->
-      <payloadFactory media-type="json">
-         <format>
-            {
-            "title":"$1"
-            }
-         </format>
-         <args>
-            <arg expression="get-property('uri.var.title')" />
-         </args>
-      </payloadFactory>
-      <script language="js">
-         <![CDATA[ 
+    <parameter name="title" description="The title of the deal"/>
+    <parameter name="customFields"
+               description="JSON Object specifying the values for the Deal's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields"/>
+    <parameter name="value"
+               description="The value of the deal. If omitted, value will be set to 0"/>
+    <parameter name="currency"
+               description="The currency of the deal, Accepts a 3-character currency code. If omitted, will be set to the default currency of the authorized user"/>
+    <parameter name="userId"
+               description="The identifier of the user who will be marked as the owner of this deal. If omitted, the authorized user Identifier will be used"/>
+    <parameter name="personId"
+               description="The identifier of the person this deal will be associated with"/>
+    <parameter name="organizationId"
+               description="The identifier of the organization this deal will be associated with"/>
+    <parameter name="stageId"
+               description="The identifier of the stage this deal will be placed in a pipeline. If omitted, the deal will be placed in the first stage of the default pipeline"/>
+    <parameter name="status"
+               description="Specifies the status of the deal, possible values are Open, Won, Lost, Deleted, defaults to Open"/>
+    <parameter name="lostReason"
+               description="Optional message about why the deal was lost (to be used when status=lost)"/>
+    <parameter name="addedTime"
+               description="Optional creation date and time of the deal in UTC. Requires admin user API token. Format: YYYY-MM-DD HH:MM:SS"/>
+    <parameter name="visibility"
+               description="Visibility of the deal. If omitted, visibility will be set to the default visibility, possible values are 0,1,2"/>
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output"/>
+    <parameter name="fields" description="The array of fileds to be returned in the output"/>
+    <sequence>
+        <property name="uri.var.title" expression="$func:title"/>
+        <property name="uri.var.customFields" expression="$func:customFields"/>
+        <property name="uri.var.value" expression="$func:value"/>
+        <property name="uri.var.currency" expression="$func:currency"/>
+        <property name="uri.var.userId" expression="$func:userId"/>
+        <property name="uri.var.personId" expression="$func:personId"/>
+        <property name="uri.var.organizationId" expression="$func:organizationId"/>
+        <property name="uri.var.stageId" expression="$func:stageId"/>
+        <property name="uri.var.status" expression="$func:status"/>
+        <property name="uri.var.lostReason" expression="$func:lostReason"/>
+        <property name="uri.var.addedTime" expression="$func:addedTime"/>
+        <property name="uri.var.visibility" expression="$func:visibility"/>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <property name="uri.var.fields" expression="$func:fields"/>
+        <!-- Generate the request payload with mandatory parameters -->
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "title":"$1"
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.title')"/>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
             // Generate payload with optional parameters
             var customFields = mc.getProperty('uri.var.customFields');
             var value = mc.getProperty('uri.var.value');
@@ -142,16 +147,17 @@
                }
             }   
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="post" uri-template="{uri.var.apiUrl}deals{+uri.var.filter}{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}deals{+uri.var.filter}{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

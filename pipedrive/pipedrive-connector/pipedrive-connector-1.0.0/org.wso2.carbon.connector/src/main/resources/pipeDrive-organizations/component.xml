@@ -17,18 +17,18 @@
    under the License.
 -->
 <component name="pipeDrive-organizations" type="synapse/template">
-  <subComponents>
-    	<component name="createOrganization">
-      <file>createOrganization.xml</file>
-      <description>Adds a new organization</description>
-    </component>
-    	<component name="searchOrganizations">
-      <file>searchOrganizations.xml</file>
-      <description>Searches all organizations by their name</description>
-    </component>
-    	<component name="listOrganizations">
-      <file>listOrganizations.xml</file>
-      <description>Returns all organizations</description>
-    </component>
+    <subComponents>
+        <component name="createOrganization">
+            <file>createOrganization.xml</file>
+            <description>Adds a new organization</description>
+        </component>
+        <component name="searchOrganizations">
+            <file>searchOrganizations.xml</file>
+            <description>Searches all organizations by their name</description>
+        </component>
+        <component name="listOrganizations">
+            <file>listOrganizations.xml</file>
+            <description>Returns all organizations</description>
+        </component>
     </subComponents>
 </component>

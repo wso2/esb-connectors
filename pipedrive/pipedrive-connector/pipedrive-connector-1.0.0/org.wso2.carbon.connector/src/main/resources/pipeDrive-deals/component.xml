@@ -17,34 +17,34 @@
    under the License.
 -->
 <component name="pipeDrive-deals" type="synapse/template">
-   <subComponents>
-      <component name="listDealFollowers">
-         <file>listDealFollowers.xml</file>
-         <description>Lists the followers of a deal</description>
-      </component>
-      <component name="createDeal">
-         <file>createDeal.xml</file>
-         <description>Adds a new deal</description>
-      </component>
-      <component name="getDeal">
-         <file>getDeal.xml</file>
-         <description>Returns details of a specific deal</description>
-      </component>
-      <component name="updateDeal">
-         <file>updateDeal.xml</file>
-         <description>Updates the properties of a deal</description>
-      </component>
-      <component name="listDealsTimeline">
-         <file>listDealsTimeline.xml</file>
-         <description>Returns open and won deals</description>
-      </component>
-      <component name="listDeals">
-         <file>listDeals.xml</file>
-         <description>Returns all deals</description>
-      </component>
-      <component name="listDealProducts">
-         <file>listDealProducts.xml</file>
-         <description>Returns all products attached to a deal</description>
-      </component>
-   </subComponents>
+    <subComponents>
+        <component name="listDealFollowers">
+            <file>listDealFollowers.xml</file>
+            <description>Lists the followers of a deal</description>
+        </component>
+        <component name="createDeal">
+            <file>createDeal.xml</file>
+            <description>Adds a new deal</description>
+        </component>
+        <component name="getDeal">
+            <file>getDeal.xml</file>
+            <description>Returns details of a specific deal</description>
+        </component>
+        <component name="updateDeal">
+            <file>updateDeal.xml</file>
+            <description>Updates the properties of a deal</description>
+        </component>
+        <component name="listDealsTimeline">
+            <file>listDealsTimeline.xml</file>
+            <description>Returns open and won deals</description>
+        </component>
+        <component name="listDeals">
+            <file>listDeals.xml</file>
+            <description>Returns all deals</description>
+        </component>
+        <component name="listDealProducts">
+            <file>listDealProducts.xml</file>
+            <description>Returns all products attached to a deal</description>
+        </component>
+    </subComponents>
 </component>

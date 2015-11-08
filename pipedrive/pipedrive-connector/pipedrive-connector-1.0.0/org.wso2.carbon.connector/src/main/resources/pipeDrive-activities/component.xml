@@ -17,18 +17,18 @@
    under the License.
 -->
 <component name="pipeDrive-activities" type="synapse/template">
-  <subComponents>
-    	<component name="createActivity">
-      <file>createActivity.xml</file>
-      <description>Adds a new activity</description>
-    </component>
-    	<component name="getActivity">
-      <file>getActivity.xml</file>
-      <description>Returns details of a specific activity</description>
-    </component>
-    	<component name="listActivities">
-      <file>listActivities.xml</file>
-      <description>Returns all activities assigned to a particular user</description>
-    </component>
+    <subComponents>
+        <component name="createActivity">
+            <file>createActivity.xml</file>
+            <description>Adds a new activity</description>
+        </component>
+        <component name="getActivity">
+            <file>getActivity.xml</file>
+            <description>Returns details of a specific activity</description>
+        </component>
+        <component name="listActivities">
+            <file>listActivities.xml</file>
+            <description>Returns all activities assigned to a particular user</description>
+        </component>
     </subComponents>
 </component>

@@ -18,13 +18,14 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="listDealFollowers" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="id" description="The unique identifier of the deal." />
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output." />
-   <sequence>
-      <property name="uri.var.id" expression="$func:id" />
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <script language="js">
-         <![CDATA[
+    <parameter name="id" description="The unique identifier of the deal."/>
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output."/>
+    <sequence>
+        <property name="uri.var.id" expression="$func:id"/>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <script language="js">
+            <![CDATA[
             var urlQuery = mc.getProperty('uri.var.urlQuery');
             var prettyOutPut = mc.getProperty('uri.var.prettyOutput');
             if (prettyOutPut != null && prettyOutPut != '') {
@@ -32,16 +33,17 @@
             }
             mc.setProperty('uri.var.urlQuery', urlQuery);
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}deals/{+uri.var.id}/followers{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}deals/{+uri.var.id}/followers{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>
