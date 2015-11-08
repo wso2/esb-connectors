@@ -59,25 +59,25 @@
             var payload = mc.getPayloadJSON();
 
             if (callbackUrl != null && callbackUrl != "") {
-                payload["callbackUrl"]=callbackUrl;
+                payload["callbackUrl"] = callbackUrl;
             }
             if (createdAt != null && createdAt != "") {
-               payload["createdAt"]=createdAt;
+               payload["createdAt"] = createdAt;
             }
             if (createdBy != null && createdBy != "") {
-               payload["createdBy"]=createdBy;
+               payload["createdBy"] = createdBy;
             }
             if (status != null && status != "") {
-                payload["status"]=status;
+                payload["status"] = status;
             }
             if (syncEndedAt != null && syncEndedAt != "") {
-               payload["syncEndedAt"]=syncEndedAt;
+               payload["syncEndedAt"] = syncEndedAt;
             }
             if (syncStartedAt != null && syncStartedAt != "") {
-               payload["syncStartedAt"]=syncStartedAt;
+               payload["syncStartedAt"] = syncStartedAt;
             }
             if (uri != null && uri != "") {
-                payload["uri"]=uri;
+                payload["uri"] = uri;
             }
 
             //Set the newly constructed payload

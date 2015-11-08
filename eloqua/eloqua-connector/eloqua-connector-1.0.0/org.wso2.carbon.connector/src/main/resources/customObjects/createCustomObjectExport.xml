@@ -78,37 +78,37 @@
             var payload = mc.getPayloadJSON();
 
             if (autoDeleteDuration != null && autoDeleteDuration != "") {
-                payload["autoDeleteDuration"]=autoDeleteDuration;
+                payload["autoDeleteDuration"] = autoDeleteDuration;
             }
             if (filter != null && filter != "") {
-               payload["filter"]=filter;
+               payload["filter"] = filter;
             }
             if (createdAt != null && createdAt != "") {
-                payload["createdAt"]=createdAt;
+                payload["createdAt"] = createdAt;
             }
             if (createdBy != null && createdBy != "") {
-                payload["createdBy"]=createdBy;
+                payload["createdBy"] = createdBy;
             }
             if (dataRetentionDuration != null && dataRetentionDuration != "") {
-                payload["dataRetentionDuration"]=dataRetentionDuration;
+                payload["dataRetentionDuration"] = dataRetentionDuration;
             }
             if (kbUsed != null && kbUsed != "") {
-               payload["kbUsed"]=kbUsed;
+               payload["kbUsed"] = kbUsed;
             }
             if (maxRecords != null && maxRecords != "") {
-                payload["maxRecords"]=maxRecords;
+                payload["maxRecords"] = maxRecords;
             }
             if (syncActions != null && syncActions != "") {
-               payload["syncActions"]=syncActions;
+               payload["syncActions"] = syncActions;
             }
             if (updatedAt != null && updatedAt != "") {
-               payload["updatedAt"]=updatedAt;
+               payload["updatedAt"] = updatedAt;
             }
             if (updatedBy != null && updatedBy != "") {
-                payload["updatedBy"]=updatedBy;
+                payload["updatedBy"] = updatedBy;
             }
             if (uri != null && uri != "") {
-               payload["uri"]=uri;
+               payload["uri"] = uri;
             }
             if (fields != null && fields != "") {
                 var txt = '{"fieldsList":'+fields+'}';
@@ -127,7 +127,7 @@
                 query = query + '}';
             }
             var q = eval ("(" + query + ")");
-            payload["fields"]=q;
+            payload["fields"] = q;
 
             //Set the newly constructed payload
             mc.setPayloadJSON(payload);
