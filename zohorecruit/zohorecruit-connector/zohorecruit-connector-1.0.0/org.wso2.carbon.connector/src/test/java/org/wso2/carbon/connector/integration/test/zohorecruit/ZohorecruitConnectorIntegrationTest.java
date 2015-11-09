@@ -68,12 +68,12 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
         String recordId =
                 esbRestResponse.getBody().getJSONObject("response").getJSONObject("result")
                         .getJSONObject("recorddetail").getJSONArray("FL").getJSONObject(0).getString("content");
-        connectorProperties.put("recordId1", recordId);
+        connectorProperties.put("recordIdValue", recordId);
         String apiEndPoint =
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
                 + connectorProperties.getProperty("authToken") + "&scope="
                 + connectorProperties.getProperty("scope") + "&id="
-                + connectorProperties.getProperty("recordId1");
+                + connectorProperties.getProperty("recordIdValue");
 
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         String apiRecordId = apiRestResponse.getBody().getJSONObject("response").getJSONObject("result").getJSONObject("Candidates").getJSONObject("row")
@@ -511,7 +511,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
                 + connectorProperties.getProperty("authToken") + "&scope="
                 + connectorProperties.getProperty("scope") + "&id="
-                + connectorProperties.getProperty("recordId1");
+                + connectorProperties.getProperty("recordIdValue");
 
         final RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
@@ -546,7 +546,7 @@ public class ZohorecruitConnectorIntegrationTest extends ConnectorIntegrationTes
                 connectorProperties.getProperty("apiUrl") + "/recruit/private/json/Candidates/getRecordById?authtoken="
                 + connectorProperties.getProperty("authToken") + "&scope="
                 + connectorProperties.getProperty("scope") + "&id="
-                + connectorProperties.getProperty("recordId1");
+                + connectorProperties.getProperty("recordIdValue");
 
         final RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
 
