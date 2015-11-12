@@ -15,6 +15,9 @@
  */
 package org.wso2.carbon.connector;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
+import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -24,15 +27,27 @@ import org.apache.synapse.MessageContext;
 /**
  * Response to ESB
  */
-public class ResponseESB {
+public class FeedFactory {
 
     public void InjectMessage(MessageContext messageContext, String text) {
         OMFactory omFactory = OMAbstractFactory.getOMFactory();
-        OMNamespace ns = omFactory.createOMNamespace("status", "ns");
-        OMElement result = omFactory.createOMElement("result", ns);
-        OMElement messageElement = omFactory.createOMElement("Result", ns);
+        OMNamespace ns = omFactory.createOMNamespace(FeedConstant.Status, FeedConstant.ns);
+        OMElement result = omFactory.createOMElement(FeedConstant.result, ns);
+        OMElement messageElement = omFactory.createOMElement(FeedConstant.Result, ns);
         messageElement.setText(text);
         result.addChild(messageElement);
         messageContext.getEnvelope().getBody().addChild(result);
+    }
+
+    public  static  Factory getFactory(){
+        Abdera abdera = new Abdera();
+        Factory factory = abdera.getFactory();
+        return factory;
+    }
+
+    public  static AbderaClient getAbderaClient(){
+        Abdera abdera = new Abdera();
+        AbderaClient abderaClient = new AbderaClient(abdera);
+        return abderaClient;
     }
 }

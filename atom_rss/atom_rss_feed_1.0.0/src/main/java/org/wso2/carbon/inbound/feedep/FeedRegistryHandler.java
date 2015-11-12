@@ -16,17 +16,18 @@
 
 package org.wso2.carbon.inbound.feedep;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.inbound.endpoint.persistence.ServiceReferenceHolder;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.Resource;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.registry.api.Registry;
-import org.wso2.carbon.registry.api.RegistryException;
-import org.wso2.carbon.registry.api.Resource;
 
 public class FeedRegistryHandler {
     private static final Log log = LogFactory.getLog(FeedRegistryHandler.class.getName());
@@ -91,13 +92,13 @@ public class FeedRegistryHandler {
             log.error(e.getMessage());
         }
     }
-
-    public void deleteFromRegistry(String resourcePath) {
-        try {
-            registry.delete(resourcePath);
-            log.debug(resourcePath + " Registry Deleted");
-        } catch (RegistryException e) {
-            log.error(e.getMessage());
-        }
-    }
+//
+//    public void deleteFromRegistry(String resourcePath) {
+//        try {
+//            registry.delete(resourcePath);
+//            log.debug(resourcePath + " Registry Deleted");
+//        } catch (RegistryException e) {
+//            log.error(e.getMessage());
+//        }
+//    }
 }

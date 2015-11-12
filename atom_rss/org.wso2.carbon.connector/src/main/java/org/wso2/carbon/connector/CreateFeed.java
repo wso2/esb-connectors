@@ -15,9 +15,6 @@
  */
 package org.wso2.carbon.connector;
 
-import java.util.Date;
-
-import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.protocol.client.AbderaClient;
@@ -27,42 +24,42 @@ import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
+import java.util.Date;
+
 /**
  * Create the Feeds
  */
 public class CreateFeed extends AbstractConnector {
 
     public void connect(MessageContext messageContext) throws ConnectException {
-        String hostAddress = getParameter(messageContext, FeedConstant.hostAddress).toString();
-        String title = getParameter(messageContext, FeedConstant.title).toString();
-        String content = getParameter(messageContext, FeedConstant.content).toString();
-        String author = getParameter(messageContext, FeedConstant.author).toString();
-        String feedID = getParameter(messageContext, FeedConstant.feedID).toString();
+        String hostAddress = (String) getParameter(messageContext, FeedConstant.hostAddress);
+        String title = (String) getParameter(messageContext, FeedConstant.title);
+        String content = (String) getParameter(messageContext, FeedConstant.content);
+        String author = (String) getParameter(messageContext, FeedConstant.author);
+        String feedID = (String) getParameter(messageContext, FeedConstant.feedID);
 
-        if (hostAddress == null) {
-            log.error("HostAddress Can not be empty");
-            return;
+        if (hostAddress == null || !hostAddress.equals("")) {
+            handleException("host address can not be null or empty", messageContext);
         }
 
-        Abdera abdera = new Abdera();
-        AbderaClient abderaClient = new AbderaClient(abdera);
-        Factory factory = abdera.getFactory();
+        AbderaClient abderaClient = FeedFactory.getAbderaClient();
+        Factory factory = FeedFactory.getFactory();
         Entry entry = factory.newEntry();
         entry.setId(feedID);
         entry.setTitle(title);
         entry.setUpdated(new Date());
         entry.addAuthor(author);
         entry.setContent(content);
+
         RequestOptions opts = new RequestOptions();
         opts.setContentType(FeedConstant.contentType);
-
+        FeedFactory response = new FeedFactory();
+        ClientResponse resp=null;
         try {
-            ClientResponse resp = abderaClient.post(hostAddress, entry, opts);
-            ResponseESB response = new ResponseESB();
+           resp = abderaClient.post(hostAddress, entry, opts);
             response.InjectMessage(messageContext, resp.getStatusText());
         } catch (Exception ex) {
-            log.error(ex.getMessage());
-            return;
+            handleException(resp.getStatusText(),ex,messageContext);
         }
     }
 }

@@ -18,7 +18,6 @@ package org.wso2.carbon.connector;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
-import org.apache.abdera.protocol.client.RequestOptions;
 import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
@@ -29,29 +28,27 @@ import org.wso2.carbon.connector.core.ConnectException;
 public class DeleteFeed extends AbstractConnector {
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {
-        String entryID = getParameter(messageContext, FeedConstant.entryID).toString();
-        String hostAddress = getParameter(messageContext, FeedConstant.hostAddress).toString();
+        String entryID = (String) getParameter(messageContext, FeedConstant.entryID);
+        String hostAddress = (String) getParameter(messageContext, FeedConstant.hostAddress);
 
-        if (!entryID.equals("") || !hostAddress.equals("")) {
-            Abdera abdera = new Abdera();
-            AbderaClient abderaClient = new AbderaClient(abdera);
-            String entryUri = hostAddress + "/" + entryID + "-";
-            if (log.isDebugEnabled()) {
-                log.debug("Requester entry URL is " + entryUri);
-            }
-            RequestOptions opts = new RequestOptions();
-            opts.setContentType(FeedConstant.contentType);
-            try {
-                ClientResponse resp = abderaClient.delete(entryUri);
-                ResponseESB response = new ResponseESB();
-                response.InjectMessage(messageContext, resp.getStatusText());
-            } catch (Exception ex) {
-                log.error(ex.getMessage());
-            }
-        } else {
-            log.error("Check hostAddress & entryId can not be empty");
-            return;
+        if (entryID.equals("") || hostAddress.equals("")||entryID==null||hostAddress==null) {
+            handleException("Entry ID and host address can not be null or empty", messageContext);
         }
 
+        Abdera abdera = new Abdera();
+        AbderaClient abderaClient = new AbderaClient(abdera);
+        String entryUri = hostAddress + "/" + entryID + "-";
+        if (log.isDebugEnabled()){
+            log.debug("Requester entry URL is " + entryUri);
+        }
+        FeedFactory response = new FeedFactory();
+        ClientResponse resp = null;
+        try {
+            resp = abderaClient.delete(entryUri);
+            response.InjectMessage(messageContext, resp.getStatusText());
+        } catch (Exception ex){
+            handleException(resp.getStatusText(), ex, messageContext);
+        }
     }
 }
+

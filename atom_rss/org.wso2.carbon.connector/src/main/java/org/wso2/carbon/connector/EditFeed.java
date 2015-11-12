@@ -15,7 +15,6 @@
  */
 package org.wso2.carbon.connector;
 
-import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.protocol.client.AbderaClient;
@@ -24,8 +23,6 @@ import org.apache.abdera.protocol.client.RequestOptions;
 import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
-
-import java.lang.Exception;
 
 /**
  * Edit Existing Feed By ID
@@ -41,17 +38,15 @@ public class EditFeed extends AbstractConnector {
         String content = getParameter(messageContext, FeedConstant.content).toString();
         String author = getParameter(messageContext, FeedConstant.author).toString();
 
-        if (entryID == null || hostAddress == null) {
-            log.error("EntryID && HostAddress Can not be Empty");
+        if (entryID.equals("") || hostAddress.equals("")||entryID==null||hostAddress==null) {
+            handleException("Entry ID and host address can not be null or empty", messageContext);
         }
         String entryUri = hostAddress + "/" + entryID + "-";
-        Abdera abdera = new Abdera();
-        AbderaClient abderaClient = new AbderaClient(abdera);
+        AbderaClient abderaClient = FeedFactory.getAbderaClient();
         try {
-            // Get the Entry from Server
             doc = abderaClient.get(entryUri).getDocument();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            handleException("error while get the entry from server ", e, messageContext);
         }
         if (title != null) {
             doc.getRoot().getTitleElement().setText(title);
@@ -64,12 +59,13 @@ public class EditFeed extends AbstractConnector {
         }
         RequestOptions opts = new RequestOptions();
         opts.setContentType(FeedConstant.contentType);
+        ClientResponse resp = null;
         try {
-            ClientResponse resp = abderaClient.put(entryUri, doc.getRoot(), opts);
-            ResponseESB response = new ResponseESB();
+            resp = abderaClient.put(entryUri, doc.getRoot(), opts);
+            FeedFactory response = new FeedFactory();
             response.InjectMessage(messageContext, resp.getStatusText());
         } catch (Exception ex) {
-            log.error(ex.getMessage());
+            handleException("error while update the entry " + resp.getStatusText(), ex, messageContext);
         }
     }
 }
