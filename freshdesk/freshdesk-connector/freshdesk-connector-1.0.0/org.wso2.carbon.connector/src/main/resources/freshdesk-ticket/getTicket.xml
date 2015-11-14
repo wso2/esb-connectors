@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,20 +18,22 @@
 -->
 
 <template name="getTicket" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="id" description="The unique identifier of the ticket specific to the account." />
+    <parameter name="id"
+               description="The unique identifier of the ticket specific to the account."/>
 
-   <sequence>
-      <property name="uri.var.id" expression="$func:id" />
+    <sequence>
+        <property name="uri.var.id" expression="$func:id"/>
 
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}/helpdesk/tickets/{uri.var.id}.{uri.var.format}" />
-         </endpoint>
-      </call>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}/helpdesk/tickets/{uri.var.id}.{uri.var.format}"/>
+            </endpoint>
+        </call>
 
-      <!-- Remove response custom header information -->
-      <header name="X-Runtime" scope="transport" action="remove" />
-      <header name="X-Powered-By" scope="transport" action="remove" />
+        <!-- Remove response custom header information -->
+        <header name="X-Runtime" scope="transport" action="remove"/>
+        <header name="X-Powered-By" scope="transport" action="remove"/>
 
-   </sequence>
+    </sequence>
 </template>

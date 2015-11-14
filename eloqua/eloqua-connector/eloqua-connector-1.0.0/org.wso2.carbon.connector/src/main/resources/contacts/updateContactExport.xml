@@ -24,13 +24,16 @@
     <parameter name="filter" description="Specifies what data should be included in the export."/>
     <parameter name="createdAt" description="Timestamp when the definition was created."/>
     <parameter name="createdBy" description="User who created the definition."/>
-    <parameter name="dataRetentionDuration" description="Time until the staged data will be deleted."/>
+    <parameter name="dataRetentionDuration"
+               description="Time until the staged data will be deleted."/>
     <parameter name="kbUsed" description="The amount of space required to store staged data."/>
     <parameter name="maxRecords" description="Specifies the maximum number of records to export."/>
-    <parameter name="syncActions" description="Specifies additional operations to import or export."/>
+    <parameter name="syncActions"
+               description="Specifies additional operations to import or export."/>
     <parameter name="updatedAt" description="Timestamp when the definition was updated."/>
     <parameter name="updatedBy" description="User who updated the definition."/>
-    <parameter name="uri" description="System- generated URI that defines the definition for future referencing."/>
+    <parameter name="uri"
+               description="System- generated URI that defines the definition for future referencing."/>
     <sequence>
         <property name="uri.var.exportId" expression="$func:exportId"/>
         <property name="uri.var.name" expression="$func:name"/>
@@ -57,55 +60,55 @@
             </args>
         </payloadFactory>
         <script language="js"><![CDATA[
-		    //request body param variables
-		    var fields = mc.getProperty('uri.var.fields');
-			var autoDeleteDuration = mc.getProperty('uri.var.autoDeleteDuration');
-			var filter = mc.getProperty('uri.var.filter');
-			var createdAt = mc.getProperty('uri.var.createdAt');
-			var createdBy = mc.getProperty('uri.var.createdBy');
-			var dataRetentionDuration = mc.getProperty('uri.var.dataRetentionDuration');
-			var kbUsed = mc.getProperty('uri.var.kbUsed');
-			var maxRecords = mc.getProperty('uri.var.maxRecords');
-			var syncActions = mc.getProperty('uri.var.syncActions');
-			var updatedAt = mc.getProperty('uri.var.updatedAt');
-			var updatedBy = mc.getProperty('uri.var.updatedBy');
-			var uri = mc.getProperty('uri.var.uri');
+            //request body param variables
+            var fields = mc.getProperty('uri.var.fields');
+            var autoDeleteDuration = mc.getProperty('uri.var.autoDeleteDuration');
+            var filter = mc.getProperty('uri.var.filter');
+            var createdAt = mc.getProperty('uri.var.createdAt');
+            var createdBy = mc.getProperty('uri.var.createdBy');
+            var dataRetentionDuration = mc.getProperty('uri.var.dataRetentionDuration');
+            var kbUsed = mc.getProperty('uri.var.kbUsed');
+            var maxRecords = mc.getProperty('uri.var.maxRecords');
+            var syncActions = mc.getProperty('uri.var.syncActions');
+            var updatedAt = mc.getProperty('uri.var.updatedAt');
+            var updatedBy = mc.getProperty('uri.var.updatedBy');
+            var uri = mc.getProperty('uri.var.uri');
 
             //Get the existing payload
-			var payload = mc.getPayloadJSON();
+            var payload = mc.getPayloadJSON();
 
-			if (autoDeleteDuration != null && autoDeleteDuration != "") {
-				payload["autoDeleteDuration"]=autoDeleteDuration;
-			}
-			if (filter != null && filter != "") {
-               payload["filter"]=filter;
+            if (autoDeleteDuration != null && autoDeleteDuration != "") {
+                payload["autoDeleteDuration"] = autoDeleteDuration;
+            }
+            if (filter != null && filter != "") {
+               payload["filter"] = filter;
             }
             if (createdAt != null && createdAt != "") {
-               payload["createdAt"]=createdAt;
+               payload["createdAt"] = createdAt;
             }
             if (createdBy != null && createdBy != "") {
-				payload["createdBy"]=createdBy;
-			}
-			if (dataRetentionDuration != null && dataRetentionDuration != "") {
-               payload["dataRetentionDuration"]=dataRetentionDuration;
+                payload["createdBy"] = createdBy;
+            }
+            if (dataRetentionDuration != null && dataRetentionDuration != "") {
+               payload["dataRetentionDuration"] = dataRetentionDuration;
             }
             if (kbUsed != null && kbUsed != "") {
-               payload["kbUsed"]=kbUsed;
+               payload["kbUsed"] = kbUsed;
             }
             if (maxRecords != null && maxRecords != "") {
-				payload["maxRecords"]=maxRecords;
-			}
-			if (syncActions != null && syncActions != "") {
-               payload["syncActions"]=syncActions;
+                payload["maxRecords"] = maxRecords;
+            }
+            if (syncActions != null && syncActions != "") {
+               payload["syncActions"] = syncActions;
             }
             if (updatedAt != null && updatedAt != "") {
-               payload["updatedAt"]=updatedAt;
+               payload["updatedAt"] = updatedAt;
             }
             if (updatedBy != null && updatedBy != "") {
-				payload["updatedBy"]=updatedBy;
-			}
-			if (uri != null && uri != "") {
-               payload["uri"]=uri;
+                payload["updatedBy"] = updatedBy;
+            }
+            if (uri != null && uri != "") {
+               payload["uri"] = uri;
             }
             if (fields != null && fields != "") {
                 var txt = '{"fieldsList":'+fields+'}';
@@ -124,11 +127,11 @@
                 query = query + '}';
             }
             var q = eval ("(" + query + ")");
-            payload["fields"]=q;
+            payload["fields"] = q;
 
-			//Set the newly constructed payload
-			mc.setPayloadJSON(payload);
-        	]]>
+            //Set the newly constructed payload
+            mc.setPayloadJSON(payload);
+            ]]>
         </script>
         <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>

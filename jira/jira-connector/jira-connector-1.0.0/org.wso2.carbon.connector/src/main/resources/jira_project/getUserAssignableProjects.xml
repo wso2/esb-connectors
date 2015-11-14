@@ -17,8 +17,10 @@
   ~ under the License.
   -->
 <template xmlns="http://ws.apache.org/ns/synapse" name="getUserAssignableProjects">
-    <parameter name="usernameForSearch" description="the username of the user for whom we require details"/>
-    <parameter name="projectKeys" description="a String containing of the unique key for a project"/>
+    <parameter name="usernameForSearch"
+               description="the username of the user for whom we require details"/>
+    <parameter name="projectKeys"
+               description="a String containing of the unique key for a project"/>
     <parameter name="maxResults" description="maxium results to be shown"/>
     <parameter name="startAt" description="starts from"/>
     <sequence>

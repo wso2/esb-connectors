@@ -17,7 +17,8 @@
   ~ under the License.
   -->
 <template xmlns="http://ws.apache.org/ns/synapse" name="deleteAvatarForProject">
-    <parameter name="projectIdOrKey" description="a String containing of the unique key for a project"/>
+    <parameter name="projectIdOrKey"
+               description="a String containing of the unique key for a project"/>
     <parameter name="avatarId" description="id of the avator"/>
     <sequence>
         <property name="uri.var.jira.projectIdOrKey" expression="$func:projectIdOrKey"/>

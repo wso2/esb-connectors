@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,47 +18,55 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="updateDeal" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="id" description="The identifier of the deal to be updated" />
-   <parameter name="title" description="The title of the deal" />
-   <parameter name="value" description="The value of teh deal" />
-   <parameter name="currency" description="The currency of the deal. Accepts a 3-character currency code" />
-   <parameter name="userId" description="The Identifier of the user who will be marked as the owner of this deal" />
-   <parameter name="personId" description="The Identifier of the person this deal will be associated with" />
-   <parameter name="organizationId" description="The Identifier of the organization, the deal will be associated with" />
-   <parameter name="stageId" description="The Identifier of the stage this deal will be placed in a pipeline" />
-   <parameter name="status" description="The status of the deal, possible values are Open, Won, Lost and Deleted" />
-   <parameter name="lostReason" description="The message about why the deal was lost, only to be used when the status is Lost" />
-   <parameter name="visibility"
-      description="Visibility of the deal. If omitted, visibility will not be changed, possible values are 0,1 and 2" />
-   <parameter name="customFields"
-      description="JSON Object specifying the values for the deal's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields" />
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output" />
-   <parameter name="fields" description="The array of fileds to be returned in the output" />
-   <sequence>
-      <property name="uri.var.id" expression="$func:id" />
-      <property name="uri.var.title" expression="$func:title" />
-      <property name="uri.var.value" expression="$func:value" />
-      <property name="uri.var.currency" expression="$func:currency" />
-      <property name="uri.var.userId" expression="$func:userId" />
-      <property name="uri.var.personId" expression="$func:personId" />
-      <property name="uri.var.organizationId" expression="$func:organizationId" />
-      <property name="uri.var.stageId" expression="$func:stageId" />
-      <property name="uri.var.status" expression="$func:status" />
-      <property name="uri.var.lostReason" expression="$func:lostReason" />
-      <property name="uri.var.visibility" expression="$func:visibility" />
-      <property name="uri.var.customFields" expression="$func:customFields" />
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <property name="uri.var.fields" expression="$func:fields" />
-      <!-- Generate the request payload with mandatory parameters -->
-      <payloadFactory media-type="json">
-         <format>
-            {}
-         </format>
-         <args>
-         </args>
-      </payloadFactory>
-      <script language="js">
-         <![CDATA[ 
+    <parameter name="id" description="The identifier of the deal to be updated"/>
+    <parameter name="title" description="The title of the deal"/>
+    <parameter name="value" description="The value of teh deal"/>
+    <parameter name="currency"
+               description="The currency of the deal. Accepts a 3-character currency code"/>
+    <parameter name="userId"
+               description="The Identifier of the user who will be marked as the owner of this deal"/>
+    <parameter name="personId"
+               description="The Identifier of the person this deal will be associated with"/>
+    <parameter name="organizationId"
+               description="The Identifier of the organization, the deal will be associated with"/>
+    <parameter name="stageId"
+               description="The Identifier of the stage this deal will be placed in a pipeline"/>
+    <parameter name="status"
+               description="The status of the deal, possible values are Open, Won, Lost and Deleted"/>
+    <parameter name="lostReason"
+               description="The message about why the deal was lost, only to be used when the status is Lost"/>
+    <parameter name="visibility"
+               description="Visibility of the deal. If omitted, visibility will not be changed, possible values are 0,1 and 2"/>
+    <parameter name="customFields"
+               description="JSON Object specifying the values for the deal's custom fields created in the account, keys for the object are the 40-character hashes assigned for the respective custom fields"/>
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output"/>
+    <parameter name="fields" description="The array of fileds to be returned in the output"/>
+    <sequence>
+        <property name="uri.var.id" expression="$func:id"/>
+        <property name="uri.var.title" expression="$func:title"/>
+        <property name="uri.var.value" expression="$func:value"/>
+        <property name="uri.var.currency" expression="$func:currency"/>
+        <property name="uri.var.userId" expression="$func:userId"/>
+        <property name="uri.var.personId" expression="$func:personId"/>
+        <property name="uri.var.organizationId" expression="$func:organizationId"/>
+        <property name="uri.var.stageId" expression="$func:stageId"/>
+        <property name="uri.var.status" expression="$func:status"/>
+        <property name="uri.var.lostReason" expression="$func:lostReason"/>
+        <property name="uri.var.visibility" expression="$func:visibility"/>
+        <property name="uri.var.customFields" expression="$func:customFields"/>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <property name="uri.var.fields" expression="$func:fields"/>
+        <!-- Generate the request payload with mandatory parameters -->
+        <payloadFactory media-type="json">
+            <format>
+                {}
+            </format>
+            <args>
+            </args>
+        </payloadFactory>
+        <script language="js">
+            <![CDATA[
             // Generate payload with optional parameters
             var title = mc.getProperty('uri.var.title');
             var value = mc.getProperty('uri.var.value');
@@ -134,16 +142,17 @@
                }
             }   
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="put" uri-template="{uri.var.apiUrl}deals{+uri.var.filter}/{+uri.var.id}{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="put"
+                      uri-template="{uri.var.apiUrl}deals{+uri.var.filter}/{+uri.var.id}{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

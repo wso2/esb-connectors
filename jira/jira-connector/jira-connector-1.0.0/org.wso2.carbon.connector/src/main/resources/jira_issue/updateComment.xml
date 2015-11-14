@@ -21,7 +21,8 @@
     <parameter name="commentId" description="a String containing the issue id."/>
     <parameter name="comment" description="a String containing the comment to be posted"/>
     <parameter name="visibleRole" description="a String containing the visible role"/>
-    <parameter name="expand" description="The optional flags: renderedBody (provides body rendered in HTML)."/>
+    <parameter name="expand"
+               description="The optional flags: renderedBody (provides body rendered in HTML)."/>
     <sequence>
         <property name="uri.var.jira.issueIdOrKey" expression="$func:issueIdOrKey"/>
         <property name="uri.var.jira.commentId" expression="$func:commentId"/>

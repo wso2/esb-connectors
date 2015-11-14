@@ -50,7 +50,8 @@
         <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>
         <header name="Content-Type" value="application/json" scope="transport"/>
-        <header name="Authorization" expression="fn:concat('Basic ',base64Encode(get-property('eloqua.authHeader')))"
+        <header name="Authorization"
+                expression="fn:concat('Basic ',base64Encode(get-property('eloqua.authHeader')))"
                 scope="transport"/>
         <call>
             <endpoint>
@@ -61,7 +62,8 @@
             <then>
                 <property name="accessToken" expression="json-eval($.access_token)"/>
                 <property name="refreshToken" expression="json-eval($.refresh_token)"/>
-                <header name="Authorization" expression="fn:concat('Bearer ',get-property('accessToken'))"
+                <header name="Authorization"
+                        expression="fn:concat('Bearer ',get-property('accessToken'))"
                         scope="transport"/>
                 <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>
                 <call>
@@ -72,13 +74,14 @@
                 </call>
                 <property name="uri.var.apiUrl" expression="json-eval($.urls.apis.rest.bulk)"/>
                 <script language="js"><![CDATA[
-                    var apiUrl=mc.getProperty('uri.var.apiUrl');
-                    var apiVersion=mc.getProperty('eloqua.apiVersion');
-                    apiUrl=apiUrl.replace("{version}",apiVersion);
+                    var apiUrl = mc.getProperty('uri.var.apiUrl');
+                    var apiVersion = mc.getProperty('eloqua.apiVersion');
+                    apiUrl = apiUrl.replace("{version}",apiVersion);
                     mc.setProperty("uri.var.apiUrl",apiUrl);
                 ]]>
                 </script>
-                <header name="Authorization" expression="fn:concat('Bearer ',get-property('accessToken'))"
+                <header name="Authorization"
+                        expression="fn:concat('Bearer ',get-property('accessToken'))"
                         scope="transport"/>
             </then>
             <else>

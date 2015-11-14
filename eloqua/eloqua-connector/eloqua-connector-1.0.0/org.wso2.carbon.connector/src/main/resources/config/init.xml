@@ -28,7 +28,8 @@
         <property name="eloqua.apiVersion" expression="$func:apiVersion"/>
         <property name="eloqua.authHeader"
                   expression="fn:concat(get-property('eloqua.siteName'),'\',get-property('eloqua.username'),':',get-property('eloqua.password'))"/>
-        <header name="Authorization" expression="fn:concat('Basic ',base64Encode(get-property('eloqua.authHeader')))"
+        <header name="Authorization"
+                expression="fn:concat('Basic ',base64Encode(get-property('eloqua.authHeader')))"
                 scope="transport"/>
         <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>
         <call>
@@ -41,9 +42,9 @@
             <then>
                 <property name="uri.var.apiUrl" expression="json-eval($.urls.apis.rest.bulk)"/>
                 <script language="js"><![CDATA[
-                var apiUrl=mc.getProperty('uri.var.apiUrl');
-                var apiVersion=mc.getProperty('eloqua.apiVersion');
-                apiUrl=apiUrl.replace("{version}",apiVersion);
+                var apiUrl = mc.getProperty('uri.var.apiUrl');
+                var apiVersion = mc.getProperty('eloqua.apiVersion');
+                apiUrl = apiUrl.replace("{version}",apiVersion);
                 mc.setProperty("uri.var.apiUrl",apiUrl);
                 ]]>
                 </script>

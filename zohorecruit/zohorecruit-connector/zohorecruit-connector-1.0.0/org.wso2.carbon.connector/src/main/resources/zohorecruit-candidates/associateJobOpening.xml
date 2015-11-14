@@ -21,7 +21,8 @@
     <parameter name="candidateIds"
                description="This specifies comma separated candidate ids to associate with the above jobId."/>
     <parameter name="version" description="The API version being used."/>
-    <parameter name="status" description="Specify the status of the Candidate with the associated Job opening."/>
+    <parameter name="status"
+               description="Specify the status of the Candidate with the associated Job opening."/>
     <parameter name="comments" description="Specify the comments for the association."/>
     <sequence>
         <property name="uri.var.jobIds" expression="$func:jobIds"/>

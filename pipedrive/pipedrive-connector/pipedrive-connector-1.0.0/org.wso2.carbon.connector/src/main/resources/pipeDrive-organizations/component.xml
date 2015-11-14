@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -17,18 +17,18 @@
    under the License.
 -->
 <component name="pipeDrive-organizations" type="synapse/template">
-  <subComponents>
-    	<component name="createOrganization">
-      <file>createOrganization.xml</file>
-      <description>Adds a new organization</description>
-    </component>
-    	<component name="searchOrganizations">
-      <file>searchOrganizations.xml</file>
-      <description>Searches all organizations by their name</description>
-    </component>
-    	<component name="listOrganizations">
-      <file>listOrganizations.xml</file>
-      <description>Returns all organizations</description>
-    </component>
+    <subComponents>
+        <component name="createOrganization">
+            <file>createOrganization.xml</file>
+            <description>Adds a new organization</description>
+        </component>
+        <component name="searchOrganizations">
+            <file>searchOrganizations.xml</file>
+            <description>Searches all organizations by their name</description>
+        </component>
+        <component name="listOrganizations">
+            <file>listOrganizations.xml</file>
+            <description>Returns all organizations</description>
+        </component>
     </subComponents>
 </component>

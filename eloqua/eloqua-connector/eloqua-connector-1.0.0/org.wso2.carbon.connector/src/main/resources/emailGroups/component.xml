@@ -20,7 +20,8 @@
     <subComponents>
         <component name="getEmailGroups">
             <file>getEmailGroups.xml</file>
-            <description>Retrieves all email groups that match the criteria specified in the URL parameters.
+            <description>Retrieves all email groups that match the criteria specified in the URL
+                parameters.
             </description>
         </component>
         <component name="getEmailGroupById">

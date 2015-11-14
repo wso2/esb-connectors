@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,14 +18,14 @@
 -->
 
 <component name="freshdesk-user" type="synapse/template">
-   <subComponents>
-      <component name="listUsers">
-         <file>listUsers.xml</file>
-         <description>Retrieves the list of Users.</description>
-      </component>
-      <component name="getUser">
-         <file>getUser.xml</file>
-         <description>Retrieves the details about a user.</description>
-      </component>
-   </subComponents>
+    <subComponents>
+        <component name="listUsers">
+            <file>listUsers.xml</file>
+            <description>Retrieves the list of Users.</description>
+        </component>
+        <component name="getUser">
+            <file>getUser.xml</file>
+            <description>Retrieves the details about a user.</description>
+        </component>
+    </subComponents>
 </component>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,14 +18,14 @@
 -->
 
 <component name="freshdesk-post" type="synapse/template">
-   <subComponents>
-      <component name="createPost">
-         <file>createPost.xml</file>
-         <description>To create a new post related to a topic.</description>
-      </component>
-      <component name="deletePost">
-         <file>deletePost.xml</file>
-         <description>Delete a post related to a topic.</description>
-      </component>
-   </subComponents>
+    <subComponents>
+        <component name="createPost">
+            <file>createPost.xml</file>
+            <description>To create a new post related to a topic.</description>
+        </component>
+        <component name="deletePost">
+            <file>deletePost.xml</file>
+            <description>Delete a post related to a topic.</description>
+        </component>
+    </subComponents>
 </component>

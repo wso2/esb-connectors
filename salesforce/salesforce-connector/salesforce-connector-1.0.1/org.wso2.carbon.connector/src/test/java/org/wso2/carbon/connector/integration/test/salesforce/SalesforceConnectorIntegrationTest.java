@@ -1,11 +1,11 @@
 /**
- * Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
@@ -68,12 +68,12 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
         ConfigurationContext cc = configurationContextProvider.getConfigurationContext();
         mediationLibUploadStub =
                 new MediationLibraryUploaderStub(cc, esbServer.getBackEndUrl() +
-                        "MediationLibraryUploader");
+                                                     "MediationLibraryUploader");
         AuthenticateStub.authenticateStub("admin", "admin", mediationLibUploadStub);
 
         adminServiceStub =
                 new MediationLibraryAdminServiceStub(cc, esbServer.getBackEndUrl() +
-                        "MediationLibraryAdminService");
+                                                         "MediationLibraryAdminService");
 
         AuthenticateStub.authenticateStub("admin", "admin", adminServiceStub);
 
@@ -85,14 +85,14 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
 
         proxyAdmin =
                 new ProxyServiceAdminClient(esbServer.getBackEndUrl(),
-                        esbServer.getSessionCookie());
+                                            esbServer.getSessionCookie());
 
         ConnectorIntegrationUtil.uploadConnector(repoLocation, mediationLibUploadStub,
-                salesforceConnectorFileName);
+                                                 salesforceConnectorFileName);
         Thread.sleep(30000);
 
         adminServiceStub.updateStatus("{org.wso2.carbon.connectors}" + CONNECTOR_NAME, CONNECTOR_NAME,
-                "org.wso2.carbon.connectors", "enabled");
+                                      "org.wso2.carbon.connectors", "enabled");
 
         salesforceConnectorProperties =
                 ConnectorIntegrationUtil.getConnectorConfigProperties(CONNECTOR_NAME);
@@ -107,39 +107,39 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceDescribeGlobal() throws Exception {
         final String methodName = "describeGlobal";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
 
         try {
             Assert.assertTrue(response.toString().contains("describeGlobalResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("maxBatchSize").next())))).getText(), "200");
+                                                                      .next())).getChildrenWithLocalName("maxBatchSize").next())))).getText(), "200");
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -150,39 +150,39 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
 
         final String methodName = "getUserInfo";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
 
         try {
             Assert.assertTrue(response.toString().contains("getUserInfoResponse"));
             Assert.assertTrue(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("userId").next())))).getText().length() > 0);
+                                                                    .next())).getChildrenWithLocalName("userId").next())))).getText().length() > 0);
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -193,44 +193,44 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
 
         final String methodName = "describeSobject";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:describeSobject>\n" +
-                "   <per:sObject>" +
-                salesforceConnectorProperties.get("sObject") +
-                "</per:sObject>\n" +
-                "   </per:describeSobject>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:describeSobject>\n" +
+                                "   <per:sObject>" +
+                                salesforceConnectorProperties.get("sObject") +
+                                "</per:sObject>\n" +
+                                "   </per:describeSobject>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
 
         try {
             Assert.assertTrue(response.toString().contains("describeSObjectResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("name").next())))).getText(), salesforceConnectorProperties.get("sObject"));
+                                                                      .next())).getChildrenWithLocalName("name").next())))).getText(), salesforceConnectorProperties.get("sObject"));
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -241,47 +241,47 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
 
         final String methodName = "describeSobjects";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:describeSobjects>\n" +
-                "   <per:sobject1>" +
-                salesforceConnectorProperties.get("sObjectType1") +
-                "</per:sobject1>\n" +
-                "   <per:sobject2>" +
-                salesforceConnectorProperties.get("sObjectType2") +
-                "</per:sobject2>\n" +
-                "   </per:describeSobjects>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:describeSobjects>\n" +
+                                "   <per:sobject1>" +
+                                salesforceConnectorProperties.get("sObjectType1") +
+                                "</per:sobject1>\n" +
+                                "   <per:sobject2>" +
+                                salesforceConnectorProperties.get("sObjectType2") +
+                                "</per:sobject2>\n" +
+                                "   </per:describeSobjects>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
 
         try {
             Assert.assertTrue(response.toString().contains("describeSObjectsResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("name").next())))).getText(), salesforceConnectorProperties.get("sObjectType1"));
+                                                                      .next())).getChildrenWithLocalName("name").next())))).getText(), salesforceConnectorProperties.get("sObjectType1"));
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -291,45 +291,45 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceQuery() throws Exception {
         final String methodName = "query";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:query>\n" +
-                "   <per:batchSize>" +
-                salesforceConnectorProperties.get("batchSize") +
-                "</per:batchSize>\n" +
-                "   <per:queryString>" +
-                salesforceConnectorProperties.get("queryString") +
-                "</per:queryString>\n" +
-                "   </per:query>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:query>\n" +
+                                "   <per:batchSize>" +
+                                salesforceConnectorProperties.get("batchSize") +
+                                "</per:batchSize>\n" +
+                                "   <per:queryString>" +
+                                salesforceConnectorProperties.get("queryString") +
+                                "</per:queryString>\n" +
+                                "   </per:query>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("queryResponse"));
             Assert.assertTrue(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("done").next())))).getText().length() > 0);
+                                                                    .next())).getChildrenWithLocalName("done").next())))).getText().length() > 0);
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -339,45 +339,45 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceQueryAll() throws Exception {
         final String methodName = "queryAll";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:queryAll>\n" +
-                "   <per:batchSize>" +
-                salesforceConnectorProperties.get("batchSize") +
-                "</per:batchSize>\n" +
-                "   <per:queryString>" +
-                salesforceConnectorProperties.get("queryString") +
-                "</per:queryString>\n" +
-                "   </per:queryAll>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:queryAll>\n" +
+                                "   <per:batchSize>" +
+                                salesforceConnectorProperties.get("batchSize") +
+                                "</per:batchSize>\n" +
+                                "   <per:queryString>" +
+                                salesforceConnectorProperties.get("queryString") +
+                                "</per:queryString>\n" +
+                                "   </per:queryAll>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("queryAllResponse"));
             Assert.assertTrue(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("done").next())))).getText().length() > 0);
+                                                                    .next())).getChildrenWithLocalName("done").next())))).getText().length() > 0);
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -387,44 +387,44 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceQueryMore() throws Exception {
         final String methodName = "queryMore";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:queryMore>\n" +
-                "   <per:batchSize>" +
-                salesforceConnectorProperties.get("batchSize") +
-                "</per:batchSize>\n" +
-                "   <per:queryString>" +
-                salesforceConnectorProperties.get("queryString") +
-                "</per:queryString>\n" +
-                "   </per:queryMore>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:queryMore>\n" +
+                                "   <per:batchSize>" +
+                                salesforceConnectorProperties.get("batchSize") +
+                                "</per:batchSize>\n" +
+                                "   <per:queryString>" +
+                                salesforceConnectorProperties.get("queryString") +
+                                "</per:queryString>\n" +
+                                "   </per:queryMore>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("queryLocator").next())))).getText().length() > 0);
+                                                                    .next())).getChildrenWithLocalName("queryLocator").next())))).getText().length() > 0);
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -434,38 +434,38 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceSearch() throws Exception {
         final String methodName = "search";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:search>\n" +
-                "   <per:searchString>" +
-                salesforceConnectorProperties.get("searchString") +
-                "</per:searchString>\n" +
-                "   </per:search>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:search>\n" +
+                                "   <per:searchString>" +
+                                salesforceConnectorProperties.get("searchString") +
+                                "</per:searchString>\n" +
+                                "   </per:search>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("searchResponse"));
             Assert.assertTrue(response.toString().contains("searchRecords"));
@@ -479,63 +479,63 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
         final String methodName = "sendEMail";
 
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   <per:bccSender>" +
-                salesforceConnectorProperties.get("bccSender") +
-                "</per:bccSender>\n" +
-                "   <per:emailPriority>" +
-                salesforceConnectorProperties.get("emailPriority") +
-                "</per:emailPriority>\n" +
-                "   <per:replyTo>" +
-                salesforceConnectorProperties.get("replyTo") +
-                "</per:replyTo>\n" +
-                "   <per:saveAsActivity>" +
-                salesforceConnectorProperties.get("saveAsActivity") +
-                "</per:saveAsActivity>\n" +
-                "   <per:senderDisplayName>" +
-                salesforceConnectorProperties.get("senderDisplayName") +
-                "</per:senderDisplayName>\n" +
-                "   <per:subject>" +
-                salesforceConnectorProperties.get("subject") +
-                "</per:subject>\n" +
-                "   <per:useSignature>" +
-                salesforceConnectorProperties.get("useSignature") +
-                "</per:useSignature>\n" +
-                "   <per:targetObjectId>" +
-                salesforceConnectorProperties.get("targetObjectId") +
-                "</per:targetObjectId>\n" +
-                "   <per:plainTextBody>" +
-                salesforceConnectorProperties.get("plainTextBody") +
-                "</per:plainTextBody>\n" +
-                "   </per:config>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   <per:bccSender>" +
+                                salesforceConnectorProperties.get("bccSender") +
+                                "</per:bccSender>\n" +
+                                "   <per:emailPriority>" +
+                                salesforceConnectorProperties.get("emailPriority") +
+                                "</per:emailPriority>\n" +
+                                "   <per:replyTo>" +
+                                salesforceConnectorProperties.get("replyTo") +
+                                "</per:replyTo>\n" +
+                                "   <per:saveAsActivity>" +
+                                salesforceConnectorProperties.get("saveAsActivity") +
+                                "</per:saveAsActivity>\n" +
+                                "   <per:senderDisplayName>" +
+                                salesforceConnectorProperties.get("senderDisplayName") +
+                                "</per:senderDisplayName>\n" +
+                                "   <per:subject>" +
+                                salesforceConnectorProperties.get("subject") +
+                                "</per:subject>\n" +
+                                "   <per:useSignature>" +
+                                salesforceConnectorProperties.get("useSignature") +
+                                "</per:useSignature>\n" +
+                                "   <per:targetObjectId>" +
+                                salesforceConnectorProperties.get("targetObjectId") +
+                                "</per:targetObjectId>\n" +
+                                "   <per:plainTextBody>" +
+                                salesforceConnectorProperties.get("plainTextBody") +
+                                "</per:plainTextBody>\n" +
+                                "   </per:config>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         Assert.assertTrue(response.toString().contains("sendEmailResponse"));
         Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
+                                                                  .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
 
     }
 
@@ -544,47 +544,47 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
         final String methodName = "retrieve";
 
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:retrieve>\n" +
-                "   <per:id1>" +
-                salesforceConnectorProperties.get("retrieveId1") +
-                "</per:id1>\n" +
-                "   <per:id2>" +
-                salesforceConnectorProperties.get("retrieveId2") +
-                "</per:id2>\n" +
-                "   <per:fieldList>" +
-                salesforceConnectorProperties.get("fieldList") +
-                "</per:fieldList>\n" +
-                "   <per:objectType>" +
-                salesforceConnectorProperties.get("objectType") +
-                "</per:objectType>\n" +
-                "   </per:retrieve>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:retrieve>\n" +
+                                "   <per:id1>" +
+                                salesforceConnectorProperties.get("retrieveId1") +
+                                "</per:id1>\n" +
+                                "   <per:id2>" +
+                                salesforceConnectorProperties.get("retrieveId2") +
+                                "</per:id2>\n" +
+                                "   <per:fieldList>" +
+                                salesforceConnectorProperties.get("fieldList") +
+                                "</per:fieldList>\n" +
+                                "   <per:objectType>" +
+                                salesforceConnectorProperties.get("objectType") +
+                                "</per:objectType>\n" +
+                                "   </per:retrieve>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         Assert.assertTrue(response.toString().contains("retrieveResponse"));
         Assert.assertTrue(response.toString().contains(salesforceConnectorProperties.get("objectType").toString()));
     }
@@ -594,41 +594,41 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceSetPassword() throws Exception {
         final String methodName = "setPassword";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:setPassword>\n" +
-                "   <per:userId>" +
-                salesforceConnectorProperties.get("userId") +
-                "</per:userId>\n" +
-                "   <per:password>" +
-                salesforceConnectorProperties.get("password") +
-                "</per:password>\n" +
-                "   </per:setPassword>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:setPassword>\n" +
+                                "   <per:userId>" +
+                                salesforceConnectorProperties.get("userId") +
+                                "</per:userId>\n" +
+                                "   <per:password>" +
+                                salesforceConnectorProperties.get("password") +
+                                "</per:password>\n" +
+                                "   </per:setPassword>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("setPasswordResponse"));
             Assert.assertTrue(response.toString().contains("result"));
@@ -641,42 +641,42 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceCreate() throws Exception {
         final String methodName = "create";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:create>\n" +
-                "   <per:sObjectName>" +
-                salesforceConnectorProperties.get("sObjectName") +
-                "</per:sObjectName>\n" +
-                "   </per:create>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:create>\n" +
+                                "   <per:sObjectName>" +
+                                salesforceConnectorProperties.get("sObjectName") +
+                                "</per:sObjectName>\n" +
+                                "   </per:create>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("createResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
+                                                                      .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -686,45 +686,45 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceUpdate() throws Exception {
         final String methodName = "update";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:update>\n" +
-                "   <per:sObjectId>" +
-                salesforceConnectorProperties.get("updateSObjectId") +
-                "</per:sObjectId>\n" +
-                "   <per:sObjectName>" +
-                salesforceConnectorProperties.get("updateSObjectName") +
-                "</per:sObjectName>\n" +
-                "   </per:update>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:update>\n" +
+                                "   <per:sObjectId>" +
+                                salesforceConnectorProperties.get("updateSObjectId") +
+                                "</per:sObjectId>\n" +
+                                "   <per:sObjectName>" +
+                                salesforceConnectorProperties.get("updateSObjectName") +
+                                "</per:sObjectName>\n" +
+                                "   </per:update>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("updateResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
+                                                                      .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -735,44 +735,44 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
 
         final String methodName = "delete";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:delete>\n" +
-                "   <per:id>" +
-                salesforceConnectorProperties.get("deleteObjectId") +
-                "</per:id>\n" +
-                "   </per:delete>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:delete>\n" +
+                                "   <per:id>" +
+                                salesforceConnectorProperties.get("deleteObjectId") +
+                                "</per:id>\n" +
+                                "   </per:delete>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
 
         try {
             Assert.assertTrue(response.toString().contains("deleteResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
+                                                                      .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
 
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
@@ -785,44 +785,44 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
 
         final String methodName = "undelete";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:undelete>\n" +
-                "   <per:id>" +
-                salesforceConnectorProperties.get("undeleteObjectId") +
-                "</per:id>\n" +
-                "   </per:undelete>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:undelete>\n" +
+                                "   <per:id>" +
+                                salesforceConnectorProperties.get("undeleteObjectId") +
+                                "</per:id>\n" +
+                                "   </per:undelete>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
 
         try {
             Assert.assertTrue(response.toString().contains("undeleteResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
+                                                                      .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -834,44 +834,44 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
 
         final String methodName = "emptyRecycleBin";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:emptyRecycleBin>\n" +
-                "   <per:id>" +
-                salesforceConnectorProperties.get("emptyRecycleBinId") +
-                "</per:id>\n" +
-                "   </per:emptyRecycleBin>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:emptyRecycleBin>\n" +
+                                "   <per:id>" +
+                                salesforceConnectorProperties.get("emptyRecycleBinId") +
+                                "</per:id>\n" +
+                                "   </per:emptyRecycleBin>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
 
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
 
         try {
             Assert.assertTrue(response.toString().contains("emptyRecycleBinResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
+                                                                      .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -882,48 +882,48 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceUpsert() throws Exception {
         final String methodName = "upsert";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:upsert>\n" +
-                "   <per:sObjectId>" +
-                salesforceConnectorProperties.get("upsertSObjectId") +
-                "</per:sObjectId>\n" +
-                "   <per:sObjectUpdateName>" +
-                salesforceConnectorProperties.get("upsertSObjectName") +
-                "</per:sObjectUpdateName>\n" +
-                "   <per:sObjectName>" +
-                salesforceConnectorProperties.get("upsertSObjectName2") +
-                "</per:sObjectName>\n" +
-                "   </per:upsert>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:upsert>\n" +
+                                "   <per:sObjectId>" +
+                                salesforceConnectorProperties.get("upsertSObjectId") +
+                                "</per:sObjectId>\n" +
+                                "   <per:sObjectUpdateName>" +
+                                salesforceConnectorProperties.get("upsertSObjectName") +
+                                "</per:sObjectUpdateName>\n" +
+                                "   <per:sObjectName>" +
+                                salesforceConnectorProperties.get("upsertSObjectName2") +
+                                "</per:sObjectName>\n" +
+                                "   </per:upsert>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("upsertResponse"));
             Assert.assertEquals(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
+                                                                      .next())).getChildrenWithLocalName("success").next())))).getText(), "true");
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }
@@ -933,42 +933,42 @@ public class SalesforceConnectorIntegrationTest extends ESBIntegrationTest {
     public void testSalesforceResetPassword() throws Exception {
         final String methodName = "resetPassword";
         final String omString = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:per=\"http://connector.esb.wso2.org\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "   <per:config>\n" +
-                "   <per:clientId>" +
-                salesforceConnectorProperties.get("clientId") +
-                "</per:clientId>\n" +
-                "   <per:clientSecret>" +
-                salesforceConnectorProperties.get("clientSecret") +
-                "</per:clientSecret>\n" +
-                "   <per:refreshToken>" +
-                salesforceConnectorProperties.get("refreshToken") +
-                "</per:refreshToken>\n" +
-                "   <per:apiVersion>" +
-                salesforceConnectorProperties.get("apiVersion") +
-                "</per:apiVersion>\n" +
-                "   </per:config>\n" +
-                "   <per:resetPassword>\n" +
-                "   <per:userId>" +
-                salesforceConnectorProperties.get("userId") +
-                "</per:userId>\n" +
-                "   </per:resetPassword>\n" +
-                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
+                                "   <soapenv:Header/>\n" +
+                                "   <soapenv:Body>\n" +
+                                "   <per:config>\n" +
+                                "   <per:clientId>" +
+                                salesforceConnectorProperties.get("clientId") +
+                                "</per:clientId>\n" +
+                                "   <per:clientSecret>" +
+                                salesforceConnectorProperties.get("clientSecret") +
+                                "</per:clientSecret>\n" +
+                                "   <per:refreshToken>" +
+                                salesforceConnectorProperties.get("refreshToken") +
+                                "</per:refreshToken>\n" +
+                                "   <per:apiVersion>" +
+                                salesforceConnectorProperties.get("apiVersion") +
+                                "</per:apiVersion>\n" +
+                                "   </per:config>\n" +
+                                "   <per:resetPassword>\n" +
+                                "   <per:userId>" +
+                                salesforceConnectorProperties.get("userId") +
+                                "</per:userId>\n" +
+                                "   </per:resetPassword>\n" +
+                                "   </soapenv:Body>\n" + "</soapenv:Envelope>";
         proxyAdmin.addProxyService(new DataHandler(new URL("file:" + File.separator + File.separator + ProductConstant.SYSTEM_TEST_RESOURCE_LOCATION
-                + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
-                + CONNECTOR_NAME + "_" + methodName + ".xml")));
+                                                           + ConnectorIntegrationUtil.ESB_CONFIG_LOCATION + File.separator + "proxies" + File.separator
+                                                           + CONNECTOR_NAME + "_" + methodName + ".xml")));
 
         AxisServiceClient axisServiceClient = new AxisServiceClient();
         OMElement getRequest = AXIOMUtil.stringToOM(omString);
         String proxyName = CONNECTOR_NAME + "_" + methodName;
         OMElement response =
                 axisServiceClient.sendReceive(getRequest,
-                        getProxyServiceURL(proxyName), "mediate");
+                                              getProxyServiceURL(proxyName), "mediate");
         try {
             Assert.assertTrue(response.toString().contains("resetPasswordResponse"));
             Assert.assertTrue(((OMElement) (((((OMElement) (response.getChildrenWithLocalName("result")
-                    .next())).getChildrenWithLocalName("password").next())))).getText().length() > 0);
+                                                                    .next())).getChildrenWithLocalName("password").next())))).getText().length() > 0);
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
         }

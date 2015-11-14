@@ -21,7 +21,8 @@
                description="The unique ID of the Job Opening record for which the associated candidate status has to be changed."/>
     <parameter name="candidateIds"
                description="The comma separated candidate ids for which the status has to be changed, with respect to the job opening."/>
-    <parameter name="candidateStatus" description="The status of the resume with respect to the job opening."/>
+    <parameter name="candidateStatus"
+               description="The status of the resume with respect to the job opening."/>
     <parameter name="comments" description="The comments for why the status is being changed."/>
     <parameter name="version" description="The API version being used."/>
     <sequence>

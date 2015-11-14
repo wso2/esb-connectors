@@ -17,8 +17,10 @@
   ~ under the License.
   -->
 <template xmlns="http://ws.apache.org/ns/synapse" name="searchAssignableUser">
-    <parameter name="usernameForSearch" description="the username of the user for whom we require details"/>
-    <parameter name="project" description="the key of the project we are finding assignable users for"/>
+    <parameter name="usernameForSearch"
+               description="the username of the user for whom we require details"/>
+    <parameter name="project"
+               description="the key of the project we are finding assignable users for"/>
     <parameter name="issueKey"
                description="the issue key for the issue being edited we need to find assignable users for."/>
     <parameter name="startAt" description="the index of the first user to return (0-based)"/>

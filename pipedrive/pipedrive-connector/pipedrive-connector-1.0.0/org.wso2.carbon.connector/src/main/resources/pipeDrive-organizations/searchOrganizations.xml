@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,19 +18,20 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="searchOrganizations" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="term" description="The search term to look for Organizations" />
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output." />
-   <parameter name="fields" description="The array of fileds to be returned in the output." />
-   <parameter name="start" description="Specifies the pagination start index" />
-   <parameter name="limit" description="Specifies the number of items returned per page" />
-   <sequence>
-      <property name="uri.var.term" expression="$func:term" />
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <property name="uri.var.fields" expression="$func:fields" />
-      <property name="uri.var.start" expression="$func:start" />
-      <property name="uri.var.limit" expression="$func:limit" />
-      <script language="js">
-         <![CDATA[
+    <parameter name="term" description="The search term to look for Organizations"/>
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output."/>
+    <parameter name="fields" description="The array of fileds to be returned in the output."/>
+    <parameter name="start" description="Specifies the pagination start index"/>
+    <parameter name="limit" description="Specifies the number of items returned per page"/>
+    <sequence>
+        <property name="uri.var.term" expression="$func:term"/>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <property name="uri.var.fields" expression="$func:fields"/>
+        <property name="uri.var.start" expression="$func:start"/>
+        <property name="uri.var.limit" expression="$func:limit"/>
+        <script language="js">
+            <![CDATA[
             var term = mc.getProperty('uri.var.term');
             var prettyOutPut = mc.getProperty('uri.var.prettyOutput');
             var fields = mc.getProperty('uri.var.fields');
@@ -60,16 +61,17 @@
                }
             }
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}organizations{+uri.var.filter}/find{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}organizations{+uri.var.filter}/find{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

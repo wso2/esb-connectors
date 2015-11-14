@@ -1,43 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   WSO2 Inc. licenses this file to you under the Apache License,
+   Version 2.0 (the "License"); you may not use this file except
+   in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
 <template name="getAbsenceRecord" xmlns="http://ws.apache.org/ns/synapse">
 
-	<parameter name="startDate" description="The startDate of the absence." />
-	<parameter name="endDate" description="The endDate of the absence." />
-	<sequence>
+    <parameter name="startDate" description="The startDate of the absence."/>
+    <parameter name="endDate" description="The endDate of the absence."/>
+    <sequence>
 
-		<property expression="$func:startDate" name="uri.var.startDate" />
-		<property expression="$func:endDate" name="uri.var.endDate" />
+        <property expression="$func:startDate" name="uri.var.startDate"/>
+        <property expression="$func:endDate" name="uri.var.endDate"/>
 
-		<payloadFactory media-type="json">
-			<format>
-				{
-				"APIKey": "$1",
-				"Action": "GetAbsenceDetail",
-				"EmployeeId":"$2",
-				"StartDate":"$3",
-				"EndDate":"$4"
-				}
-			</format>
-			<args>
-				<arg expression="get-property('uri.var.apiKey')" />
-				<arg expression="get-property('uri.var.employeeId')" />
-				<arg expression="get-property('uri.var.startDate')" />
-				<arg expression="get-property('uri.var.endDate')" />
-			</args>
-		</payloadFactory>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "APIKey": "$1",
+                "Action": "GetAbsenceDetail",
+                "EmployeeId":"$2",
+                "StartDate":"$3",
+                "EndDate":"$4"
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.apiKey')"/>
+                <arg expression="get-property('uri.var.employeeId')"/>
+                <arg expression="get-property('uri.var.startDate')"/>
+                <arg expression="get-property('uri.var.endDate')"/>
+            </args>
+        </payloadFactory>
 
-		<call>
-			<endpoint>
-				<http method="post" uri-template="{uri.var.apiUrl}/Absence" />
-			</endpoint>
-		</call>
+        <call>
+            <endpoint>
+                <http method="post" uri-template="{uri.var.apiUrl}/Absence"/>
+            </endpoint>
+        </call>
 
-		<!-- Remove response custom header information -->
-		<header name="X-AspNet-Version" scope="transport" action="remove" />
-		<header name="X-Powered-By" scope="transport" action="remove" />
-		<header name="Access-Control-Allow-Headers" scope="transport" action="remove" />
-		<header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-		<header name="Access-Control-Allow-Methods" scope="transport" action="remove" />
-		<header name="Cache-Control" scope="transport" action="remove" />
-	</sequence>
+        <!-- Remove response custom header information -->
+        <header name="X-AspNet-Version" scope="transport" action="remove"/>
+        <header name="X-Powered-By" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Headers" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Methods" scope="transport" action="remove"/>
+        <header name="Cache-Control" scope="transport" action="remove"/>
+    </sequence>
 </template>

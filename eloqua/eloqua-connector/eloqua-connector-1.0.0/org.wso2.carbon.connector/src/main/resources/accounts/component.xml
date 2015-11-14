@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -63,7 +64,8 @@
         </component>
         <component name="createAccountImportData">
             <file>createAccountImportData.xml</file>
-            <description>Submits the data for the account import with the specified id.</description>
+            <description>Submits the data for the account import with the specified id.
+            </description>
         </component>
         <component name="deleteAccountExport">
             <file>deleteAccountExport.xml</file>
@@ -71,7 +73,8 @@
         </component>
         <component name="deleteAccountExportData">
             <file>deleteAccountExportData.xml</file>
-            <description>Deletes the data for the account export with the specified id.</description>
+            <description>Deletes the data for the account export with the specified id.
+            </description>
         </component>
         <component name="deleteAccountImport">
             <file>deleteAccountImport.xml</file>
@@ -79,7 +82,8 @@
         </component>
         <component name="deleteAccountImportData">
             <file>deleteAccountImportData.xml</file>
-            <description>Deletes the data for the account import with the specified id.</description>
+            <description>Deletes the data for the account import with the specified id.
+            </description>
         </component>
         <component name="updateAccountExport">
             <file>updateAccountExport.xml</file>

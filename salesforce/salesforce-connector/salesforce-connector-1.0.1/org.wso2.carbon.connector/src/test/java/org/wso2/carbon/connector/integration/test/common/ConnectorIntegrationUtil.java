@@ -1,3 +1,20 @@
+/**
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * <p/>
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.wso2.carbon.connector.integration.test.common;
 
 import java.io.File;
@@ -28,92 +45,87 @@ import org.wso2.carbon.mediation.library.stub.upload.types.carbon.LibraryFileIte
 
 public class ConnectorIntegrationUtil {
 
-	private static final Log log = LogFactory.getLog(ConnectorIntegrationUtil.class);
+    private static final Log log = LogFactory.getLog(ConnectorIntegrationUtil.class);
 
     public static final String ESB_CONFIG_LOCATION = "artifacts" + File.separator + "ESB" +
-            File.separator + "config";
+                                                     File.separator + "config";
 
-	public static void uploadConnector(String repoLocation,
-	                                   MediationLibraryUploaderStub mediationLibUploadStub,
-	                                   String strFileName) throws MalformedURLException,
-	                                                      RemoteException {
-		List<LibraryFileItem> uploadLibraryInfoList = new ArrayList<LibraryFileItem>();
-		LibraryFileItem uploadedFileItem = new LibraryFileItem();
-		uploadedFileItem.setDataHandler(new DataHandler(new URL("file:" + File.separator +
-		                                                        File.separator + repoLocation +
-		                                                        File.separator + strFileName)));
-		uploadedFileItem.setFileName(strFileName);
-		uploadedFileItem.setFileType("zip");
-		uploadLibraryInfoList.add(uploadedFileItem);
-		LibraryFileItem[] uploadServiceTypes = new LibraryFileItem[uploadLibraryInfoList.size()];
-		uploadServiceTypes = uploadLibraryInfoList.toArray(uploadServiceTypes);
-		mediationLibUploadStub.uploadLibrary(uploadServiceTypes);
-	}
+    public static void uploadConnector(String repoLocation,
+                                       MediationLibraryUploaderStub mediationLibUploadStub,
+                                       String strFileName) throws MalformedURLException,
+                                                                  RemoteException {
+        List<LibraryFileItem> uploadLibraryInfoList = new ArrayList<LibraryFileItem>();
+        LibraryFileItem uploadedFileItem = new LibraryFileItem();
+        uploadedFileItem.setDataHandler(new DataHandler(new URL("file:" + File.separator +
+                                                                File.separator + repoLocation +
+                                                                File.separator + strFileName)));
+        uploadedFileItem.setFileName(strFileName);
+        uploadedFileItem.setFileType("zip");
+        uploadLibraryInfoList.add(uploadedFileItem);
+        LibraryFileItem[] uploadServiceTypes = new LibraryFileItem[uploadLibraryInfoList.size()];
+        uploadServiceTypes = uploadLibraryInfoList.toArray(uploadServiceTypes);
+        mediationLibUploadStub.uploadLibrary(uploadServiceTypes);
+    }
 
-	public static Properties getConnectorConfigProperties(String connectorName) {
-		String connectorConfigFile = null;
-		ProductConstant.init();
-		try {
-			connectorConfigFile =
-			                      ProductConstant.SYSTEM_TEST_SETTINGS_LOCATION + File.separator +
-			                              "artifacts" + File.separator + "ESB" + File.separator +
-			                              "connector" + File.separator + "config" + File.separator +
-			                              connectorName + ".properties";
-			File connectorPropertyFile = new File(connectorConfigFile);
-			InputStream inputStream = null;
-			if (connectorPropertyFile.exists()) {
-				inputStream = new FileInputStream(connectorPropertyFile);
-			}
+    public static Properties getConnectorConfigProperties(String connectorName) {
+        String connectorConfigFile = null;
+        ProductConstant.init();
+        try {
+            connectorConfigFile = ProductConstant.SYSTEM_TEST_SETTINGS_LOCATION + File.separator +
+                                  "artifacts" + File.separator + "ESB" + File.separator +
+                                  "connector" + File.separator + "config" + File.separator +
+                                  connectorName + ".properties";
+            File connectorPropertyFile = new File(connectorConfigFile);
+            InputStream inputStream = null;
+            if (connectorPropertyFile.exists()) {
+                inputStream = new FileInputStream(connectorPropertyFile);
+            }
 
-			if (inputStream != null) {
-				Properties prop = new Properties();
-				prop.load(inputStream);
-				inputStream.close();
-				return prop;
-			}
+            if (inputStream != null) {
+                Properties prop = new Properties();
+                prop.load(inputStream);
+                inputStream.close();
+                return prop;
+            }
 
-		} catch (IOException ignored) {
-			log.error("automation.properties file not found, please check your configuration");
-		}
+        } catch (IOException ignored) {
+            log.error("automation.properties file not found, please check your configuration");
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public static OMElement sendReceive(OMElement payload, String endPointReference,
-	                                    String operation, String contentType) throws AxisFault {
-		ServiceClient sender;
-		Options options;
-		OMElement response = null;
-		if (log.isDebugEnabled()) {
-			log.debug("Service Endpoint : " + endPointReference);
-			log.debug("Service Operation : " + operation);
-			log.debug("Payload : " + payload);
-		}
-		try {
-			sender = new ServiceClient();
-			options = new Options();
-			options.setTo(new EndpointReference(endPointReference));
-			options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED,
-			                    Boolean.FALSE);
-			options.setTimeOutInMilliSeconds(45000);
-			options.setAction("urn:" + operation);
-			options.setSoapVersionURI(SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI);
-			options.setProperty(Constants.Configuration.MESSAGE_TYPE, contentType);
-			sender.setOptions(options);
+    public static OMElement sendReceive(OMElement payload, String endPointReference,
+                                        String operation, String contentType) throws AxisFault {
+        ServiceClient sender;
+        Options options;
+        OMElement response = null;
+        if (log.isDebugEnabled()) {
+            log.debug("Service Endpoint : " + endPointReference);
+            log.debug("Service Operation : " + operation);
+            log.debug("Payload : " + payload);
+        }
+        try {
+            sender = new ServiceClient();
+            options = new Options();
+            options.setTo(new EndpointReference(endPointReference));
+            options.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED,
+                                Boolean.FALSE);
+            options.setTimeOutInMilliSeconds(45000);
+            options.setAction("urn:" + operation);
+            options.setSoapVersionURI(SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI);
+            options.setProperty(Constants.Configuration.MESSAGE_TYPE, contentType);
+            sender.setOptions(options);
 
-			response = sender.sendReceive(payload);
-			if (log.isDebugEnabled()) {
-				log.debug("Response Message : " + response);
-			}
-		} catch (AxisFault axisFault) {
-			log.error(axisFault.getMessage());
-			throw new AxisFault("AxisFault while getting response :" + axisFault.getMessage(),
-			                    axisFault);
-		}
-		return response;
-	}
-
-
-
-
+            response = sender.sendReceive(payload);
+            if (log.isDebugEnabled()) {
+                log.debug("Response Message : " + response);
+            }
+        } catch (AxisFault axisFault) {
+            log.error(axisFault.getMessage());
+            throw new AxisFault("AxisFault while getting response :" + axisFault.getMessage(),
+                                axisFault);
+        }
+        return response;
+    }
 }

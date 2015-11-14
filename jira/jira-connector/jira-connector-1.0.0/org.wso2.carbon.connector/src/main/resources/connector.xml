@@ -17,15 +17,15 @@
   ~ under the License.
   -->
 <connector>
-	<component name="jira" package="org.wso2.carbon.connector">
-		<dependency component="jira_config" />
-		<dependency component="jira_dashboard"/>
-		<dependency component="jira_filter"/>
-		<dependency component="jira_group"/>
-		<dependency component="jira_issue" />
-		<dependency component="jira_project" />
-		<dependency component="jira_search" />
-		<dependency component="jira_user" />
-		<description>WSO2 ESB Connector Library for JIRA.</description>
-	</component>
+    <component name="jira" package="org.wso2.carbon.connector">
+        <dependency component="jira_config"/>
+        <dependency component="jira_dashboard"/>
+        <dependency component="jira_filter"/>
+        <dependency component="jira_group"/>
+        <dependency component="jira_issue"/>
+        <dependency component="jira_project"/>
+        <dependency component="jira_search"/>
+        <dependency component="jira_user"/>
+        <description>WSO2 ESB Connector Library for JIRA.</description>
+    </component>
 </connector>

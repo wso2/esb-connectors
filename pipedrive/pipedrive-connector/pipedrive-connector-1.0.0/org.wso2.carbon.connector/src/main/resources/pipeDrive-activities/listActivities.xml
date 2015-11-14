@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,27 +18,31 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="listActivities" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output." />
-   <parameter name="fields" description="The array of fileds to be returned in the output." />
-   <parameter name="userId" description="The ID of the user who's activities to fetch." />
-   <parameter name="type" description="The type of the activity. This is in correlation with the key_string parameter of ActivityTypes." />
-   <parameter name="start" description="The start of the pagination." />
-   <parameter name="limit" description="The number of items shown per page." />
-   <parameter name="startDate" description="The date, activities to fetch from. Format: YYYY-MM-DD" />
-   <parameter name="endDate" description="The date, activities to fetch until. Format: YYYY-MM-DD" />
-   <parameter name="isDone" description="The status of the activity, possible values are 0,1." />
-   <sequence>
-      <property expression="$func:prettyOutput" name="uri.var.prettyOutput" />
-      <property expression="$func:fields" name="uri.var.fields" />
-      <property expression="$func:userId" name="uri.var.userId" />
-      <property expression="$func:type" name="uri.var.type" />
-      <property expression="$func:start" name="uri.var.start" />
-      <property expression="$func:limit" name="uri.var.limit" />
-      <property expression="$func:startDate" name="uri.var.startDate" />
-      <property expression="$func:endDate" name="uri.var.endDate" />
-      <property expression="$func:isDone" name="uri.var.isDone" />
-      <script language="js">
-      <![CDATA[
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output."/>
+    <parameter name="fields" description="The array of fileds to be returned in the output."/>
+    <parameter name="userId" description="The ID of the user who's activities to fetch."/>
+    <parameter name="type"
+               description="The type of the activity. This is in correlation with the key_string parameter of ActivityTypes."/>
+    <parameter name="start" description="The start of the pagination."/>
+    <parameter name="limit" description="The number of items shown per page."/>
+    <parameter name="startDate"
+               description="The date, activities to fetch from. Format: YYYY-MM-DD"/>
+    <parameter name="endDate"
+               description="The date, activities to fetch until. Format: YYYY-MM-DD"/>
+    <parameter name="isDone" description="The status of the activity, possible values are 0,1."/>
+    <sequence>
+        <property expression="$func:prettyOutput" name="uri.var.prettyOutput"/>
+        <property expression="$func:fields" name="uri.var.fields"/>
+        <property expression="$func:userId" name="uri.var.userId"/>
+        <property expression="$func:type" name="uri.var.type"/>
+        <property expression="$func:start" name="uri.var.start"/>
+        <property expression="$func:limit" name="uri.var.limit"/>
+        <property expression="$func:startDate" name="uri.var.startDate"/>
+        <property expression="$func:endDate" name="uri.var.endDate"/>
+        <property expression="$func:isDone" name="uri.var.isDone"/>
+        <script language="js">
+            <![CDATA[
          var urlQuery = mc.getProperty('uri.var.urlQuery');
          var prettyOutPut = mc.getProperty('uri.var.prettyOutput');
          var userId = mc.getProperty('uri.var.userId');
@@ -88,16 +92,17 @@
             }
          }
       ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}activities{+uri.var.filter}{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}activities{+uri.var.filter}{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

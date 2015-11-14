@@ -20,7 +20,8 @@
     <parameter name="query" description="the search query to be executed as a String."/>
     <parameter name="maxResults" description="maxium results to be shown."/>
     <parameter name="startAt" description="starts from."/>
-    <parameter name="fields" description="Specifies a comma-separated list of fields to be included in the response."/>
+    <parameter name="fields"
+               description="Specifies a comma-separated list of fields to be included in the response."/>
     <parameter name="validateQuery" description="whether to validate the JQL query."/>
     <parameter name="expand" description="A comma-separated list of the parameters to expand."/>
     <sequence>

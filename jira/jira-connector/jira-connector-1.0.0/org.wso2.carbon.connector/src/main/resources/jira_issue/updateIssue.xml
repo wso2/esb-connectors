@@ -27,7 +27,7 @@
                 $1
             </format>
             <args>
-                <arg  expression="$func:issueFields"/>
+                <arg expression="$func:issueFields"/>
             </args>
         </payloadFactory>
         <property name="messageType" value="application/json" scope="axis2"/>

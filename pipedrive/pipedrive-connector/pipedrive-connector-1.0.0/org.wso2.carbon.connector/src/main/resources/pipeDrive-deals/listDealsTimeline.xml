@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,33 +18,40 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="listDealsTimeline" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="startDate" description="The date where first interval starts. Format: YYYY-MM-DD" />
-   <parameter name="amount" description="The number of given intervals, starting from start_date, to fetch, E.g.3 (months)" />
-   <parameter name="fieldKey" description="The name of the date field by which to get deals by." />
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output." />
-   <parameter name="fields" description="The array of fileds to be returned in the output." />
-   <parameter name="interval"
-      description="The type of interval.Can only contain one of the following values: day, week, month,quarter)." />
-   <parameter name="userId" description="The unique Identifier of the user. If supplied only the deals matching the given user will be returned." />
-   <parameter name="pipelineId" description="The unique Identifier of the pipeline. If supplied only the deals matching the given pipeline will be returned." />
-   <parameter name="filterId" description="The unique Identifier of the filter. If supplied only the deals matching the given filter will be returned." />
-   <parameter name="excludeDeals" description="The boolean value to indicate whether to exclude deals list or not." />
-   <parameter name="currencyCode"
-      description="The three letter currency code of any of the supported currencies (for default currency set the value as 'default_currency')." />
-   <sequence>
-      <property name="uri.var.startDate" expression="$func:startDate" />
-      <property name="uri.var.amount" expression="$func:amount" />
-      <property name="uri.var.fieldKey" expression="$func:fieldKey" />
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <property name="uri.var.fields" expression="$func:fields" />
-      <property name="uri.var.interval" expression="$func:interval" />
-      <property name="uri.var.userId" expression="$func:userId" />
-      <property name="uri.var.pipelineId" expression="$func:pipelineId" />
-      <property name="uri.var.filterId" expression="$func:filterId" />
-      <property name="uri.var.excludeDeals" expression="$func:excludeDeals" />
-      <property name="uri.var.currencyCode" expression="$func:currencyCode" />
-      <script language="js">
-         <![CDATA[
+    <parameter name="startDate"
+               description="The date where first interval starts. Format: YYYY-MM-DD"/>
+    <parameter name="amount"
+               description="The number of given intervals, starting from start_date, to fetch, E.g.3 (months)"/>
+    <parameter name="fieldKey" description="The name of the date field by which to get deals by."/>
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output."/>
+    <parameter name="fields" description="The array of fileds to be returned in the output."/>
+    <parameter name="interval"
+               description="The type of interval.Can only contain one of the following values: day, week, month,quarter)."/>
+    <parameter name="userId"
+               description="The unique Identifier of the user. If supplied only the deals matching the given user will be returned."/>
+    <parameter name="pipelineId"
+               description="The unique Identifier of the pipeline. If supplied only the deals matching the given pipeline will be returned."/>
+    <parameter name="filterId"
+               description="The unique Identifier of the filter. If supplied only the deals matching the given filter will be returned."/>
+    <parameter name="excludeDeals"
+               description="The boolean value to indicate whether to exclude deals list or not."/>
+    <parameter name="currencyCode"
+               description="The three letter currency code of any of the supported currencies (for default currency set the value as 'default_currency')."/>
+    <sequence>
+        <property name="uri.var.startDate" expression="$func:startDate"/>
+        <property name="uri.var.amount" expression="$func:amount"/>
+        <property name="uri.var.fieldKey" expression="$func:fieldKey"/>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <property name="uri.var.fields" expression="$func:fields"/>
+        <property name="uri.var.interval" expression="$func:interval"/>
+        <property name="uri.var.userId" expression="$func:userId"/>
+        <property name="uri.var.pipelineId" expression="$func:pipelineId"/>
+        <property name="uri.var.filterId" expression="$func:filterId"/>
+        <property name="uri.var.excludeDeals" expression="$func:excludeDeals"/>
+        <property name="uri.var.currencyCode" expression="$func:currencyCode"/>
+        <script language="js">
+            <![CDATA[
             var urlQuery = mc.getProperty('uri.var.urlQuery');
             var startDate = mc.getProperty('uri.var.startDate');
             var amount = mc.getProperty('uri.var.amount');
@@ -95,16 +102,17 @@
                }
             }
          ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}deals{+uri.var.filter}/timeline{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}deals{+uri.var.filter}/timeline{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

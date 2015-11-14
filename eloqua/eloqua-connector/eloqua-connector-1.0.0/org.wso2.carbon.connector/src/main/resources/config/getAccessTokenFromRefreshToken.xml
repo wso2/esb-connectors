@@ -20,7 +20,8 @@
     <parameter name="refreshToken" description="value of the refresh token."/>
     <parameter name="clientSecret"
                description="Value of your client secret given when you registered your application with eloqua."/>
-    <parameter name="apiVersion" description="Token grant type. Value must be set to refreshToken."/>
+    <parameter name="apiVersion"
+               description="Token grant type. Value must be set to refreshToken."/>
     <parameter name="clientId"
                description="Value of your client id given when you registered your application with eloqua."/>
     <parameter name="redirectUri"
@@ -53,7 +54,8 @@
         <property name="eloqua.authHeader"
                   expression="fn:concat(get-property('eloqua.clientId'),':',get-property('eloqua.clientSecret'))"/>
         <header name="Content-Type" value="application/json" scope="transport"/>
-        <header name="Authorization" expression="fn:concat('Basic ',base64Encode(get-property('eloqua.authHeader')))"
+        <header name="Authorization"
+                expression="fn:concat('Basic ',base64Encode(get-property('eloqua.authHeader')))"
                 scope="transport"/>
         <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>
         <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
@@ -65,7 +67,8 @@
         <filter source="$axis2:HTTP_SC" regex="[2][0][0]">
             <then>
                 <property name="accessToken" expression="json-eval($.access_token)"/>
-                <header name="Authorization" expression="fn:concat('Bearer ',get-property('accessToken'))"
+                <header name="Authorization"
+                        expression="fn:concat('Bearer ',get-property('accessToken'))"
                         scope="transport"/>
                 <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>
                 <call>
@@ -76,13 +79,14 @@
                 </call>
                 <property name="uri.var.apiUrl" expression="json-eval($.urls.apis.rest.bulk)"/>
                 <script language="js"><![CDATA[
-                    var apiUrl=mc.getProperty('uri.var.apiUrl');
-                    var apiVersion=mc.getProperty('eloqua.apiVersion');
-                    apiUrl=apiUrl.replace("{version}",apiVersion);
+                    var apiUrl = mc.getProperty('uri.var.apiUrl');
+                    var apiVersion = mc.getProperty('eloqua.apiVersion');
+                    apiUrl = apiUrl.replace("{version}",apiVersion);
                     mc.setProperty("uri.var.apiUrl",apiUrl);
                 ]]>
                 </script>
-                <header name="Authorization" expression="fn:concat('Bearer ',get-property('accessToken'))"
+                <header name="Authorization"
+                        expression="fn:concat('Bearer ',get-property('accessToken'))"
                         scope="transport"/>
             </then>
             <else>

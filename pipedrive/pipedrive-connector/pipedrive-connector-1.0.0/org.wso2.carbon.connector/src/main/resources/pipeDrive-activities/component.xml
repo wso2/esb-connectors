@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -17,18 +17,18 @@
    under the License.
 -->
 <component name="pipeDrive-activities" type="synapse/template">
-  <subComponents>
-    	<component name="createActivity">
-      <file>createActivity.xml</file>
-      <description>Adds a new activity</description>
-    </component>
-    	<component name="getActivity">
-      <file>getActivity.xml</file>
-      <description>Returns details of a specific activity</description>
-    </component>
-    	<component name="listActivities">
-      <file>listActivities.xml</file>
-      <description>Returns all activities assigned to a particular user</description>
-    </component>
+    <subComponents>
+        <component name="createActivity">
+            <file>createActivity.xml</file>
+            <description>Adds a new activity</description>
+        </component>
+        <component name="getActivity">
+            <file>getActivity.xml</file>
+            <description>Returns details of a specific activity</description>
+        </component>
+        <component name="listActivities">
+            <file>listActivities.xml</file>
+            <description>Returns all activities assigned to a particular user</description>
+        </component>
     </subComponents>
 </component>

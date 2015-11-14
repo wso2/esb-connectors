@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
@@ -18,22 +18,24 @@
 -->
 <!-- API Document URL https://developers.pipedrive.com/v1 -->
 <template name="listDealProducts" xmlns="http://ws.apache.org/ns/synapse">
-   <parameter name="prettyOutput" description="If the prettyOutput is specified as 1, will return an indented response of the output." />
-   <parameter name="fields" description="The array of fileds to be returned in the output." />
-   <parameter name="id" description="The unique identifier of deal to retrieve it's attached products." />
-   <parameter name="start" description="The start of the pagination." />
-   <parameter name="limit" description="The number of items shown per page." />
-   <parameter name="includeProductData"
-      description="The includeProductData specifies whether to fetch product data along with each attached product (1) or not (0, default)." />
-   <sequence>
-      <property name="uri.var.prettyOutput" expression="$func:prettyOutput" />
-      <property name="uri.var.fields" expression="$func:fields" />
-      <property name="uri.var.id" expression="$func:id" />
-      <property name="uri.var.start" expression="$func:start" />
-      <property name="uri.var.limit" expression="$func:limit" />
-      <property name="uri.var.includeProductData" expression="$func:includeProductData" />
-      <script language="js">
-      <![CDATA[
+    <parameter name="prettyOutput"
+               description="If the prettyOutput is specified as 1, will return an indented response of the output."/>
+    <parameter name="fields" description="The array of fileds to be returned in the output."/>
+    <parameter name="id"
+               description="The unique identifier of deal to retrieve it's attached products."/>
+    <parameter name="start" description="The start of the pagination."/>
+    <parameter name="limit" description="The number of items shown per page."/>
+    <parameter name="includeProductData"
+               description="The includeProductData specifies whether to fetch product data along with each attached product (1) or not (0, default)."/>
+    <sequence>
+        <property name="uri.var.prettyOutput" expression="$func:prettyOutput"/>
+        <property name="uri.var.fields" expression="$func:fields"/>
+        <property name="uri.var.id" expression="$func:id"/>
+        <property name="uri.var.start" expression="$func:start"/>
+        <property name="uri.var.limit" expression="$func:limit"/>
+        <property name="uri.var.includeProductData" expression="$func:includeProductData"/>
+        <script language="js">
+            <![CDATA[
          var urlQuery = mc.getProperty('uri.var.urlQuery');
          var prettyOutPut = mc.getProperty('uri.var.prettyOutput');
          var fields = mc.getProperty('uri.var.fields');
@@ -66,16 +68,17 @@
             }
          }
       ]]>
-      </script>
-      <call>
-         <endpoint>
-            <http method="get" uri-template="{uri.var.apiUrl}deals{+uri.var.filter}/{+uri.var.id}/products{+uri.var.urlQuery}" />
-         </endpoint>
-      </call>
-      <!-- Remove response custom header information -->
-      <header name="X-Frame-Options" scope="transport" action="remove" />
-      <header name="Vary" scope="transport" action="remove" />
-      <header name="X-XSS-Protection" scope="transport" action="remove" />
-      <header name="Access-Control-Allow-Origin" scope="transport" action="remove" />
-   </sequence>
+        </script>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}deals{+uri.var.filter}/{+uri.var.id}/products{+uri.var.urlQuery}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="X-Frame-Options" scope="transport" action="remove"/>
+        <header name="Vary" scope="transport" action="remove"/>
+        <header name="X-XSS-Protection" scope="transport" action="remove"/>
+        <header name="Access-Control-Allow-Origin" scope="transport" action="remove"/>
+    </sequence>
 </template>

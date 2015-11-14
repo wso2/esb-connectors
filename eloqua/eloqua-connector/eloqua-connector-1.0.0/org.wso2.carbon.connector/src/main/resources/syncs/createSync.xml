@@ -24,7 +24,8 @@
     <parameter name="syncedInstanceUri" description="Must specify an existing definition uri."/>
     <parameter name="syncEndedAt" description="Timestamp when the sync ends."/>
     <parameter name="syncStartedAt" description="Timestamp when the sync started."/>
-    <parameter name="uri" description="System- generated URI that defines the definition for future referencing."/>
+    <parameter name="uri"
+               description="System- generated URI that defines the definition for future referencing."/>
     <sequence>
         <property name="uri.var.status" expression="$func:status"/>
         <property name="uri.var.callbackUrl" expression="$func:callbackUrl"/>
@@ -45,44 +46,43 @@
             </args>
         </payloadFactory>
         <script language="js"><![CDATA[
-		    //request body param variables
-		    var callbackUrl = mc.getProperty('uri.var.callbackUrl');
-			var createdAt = mc.getProperty('uri.var.createdAt');
-			var createdBy = mc.getProperty('uri.var.createdBy');
-			var status = mc.getProperty('uri.var.status');
-			var syncEndedAt = mc.getProperty('uri.var.syncEndedAt');
-			var syncStartedAt = mc.getProperty('uri.var.syncStartedAt');
-			var uri = mc.getProperty('uri.var.uri');
-
+            //request body param variables
+            var callbackUrl = mc.getProperty('uri.var.callbackUrl');
+            var createdAt = mc.getProperty('uri.var.createdAt');
+            var createdBy = mc.getProperty('uri.var.createdBy');
+            var status = mc.getProperty('uri.var.status');
+            var syncEndedAt = mc.getProperty('uri.var.syncEndedAt');
+            var syncStartedAt = mc.getProperty('uri.var.syncStartedAt');
+            var uri = mc.getProperty('uri.var.uri');
 
             //Get the existing payload
-			var payload = mc.getPayloadJSON();
+            var payload = mc.getPayloadJSON();
 
-			if (callbackUrl != null && callbackUrl != "") {
-				payload["callbackUrl"]=callbackUrl;
-			}
-			if (createdAt != null && createdAt != "") {
-               payload["createdAt"]=createdAt;
+            if (callbackUrl != null && callbackUrl != "") {
+                payload["callbackUrl"] = callbackUrl;
+            }
+            if (createdAt != null && createdAt != "") {
+               payload["createdAt"] = createdAt;
             }
             if (createdBy != null && createdBy != "") {
-               payload["createdBy"]=createdBy;
+               payload["createdBy"] = createdBy;
             }
             if (status != null && status != "") {
-				payload["status"]=status;
-			}
-			if (syncEndedAt != null && syncEndedAt != "") {
-               payload["syncEndedAt"]=syncEndedAt;
+                payload["status"] = status;
+            }
+            if (syncEndedAt != null && syncEndedAt != "") {
+               payload["syncEndedAt"] = syncEndedAt;
             }
             if (syncStartedAt != null && syncStartedAt != "") {
-               payload["syncStartedAt"]=syncStartedAt;
+               payload["syncStartedAt"] = syncStartedAt;
             }
             if (uri != null && uri != "") {
-				payload["uri"]=uri;
-			}
+                payload["uri"] = uri;
+            }
 
-			//Set the newly constructed payload
-			mc.setPayloadJSON(payload);
-        	]]>
+            //Set the newly constructed payload
+            mc.setPayloadJSON(payload);
+            ]]>
         </script>
         <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <property name="POST_TO_URI" value="true" scope="axis2" type="STRING"/>

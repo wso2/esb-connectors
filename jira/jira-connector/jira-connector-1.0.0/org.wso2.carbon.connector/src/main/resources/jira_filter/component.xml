@@ -20,8 +20,8 @@
     <subComponents>
         <component name="createFilter">
             <file>createFilter.xml</file>
-            <description>Creates a new filter, and returns newly created filter. Currently sets permissions just using
-                the users default sharing permissions
+            <description>Creates a new filter, and returns newly created filter. Currently sets
+                permissions just using the users default sharing permissions
             </description>
         </component>
         <component name="deleteFilter">

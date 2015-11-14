@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+   WSO2 Inc. licenses this file to you under the Apache License,
+   Version 2.0 (the "License"); you may not use this file except
+   in compliance with the License.
+   You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied. See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
 <component name="zohorecruit-records" type="synapse/template">
-  <subComponents>
-    <component name="addRecords">
-      <file>addRecords.xml</file>
-      <description>Create Job openings or Candidates.</description>
-    </component>
-    	<component name="getRecordById">
-      <file>getRecordById.xml</file>
-      <description>Retieve a job opening or candidate using the Id.</description>
-    </component>
-    	<component name="getRecords">
-      <file>getRecords.xml</file>
-      <description>Get a list of job openings or candidates in the system, filtered by queries.</description>
-    </component>
-    	<component name="updateRecords">
-      <file>updateRecords.xml</file>
-      <description>Update job openings or candidates that were previously created.</description>
-    </component>
+    <subComponents>
+        <component name="addRecords">
+            <file>addRecords.xml</file>
+            <description>Create Job openings or Candidates.</description>
+        </component>
+        <component name="getRecordById">
+            <file>getRecordById.xml</file>
+            <description>Retieve a job opening or candidate using the Id.</description>
+        </component>
+        <component name="getRecords">
+            <file>getRecords.xml</file>
+            <description>Get a list of job openings or candidates in the system, filtered by
+                queries.
+            </description>
+        </component>
+        <component name="updateRecords">
+            <file>updateRecords.xml</file>
+            <description>Update job openings or candidates that were previously created.
+            </description>
+        </component>
     </subComponents>
 </component>
