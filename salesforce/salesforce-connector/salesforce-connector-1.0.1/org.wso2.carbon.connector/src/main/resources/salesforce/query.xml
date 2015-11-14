@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
    in compliance with the License.
@@ -71,7 +71,8 @@
         </call>
 
         <property expression="//ns:result/ns:done/text()"
-                  name="salesforce.query.done" scope="default" type="STRING" xmlns:ns="urn:partner.soap.sforce.com"/>
+                  name="salesforce.query.done" scope="default" type="STRING"
+                  xmlns:ns="urn:partner.soap.sforce.com"/>
         <property expression="//ns:result/ns:queryLocator/text()"
                   name="salesforce.query.queryLocator" scope="default"
                   type="STRING" xmlns:ns="urn:partner.soap.sforce.com"/>
