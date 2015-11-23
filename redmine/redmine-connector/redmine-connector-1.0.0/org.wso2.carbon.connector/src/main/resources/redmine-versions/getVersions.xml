@@ -39,4 +39,3 @@
 		<header action="remove" name="X-Rack-Cache" scope="transport" />
 	</sequence>
 </template>
-
