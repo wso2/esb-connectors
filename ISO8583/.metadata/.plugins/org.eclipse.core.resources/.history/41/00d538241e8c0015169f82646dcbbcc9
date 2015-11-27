@@ -1,0 +1,55 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.inbound.InboundProcessorParams;
+import org.jpos.iso.ISOException;
+
+	public class ConnectionRequestHandler implements Runnable{
+	    private static final Log log = LogFactory.getLog(ConnectionRequestHandler.class);
+		private Socket connection;
+	    public static DataInputStream inputstreamreader;
+//	    private  String onErrorSeq;
+//	    private  boolean sequential;
+//	    private  SynapseEnvironment synapseEnvironment;
+//	    private String injectingSeq;
+	    InboundProcessorParams params;
+
+
+		public ConnectionRequestHandler(Socket connection) {
+			this.connection = connection;
+		}
+
+		public void run() {
+			log.info("Client connected to socket: " + connection.toString());
+			try {
+	            inputstreamreader = new DataInputStream(connection.getInputStream());
+	            ISO8583MessageConsumer isomsg = new ISO8583MessageConsumer(params);	
+	            super(params);
+				 while (connection.getInputStream() != null) {        		
+			            String fromclient = inputstreamreader.readLine();
+			            isomsg.unpackRequest(fromclient);   
+			            break;
+			            
+				 }
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ISOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally { //In case anything goes wrong we need to close our I/O streams and sockets.
+				try {
+					inputstreamreader.close();
+					connection.close();
+				} catch(Exception e) { 
+					log.error("Couldn't close I/O streams",e);
+				}
+			}
+		}
+
+	}

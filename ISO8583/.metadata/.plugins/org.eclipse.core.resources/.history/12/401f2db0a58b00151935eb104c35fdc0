@@ -1,0 +1,58 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.core.SynapseEnvironment;
+import org.jpos.iso.ISOException;
+
+	public class ConnectionRequestHandler implements Runnable{
+	    private static final Log log = LogFactory.getLog(ConnectionRequestHandler.class);
+		private Socket connection = null;
+	    public static DataInputStream inputstreamreader;
+	    private  String onErrorSeq;
+	    private  boolean sequential;
+	    private  SynapseEnvironment synapseEnvironment;
+	    private String injectingSeq;
+
+
+		public ConnectionRequestHandler(Socket connection) {
+			this.connection = connection;
+		}
+
+		public void run() {
+			log.info("Client connected to socket: " + connection.toString());
+
+			try {
+	            inputstreamreader = new DataInputStream(connection.getInputStream());
+				ReceiveISO8583Message isomsg = new ReceiveISO8583Message(injectingSeq, onErrorSeq, sequential,
+		                   synapseEnvironment);
+				
+				 while (connection.getInputStream() != null) {        		
+			            String fromclient = inputstreamreader.readLine();
+			            while(fromclient!=null){
+			            isomsg.unpackRequest(fromclient);   
+			            }
+				 }
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ISOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally { //In case anything goes wrong we need to close our I/O streams and sockets.
+				try {
+					inputstreamreader.close();
+					connection.close();
+				} catch(Exception e) { 
+					log.info("Couldn't close I/O streams");
+				}
+			}
+		}
+
+	}

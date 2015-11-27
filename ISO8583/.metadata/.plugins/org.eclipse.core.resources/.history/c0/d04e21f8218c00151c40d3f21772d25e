@@ -1,0 +1,56 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class ServerDemo extends Thread
+{
+    private static final Log log = LogFactory.getLog(ServerDemo.class);
+
+	 private int port;;//Arbitrary port number
+	private static ServerSocket server;
+ 
+//	public static void main(String[] args) 
+//	{
+//		try {
+//			new ServerDemo().startServer();
+//		} catch (Exception e) {
+//			System.out.println("I/O failure: " + e.getMessage());
+//			e.printStackTrace();
+//		}
+// 
+//	}
+ public ServerDemo(int port){
+	 this.port=port;
+
+	 
+ }
+	public void startServer() throws Exception {
+		
+		boolean listening = true;
+ 
+		try {
+			server = new ServerSocket(port);
+		} catch (IOException e) {
+			log.error("Could not listen on port: " + port,e);
+//			System.exit(-1);
+		}
+ 
+		while (listening) {
+			handleClientRequest(server);
+		}
+ 
+		server.close();
+	}
+ 
+	private void handleClientRequest(ServerSocket server) {
+		try {
+			new ConnectionRequestHandler(server.accept()).run();
+		} catch (IOException e) {
+			log.error("Could not establish the connection",e);
+		}
+	}
+}

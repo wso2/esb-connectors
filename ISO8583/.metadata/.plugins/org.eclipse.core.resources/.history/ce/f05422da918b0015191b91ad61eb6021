@@ -1,0 +1,49 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+import org.jpos.iso.ISOException;
+
+	public class ConnectionRequestHandler implements Runnable{
+		private Socket connection = null;
+	    public static DataInputStream inputstreamreader;
+
+//		private PrintWriter _out = null;
+//		private BufferedReader _in = null;
+
+		public ConnectionRequestHandler(Socket connection) {
+			this.connection = connection;
+		}
+
+		public void run() {
+			System.out.println("Client connected to socket: " + connection.toString());
+
+			try {
+	            inputstreamreader = new DataInputStream(connection.getInputStream());
+				ReceiveISO8583Message isomsg = new ReceiveISO8583Message();
+				isomsg.unpackRequest(null); 
+				 while (connection.getInputStream() != null) {        		
+			            String fromclient = inputstreamreader.readLine();
+			            isomsg.unpackRequest(fromclient);   
+				 }
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ISOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally { //In case anything goes wrong we need to close our I/O streams and sockets.
+				try {
+					inputstreamreader.close();
+					connection.close();
+				} catch(Exception e) { 
+					System.out.println("Couldn't close I/O streams");
+				}
+			}
+		}
+
+	}

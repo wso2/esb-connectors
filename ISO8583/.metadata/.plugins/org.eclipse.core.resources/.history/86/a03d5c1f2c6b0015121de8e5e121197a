@@ -1,0 +1,122 @@
+/*
+*  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+*
+*  WSO2 Inc. licenses this file to you under the Apache License,
+*  Version 2.0 (the "License"); you may not use this file except
+*  in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+package org.wso2.carbon.connector.ISO8583;
+
+import org.apache.axiom.om.OMOutputFormat;
+import org.apache.axis2.AxisFault;
+import org.apache.synapse.MessageContext;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.channel.ASCIIChannel;
+import org.jpos.iso.packager.GenericPackager;
+import org.apache.synapse.MessageContext;
+import org.wso2.carbon.connector.core.*;
+import org.apache.axis2.AxisFault;
+import org.apache.synapse.MessageContext;
+import org.apache.synapse.SynapseException;
+import org.apache.synapse.SynapseLog;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.wso2.carbon.connector.core.*;
+import org.apache.axiom.om.OMOutputFormat;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.transport.MessageFormatter;
+import org.apache.axis2.transport.base.BaseUtils;
+import org.apache.axis2.util.MessageProcessorSelector;
+import org.apache.commons.io.output.WriterOutputStream;
+import org.apache.synapse.MessageContext;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.wso2.carbon.connector.core.util.ConnectorUtils;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.Properties;
+import java.net.URI;
+
+public class ISO8583 extends AbstractConnector {
+
+//    private static final String ISO0250000550210B23A80012EA08018000000001400000465000000000000300004281305474687711259460428042808110312317376612345612345600123442579114472300614209027600TESTSOLAB = null;
+
+	public void connect(MessageContext messageContext) throws ConnectException {
+        Object templateParam = getParameter(messageContext, "generated_param");
+        //String message = messageContext.getProperty("uri.var.message");
+        try {
+//            String message = getMessage(messageContext);
+            String message = "ISO0250000550210B23A80012EA08018000000001400000465000000000000300004281305474687711259460428042808110312317376612345612345600123442579114472300614209027600TESTSOLAB";
+            String host = messageContext.getProperty("uri.var.serverHost").toString();
+            String port = messageContext.getProperty("uri.var.serverPort").toString();
+            String url = "http://" + host + ":" + port;
+            sendMessage(messageContext,url);
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    public void sendMessage(MessageContext msgCtx, String targetEPR) throws AxisFault {
+
+        try {
+            URI isoURL = new URI(targetEPR);
+            ISOPackager packager = new GenericPackager(this.getClass()
+                    .getResourceAsStream("jposdef.xml"));
+            ASCIIChannel chl = new ASCIIChannel(isoURL.getHost(),
+                    isoURL.getPort(), packager);
+//            writeMessageOut(msgCtx, chl);
+            chl.connect();
+            chl.send(msgCtx);
+        } catch (Exception e) {
+            throw new AxisFault(
+                    "An exception occured in sending the ISO message");
+        }
+
+    }
+
+    /**
+     * Get the messages from the message context and format the messages
+     */
+    private String getMessage(MessageContext messageContext) throws AxisFault {
+        Axis2MessageContext axisMsgContext = (Axis2MessageContext) messageContext;
+        org.apache.axis2.context.MessageContext msgContext = axisMsgContext
+                .getAxis2MessageContext();
+        String messages = formatMessage((org.apache.axis2.context.MessageContext) msgContext);
+        return messages;
+    }
+
+    /**
+     * Format the messages when the messages are sent to the ISO8583 server
+     */
+    public static String formatMessage(
+            org.apache.axis2.context.MessageContext messageContext) throws AxisFault {
+        OMOutputFormat format = BaseUtils.getOMOutputFormat(messageContext);
+        MessageFormatter messageFormatter;
+        messageFormatter = MessageProcessorSelector.getMessageFormatter(messageContext);
+        OutputStream out;
+        StringWriter stringWriter;
+        stringWriter = new StringWriter();
+        out = new WriterOutputStream(stringWriter, format.getCharSetEncoding());
+        try {
+            if (out != null) {
+                messageFormatter.writeTo(messageContext, format, out, true);
+                out.close();
+            }
+        } catch (IOException e) {
+        }
+
+        return stringWriter.toString();
+    }
+
+}

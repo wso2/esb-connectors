@@ -1,0 +1,35 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+
+public class ReceiveISO8583Message {
+
+	public void receiveMessage() throws ISOException, Exception {
+      while (connection.getInputStream() != null) {        		
+	            String fromclient = inputstreamreader.readLine();
+	            unpackRequest(fromclient);   
+      }
+  }
+	 public void unpackRequest(String message) throws ISOException, Exception {
+         try {
+             ISOMsg isoMsg = new ISOMsg();
+             isoMsg.setPackager(packager);
+             isoMsg.unpack(message.getBytes());
+             injectISO8583Message(isoMsg);
+         } catch (ISOException e) {
+         	log.info(message);
+             log.error("Message is not in ISO8583 standard", e);
+         }
+     }
+
+     public ISOMsg injectISO8583Message(ISOMsg isomsg) {
+         if (injectingSeq != null) {
+             msgInject.inject(isomsg, ISO8583Constant.MESSAGE_FORMAT);
+         } else {
+             log.info("The Sequence is not found");
+         }
+         return null;
+     }
+
+}

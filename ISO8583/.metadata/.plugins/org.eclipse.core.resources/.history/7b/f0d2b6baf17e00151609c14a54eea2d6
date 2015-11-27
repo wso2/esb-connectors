@@ -1,0 +1,30 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.packager.GenericPackager;
+
+public class ISO8583PackagerFactory {
+	public static ISOPackager getPackager() throws ISOException {
+		ISOPackager packager = null;
+//		GenericPackager packager = null;
+		/*
+		try {
+//			String filename = "jposdef.xml";
+			String filename = "iso87ascii.xml";
+			InputStream is = (InputStream) ISO8583PackagerFactory.class.getResourceAsStream(filename);
+			packager = new GenericPackager(is);
+			Logger l = new Logger();
+			 packager.setLogger(l, "");
+		}
+		catch (ISOException e){
+			e.printStackTrace();
+			}
+			
+				return  packager;
+				*/
+		packager = new GenericPackager("iso87ascii.xml");
+		return packager;
+		
+		}
+}
