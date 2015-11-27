@@ -18,7 +18,6 @@ package org.wso2.carbon.inbound.iso8583.listening;
 
 import java.io.IOException;
 import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.core.SynapseEnvironment;
@@ -91,6 +90,3 @@ public class ISO8583MessageConsumer extends GenericInboundListener {
         log.info("Initializing the inbound");
     }
 }
-
-
-
