@@ -93,5 +93,4 @@ public class ConnectionRequestHandler implements Runnable {
         log.error(msg);
         throw new SynapseException(msg);
     }
-
 }
