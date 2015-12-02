@@ -16,12 +16,11 @@
   ~  specific language governing permissions and limitations
   ~  under the License.
   -->
-
 <template name="endSession" xmlns="http://ws.apache.org/ns/synapse">
     <sequence>
         <log level="custom">
-            <property name="Operator Name" value="Gmail : endSession" />
+            <property name="Operator Name" value="Gmail : endSession"/>
         </log>
-        <class name="org.wso2.carbon.connector.GmailEndSession" />
+        <class name="org.wso2.carbon.connector.GmailEndSession"/>
     </sequence>
 </template>
