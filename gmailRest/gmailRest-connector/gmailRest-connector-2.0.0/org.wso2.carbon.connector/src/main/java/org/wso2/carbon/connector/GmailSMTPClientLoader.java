@@ -39,15 +39,11 @@ public class GmailSMTPClientLoader {
      * Method which loads the {@link GmailSMTPConnectionObject} instance
      * according to the authentication mode.
      *
-     * @param messageContext
-     *            Message context where the instantiated
-     *            {@link GmailSMTPConnectionObject} instance is stored.
-     * @return
-     *         the loaded {@link GmailSMTPConnectionObject} instance
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             as a result of invalid configuration
-     * @throws com.google.code.javax.mail.MessagingException
-     *             as a result of authentication failures
+     * @param messageContext Message context where the instantiated
+     *                       {@link GmailSMTPConnectionObject} instance is stored.
+     * @return the loaded {@link GmailSMTPConnectionObject} instance
+     * @throws org.wso2.carbon.connector.core.ConnectException as a result of invalid configuration
+     * @throws com.google.code.javax.mail.MessagingException   as a result of authentication failures
      */
     public GmailSMTPConnectionObject loadSMTPSession(MessageContext messageContext)
             throws ConnectException,

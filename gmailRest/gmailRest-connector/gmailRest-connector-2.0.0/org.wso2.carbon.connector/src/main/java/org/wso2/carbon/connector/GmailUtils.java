@@ -68,7 +68,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-public  final class GmailUtils {
+public final class GmailUtils {
 
     /**
      * Making the default constructor private since Utility classes should not
@@ -85,10 +85,8 @@ public  final class GmailUtils {
     /**
      * Extracts a given parameter from message context
      *
-     * @param messageContext
-     *            Input message context
-     * @param paramName
-     *            Name of the parameter to extract from the message context
+     * @param messageContext Input message context
+     * @param paramName      Name of the parameter to extract from the message context
      * @return extracted parameter as a {@link String}
      */
     public static String lookupFunctionParam(MessageContext messageContext, String paramName) {
@@ -98,10 +96,8 @@ public  final class GmailUtils {
     /**
      * Stores error response in the message context
      *
-     * @param messageContext
-     *            Message Context where the error response should be stored
-     * @param e
-     *            Exception
+     * @param messageContext Message Context where the error response should be stored
+     * @param e              Exception
      */
     public static void storeErrorResponseStatus(MessageContext messageContext, final Throwable e,
                                                 int errorCode) {
@@ -129,19 +125,13 @@ public  final class GmailUtils {
      * Read and list the e-mail messages searched from the IMAP store according
      * to the given search term
      *
-     * @param messageContext
-     *            Message context where the response should be stored
-     * @param store
-     *            IMAPStore
-     * @param term
-     *            Search term
-     * @param batchNumber
-     *            The batch number to return
-     * @param responseElementName
-     *            Name of the response element name
+     * @param messageContext      Message context where the response should be stored
+     * @param store               IMAPStore
+     * @param term                Search term
+     * @param batchNumber         The batch number to return
+     * @param responseElementName Name of the response element name
      * @throws com.google.code.javax.mail.MessagingException
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             if the folder does not exist
+     * @throws org.wso2.carbon.connector.core.ConnectException if the folder does not exist
      */
     public static void listMails(MessageContext messageContext, IMAPStore store, SearchTerm term,
                                  int batchNumber, String responseElementName)
@@ -172,19 +162,13 @@ public  final class GmailUtils {
      * Deletes the e-mail messages searched from the IMAP store according
      * to the given search term
      *
-     * @param messageContext
-     *            Message context where the response should be stored
-     * @param store
-     *            IMAPStore
-     * @param term
-     *            Search term
-     * @param responseElementName
-     *            Name of the response element name
+     * @param messageContext      Message context where the response should be stored
+     * @param store               IMAPStore
+     * @param term                Search term
+     * @param responseElementName Name of the response element name
      * @return an array of messages fetched from the IMAPStore
-     * @throws com.google.code.javax.mail.MessagingException
-     *             if any failure occur while deleting messages
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             if no messages are fetched to delete
+     * @throws com.google.code.javax.mail.MessagingException   if any failure occur while deleting messages
+     * @throws org.wso2.carbon.connector.core.ConnectException if no messages are fetched to delete
      */
     public static void deleteMails(IMAPStore store, SearchTerm term, MessageContext messageContext,
                                    String responseElementName) throws MessagingException,
@@ -221,18 +205,12 @@ public  final class GmailUtils {
      * Read and list the e-mail messages searched from the IMAP store according
      * to the given search term
      *
-     * @param messageContext
-     *            Message context where the response should be stored
-     * @param store
-     *            IMAPStore
-     * @param term
-     *            Search term
-     * @param responseElementName
-     *            Name of the response element name
-     * @throws com.google.code.javax.mail.MessagingException
-     *             if any failure occur while reading messages
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             if no messages are fetched to read
+     * @param messageContext      Message context where the response should be stored
+     * @param store               IMAPStore
+     * @param term                Search term
+     * @param responseElementName Name of the response element name
+     * @throws com.google.code.javax.mail.MessagingException   if any failure occur while reading messages
+     * @throws org.wso2.carbon.connector.core.ConnectException if no messages are fetched to read
      */
     public static void readMails(MessageContext messageContext, IMAPStore store, SearchTerm term,
                                  String responseElementName) throws MessagingException,
@@ -248,13 +226,13 @@ public  final class GmailUtils {
 //			messages = folder.search(term);
 //            log.info( "33333333");
 
-            log.info( "111111");
+            log.info("111111");
             Folder ft = store.getFolder("inbox");
-            log.info( "2222222");
+            log.info("2222222");
             ft.open(Folder.READ_ONLY);
-            log.info( "33333");
+            log.info("33333");
             messages = ft.search(term);
-            log.info( "444444");
+            log.info("444444");
 
             if (messages.length == 0) {
                 String errorLog =
@@ -278,20 +256,13 @@ public  final class GmailUtils {
      * Set labels to the e-mail messages which are searched from the IMAP store
      * according to the given search term
      *
-     * @param messageContext
-     *            Message context where the response should be stored
-     * @param store
-     *            IMAPStore
-     * @param term
-     *            Search term
-     * @param responseElementName
-     *            Name of the response element
-     * @param labels
-     *            comma separated list of label names
-     * @throws com.google.code.javax.mail.MessagingException
-     *             if any failure occur while setting labels
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             if no messages are fetched to set labels
+     * @param messageContext      Message context where the response should be stored
+     * @param store               IMAPStore
+     * @param term                Search term
+     * @param responseElementName Name of the response element
+     * @param labels              comma separated list of label names
+     * @throws com.google.code.javax.mail.MessagingException   if any failure occur while setting labels
+     * @throws org.wso2.carbon.connector.core.ConnectException if no messages are fetched to set labels
      */
     public static void setLabels(IMAPStore store, SearchTerm term, MessageContext messageContext,
                                  String[] labels, String responseElementName)
@@ -342,15 +313,11 @@ public  final class GmailUtils {
     /**
      * Store resulted e-mail messages in the response.
      *
-     * @param messagesArray
-     *            Array of {@link com.google.code.javax.mail.Message}
-     * @param messageContext
-     *            Message Context where the messages should be stored
-     * @param resultElementName
-     *            Name of the result element
-     * @param storeContent
-     *            Message context is stored in the response only if this flag is
-     *            true
+     * @param messagesArray     Array of {@link com.google.code.javax.mail.Message}
+     * @param messageContext    Message Context where the messages should be stored
+     * @param resultElementName Name of the result element
+     * @param storeContent      Message context is stored in the response only if this flag is
+     *                          true
      */
     public static void storeMailListInResponse(Message[] messagesArray,
                                                MessageContext messageContext,
@@ -465,14 +432,10 @@ public  final class GmailUtils {
     /**
      * Process message body.
      *
-     * @param message
-     *            Message to be processed.
-     * @param messageContext
-     *            Message Context
-     * @param attachmentContentIDs
-     *            file names as the content IDs of the attachments
-     * @param messageID
-     *            ID of the message.
+     * @param message              Message to be processed.
+     * @param messageContext       Message Context
+     * @param attachmentContentIDs file names as the content IDs of the attachments
+     * @param messageID            ID of the message.
      * @return
      * @throws java.io.IOException
      * @throws com.google.code.javax.mail.MessagingException
@@ -508,13 +471,10 @@ public  final class GmailUtils {
     /**
      * Reads the batch number from the input string.
      *
-     * @param batchString
-     *            input string
+     * @param batchString input string
      * @return batch number
-     * @throws NumberFormatException
-     *             if the batch number is not an integer
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             if the batch number is not a positive integer
+     * @throws NumberFormatException                           if the batch number is not an integer
+     * @throws org.wso2.carbon.connector.core.ConnectException if the batch number is not a positive integer
      */
     public static int getBatchNumber(String batchString) throws NumberFormatException,
             ConnectException {
@@ -538,8 +498,7 @@ public  final class GmailUtils {
     /**
      * Close and remove the already stored IMAP and SMTP connections
      *
-     * @param operationContext
-     *            where the connections are stored
+     * @param operationContext where the connections are stored
      * @throws com.google.code.javax.mail.MessagingException
      */
     public static void closeConnection(org.apache.axis2.context.MessageContext axis2MessageContext)
@@ -568,18 +527,12 @@ public  final class GmailUtils {
     /**
      * Store the response for send mail operations.
      *
-     * @param responseElementName
-     *            Response element's name
-     * @param subject
-     *            Subject of the mail
-     * @param textContent
-     *            Text content of the mail
-     * @param recipients
-     *            A comma separated list of recipients
-     * @param attachmentIDs
-     *            A comma separated list of attachmentIDs
-     * @param messageContext
-     *            Message context where the response should be stored
+     * @param responseElementName Response element's name
+     * @param subject             Subject of the mail
+     * @param textContent         Text content of the mail
+     * @param recipients          A comma separated list of recipients
+     * @param attachmentIDs       A comma separated list of attachmentIDs
+     * @param messageContext      Message context where the response should be stored
      */
     public static void storeSentMailResponse(String responseElementName, String subject,
                                              String textContent, String recipients,
@@ -612,25 +565,16 @@ public  final class GmailUtils {
     /**
      * Creates a new {@link com.google.code.javax.mail.Message}.
      *
-     * @param session
-     *            Mail {@link com.google.code.javax.mail.Session}.
-     * @param subject
-     *            Subject of the mail.
-     * @param textContent
-     *            Text content of the mail message.
-     * @param toRecipients
-     *            'To' recipients of the mail message.
-     * @param ccRecipients
-     *            'CC' recipients of the mail message.
-     * @param bccRecipients
-     *            'BCC' recipients of the mail message.
-     * @param attachmentList
-     *            Array of attachment file names.
-     * @param axis2MsgCtx
-     *            Axis2 message context where the attachment files are stored.
+     * @param session        Mail {@link com.google.code.javax.mail.Session}.
+     * @param subject        Subject of the mail.
+     * @param textContent    Text content of the mail message.
+     * @param toRecipients   'To' recipients of the mail message.
+     * @param ccRecipients   'CC' recipients of the mail message.
+     * @param bccRecipients  'BCC' recipients of the mail message.
+     * @param attachmentList Array of attachment file names.
+     * @param axis2MsgCtx    Axis2 message context where the attachment files are stored.
      * @return returns the created {@link #}
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             if invalid attachment IDs are provided.
+     * @throws org.wso2.carbon.connector.core.ConnectException if invalid attachment IDs are provided.
      * @throws com.google.code.javax.mail.MessagingException
      * @throws java.io.IOException
      */
@@ -684,13 +628,10 @@ public  final class GmailUtils {
     /**
      * Sends the given {@link com.google.code.javax.mail.Message} through the given {@link com.google.code.com.sun.mail.smtp.SMTPTransport}
      *
-     * @param message
-     *            The message to be sent
-     * @param transport
-     *            The {@link com.google.code.com.sun.mail.smtp.SMTPTransport} through which the message should be
-     *            sent
-     * @throws com.google.code.javax.mail.MessagingException
-     *             as a result of failures in message transportation
+     * @param message   The message to be sent
+     * @param transport The {@link com.google.code.com.sun.mail.smtp.SMTPTransport} through which the message should be
+     *                  sent
+     * @throws com.google.code.javax.mail.MessagingException as a result of failures in message transportation
      */
     public static void sendMessage(Message message, SMTPTransport transport)
             throws MessagingException {
@@ -724,15 +665,11 @@ public  final class GmailUtils {
      * Gets {@link com.google.code.com.sun.mail.imap.IMAPFolder} when the folder name and the {@link com.google.code.com.sun.mail.imap.IMAPStore} is
      * given.
      *
-     * @param folderName
-     *            name of the {@link com.google.code.com.sun.mail.imap.IMAPFolder}
-     * @param store
-     *            {@link com.google.code.com.sun.mail.imap.IMAPStore} instance where the folder is located
+     * @param folderName name of the {@link com.google.code.com.sun.mail.imap.IMAPFolder}
+     * @param store      {@link com.google.code.com.sun.mail.imap.IMAPStore} instance where the folder is located
      * @return the folder
-     * @throws com.google.code.javax.mail.MessagingException
-     *             as a result of the failures occur while getting the folder
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             if the folder is null
+     * @throws com.google.code.javax.mail.MessagingException   as a result of the failures occur while getting the folder
+     * @throws org.wso2.carbon.connector.core.ConnectException if the folder is null
      */
     private static IMAPFolder getFolder(String folderName, IMAPStore store)
             throws MessagingException,
@@ -748,21 +685,14 @@ public  final class GmailUtils {
     }
 
 
-
-
     /**
      * Process {@link com.google.code.javax.mail.Multipart} content.
      *
-     * @param contentBuilder
-     *            String builder to store the content
-     * @param multipart
-     *            input {@link com.google.code.javax.mail.Multipart} to process
-     * @param messageContext
-     *            Message context from where the attachments should be taken
-     * @param attachmentContentIDs
-     *            String builder to store content IDs of the attachments
-     * @param messageID
-     *            ID of the message
+     * @param contentBuilder       String builder to store the content
+     * @param multipart            input {@link com.google.code.javax.mail.Multipart} to process
+     * @param messageContext       Message context from where the attachments should be taken
+     * @param attachmentContentIDs String builder to store content IDs of the attachments
+     * @param messageID            ID of the message
      * @return the {@link com.google.code.javax.mail.Multipart} content as a {@link String}
      * @throws com.google.code.javax.mail.MessagingException
      * @throws java.io.IOException
@@ -803,17 +733,12 @@ public  final class GmailUtils {
     /**
      * Add attachments to the message context.
      *
-     * @param attachmentContentID
-     *            Content ID (file name) of the attachment
-     * @param inputStream
-     *            Input stream to attach
-     * @param type
-     *            Content type of the attachment
-     * @param messageContext
-     *            Message context to where the attachments should be added
-     * @throws java.io.IOException
-     *             as a result of the failures occur while getting the byte
-     *             array from the input stream
+     * @param attachmentContentID Content ID (file name) of the attachment
+     * @param inputStream         Input stream to attach
+     * @param type                Content type of the attachment
+     * @param messageContext      Message context to where the attachments should be added
+     * @throws java.io.IOException as a result of the failures occur while getting the byte
+     *                             array from the input stream
      */
     private static void addAttachmentToMessageContext(String attachmentContentID,
                                                       InputStream inputStream, String type,

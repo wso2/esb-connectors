@@ -40,15 +40,11 @@ public class GmailIMAPClientLoader {
      * Method which loads the IMAPStore instance according to the authentication
      * mode.
      *
-     * @param messageContext
-     *            Message context where the instantiated IMAPStore instance is
-     *            stored.
-     * @return
-     *         the loaded IMAPStrore instance.
-     * @throws com.google.code.javax.mail.MessagingException
-     *             as a result of authentication failures
-     * @throws org.wso2.carbon.connector.core.ConnectException
-     *             as a result of invalid configuration
+     * @param messageContext Message context where the instantiated IMAPStore instance is
+     *                       stored.
+     * @return the loaded IMAPStrore instance.
+     * @throws com.google.code.javax.mail.MessagingException   as a result of authentication failures
+     * @throws org.wso2.carbon.connector.core.ConnectException as a result of invalid configuration
      */
     public IMAPStore loadIMAPStore(MessageContext messageContext) throws MessagingException,
             ConnectException {

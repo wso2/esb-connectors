@@ -112,8 +112,7 @@ public class GmailSendMail extends AbstractConnector {
     /**
      * Reads mail's subject parameter from the message context.
      *
-     * @param messageContext
-     *            from where the mail subject should be read
+     * @param messageContext from where the mail subject should be read
      * @return the mail subject
      */
     private String setSubject(MessageContext messageContext) {
@@ -130,8 +129,7 @@ public class GmailSendMail extends AbstractConnector {
     /**
      * Reads attachments' names from the message context.
      *
-     * @param messageContext
-     *            from where the attachment list should be read
+     * @param messageContext from where the attachment list should be read
      * @return returns an array of file names
      */
     private String[] setAttachmentList(MessageContext messageContext) {
@@ -151,8 +149,7 @@ public class GmailSendMail extends AbstractConnector {
     /**
      * Reads mail's text content from the message context.
      *
-     * @param messageContext
-     *            from where the text content should be read
+     * @param messageContext from where the text content should be read
      * @return mail's text content
      */
     private String setTextContent(MessageContext messageContext) {
@@ -169,10 +166,8 @@ public class GmailSendMail extends AbstractConnector {
     /**
      * Reads recipients parameter from message context
      *
-     * @param messageContext
-     *            from where the recipients should be read
-     * @param paramName
-     *            Name of the input parameter
+     * @param messageContext from where the recipients should be read
+     * @param paramName      Name of the input parameter
      * @return comma separated list of recipients' addresses
      */
     private String setRecipients(MessageContext messageContext, String paramName) {
