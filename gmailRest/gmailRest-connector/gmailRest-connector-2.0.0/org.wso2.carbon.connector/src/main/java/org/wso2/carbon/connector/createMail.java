@@ -24,17 +24,17 @@ import org.wso2.carbon.connector.core.ConnectException;
 
 
 public class createMail extends AbstractConnector {
-    public static final String parameters="parameters";
+    public static final String parameters = "parameters";
 
     public void connect(MessageContext messageContext) throws ConnectException {
         Object templateParam = getParameter(messageContext, "generated_param");
         try {
             String parameter = messageContext.getProperty("parameters").toString();
             byte[] encodedBytes = Base64.encodeBase64(parameter.getBytes());
-            String encodedVal=new String(encodedBytes);
-            encodedVal= encodedVal.replace('+', '-');
-            encodedVal=encodedVal.replace('/', '_');
-            messageContext.setProperty("uri.var.encoded",encodedVal);
+            String encodedVal = new String(encodedBytes);
+            encodedVal = encodedVal.replace('+', '-');
+            encodedVal = encodedVal.replace('/', '_');
+            messageContext.setProperty("uri.var.encoded", encodedVal);
         } catch (Exception e) {
             throw new ConnectException(e);
         }

@@ -27,7 +27,6 @@ import org.wso2.carbon.connector.core.ConnectException;
 /**
  * Class which reads user name and password from the
  * message context to perform SASL authentication for Gmail.
- *
  */
 public class GmailPasswordLogin extends AbstractConnector {
 
@@ -73,15 +72,11 @@ public class GmailPasswordLogin extends AbstractConnector {
     /**
      * Stores user name and password information for SASL authentication
      *
-     * @param username
-     *            user name
-     * @param password
-     *            password
-     * @param messageContext
-     *            message context where the user login information should be
-     *            stored
-     * @throws com.google.code.javax.mail.MessagingException
-     *             if failures occur while authentication.
+     * @param username       user name
+     * @param password       password
+     * @param messageContext message context where the user login information should be
+     *                       stored
+     * @throws com.google.code.javax.mail.MessagingException if failures occur while authentication.
      */
     private void storeSASLUserLogin(String username, String password, MessageContext messageContext)
             throws MessagingException {

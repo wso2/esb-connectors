@@ -76,13 +76,10 @@ public class GmailConfig extends AbstractConnector {
     /**
      * Stores user name and access token for OAuth authentication
      *
-     * @param messageContext
-     *            message context where the user login information should be
-     *            stored
-     * @param username
-     *            user name
-     * @param oauthAccessToken
-     *            access token
+     * @param messageContext   message context where the user login information should be
+     *                         stored
+     * @param username         user name
+     * @param oauthAccessToken access token
      * @throws com.google.code.javax.mail.MessagingException
      */
     private void storeOauthUserLogin(MessageContext messageContext, String username,

@@ -41,13 +41,10 @@ public final class GmailSASLAuthenticator {
     /**
      * Connects to IMAPStore
      *
-     * @param username
-     *            user name
-     * @param password
-     *            password of the user
+     * @param username user name
+     * @param password password of the user
      * @return the authenticated IMAPSore instance
-     * @throws com.google.code.javax.mail.MessagingException
-     *             as a result of authentication failure
+     * @throws com.google.code.javax.mail.MessagingException as a result of authentication failure
      */
     public static IMAPStore connectToIMAP(String username, String password)
             throws MessagingException {
@@ -62,13 +59,10 @@ public final class GmailSASLAuthenticator {
     /**
      * Connects to SMTP transport and mail session.
      *
-     * @param username
-     *            user name
-     * @param password
-     *            password of the user
+     * @param username user name
+     * @param password password of the user
      * @return {@link GmailSMTPConnectionObject} instance
-     * @throws com.google.code.javax.mail.MessagingException
-     *             as a result of authentication failure
+     * @throws com.google.code.javax.mail.MessagingException as a result of authentication failure
      */
     public static GmailSMTPConnectionObject connectToSMTPSession(final String username,
                                                                  final String password)
