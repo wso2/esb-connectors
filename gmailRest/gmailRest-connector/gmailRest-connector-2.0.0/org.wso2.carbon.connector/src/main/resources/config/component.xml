@@ -30,7 +30,8 @@
         <component name="endSession">
             <file>endSession.xml</file>
             <description>Terminate the existing IMAP and SMTP connections with
-                Gmail</description>
+                Gmail
+            </description>
         </component>
         <component name="init">
             <file>init.xml</file>
