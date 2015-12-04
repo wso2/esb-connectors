@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.wso2.carbon</groupId>
+        <artifactId>esb-connector-parent</artifactId>
+        <version>4.3.0-SNAPSHOT</version>
+        <relativePath>../../../../pom.xml</relativePath>
+    </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon</groupId>
@@ -11,56 +19,10 @@
     <url>http://wso2.org</url>
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.mediation.initializer</artifactId>
-            <version>${carbon.components.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.synapse</groupId>
-            <artifactId>synapse-core</artifactId>
-            <version>${synapse.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.synapse</groupId>
-            <artifactId>synapse-commons</artifactId>
-            <version>${synapse.version}</version>
-        </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.jboss.jbossas</groupId>-->
-        <!--<artifactId>jboss-as-client</artifactId>-->
-        <!--<version>5.1.0.GA</version>-->
-        <!--<type>pom</type>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.jboss.spec.javax.rmi</groupId>-->
-        <!--<artifactId>jboss-rmi-api_1.0_spec</artifactId>-->
-        <!--<version>1.0.1.Final</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.glassfish.main.extras</groupId>-->
-        <!--<artifactId>glassfish-embedded-all</artifactId>-->
-        <!--<version>4.1.1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.glassfish.main.extras</groupId>-->
-        <!--<artifactId>glassfish-embedded-all</artifactId>-->
-        <!--<version>3.1.2.2</version>-->
-        <!--</dependency>-->
-        <dependency>
             <groupId>org.jboss.jbossas</groupId>
             <artifactId>jboss-as-client</artifactId>
             <version>5.1.0.GA</version>
             <type>pom</type>
-        </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.apache.felix</groupId>-->
-        <!--<artifactId>org.osgi.foundation</artifactId>-->
-        <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.connector.core</artifactId>
-            <version>${carbon.components.version}</version>
         </dependency>
     </dependencies>
     <properties>
@@ -79,31 +41,6 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-dependency-plugin</artifactId>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>copy</id>-->
-            <!--<phase>generate-test-resources</phase>-->
-            <!--<goals>-->
-            <!--<goal>copy</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<artifactItems>-->
-            <!--<artifactItem>-->
-            <!--<groupId>glassfish-embedded-all</groupId>-->
-            <!--<artifactId>glassfish-embedded-all</artifactId>-->
-            <!--<version>${glassfish.version}</version>-->
-            <!--<type>jar</type>-->
-            <!--<overWrite>true</overWrite>-->
-            <!--<outputDirectory>target/connector/dependencies</outputDirectory>-->
-            <!--</artifactItem>-->
-            <!--</artifactItems>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -130,57 +67,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.felix</groupId>-->
-            <!--<artifactId>maven-scr-plugin</artifactId>-->
-            <!--<version>1.7.2</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>generate-scr-scrdescriptor</id>-->
-            <!--<goals>-->
-            <!--<goal>scr</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
-            <!--<plugin>-->
-            <!--<groupId>org.apache.felix</groupId>-->
-            <!--<artifactId>maven-bundle-plugin</artifactId>-->
-            <!--<extensions>true</extensions>-->
-            <!--<version>1.4.0</version>-->
-            <!--<configuration>-->
-            <!--<instructions>-->
-            <!--<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>-->
-            <!--<Export-Package>-->
-            <!--&lt;!&ndash;!org.wso2.ext.internal,&ndash;&gt;-->
-            <!--org.wso2.carbon.custom.connector.*,-->
-            <!--&lt;!&ndash;org.wso2.ext.*,&ndash;&gt;-->
-            <!--&lt;!&ndash;!javax.rmi.*,&ndash;&gt;-->
-            <!--&lt;!&ndash;com.sun.corba.ee.impl.javax.rmi.*;&ndash;&gt;-->
-            <!--&lt;!&ndash;!sqlj.runtime,&ndash;&gt;-->
-            <!--&lt;!&ndash;javax.rmi.CORBA.*,&ndash;&gt;-->
-            <!--&lt;!&ndash;com.sun.enterprise.naming.*,&ndash;&gt;-->
-            <!--&lt;!&ndash;!sun.*&ndash;&gt;-->
-            <!--</Export-Package>-->
-            <!--<Private-Package>-->
-            <!--com.sun.corba.ee.impl.javax.rmi.*,-->
-            <!--javax.rmi.PortableRemoteObject,-->
-            <!--javax.rmi.CORBA.*-->
-            <!--</Private-Package>-->
-            <!--&lt;!&ndash;<Import-Package>&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;!com.ibm.*,&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;!com.*,&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;!org.eclipse.*,&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;!org.apache.geronimo.*,&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;!org.osgi.*,&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;!org.w3.*,&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;org.wso2.carbon.registry.*&ndash;&gt;-->
-            <!--&lt;!&ndash;*;resolution:=optional&ndash;&gt;-->
-            <!--&lt;!&ndash;</Import-Package>&ndash;&gt;-->
-            <!--<DynamicImport-Package>*</DynamicImport-Package>-->
-            <!--</instructions>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
         </plugins>
     </build>
     <repositories>
@@ -214,7 +100,6 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-
     </repositories>
     <pluginRepositories>
         <pluginRepository>
