@@ -30,12 +30,12 @@ public class EJB2Init extends AbstractConnector {
         Properties prop = new Properties();
         try {
             EJBUtil ejbUtil=new EJBUtil();
-            Hashtable<String, String> dyValues = ejbUtil.getParameters(messageContext, EJBConstant.INIT);
+            Hashtable<String, String> dyValues = ejbUtil.getParameters(messageContext, EJBConstants.INIT);
             Set<String> set = dyValues.keySet();
             for (String aSet : set) {
                 prop.setProperty(aSet, dyValues.get(aSet));
             }
-            messageContext.setProperty((String)getParameter(messageContext, EJBConstant.KEY), prop);
+            messageContext.setProperty((String)getParameter(messageContext, EJBConstants.KEY), prop);
         } catch (Exception e) {
             handleException("error while set the properties ", e, messageContext);
         }

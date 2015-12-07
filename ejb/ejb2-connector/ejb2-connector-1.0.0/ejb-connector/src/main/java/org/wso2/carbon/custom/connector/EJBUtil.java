@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,8 @@ import java.util.Properties;
 import java.util.Set;
 
 public class EJBUtil {
-    EjbException ejbException =new EjbException();
+    EjbException ejbException = new EjbException();
+
     /**
      * @param instance       instance of an ejb object
      * @param method         method that we want to call
@@ -131,9 +132,13 @@ public class EJBUtil {
     public Hashtable getParameters(MessageContext messageContext, String operationName) {
         Hashtable dyValues = new Hashtable();
         try {
-            String key = "";
-            key = operationName + ":" + key.concat((String) getParameter(messageContext,
-                    EJBConstant.KEY));
+            String key;
+            if (operationName.equals(EJBConstants.INIT)) {
+                key = ((String) getParameter(messageContext, EJBConstants.KEY));
+            } else {
+                key = EJBConstants.PARAMETER;
+            }
+            key = operationName + ":" + key;
             Map<String, Object> objectMap = (((Axis2MessageContext) messageContext).getProperties());
             Set prop = messageContext.getPropertyKeySet();
             Value val;
@@ -141,6 +146,7 @@ public class EJBUtil {
                 if (s.startsWith(key)) {
                     val = (Value) objectMap.get(s);
                     dyValues.put(s.substring(key.length() + 1, s.length()), val.getKeyValue());
+                    messageContext.getPropertyKeySet().remove(s);
                 }
             }
         } catch (Exception e) {
@@ -158,7 +164,7 @@ public class EJBUtil {
         ejbException.handleException(msg, messageContext);
     }
 
-    public  void handleException(String msg, Exception e, MessageContext messageContext) {
+    public void handleException(String msg, Exception e, MessageContext messageContext) {
         ejbException.handleException(msg, e, messageContext);
     }
 
@@ -173,22 +179,20 @@ public class EJBUtil {
         try {
             Map<String, Object> stringObjectMap = (((Axis2MessageContext) messageContext).getProperties());
             InitialContext context = new InitialContext((Properties) stringObjectMap.get(getParameter(messageContext,
-                    EJBConstant.CONTEXT)));
+                    EJBConstants.CONTEXT)));
             Object obj = context.lookup(getParameter(messageContext, jndiName).toString());
             EJBHome ejbHome = (EJBHome) PortableRemoteObject.narrow(obj, EJBHome.class);
-            Method method = ejbHome.getClass().getDeclaredMethod(EJBConstant.CREATE);
+            Method method = ejbHome.getClass().getDeclaredMethod(EJBConstants.CREATE);
             if (method != null) {
                 ejbObject = method.invoke(ejbHome);
             } else handleException("ejb home is missing ", messageContext);
         } catch (IllegalAccessException e) {
-            handleException("Failed to get ejb Object because of IllegalAccessException ", e,
-                    messageContext);
+            handleException("Failed to get ejb Object because of IllegalAccessException ", e, messageContext);
         } catch (InvocationTargetException e) {
             handleException("Failed to get ejb Object because of InvocationTargetException ", e,
                     messageContext);
         } catch (NoSuchMethodException e) {
-            handleException("Failed lookup because of create method not exist " + e.getMessage(),
-                    messageContext);
+            handleException("Failed lookup because of create method not exist " + e.getMessage(), messageContext);
         } catch (NamingException e) {
             handleException("Failed lookup because of NamingException ", e, messageContext);
         }

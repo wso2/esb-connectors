@@ -23,7 +23,7 @@ import org.apache.synapse.SynapseException;
 
 public class EjbException {
     protected Log log = LogFactory.getLog(this.getClass());
-    protected static final Log trace = LogFactory.getLog(EJBConstant.TRACE_LOGGER);
+    protected static final Log trace = LogFactory.getLog(EJBConstants.TRACE_LOGGER);
     protected int traceState = 2;
 
     protected void handleException(String msg, Exception e, MessageContext messageContext) {
