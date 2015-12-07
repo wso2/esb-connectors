@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,8 +36,7 @@ import java.util.Properties;
 import java.util.Set;
 
 public class EJBUtil {
-    EjbException ejbException = new EjbException();
-
+    EjbException ejbException =new EjbException();
     /**
      * @param instance       instance of an ejb object
      * @param method         method that we want to call
@@ -55,12 +54,11 @@ public class EJBUtil {
         Object[] processedArgs = new Object[paramTypes.length];
         for (int i = 0; i < paramTypes.length; ++i) {
             if (args[i] == null || paramTypes[i].isAssignableFrom(args[i].getClass())) {
-                //TODO
                 processedArgs[i] = args[i];
             } else if (SimpleTypeMapper.isSimpleType(paramTypes[i])) {
                 try {
                     processedArgs[i] = SimpleTypeMapper.getSimpleTypeObject(paramTypes[i],
-                            AXIOMUtil.stringToOM("<a>" + args[i].toString() + "</a>"));
+                            AXIOMUtil.stringToOM("<a>" + args[i] + "</a>"));
                 } catch (XMLStreamException e) {
                     handleException("XMLStreamException ", e, messageContext);
                 }
@@ -135,15 +133,13 @@ public class EJBUtil {
         try {
             String key = "";
             key = operationName + ":" + key.concat((String) getParameter(messageContext,
-                    EJBConstance.KEY));
-            Map<String, Object> chk;
-            chk = (((Axis2MessageContext) messageContext).getProperties());
+                    EJBConstant.KEY));
+            Map<String, Object> objectMap = (((Axis2MessageContext) messageContext).getProperties());
             Set prop = messageContext.getPropertyKeySet();
             Value val;
-            String[] arrayString = (String[]) prop.toArray(new String[prop.size()]);
-            for (String s : arrayString) {
+            for (String s : (String[]) prop.toArray(new String[prop.size()])) {
                 if (s.startsWith(key)) {
-                    val = (Value) chk.get(s);
+                    val = (Value) objectMap.get(s);
                     dyValues.put(s.substring(key.length() + 1, s.length()), val.getKeyValue());
                 }
             }
@@ -154,16 +150,16 @@ public class EJBUtil {
     }
 
 
-    protected Object getParameter(MessageContext messageContext, String paramName) {
+    protected static Object getParameter(MessageContext messageContext, String paramName) {
         return ConnectorUtils.lookupTemplateParamater(messageContext, paramName);
     }
 
-    public void handleException(String msg, MessageContext ctx) {
-        ejbException.handleException(msg, ctx);
+    public void handleException(String msg, MessageContext messageContext) {
+        ejbException.handleException(msg, messageContext);
     }
 
-    public void handleException(String msg, Exception e, MessageContext ctx) {
-        ejbException.handleException(msg, e, ctx);
+    public  void handleException(String msg, Exception e, MessageContext messageContext) {
+        ejbException.handleException(msg, e, messageContext);
     }
 
 
@@ -173,33 +169,16 @@ public class EJBUtil {
      * @return ejb remote object
      */
     public Object getEJBObject(MessageContext messageContext, String jndiName) {
-        InitialContext context;
-        Object obj = null;
-        Map<String, Object> chk;
-        Method m = null;
-        Object ejbObj = null;
+        Object ejbObject = null;
         try {
-            chk = (((Axis2MessageContext) messageContext).getProperties());
-            context = new InitialContext((Properties) chk.get(getParameter(messageContext,
-                    EJBConstance.CONTEXT)));
-            obj = context.lookup(getParameter(messageContext, jndiName).toString());
-        } catch (NoClassDefFoundError e) {
-            handleException("Failed lookup because of NoClassDefFoundError " + e.getMessage(),
-                    messageContext);
-        } catch (NamingException e) {
-            handleException("Failed lookup because of NamingException ", e, messageContext);
-        }
-        EJBHome beanHome =
-                (EJBHome) PortableRemoteObject.narrow(obj, EJBHome.class);
-        try {
-            m = beanHome.getClass().getDeclaredMethod(EJBConstance.CREATE);
-        } catch (NoSuchMethodException e) {
-            handleException("Failed lookup because of create method not exist " + e.getMessage(),
-                    messageContext);
-        }
-        try {
-            if (m != null) {
-                ejbObj = m.invoke(beanHome);
+            Map<String, Object> stringObjectMap = (((Axis2MessageContext) messageContext).getProperties());
+            InitialContext context = new InitialContext((Properties) stringObjectMap.get(getParameter(messageContext,
+                    EJBConstant.CONTEXT)));
+            Object obj = context.lookup(getParameter(messageContext, jndiName).toString());
+            EJBHome ejbHome = (EJBHome) PortableRemoteObject.narrow(obj, EJBHome.class);
+            Method method = ejbHome.getClass().getDeclaredMethod(EJBConstant.CREATE);
+            if (method != null) {
+                ejbObject = method.invoke(ejbHome);
             } else handleException("ejb home is missing ", messageContext);
         } catch (IllegalAccessException e) {
             handleException("Failed to get ejb Object because of IllegalAccessException ", e,
@@ -207,7 +186,12 @@ public class EJBUtil {
         } catch (InvocationTargetException e) {
             handleException("Failed to get ejb Object because of InvocationTargetException ", e,
                     messageContext);
+        } catch (NoSuchMethodException e) {
+            handleException("Failed lookup because of create method not exist " + e.getMessage(),
+                    messageContext);
+        } catch (NamingException e) {
+            handleException("Failed lookup because of NamingException ", e, messageContext);
         }
-        return ejbObj;
+        return ejbObject;
     }
 }

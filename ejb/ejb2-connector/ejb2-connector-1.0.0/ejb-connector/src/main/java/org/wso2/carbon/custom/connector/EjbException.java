@@ -23,15 +23,15 @@ import org.apache.synapse.SynapseException;
 
 public class EjbException {
     protected Log log = LogFactory.getLog(this.getClass());
-    protected static final Log trace = LogFactory.getLog(EJBConstance.TRACE_LOGGER);
+    protected static final Log trace = LogFactory.getLog(EJBConstant.TRACE_LOGGER);
     protected int traceState = 2;
 
-    protected void handleException(String msg, Exception e, MessageContext msgContext) {
+    protected void handleException(String msg, Exception e, MessageContext messageContext) {
         this.log.error(msg, e);
-        if (msgContext.getServiceLog() != null) {
-            msgContext.getServiceLog().error(msg, e);
+        if (messageContext.getServiceLog() != null) {
+            messageContext.getServiceLog().error(msg, e);
         }
-        if (this.shouldTrace(msgContext.getTracingState())) {
+        if (this.shouldTrace(messageContext.getTracingState())) {
             trace.error(msg, e);
         }
         throw new SynapseException(msg, e);
@@ -41,12 +41,12 @@ public class EjbException {
         return this.traceState == 1 || this.traceState == 2 && parentTraceState == 1;
     }
 
-    protected void handleException(String msg, MessageContext msgContext) {
+    protected void handleException(String msg, MessageContext messageContext) {
         this.log.error(msg);
-        if (msgContext.getServiceLog() != null) {
-            msgContext.getServiceLog().error(msg);
+        if (messageContext.getServiceLog() != null) {
+            messageContext.getServiceLog().error(msg);
         }
-        if (this.shouldTrace(msgContext.getTracingState())) {
+        if (this.shouldTrace(messageContext.getTracingState())) {
             trace.error(msg);
         }
         throw new SynapseException(msg);
