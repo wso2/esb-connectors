@@ -159,18 +159,21 @@ public abstract class ConnectorIntegrationTestBase extends ESBIntegrationTest {
         
         String connectorFileName = connectorName + ".zip";
         uploadConnector(repoLocation, mediationLibUploadStub, connectorFileName);
-        
+
         // Connector file name comes with version,however mediation process only with name.
         connectorName = connectorName.split("-")[0];
         this.connectorName = connectorName;
         
         byte maxAttempts = 3;
-        int sleepTimer = 30000;
+        int sleepTimer = 50000;
         for (byte attemptCount = 0; attemptCount < maxAttempts; attemptCount++) {
             log.info("Sleeping for " + sleepTimer / 1000 + " seconds for connector to upload.");
             Thread.sleep(sleepTimer);
             String[] libraries = adminServiceStub.getAllLibraries();
             if (Arrays.asList(libraries).contains("{org.wso2.carbon.connector}" + connectorName)) {
+
+                adminServiceStub.updateStatus("{org.wso2.carbon.connector}" + connectorName, connectorName,
+                        "org.wso2.carbon.connector", "enabled");
                 break;
             } else {
                 log.info("Connector upload incomplete. Waiting...");

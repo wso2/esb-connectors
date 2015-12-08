@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="stateful" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="method" description="Name of the method"/>
+    <parameter name="jndiName" description="Java API for a directory service"/>
+    <parameter name="return" description="Name of the return value"/>
+    <parameter name="context" description="key value of jndi properties"/>
+    <sequence>
+        <class name="org.wso2.carbon.custom.connector.EJBStateful"/>
+    </sequence>
+</template>
