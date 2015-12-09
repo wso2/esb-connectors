@@ -247,4 +247,6 @@ public final class GmailConstants {
      * SMTP port
      */
     public static final int GMAIL_SMTP_PORT = 587;
+
+    public static final String charset = "UTF-8";
 }

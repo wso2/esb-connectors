@@ -66,8 +66,7 @@ public final class GmailOAuth2SASLAuthenticator {
         final URLName unusedUrlName = null;
         final String emptyPassword = "";
         IMAPSSLStore store = new IMAPSSLStore(session, unusedUrlName);
-        store.connect(GmailConstants.GMAIL_IMAP_HOST, GmailConstants.GMAIL_IMAP_PORT, username,
-                emptyPassword);
+        store.connect(GmailConstants.GMAIL_IMAP_HOST, GmailConstants.GMAIL_IMAP_PORT, username, emptyPassword);
         return store;
     }
 
@@ -90,8 +89,7 @@ public final class GmailOAuth2SASLAuthenticator {
 
         Session session = Session.getInstance(props);
         SMTPTransport transport = new SMTPTransport(session, null);
-        transport.connect(GmailConstants.GMAIL_SMTP_HOST, GmailConstants.GMAIL_SMTP_PORT, username,
-                "");
+        transport.connect(GmailConstants.GMAIL_SMTP_HOST, GmailConstants.GMAIL_SMTP_PORT, username, "");
         return new GmailSMTPConnectionObject(session, transport);
     }
 }

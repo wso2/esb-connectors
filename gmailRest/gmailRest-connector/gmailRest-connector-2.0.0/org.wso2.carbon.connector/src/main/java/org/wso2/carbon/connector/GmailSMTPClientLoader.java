@@ -51,10 +51,8 @@ public class GmailSMTPClientLoader {
 
         org.apache.axis2.context.MessageContext axis2MsgCtx =
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
-
         Object prestoredInstance =
-                axis2MsgCtx.getOperationContext()
-                        .getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE);
+                axis2MsgCtx.getOperationContext().getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE);
 
         // Use if there exists an already stored GmailSMTPConnectionObject
         // instance.
@@ -82,9 +80,7 @@ public class GmailSMTPClientLoader {
             log.info("SASL authentication starts");
             smtpConnectionObject =
                     GmailSASLAuthenticator.connectToSMTPSession(messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME)
-                                    .toString(),
-                            messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD)
-                                    .toString());
+                            .toString(), messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString());
 
         }
         // Perform OAuth authentication if configured using the "init"
@@ -95,16 +91,13 @@ public class GmailSMTPClientLoader {
 
                 log.info("Initializing a new OAuth2 provider");
                 GmailOAuth2SASLAuthenticator.initializeOAuth2Provider();
-                axis2MsgCtx.getOperationContext().setProperty(GmailConstants.GMAIL_OAUTH2_PROVIDER,
-                        "initialized");
+                axis2MsgCtx.getOperationContext().setProperty(GmailConstants.GMAIL_OAUTH2_PROVIDER, "initialized");
             }
 
             log.info("OAuth2 authentication starts");
             smtpConnectionObject =
                     GmailOAuth2SASLAuthenticator.connectToSMTP(messageContext.getProperty(GmailConstants.GMAIL_OAUTH_USERNAME)
-                                    .toString(),
-                            messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN)
-                                    .toString());
+                            .toString(), messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN).toString());
         } else {
             String errorLog = "Gmail configuration details were not initialized";
             log.error(errorLog);

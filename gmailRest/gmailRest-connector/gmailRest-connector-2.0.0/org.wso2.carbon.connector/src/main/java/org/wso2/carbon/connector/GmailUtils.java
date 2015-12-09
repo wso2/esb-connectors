@@ -218,21 +218,9 @@ public final class GmailUtils {
         FetchProfile fetchprofile = getFetchProfile();
         Message[] messages = null;
         try {
-//			log.info("Started reading messages");
-//			IMAPFolder folder = getFolder(GmailConstants.GMAIL_ALL_MAIL, store);
-//            log.info( "11111111");
-//			folder.open(Folder.READ_WRITE);
-//            log.info( "22222222");
-//			messages = folder.search(term);
-//            log.info( "33333333");
-
-            log.info("111111");
             Folder ft = store.getFolder("inbox");
-            log.info("2222222");
             ft.open(Folder.READ_ONLY);
-            log.info("33333");
             messages = ft.search(term);
-            log.info("444444");
 
             if (messages.length == 0) {
                 String errorLog =
@@ -516,11 +504,10 @@ public final class GmailUtils {
 
         if (operationContext.getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE) != null) {
             log.info("Closing the previously opened SMTP transport");
-            ((GmailSMTPConnectionObject) operationContext.getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE)).getTransport()
-                    .close();
+            ((GmailSMTPConnectionObject) operationContext.getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE))
+                    .getTransport().close();
             operationContext.removeProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE);
         }
-
         axis2MessageContext.removeProperty((String) axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE));
     }
 
@@ -718,10 +705,8 @@ public final class GmailUtils {
                 contentBuilder.append("Attachment:" + fileName + "\n");
                 attachmentContentIDs.append(attachmentID);
                 attachmentContentIDs.append(',');
-                addAttachmentToMessageContext(attachmentID, bodyPart.getInputStream(),
-                        bodyPart.getContentType(), messageContext);
-            } else if (null != bodyPart.getDisposition() &&
-                    bodyPart.getDisposition().equalsIgnoreCase(Part.INLINE)) {
+                addAttachmentToMessageContext(attachmentID, bodyPart.getInputStream(), bodyPart.getContentType(), messageContext);
+            } else if (null != bodyPart.getDisposition() && bodyPart.getDisposition().equalsIgnoreCase(Part.INLINE)) {
                 String fileName = bodyPart.getFileName();
                 contentBuilder.append("INLINE:" + fileName + "\n");
             }
@@ -744,15 +729,10 @@ public final class GmailUtils {
                                                       InputStream inputStream, String type,
                                                       MessageContext messageContext)
             throws IOException {
-        org.apache.axis2.context.MessageContext axis2mc =
-                ((Axis2MessageContext) messageContext).getAxis2MessageContext();
+        org.apache.axis2.context.MessageContext axis2mc = ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         byte[] bytes = IOUtils.toByteArray(inputStream);
-        javax.mail.util.ByteArrayDataSource source =
-                new javax.mail.util.ByteArrayDataSource(bytes,
-                        type);
-        javax.activation.DataHandler handler =
-                new javax.activation.DataHandler(
-                        (javax.activation.DataSource) source);
+        javax.mail.util.ByteArrayDataSource source = new javax.mail.util.ByteArrayDataSource(bytes, type);
+        javax.activation.DataHandler handler = new javax.activation.DataHandler((javax.activation.DataSource) source);
         axis2mc.addAttachment(attachmentContentID, handler);
         log.info("Added an attachemnt named \"" + attachmentContentID + "\" to message context");
     }

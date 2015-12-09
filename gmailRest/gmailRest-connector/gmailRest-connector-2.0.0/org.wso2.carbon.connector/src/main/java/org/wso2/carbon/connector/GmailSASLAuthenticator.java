@@ -74,8 +74,7 @@ public final class GmailSASLAuthenticator {
         properties.put(GmailConstants.GMAIL_SMTP_HOST, GmailConstants.GMAIL_SMTP_PORT);
         Session session = Session.getInstance(properties);
         SMTPTransport transport = new SMTPTransport(session, null);
-        transport.connect(GmailConstants.GMAIL_SMTP_HOST, GmailConstants.GMAIL_SMTP_PORT, username,
-                password);
+        transport.connect(GmailConstants.GMAIL_SMTP_HOST, GmailConstants.GMAIL_SMTP_PORT, username, password);
         return new GmailSMTPConnectionObject(session, transport);
     }
 }

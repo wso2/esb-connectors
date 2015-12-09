@@ -38,19 +38,14 @@ public class GmailPasswordLogin extends AbstractConnector {
     public void connect(MessageContext messageContext) throws ConnectException {
         try {
             String username =
-                    GmailUtils.lookupFunctionParam(messageContext,
-                            GmailConstants.GMAIL_PARAM_USERNAME);
+                    GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_USERNAME);
             String password =
-                    GmailUtils.lookupFunctionParam(messageContext,
-                            GmailConstants.GMAIL_PARAM_PASSWORD);
-            if (username == null || "".equals(username.trim()) || password == null ||
-                    "".equals(password.trim())) {
-
+                    GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_PASSWORD);
+            if (username == null || "".equals(username.trim()) || password == null || "".equals(password.trim())){
                 String errorLog = "Invalid username or password";
                 log.error(errorLog);
                 ConnectException connectException = new ConnectException(errorLog);
-                GmailUtils.storeErrorResponseStatus(messageContext,
-                        connectException,
+                GmailUtils.storeErrorResponseStatus(messageContext, connectException,
                         GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
                 handleException(connectException.getMessage(), connectException, messageContext);
             }
@@ -58,13 +53,10 @@ public class GmailPasswordLogin extends AbstractConnector {
             // Storing user login details in the message context
             this.storeSASLUserLogin(username, password, messageContext);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (Exception e) {
-            GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }
@@ -85,10 +77,8 @@ public class GmailPasswordLogin extends AbstractConnector {
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode != null &&
                 (loginMode.toString() == GmailConstants.GMAIL_SASL_LOGIN_MODE) &&
-                messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME).toString()
-                        .equals(username) &&
-                messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString()
-                        .equals(password)) {
+                messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME).toString().equals(username) &&
+                messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString().equals(password)){
             log.info("The same authentication is already available. Hence no changes are needed.");
             return;
         }

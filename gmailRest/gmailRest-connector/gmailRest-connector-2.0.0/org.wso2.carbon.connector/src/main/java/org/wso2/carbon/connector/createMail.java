@@ -22,12 +22,13 @@ import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
-
+/*
+ Class which encodes the mail in a sendable form through REST
+ */
 public class createMail extends AbstractConnector {
     public static final String parameters = "parameters";
 
     public void connect(MessageContext messageContext) throws ConnectException {
-        Object templateParam = getParameter(messageContext, "generated_param");
         try {
             String parameter = messageContext.getProperty("parameters").toString();
             byte[] encodedBytes = Base64.encodeBase64(parameter.getBytes());
@@ -39,6 +40,4 @@ public class createMail extends AbstractConnector {
             throw new ConnectException(e);
         }
     }
-
-
 }
