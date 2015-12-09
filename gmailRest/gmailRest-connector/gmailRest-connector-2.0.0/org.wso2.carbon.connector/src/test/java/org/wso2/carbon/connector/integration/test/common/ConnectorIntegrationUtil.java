@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.automation.core.ProductConstant;
+import org.wso2.carbon.connector.GmailConstants;
 import org.wso2.carbon.mediation.library.stub.upload.MediationLibraryUploaderStub;
 import org.wso2.carbon.mediation.library.stub.upload.types.carbon.LibraryFileItem;
 import javax.activation.DataHandler;
@@ -56,6 +57,7 @@ import java.util.Properties;
 public class ConnectorIntegrationUtil {
 
     public static final String ESB_CONFIG_LOCATION = "artifacts" + File.separator + "ESB" + File.separator + "config";
+
     private static final Log log = LogFactory.getLog(ConnectorIntegrationUtil.class);
     public static void uploadConnector(String repoLocation, MediationLibraryUploaderStub mediationLibUploadStub,
                                        String strFileName) throws MalformedURLException, RemoteException {
@@ -71,15 +73,14 @@ public class ConnectorIntegrationUtil {
     }
 
     public static int sendRequestToRetriveHeaders(String addUrl, String query) throws IOException, JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -96,15 +97,14 @@ public class ConnectorIntegrationUtil {
 
     public static int sendRequestToRetriveHeaders(String addUrl, String query, String contentType) throws IOException,
             JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", contentType + ";charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", contentType + ";charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -120,15 +120,14 @@ public class ConnectorIntegrationUtil {
     }
 
     public static JSONArray sendRequestJSONArray(String addUrl, String query) throws IOException, JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -163,15 +162,14 @@ public class ConnectorIntegrationUtil {
     }
 
     public static JSONObject sendRequest(String addUrl, String query) throws IOException, JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -210,15 +208,14 @@ public class ConnectorIntegrationUtil {
     public static OMElement sendXMLRequest(String addUrl, String query) throws MalformedURLException, IOException,
             XMLStreamException {
 
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {

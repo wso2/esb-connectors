@@ -125,7 +125,6 @@
         </payloadFactory>
         <script language="js">
             <![CDATA[
-
                     var to = mc.getProperty('encodedValue');
                     var payload = mc.getPayloadJSON();
                     payload["raw"]=to;
