@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name="init" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="key" description="unique identifier for each context"/>
+    <sequence>
+        <class name="org.wso2.carbon.custom.connector.EJB2Init"/>
+    </sequence>
+</template>
