@@ -5,31 +5,30 @@
        statistics="disable"
        trace="disable"
        startOnLoad="true">
-<target>
-    <inSequence>
-        <ejb2.init>
-            <key>raj</key>
-            <raj.java.naming.factory.initial>org.jnp.interfaces.NamingContextFactory</raj.java.naming.factory.initial>
-            <raj.java.naming.factory.url.pkgs>org.jboss.naming:org.jnp.interfaces</raj.java.naming.factory.url.pkgs>
-            <raj.java.naming.provider.url>localhost</raj.java.naming.provider.url>
-        </ejb2.init>
-        <ejb2.stateless>
-            <jndiName>EJB2StatelessJboss</jndiName>
-            <method>add</method>
-            <param.arg1>10</param.arg1>
-            <param.arg2>12</param.arg2>
-            <return>Result</return>
-        </ejb2.stateless>
-        <log level="custom">
+    <target>
+        <inSequence>
+            <ejb2.init>
+                <key>raj</key>
+                <raj.java.naming.factory.initial>org.jnp.interfaces.NamingContextFactory
+                </raj.java.naming.factory.initial>
+                <raj.java.naming.factory.url.pkgs>org.jboss.naming:org.jnp.interfaces
+                </raj.java.naming.factory.url.pkgs>
+                <raj.java.naming.provider.url>localhost</raj.java.naming.provider.url>
+            </ejb2.init>
+            <ejb2.stateless>
+                <jndiName>EJB2StatelessJboss</jndiName>
+                <method>add</method>
+                <param.arg1>10</param.arg1>
+                <param.arg2>12</param.arg2>
+                <return>Result</return>
+            </ejb2.stateless>
             <property name="out" expression="get-property('Result')"/>
-        </log>
-        <property name="out" expression="get-property('Result')"/>
-        <payloadFactory media-type="json">
-            <format>{ "Result": $ctx:out}</format>
-            <args/>
-        </payloadFactory>
-        <respond/>
-    </inSequence>
-</target>
-<description/>
+            <payloadFactory media-type="json">
+                <format>{ "Result": $ctx:out}</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </inSequence>
+    </target>
+    <description/>
 </proxy>

@@ -22,4 +22,5 @@
         <dependency component="init"/>
         <description>synapse library for ejb2 connector</description>
     </component>
+    <icon>icon/icon-small.gif</icon>
 </connector>

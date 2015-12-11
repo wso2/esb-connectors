@@ -36,6 +36,7 @@ public class Ejb2ConnectorIntegrationTest extends ConnectorIntegrationTestBase {
     private Map<String, String> esbRequestHeadersMap = new HashMap<String, String>();
     Properties p = new Properties();
     InitialContext ctx;
+
     /**
      * Set up the environment.
      */
@@ -55,16 +56,20 @@ public class Ejb2ConnectorIntegrationTest extends ConnectorIntegrationTestBase {
     public void statelessBean() throws Exception {
 
         String methodName = "ejb2Stateless";
-        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "GET", esbRequestHeadersMap, "stateless.json");
-        Assert.assertEquals(esbRestResponse.getBody().get("Result"),checkStateless.getFromStateless(ctx));
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName)
+                , "GET", esbRequestHeadersMap, "stateless.json");
+        Assert.assertEquals(esbRestResponse.getBody().get("Result")
+                , checkStateless.getFromStateless(ctx));
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
     }
 
     @Test(enabled = true, description = "Stateful Bean Jboss")
     public void statefulBean() throws Exception {
         String methodName = "ejb2Stateful";
-        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "GET", esbRequestHeadersMap, "stateful.json");
-        Assert.assertEquals(esbRestResponse.getBody().get("Result"),checkStateful.getFromStaeful(ctx));
+        RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName)
+                , "GET", esbRequestHeadersMap, "stateful.json");
+        Assert.assertEquals(esbRestResponse.getBody().get("Result")
+                , checkStateful.getFromStaeful(ctx));
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
     }
 

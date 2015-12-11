@@ -24,9 +24,9 @@ import java.rmi.RemoteException;
 
 public class checkStateful {
     public static int getFromStaeful(Context context) throws RemoteException, CreateException, NamingException {
-        HelloHome home = null;
+        HelloHome home;
         home = (HelloHome) context.lookup("EJB2StatefulJboss");
-        Hello bean = null;
+        Hello bean;
         bean = home.create();
         // invoke on the remote counter bean
         final int NUM_TIMES = 5;
