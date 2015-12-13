@@ -40,10 +40,8 @@ public class GmailSMTPConnectionObject {
     /**
      * Constructor of the {@link org.wso2.carbon.connector.GmailSMTPConnectionObject} class
      *
-     * @param session
-     *            Authenticated {@link com.google.code.javax.mail.Session} instance
-     * @param transport
-     *            Authenticated and connected {@link com.google.code.com.sun.mail.smtp.SMTPTransport} instance
+     * @param session   Authenticated {@link com.google.code.javax.mail.Session} instance
+     * @param transport Authenticated and connected {@link com.google.code.com.sun.mail.smtp.SMTPTransport} instance.
      */
     public GmailSMTPConnectionObject(Session session, SMTPTransport transport) {
         this.session = session;

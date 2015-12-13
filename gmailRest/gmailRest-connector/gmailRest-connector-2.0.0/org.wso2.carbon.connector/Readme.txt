@@ -30,7 +30,9 @@ with following information
 	- Scroll down and click on the link "Details" which is near the label "Last account activity: xx minutes ago"
 	- Click on "Sign out all other sessions"
 
-5. Make sure that the gmailRest connector is set as a module in esb-connectors parent pom.
+5. Make lib folder under resources and update samples.oauth2-0.0.1-SNAPSHOT.jar and java-gmail-imap-1.4.4-gm-ext-0.5.jar
+
+6. Make sure that the gmailRest connector is set as a module in esb-connectors parent pom.
         	<module>gmailRest/gmailRest-connector/gmailRest-connector-1.0.0/org.wso2.carbon.connector</module>
-6. Navigate to "{GMAILREST_HOME}/gmailRest-connector/gmailRest-connector-1.0.0/org.wso2.carbon.connector/" and run the following command.
+7. Navigate to "{GMAILREST_HOME}/gmailRest-connector/gmailRest-connector-1.0.0/org.wso2.carbon.connector/" and run the following command.
       $ mvn clean install

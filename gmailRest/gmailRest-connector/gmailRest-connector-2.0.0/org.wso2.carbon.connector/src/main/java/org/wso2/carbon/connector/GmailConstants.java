@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  * 
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -247,4 +247,6 @@ public final class GmailConstants {
      * SMTP port
      */
     public static final int GMAIL_SMTP_PORT = 587;
+
+    public static final String charset = "UTF-8";
 }

@@ -42,25 +42,20 @@ public class GmailSendMail extends AbstractConnector {
     @Override
     public void connect(MessageContext messageContext) {
         try {
-            // Reading input parameters from the message context
+            // Reading input parameters from the message context.
             String toRecipients =
-                    this.setRecipients(messageContext,
-                            GmailConstants.GMAIL_PARAM_TO_RECIPIENTS);
+                    this.setRecipients(messageContext, GmailConstants.GMAIL_PARAM_TO_RECIPIENTS);
             String ccRecipients =
-                    this.setRecipients(messageContext,
-                            GmailConstants.GMAIL_PARAM_CC_RECIPIENTS);
+                    this.setRecipients(messageContext, GmailConstants.GMAIL_PARAM_CC_RECIPIENTS);
             String bccRecipients =
-                    this.setRecipients(messageContext,
-                            GmailConstants.GMAIL_PARAM_BCC_RECIPIENTS);
+                    this.setRecipients(messageContext, GmailConstants.GMAIL_PARAM_BCC_RECIPIENTS);
 
-            // Validating recipients. At least one recipient should have been
-            // given to send the mail
-            if (toRecipients == null && bccRecipients == null && ccRecipients == null) {
+            // Validating recipients. At least one recipient should have been given to send the mail.
+            if (StringUtils.isEmpty(toRecipients) && StringUtils.isEmpty(bccRecipients) && StringUtils.isEmpty(ccRecipients)) {
                 String errorLog = "No recipients are found";
                 log.error(errorLog);
                 ConnectException connectException = new ConnectException(errorLog);
-                GmailUtils.storeErrorResponseStatus(messageContext,
-                        connectException,
+                GmailUtils.storeErrorResponseStatus(messageContext, connectException,
                         GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
                 handleException(connectException.getMessage(), connectException, messageContext);
             }
@@ -78,33 +73,24 @@ public class GmailSendMail extends AbstractConnector {
             org.apache.axis2.context.MessageContext axis2MsgCtx =
                     ((Axis2MessageContext) messageContext).getAxis2MessageContext();
             Message message =
-                    GmailUtils.createNewMessage(session, subject, textContent,
-                            toRecipients, ccRecipients,
-                            bccRecipients, attachmentList,
-                            axis2MsgCtx);
+                    GmailUtils.createNewMessage(session, subject, textContent, toRecipients, ccRecipients,
+                            bccRecipients, attachmentList, axis2MsgCtx);
             GmailUtils.sendMessage(message, transport);
-            GmailUtils.storeSentMailResponse(GmailConstants.GMAIL_SEND_MAIL_RESPONSE, subject,
-                    textContent,
-                    InternetAddress.toString(message.getAllRecipients())
-                            .toString(),
+            GmailUtils.storeSentMailResponse(GmailConstants.GMAIL_SEND_MAIL_RESPONSE, subject, textContent,
+                    InternetAddress.toString(message.getAllRecipients()).toString(),
                     StringUtils.join(attachmentList, ','), messageContext);
             log.info("Successfully completed the \"send mail\" operation");
         } catch (ConnectException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (IOException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_IO_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_ERROR_CODE_IO_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (Exception e) {
-            GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }
@@ -112,15 +98,13 @@ public class GmailSendMail extends AbstractConnector {
     /**
      * Reads mail's subject parameter from the message context.
      *
-     * @param messageContext
-     *            from where the mail subject should be read
-     * @return the mail subject
+     * @param messageContext from where the mail subject should be read
+     * @return the mail subject.
      */
     private String setSubject(MessageContext messageContext) {
         String subject =
-                GmailUtils.lookupFunctionParam(messageContext,
-                        GmailConstants.GMAIL_PARAM_SUBJECT);
-        if (subject == null || "".equals(subject.trim())) {
+                GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_SUBJECT);
+        if (StringUtils.isEmpty(subject) || "".equals(subject.trim())) {
             log.warn("Mail subject is not provided. Mail will be sent without a subject");
             subject = "(no suject)";
         }
@@ -130,14 +114,12 @@ public class GmailSendMail extends AbstractConnector {
     /**
      * Reads attachments' names from the message context.
      *
-     * @param messageContext
-     *            from where the attachment list should be read
-     * @return returns an array of file names
+     * @param messageContext from where the attachment list should be read
+     * @return returns an array of file names.
      */
     private String[] setAttachmentList(MessageContext messageContext) {
         String attachmentIDs =
-                GmailUtils.lookupFunctionParam(messageContext,
-                        GmailConstants.GMAIL_PARAM_ATTACHMENTIDS);
+                GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_ATTACHMENTIDS);
         if (attachmentIDs == null || "".equals(attachmentIDs.trim())) {
             org.apache.axis2.context.MessageContext axis2MsgCtx =
                     ((Axis2MessageContext) messageContext).getAxis2MessageContext();
@@ -151,14 +133,12 @@ public class GmailSendMail extends AbstractConnector {
     /**
      * Reads mail's text content from the message context.
      *
-     * @param messageContext
-     *            from where the text content should be read
-     * @return mail's text content
+     * @param messageContext from where the text content should be read
+     * @return mail's text content.
      */
     private String setTextContent(MessageContext messageContext) {
         String textContent =
-                GmailUtils.lookupFunctionParam(messageContext,
-                        GmailConstants.GMAIL_PARAM_TEXT_CONTENT);
+                GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_TEXT_CONTENT);
         if (textContent == null || "".equals(textContent.trim())) {
             log.warn("Mail text content is not provided. Mail will be sent without a text content");
             textContent = "";
@@ -167,13 +147,11 @@ public class GmailSendMail extends AbstractConnector {
     }
 
     /**
-     * Reads recipients parameter from message context
+     * Reads recipients parameter from message context.
      *
-     * @param messageContext
-     *            from where the recipients should be read
-     * @param paramName
-     *            Name of the input parameter
-     * @return comma separated list of recipients' addresses
+     * @param messageContext from where the recipients should be read
+     * @param paramName      Name of the input parameter
+     * @return comma separated list of recipients' addresses.
      */
     private String setRecipients(MessageContext messageContext, String paramName) {
         String recipients = GmailUtils.lookupFunctionParam(messageContext, paramName);
