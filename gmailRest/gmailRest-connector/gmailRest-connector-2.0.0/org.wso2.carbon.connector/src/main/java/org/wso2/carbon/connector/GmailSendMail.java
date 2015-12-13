@@ -42,7 +42,7 @@ public class GmailSendMail extends AbstractConnector {
     @Override
     public void connect(MessageContext messageContext) {
         try {
-            // Reading input parameters from the message context
+            // Reading input parameters from the message context.
             String toRecipients =
                     this.setRecipients(messageContext, GmailConstants.GMAIL_PARAM_TO_RECIPIENTS);
             String ccRecipients =
@@ -50,9 +50,8 @@ public class GmailSendMail extends AbstractConnector {
             String bccRecipients =
                     this.setRecipients(messageContext, GmailConstants.GMAIL_PARAM_BCC_RECIPIENTS);
 
-            // Validating recipients. At least one recipient should have been
-            // given to send the mail
-            if (toRecipients == null && bccRecipients == null && ccRecipients == null) {
+            // Validating recipients. At least one recipient should have been given to send the mail.
+            if (StringUtils.isEmpty(toRecipients) && StringUtils.isEmpty(bccRecipients) && StringUtils.isEmpty(ccRecipients)) {
                 String errorLog = "No recipients are found";
                 log.error(errorLog);
                 ConnectException connectException = new ConnectException(errorLog);
@@ -100,12 +99,12 @@ public class GmailSendMail extends AbstractConnector {
      * Reads mail's subject parameter from the message context.
      *
      * @param messageContext from where the mail subject should be read
-     * @return the mail subject
+     * @return the mail subject.
      */
     private String setSubject(MessageContext messageContext) {
         String subject =
                 GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_SUBJECT);
-        if (subject == null || "".equals(subject.trim())) {
+        if (StringUtils.isEmpty(subject) || "".equals(subject.trim())) {
             log.warn("Mail subject is not provided. Mail will be sent without a subject");
             subject = "(no suject)";
         }
@@ -116,7 +115,7 @@ public class GmailSendMail extends AbstractConnector {
      * Reads attachments' names from the message context.
      *
      * @param messageContext from where the attachment list should be read
-     * @return returns an array of file names
+     * @return returns an array of file names.
      */
     private String[] setAttachmentList(MessageContext messageContext) {
         String attachmentIDs =
@@ -135,7 +134,7 @@ public class GmailSendMail extends AbstractConnector {
      * Reads mail's text content from the message context.
      *
      * @param messageContext from where the text content should be read
-     * @return mail's text content
+     * @return mail's text content.
      */
     private String setTextContent(MessageContext messageContext) {
         String textContent =
@@ -148,11 +147,11 @@ public class GmailSendMail extends AbstractConnector {
     }
 
     /**
-     * Reads recipients parameter from message context
+     * Reads recipients parameter from message context.
      *
      * @param messageContext from where the recipients should be read
      * @param paramName      Name of the input parameter
-     * @return comma separated list of recipients' addresses
+     * @return comma separated list of recipients' addresses.
      */
     private String setRecipients(MessageContext messageContext, String paramName) {
         String recipients = GmailUtils.lookupFunctionParam(messageContext, paramName);

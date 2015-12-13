@@ -43,8 +43,7 @@ public class GmailConfig extends AbstractConnector {
                             GmailConstants.GMAIL_PARAM_OAUTH_ACCESS_TOKEN);
             String username = GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_USERNAME);
 
-            // Validating the user name and OAuth access token provided by the
-            // user
+            // Validating the user name and OAuth access token provided by th user
             if (username == null || "".equals(username.trim()) || oauthAccessToken == null ||
                     "".equals(oauthAccessToken.trim())) {
 

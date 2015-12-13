@@ -59,8 +59,7 @@ public class GmailIMAPClientLoader {
             log.info("Retriving the prestored IMAPstore instance");
             return (IMAPStore) prestoredInstance;
         }
-        // Login mode should have been defined during either "init" or
-        // "passwordLogin" operations.
+        // Login mode should have been defined during either "init" or "passwordLogin" operations.
         Object loginMode = axis2MsgCtx.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode == null) {
             String errorLog = "Gmail configuration details were not initialized";
@@ -70,8 +69,7 @@ public class GmailIMAPClientLoader {
         }
         IMAPStore store = null;
 
-        // Perform SASL authentication if configured using the "Password Login"
-        // operation.
+        // Perform SASL authentication if configured using the "Password Login" operation.
         if (loginMode.toString().equals(GmailConstants.GMAIL_SASL_LOGIN_MODE)) {
             log.info("SASL authentication starts");
             try {
@@ -84,8 +82,7 @@ public class GmailIMAPClientLoader {
                 throw (e);
             }
         }
-        // Perform OAuth authentication if configured using the "init"
-        // operation.
+        // Perform OAuth authentication if configured using the "init" operation.
         else if (loginMode.toString().equals(GmailConstants.GMAIL_OAUTH_LOGIN_MODE)) {
             if (axis2MsgCtx.getProperty(GmailConstants.GMAIL_OAUTH2_PROVIDER) == null) {
                 log.info("Initializing OAuth2 provider");
@@ -109,7 +106,6 @@ public class GmailIMAPClientLoader {
             ConnectException connectException = new ConnectException(errorLog);
             throw (connectException);
         }
-
         // Stores the newly instantiated IMAPStore in the operation context.
         axis2MsgCtx.getOperationContext().setProperty(GmailConstants.GMAIL_IMAP_STORE_INSTANCE, store);
         return store;

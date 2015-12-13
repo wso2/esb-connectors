@@ -25,8 +25,7 @@ import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
 /**
- * Class which terminates the authenticated IMAP and SMTP connections
- * with Gmail
+ * Class which terminates the authenticated IMAP and SMTP connections with Gmail
  */
 public class GmailEndSession extends AbstractConnector {
 

@@ -25,7 +25,7 @@ import org.wso2.carbon.connector.core.ConnectException;
 /*
  Class which encodes the mail in a sendable form through REST
  */
-public class createMail extends AbstractConnector {
+public class CreateMail extends AbstractConnector {
     public static final String parameters = "parameters";
 
     public void connect(MessageContext messageContext) throws ConnectException {

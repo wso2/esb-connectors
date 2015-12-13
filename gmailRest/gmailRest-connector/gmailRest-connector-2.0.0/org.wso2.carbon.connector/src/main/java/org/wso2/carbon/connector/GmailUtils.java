@@ -54,6 +54,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.context.OperationContext;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -221,7 +222,6 @@ public final class GmailUtils {
             Folder ft = store.getFolder("inbox");
             ft.open(Folder.READ_ONLY);
             messages = ft.search(term);
-
             if (messages.length == 0) {
                 String errorLog =
                         "No messages are found to read. Please make sure the threda ID/ message ID is correct.";
@@ -426,7 +426,7 @@ public final class GmailUtils {
      * @param messageID            ID of the message.
      * @return
      * @throws java.io.IOException
-     * @throws com.google.code.javax.mail.MessagingException
+     * @throws com.google.code.javax.mail.MessagingException.
      */
     private static String processMessageBody(Message message, MessageContext messageContext,
                                              StringBuilder attachmentContentIDs, String messageID)
@@ -462,12 +462,12 @@ public final class GmailUtils {
      * @param batchString input string
      * @return batch number
      * @throws NumberFormatException                           if the batch number is not an integer
-     * @throws org.wso2.carbon.connector.core.ConnectException if the batch number is not a positive integer
+     * @throws org.wso2.carbon.connector.core.ConnectException if the batch number is not a positive integer.
      */
     public static int getBatchNumber(String batchString) throws NumberFormatException,
             ConnectException {
         int batchNumber;
-        if (batchString != null && !"".equals(batchString.trim())) {
+        if (StringUtils.isNotEmpty(batchString) && !"".equals(batchString.trim())) {
             batchNumber = Integer.parseInt(batchString);
             if (batchNumber <= 0) {
                 String errorLog = "Batch number should be a positive integer";
@@ -487,7 +487,7 @@ public final class GmailUtils {
      * Close and remove the already stored IMAP and SMTP connections
      *
      * @param operationContext where the connections are stored
-     * @throws com.google.code.javax.mail.MessagingException
+     * @throws com.google.code.javax.mail.MessagingException.
      */
     public static void closeConnection(org.apache.axis2.context.MessageContext axis2MessageContext)
             throws MessagingException {
@@ -519,7 +519,7 @@ public final class GmailUtils {
      * @param textContent         Text content of the mail
      * @param recipients          A comma separated list of recipients
      * @param attachmentIDs       A comma separated list of attachmentIDs
-     * @param messageContext      Message context where the response should be stored
+     * @param messageContext      Message context where the response should be stored.
      */
     public static void storeSentMailResponse(String responseElementName, String subject,
                                              String textContent, String recipients,
@@ -563,7 +563,7 @@ public final class GmailUtils {
      * @return returns the created {@link #}
      * @throws org.wso2.carbon.connector.core.ConnectException if invalid attachment IDs are provided.
      * @throws com.google.code.javax.mail.MessagingException
-     * @throws java.io.IOException
+     * @throws java.io.IOException.
      */
     public static Message createNewMessage(Session session, String subject, String textContent,
                                            String toRecipients, String ccRecipients,
@@ -574,13 +574,13 @@ public final class GmailUtils {
             IOException {
         log.info("Creating the mail message");
         MimeMessage message = new MimeMessage(session);
-        if (toRecipients != null) {
+        if (StringUtils.isNotEmpty(toRecipients)) {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toRecipients));
         }
-        if (ccRecipients != null) {
+        if (StringUtils.isNotEmpty(ccRecipients)) {
             message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(ccRecipients));
         }
-        if (bccRecipients != null) {
+        if (StringUtils.isNotEmpty(bccRecipients)) {
             message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bccRecipients));
         }
         message.setSubject(subject);
@@ -618,7 +618,7 @@ public final class GmailUtils {
      * @param message   The message to be sent
      * @param transport The {@link com.google.code.com.sun.mail.smtp.SMTPTransport} through which the message should be
      *                  sent
-     * @throws com.google.code.javax.mail.MessagingException as a result of failures in message transportation
+     * @throws com.google.code.javax.mail.MessagingException as a result of failures in message transportation.
      */
     public static void sendMessage(Message message, SMTPTransport transport)
             throws MessagingException {
@@ -656,7 +656,7 @@ public final class GmailUtils {
      * @param store      {@link com.google.code.com.sun.mail.imap.IMAPStore} instance where the folder is located
      * @return the folder
      * @throws com.google.code.javax.mail.MessagingException   as a result of the failures occur while getting the folder
-     * @throws org.wso2.carbon.connector.core.ConnectException if the folder is null
+     * @throws org.wso2.carbon.connector.core.ConnectException if the folder is null.
      */
     private static IMAPFolder getFolder(String folderName, IMAPStore store)
             throws MessagingException,
@@ -682,7 +682,7 @@ public final class GmailUtils {
      * @param messageID            ID of the message
      * @return the {@link com.google.code.javax.mail.Multipart} content as a {@link String}
      * @throws com.google.code.javax.mail.MessagingException
-     * @throws java.io.IOException
+     * @throws java.io.IOException.
      */
     private static String procesMultiPart(StringBuilder contentBuilder, Multipart multipart,
                                           MessageContext messageContext,
@@ -723,7 +723,7 @@ public final class GmailUtils {
      * @param type                Content type of the attachment
      * @param messageContext      Message context to where the attachments should be added
      * @throws java.io.IOException as a result of the failures occur while getting the byte
-     *                             array from the input stream
+     *                             array from the input stream.
      */
     private static void addAttachmentToMessageContext(String attachmentContentID,
                                                       InputStream inputStream, String type,

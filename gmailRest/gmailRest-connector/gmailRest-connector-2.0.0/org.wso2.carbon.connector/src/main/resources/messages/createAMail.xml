@@ -114,7 +114,7 @@
             </else>
         </filter>
         <property name="parameters" expression="get-property('gmailParameters')"/>
-        <class name="org.wso2.carbon.connector.createMail"/>
+        <class name="org.wso2.carbon.connector.CreateMail"/>
         <property name="encodedValue" expression="get-property('uri.var.encoded')"/>
         <payloadFactory media-type="json">
             <format>

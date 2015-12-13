@@ -34,8 +34,7 @@ import java.util.Properties;
 public final class GmailOAuth2SASLAuthenticator {
 
     /**
-     * Making the default constructor private since Utility classes should not
-     * have a public constructors
+     * Making the default constructor private since Utility classes should not have a public constructors.
      */
     private GmailOAuth2SASLAuthenticator() {
     }
@@ -53,7 +52,7 @@ public final class GmailOAuth2SASLAuthenticator {
      * @param username   user name
      * @param oauthToken user's OAuth access token
      * @return authenticated IMAPSore instance
-     * @throws com.google.code.javax.mail.MessagingException as a result of authentication failure
+     * @throws com.google.code.javax.mail.MessagingException as a result of authentication failure.
      */
     public static IMAPStore connectToIMAP(String username, String oauthToken)
             throws MessagingException {
@@ -76,7 +75,7 @@ public final class GmailOAuth2SASLAuthenticator {
      * @param username    user name
      * @param accessToken OAuth access token of the user
      * @return {@link GmailSMTPConnectionObject} instance
-     * @throws com.google.code.javax.mail.MessagingException as a result of authentication failure
+     * @throws com.google.code.javax.mail.MessagingException as a result of authentication failure.
      */
     public static GmailSMTPConnectionObject connectToSMTP(String username, String accessToken)
             throws MessagingException {
