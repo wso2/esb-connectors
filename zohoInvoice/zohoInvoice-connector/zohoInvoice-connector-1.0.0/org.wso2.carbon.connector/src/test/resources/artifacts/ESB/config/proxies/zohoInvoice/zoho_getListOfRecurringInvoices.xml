@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_getListOfRecurringInvoices"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="recurrenceName" expression="json-eval($.recurrenceName)"/>
+            <property name="itemName" expression="json-eval($.itemName)"/>
+            <property name="itemDescription" expression="json-eval($.itemDescription)"/>
+            <property name="customerName" expression="json-eval($.customerName)"/>
+            <property name="lineItemId" expression="json-eval($.lineItemId)"/>
+            <property name="itemId" expression="json-eval($.item_id)"/>
+            <property name="taxId" expression="json-eval($.taxId)"/>
+            <property name="notes" expression="json-eval($.notes)"/>
+            <property name="startDate" expression="json-eval($.startDate)"/>
+            <property name="endDate" expression="json-eval($.endDate)"/>
+            <property name="customerId" expression="json-eval($.customerId)"/>
+            <property name="status" expression="json-eval($.status)"/>
+            <property name="filterBy" expression="json-eval($.filterBy)"/>
+            <property name="searchText" expression="json-eval($.searchText)"/>
+            <property name="sortColumn" expression="json-eval($.sortColumn)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.getListOfRecurringInvoices>
+                <authToken>{$ctx:authToken}</authToken>
+                <recurrenceName>{$ctx:recurrenceName}</recurrenceName>
+                <itemName>{$ctx:itemName}</itemName>
+                <itemDescription>{$ctx:itemDescription}</itemDescription>
+                <customerName>{$ctx:customerName}</customerName>
+                <lineItemId>{$ctx:lineItemId}</lineItemId>
+                <item_id>{$ctx:item_id}</item_id>
+                <taxId>{$ctx:taxId}</taxId>
+                <notes>{$ctx:notes}</notes>
+                <startDate>{$ctx:startDate}</startDate>
+                <endDate>{$ctx:endDate}</endDate>
+                <customerId>{$ctx:customerId}</customerId>
+                <status>{$ctx:status}</status>
+                <filterBy>{$ctx:filterBy}</filterBy>
+                <searchText>{$ctx:searchText}</searchText>
+                <sortColumn>{$ctx:sortColumn}</sortColumn>
+            </zohoInvoice.getListOfRecurringInvoices>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <description/>
+</proxy>

@@ -1,0 +1,7 @@
+{
+
+"authtoken":"%s",
+"customerId":"571532000000042068",
+"creditnoteId":""
+
+}

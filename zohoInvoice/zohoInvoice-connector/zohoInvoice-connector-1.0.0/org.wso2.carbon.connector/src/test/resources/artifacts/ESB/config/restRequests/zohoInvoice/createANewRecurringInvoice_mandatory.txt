@@ -1,0 +1,11 @@
+{
+"authToken":"%s",
+
+"customerId":"571532000000042068",
+"recurrenceName":"%s",
+"recurrenceFrequency":"months",
+"lineItems":[{"name":"sugar"}]
+
+
+
+}

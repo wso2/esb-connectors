@@ -1,0 +1,7 @@
+{
+
+"authToken":"%s",
+"paymentId":"%s"
+
+
+}

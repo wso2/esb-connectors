@@ -1,0 +1,10 @@
+{
+  "authToken":"%s",
+   "creditNoteId":"571532000000085153",
+          "invoices": [
+            {
+              "invoice_id": "571532000000104007",
+              "amount_applied": 41.82
+            }
+          ]
+}

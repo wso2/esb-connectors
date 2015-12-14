@@ -1,0 +1,8 @@
+{
+"authToken":"%s",
+ "projectId":"571532000000096019",
+ "userId":"571532000000042001",
+ "userName": "Ashal",
+ "userRole": "admin",
+
+}

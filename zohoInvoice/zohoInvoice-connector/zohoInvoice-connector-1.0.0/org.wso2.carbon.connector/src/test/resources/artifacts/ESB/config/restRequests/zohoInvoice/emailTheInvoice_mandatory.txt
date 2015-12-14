@@ -1,0 +1,7 @@
+{
+"authToken":"%s",
+"invoiceId":"571532000000078045",
+"toMailIds":"ashalya86@gamil.com",
+"subject":"Attachment",
+"mBody":"HAidear"
+}

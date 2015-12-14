@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<template name="getListOfCreditNotes" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="authToken"/>
+    <parameter name="creditNoteNumber" description="Search credit notes by credit note number"/>
+    <parameter name="date" description="Search credit notes by credit note date"/>
+    <parameter name="status"
+               description="Search credit notes by credit note status. Allowed statuses are draft,open,closed and void"/>
+    <parameter name="total" description="Search credit notes by credit note total amount"/>
+    <parameter name="referenceNumber" description="Search credit notes by credit note reference number"/>
+    <parameter name="customerName" description="Search credit notes by customer name"/>
+    <parameter name="customerId" description="Search credit notes by customer id"/>
+    <parameter name="lineItemId" description="Search credit notes by credit note line item id"/>
+    <parameter name="itemId" description="Search credit notes by item id"/>
+    <parameter name="taxId" description="Search credit notes by tax id"/>
+    <parameter name="filterBy" description="Filter credit notes by statuses"/>
+    <parameter name="searchText"
+               description="Search credit notes by credit note number or customer name or credit note reference number"/>
+    <parameter name="itemName" description="Search credit notes by item name"/>
+    <parameter name="itemDescription" description="Search credit notes by credit note item description"/>
+    <sequence>
+        <property name="uri.var.authToken" expression="$func:authToken"/>
+        <property name="uri.var.creditNoteNumber" expression="$func:creditNoteNumber"/>
+        <property name="uri.var.date" expression="$func:date"/>
+        <property name="uri.var.status" expression="$func:status"/>
+        <property name="uri.var.total" expression="$func:total"/>
+        <property name="uri.var.referenceNumber" expression="$func:referenceNumber"/>
+        <property name="uri.var.customerName" expression="$func:customerName"/>
+        <property name="uri.var.itemName" expression="$func:itemName"/>
+        <property name="uri.var.itemDescription" expression="$func:itemDescription"/>
+        <property name="uri.var.customerId" expression="$func:customerId"/>
+        <property name="uri.var.lineItemId" expression="$func:lineItemId"/>
+        <property name="uri.var.itemId" expression="$func:itemId"/>
+        <property name="uri.var.taxId" expression="$func:taxId"/>
+        <property name="uri.var.filterBy" expression="$func:filterBy"/>
+        <property name="uri.var.searchText" expression="$func:searchText"/>
+        <property name="zohoParameters" value=""/>
+        <filter
+                xpath="get-property('uri.var.creditNoteNumber') = '' or  not(string(get-property('uri.var.creditNoteNumber')))">
+            <then>
+                <property name="uri.var.creditNoteNumber" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;creditnote_number=', get-property('uri.var.creditNoteNumber'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.date') = '' or  not(string(get-property('uri.var.date')))">
+            <then>
+                <property name="uri.var.date" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;date=', get-property('uri.var.date'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.status') = '' or  not(string(get-property('uri.var.status')))">
+            <then>
+                <property name="uri.var.status" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;status=', get-property('uri.var.status'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.total') = '' or  not(string(get-property('uri.var.total')))">
+            <then>
+                <property name="uri.var.total" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;total=', get-property('uri.var.total'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.referenceNumber') = '' or  not(string(get-property('uri.var.referenceNumber')))">
+            <then>
+                <property name="uri.var.referenceNumber" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;reference_number=', get-property('uri.var.referenceNumber'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.customerName') = '' or  not(string(get-property('uri.var.customerName')))">
+            <then>
+                <property name="uri.var.customerName" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;customer_name=', get-property('uri.var.customerName'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.itemDescription') = '' or  not(string(get-property('uri.var.itemDescription')))">
+            <then>
+                <property name="uri.var.itemDescription" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;item_description=', get-property('uri.var.itemDescription'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.itemName') = '' or  not(string(get-property('uri.var.itemName')))">
+            <then>
+                <property name="uri.var.itemName" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;item_name=', get-property('uri.var.itemName'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.customerId') = '' or  not(string(get-property('uri.var.customerId')))">
+            <then>
+                <property name="uri.var.customerId" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;customer_id=', get-property('uri.var.customerId'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.lineItemId') = '' or  not(string(get-property('uri.var.lineItemId')))">
+            <then>
+                <property name="uri.var.lineItemId" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;line_item_id=', get-property('uri.var.lineItemId'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.itemId') = '' or  not(string(get-property('uri.var.itemId')))">
+            <then>
+                <property name="uri.var.itemId" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;item_id=', get-property('uri.var.itemId'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.filterBy') = '' or  not(string(get-property('uri.var.filterBy')))">
+            <then>
+                <property name="uri.var.filterBy" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;filter_by=', get-property('uri.var.filterBy'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.searchText') = '' or  not(string(get-property('uri.var.searchText')))">
+            <then>
+                <property name="uri.var.searchText" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;search_text=', get-property('uri.var.searchText'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.taxId') = '' or  not(string(get-property('uri.var.taxId')))">
+            <then>
+                <property name="uri.var.taxId" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;tax_id=', get-property('uri.var.taxId'))"/>
+            </else>
+        </filter>
+        <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}/creditnotes?authtoken={uri.var.authToken}{uri.var.parameters}"/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove"/>
+        <header name="X-LI-UUID" scope="transport" action="remove"/>
+        <header name="X-Li-Pop" scope="transport" action="remove"/>
+        <header name="X-Li-Fabric" scope="transport" action="remove"/>
+        <header name="x-li-request-id" scope="transport" action="remove"/>
+    </sequence>
+</template>

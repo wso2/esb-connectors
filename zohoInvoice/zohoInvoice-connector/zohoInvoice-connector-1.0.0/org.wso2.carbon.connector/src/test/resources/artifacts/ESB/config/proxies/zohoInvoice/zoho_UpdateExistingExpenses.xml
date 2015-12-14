@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_UpdateExistingExpenses"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="expenseId" expression="json-eval($.expenseId)"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="customerId" expression="json-eval($.customerId)"/>
+            <property name="date" expression="json-eval($.date)"/>
+            <property name="accountId" expression="json-eval($.accountId)"/>
+            <property name="paidThroughAccountId" expression="json-eval($.paidThroughAccountId)"/>
+            <property name="taxId" expression="json-eval($.taxId)"/>
+            <property name="isInclusiveTax" expression="json-eval($.isInclusiveTax)"/>
+            <property name="exchangeRate" expression="json-eval($.exchangeRate)"/>
+            <property name="isBillable" expression="json-eval($.isBillable)"/>
+            <property name="currencyId" expression="json-eval($.currencyId)"/>
+            <property name="amount" expression="json-eval($.amount)"/>
+            <property name="projectId" expression="json-eval($.projectId)"/>
+            <property name="receipt" expression="json-eval($.receipt)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.UpdateExistingExpenses>
+                <expenseId>{$ctx:expenseId}</expenseId>
+                <authToken>{$ctx:authToken}</authToken>
+                <customerId>{$ctx:customerId}</customerId>
+                <date>{$ctx:date}</date>
+                <accountId>{$ctx:accountId}</accountId>
+                <paidThroughAccountId>{$ctx:paidThroughAccountId}</paidThroughAccountId>
+                <taxId>{$ctx:taxId}</taxId>
+                <isInclusiveTax>{$ctx:isInclusiveTax}</isInclusiveTax>
+                <exchangeRate>{$ctx:exchangeRate}</exchangeRate>
+                <isBillable>{$ctx:isBillable}</isBillable>
+                <currencyId>{$ctx:currencyId}</currencyId>
+                <amount>{$ctx:amount}</amount>
+                <projectId>{$ctx:projectId}</projectId>
+                <receipt>{$ctx:receipt}</receipt>
+            </zohoInvoice.UpdateExistingExpenses>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <tax_id/>
+</proxy>

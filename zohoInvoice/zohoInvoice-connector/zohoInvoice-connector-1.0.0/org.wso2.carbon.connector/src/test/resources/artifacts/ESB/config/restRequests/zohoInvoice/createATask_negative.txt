@@ -1,0 +1,8 @@
+{
+      "authToken":"%s",
+       "projectId":"571532000000096019",
+       "taskName": "Class",
+      "description": "",
+      "rate": "3",
+      "budgetHours": "0"
+    }

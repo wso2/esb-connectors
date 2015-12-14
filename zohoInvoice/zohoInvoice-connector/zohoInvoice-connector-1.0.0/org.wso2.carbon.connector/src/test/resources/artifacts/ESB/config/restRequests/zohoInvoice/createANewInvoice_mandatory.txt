@@ -1,0 +1,5 @@
+{
+"authToken":"%s",
+"customerId":"571532000000042068",
+"lineItems":[{"name":"Flour","rate":"120.00"},{"name":"Sugar"}]
+}

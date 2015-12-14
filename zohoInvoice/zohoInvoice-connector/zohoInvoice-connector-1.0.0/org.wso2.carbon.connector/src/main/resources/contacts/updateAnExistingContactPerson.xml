@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<template name="updateAnExistingContactPerson" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="authToken" description="API key"/>
+    <parameter name="contactId" description="ID of contact to which contact person has to be created"/>
+    <parameter name="email" description="Email address of the contact person"/>
+    <parameter name="firstName" description="First name of the contact person"/>
+    <parameter name="lastName" description="Last name of the contact person"/>
+    <parameter name="contactPersonId" description="Id of the contact person"/>
+    <sequence>
+        <property name="uri.var.authToken" expression="$func:authToken"/>
+        <property name="uri.var.contactId" expression="$func:contactId"/>
+        <property name="uri.var.email" expression="$func:email"/>
+        <property name="uri.var.firstName" expression="$func:firstName"/>
+        <property name="uri.var.lastName" expression="$func:lastName"/>
+        <property name="uri.var.contactPersonId" expression="$func:contactPersonId"/>
+        <property name="zohoParameters" value=""/>
+        <filter
+                xpath="get-property('uri.var.email') = '' or  not(string(get-property('uri.var.email')))">
+            <then>
+                <property name="uri.var.email" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;email&quot;:', get-property('uri.var.email'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.firstName') = '' or  not(string(get-property('uri.var.firstName')))">
+            <then>
+                <property name="uri.var.firstName" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;first_name&quot;:', get-property('uri.var.firstName'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.lastName') = '' or  not(string(get-property('uri.var.lastName')))">
+            <then>
+                <property name="uri.var.lastName" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;last_name&quot;:&quot;', get-property('uri.var.lastName'),'&quot;')"/>
+            </else>
+        </filter>
+        <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
+        <call>
+            <endpoint>
+                <http method="put"
+                      uri-template="{uri.var.apiUrl}/contacts/contactpersons/{uri.var.contactPersonId}?authtoken={uri.var.authToken}&amp;JSONString={&quot;contact_id&quot;:&quot;{uri.var.contactId}&quot;{uri.var.parameters}} "/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove"/>
+        <header name="X-LI-UUID" scope="transport" action="remove"/>
+        <header name="X-Li-Pop" scope="transport" action="remove"/>
+        <header name="X-Li-Fabric" scope="transport" action="remove"/>
+        <header name="x-li-request-id" scope="transport" action="remove"/>
+    </sequence>
+</template>

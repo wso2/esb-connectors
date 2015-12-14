@@ -1,0 +1,11 @@
+{
+  "authToken":"%s",
+   "invoiceId":"571532000000102020",
+  "invoicePayments": [
+                {
+                  "payment_id": "571532000000053025",
+                  "amount_applied": 1.00
+                }
+              ]
+
+}

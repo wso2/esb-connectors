@@ -1,0 +1,9 @@
+{
+"authToken":"%s",
+
+"customerId":"571532000000042068",
+"recurrenceName":"Reinvoice100",
+"recurrenceFrequency":"months",
+"lineItems":[{"name":"sugar"}],
+
+}

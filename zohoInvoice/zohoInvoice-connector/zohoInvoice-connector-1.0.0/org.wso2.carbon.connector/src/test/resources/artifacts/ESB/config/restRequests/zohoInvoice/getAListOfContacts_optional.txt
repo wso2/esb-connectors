@@ -1,0 +1,16 @@
+{
+
+"authToken":"%s",
+"contactName":"Duri",
+"firstName":"duri",
+"lastName":"srat",
+"address":"",
+"email":"duri@gmail.com",
+"phone":"",
+"filterBy":"",
+"searchText":"",
+"sort_column":"",
+"companyName":"ZXR"
+
+
+}
