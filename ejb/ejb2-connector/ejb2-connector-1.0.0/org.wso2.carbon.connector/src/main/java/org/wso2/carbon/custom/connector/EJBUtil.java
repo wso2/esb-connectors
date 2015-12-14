@@ -42,9 +42,9 @@ public class EJBUtil {
     private static final Log log = LogFactory.getLog(EJBUtil.class);
 
     /**
-     * @param instance       instance of an ejb object
-     * @param method         method that we want to call
-     * @param args           arguments object for method
+     * @param instance instance of an ejb object
+     * @param method   method that we want to call
+     * @param args     arguments object for method
      * @return invoke arguments into method and return the value which actual method returns
      */
     public static Object invokeInstanceMethod(Object instance, Method method, Object[] args) {
@@ -82,11 +82,10 @@ public class EJBUtil {
         return null;
     }
 
-
     /**
-     * @param aClass         class of our target ejb remote
-     * @param methodName     name of the method
-     * @param argCount       number of arguments
+     * @param aClass     class of our target ejb remote
+     * @param methodName name of the method
+     * @param argCount   number of arguments
      * @return extract the value's from properties and make its as hashable
      */
     public static Method resolveMethod(Class aClass, String methodName, int argCount) {
@@ -106,7 +105,6 @@ public class EJBUtil {
         return resolvedMethod;
     }
 
-
     /**
      * @param messageContext message contest
      * @param operationName  name of the operation
@@ -123,7 +121,6 @@ public class EJBUtil {
         }
         return args;
     }
-
 
     /**
      * @param messageContext message contest
@@ -145,13 +142,13 @@ public class EJBUtil {
         for (String stringValue : (String[]) prop.toArray(new String[prop.size()])) {
             if (stringValue.startsWith(key)) {
                 probValues = (Value) propertiesMap.get(stringValue);
-                dynamicValues.put(stringValue.substring(key.length() + 1, stringValue.length()), probValues.getKeyValue());
+                dynamicValues.put(stringValue.substring(key.length() + 1, stringValue.length())
+                        , probValues.getKeyValue());
                 messageContext.getPropertyKeySet().remove(stringValue);
             }
         }
         return dynamicValues;
     }
-
 
     protected static Object getParameter(MessageContext messageContext, String paramName) {
         return ConnectorUtils.lookupTemplateParamater(messageContext, paramName);
@@ -175,8 +172,7 @@ public class EJBUtil {
     public static Object getEJBObject(MessageContext messageContext, String jndiName) {
         Object ejbObject = null;
         try {
-           // Map<String, Object> stringObjectMap = (((Axis2MessageContext) messageContext).getProperties());
-            InitialContext context = new InitialContext((Properties)messageContext.getProperty(EJBConstants.JNDI_PROPERTIES));
+            InitialContext context = new InitialContext((Properties) messageContext.getProperty(EJBConstants.JNDI_PROPERTIES));
             Object obj = context.lookup(getParameter(messageContext, jndiName).toString());
             EJBHome ejbHome = (EJBHome) PortableRemoteObject.narrow(obj, EJBHome.class);
             Method method = ejbHome.getClass().getDeclaredMethod(EJBConstants.CREATE);
