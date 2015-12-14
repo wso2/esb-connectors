@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c)2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<template name="updateExistingCreditNote" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="authToken" description="API key"/>
+    <parameter name="customerId" description="ID of the customer the credit note has to be created"/>
+    <parameter name="lineItems" description="Line items of a credit note"/>
+    <parameter name="invoiceId" description="Create a credit note and apply it to an invoice"/>
+    <parameter name="contactPersons" description="Contact person(s) for whom credit note has to be sent"/>
+    <parameter name="creditNoteNumber" description="Mandatory if auto number generation is disabled"/>
+    <parameter name="referenceNumber" description="Reference number for the refund recorded"/>
+    <parameter name="templateId" description="ID of the pdf template associated with the credit note"/>
+    <parameter name="date" description="The date the credit note is created"/>
+    <parameter name="exchangeRate" description="Exchange rate of the currency"/>
+    <parameter name="notes" description="Notes for the customer for the credit note"/>
+    <parameter name="terms" description="Terms and conditions"/>
+    <parameter name="ignoreAutoNumberGeneration"
+               description="Ignore auto number generation for this credit note only. On enabling this option credit note number is mandatory"/>
+    <parameter name="creditnoteId"/>
+    <sequence>
+        <property name="uri.var.authToken" expression="$func:authToken"/>
+        <property name="uri.var.customerId" expression="$func:customerId"/>
+        <property name="uri.var.lineItems" expression="$func:lineItems"/>
+        <property name="uri.var.invoiceId" expression="$func:invoiceId"/>
+        <property name="uri.var.ignoreAutoNumberGeneration" expression="$func:ignoreAutoNumberGeneration"/>
+        <property name="uri.var.contactPersons" expression="$func:contactPersons"/>
+        <property name="uri.var.creditNoteNumber" expression="$func:creditNoteNumber"/>
+        <property name="uri.var.referenceNumber" expression="$func:referenceNumber"/>
+        <property name="uri.var.templateId" expression="$func:templateId"/>
+        <property name="uri.var.date" expression="$func:date"/>
+        <property name="uri.var.exchangeRate" expression="$func:exchangeRate"/>
+        <property name="uri.var.notes" expression="$func:notes"/>
+        <property name="uri.var.terms" expression="$func:terms"/>
+        <property name="uri.var.referenceNumber" expression="$func:referenceNumber"/>
+        <property name="uri.var.creditnoteId" expression="$func:creditnoteId"/>
+        <property name="zohoParameters" value=""/>
+        <property name="zohoParameters1" value=""/>
+        <filter
+                xpath="get-property('uri.var.invoiceId') = '' or  not(string(get-property('uri.var.invoiceId')))">
+            <then>
+                <property name="uri.var.invoiceId" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;invoice_id=', get-property('uri.var.invoiceId'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.ignoreAutoNumberGeneration') = '' or  not(string(get-property('uri.var.ignoreAutoNumberGeneration')))">
+            <then>
+                <property name="uri.var.ignoreAutoNumberGeneration" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               '&amp;ignore_auto_number_generation=', get-property('uri.var.ignoreAutoNumberGeneration'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.contactPersons') = '' or  not(string(get-property('uri.var.contactPersons')))">
+            <then>
+                <property name="uri.var.contactPersons" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;contact_persons&quot;:&quot;', get-property('uri.var.contactPersons'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.creditNoteNumber') = '' or  not(string(get-property('uri.var.creditNoteNumber')))">
+            <then>
+                <property name="uri.var.creditNoteNumber" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;creditnote_number&quot;:&quot;', get-property('uri.var.creditNoteNumber'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.referenceNumber') = '' or  not(string(get-property('uri.var.referenceNumber')))">
+            <then>
+                <property name="uri.var.referenceNumber" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;referenceNumber&quot;:&quot;', get-property('uri.var.referenceNumber'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.templateId') = '' or  not(string(get-property('uri.var.templateId')))">
+            <then>
+                <property name="uri.var.templateId" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;template_id&quot;:&quot;', get-property('uri.var.templateId'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.date') = '' or  not(string(get-property('uri.var.date')))">
+            <then>
+                <property name="uri.var.date" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;date&quot;:&quot;', get-property('uri.var.date'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.exchangeRate') = '' or  not(string(get-property('uri.var.exchangeRate')))">
+            <then>
+                <property name="uri.var.exchangeRate" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;exchange_rate&quot;:&quot;', get-property('uri.var.exchangeRate'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.notes') = '' or  not(string(get-property('uri.var.notes')))">
+            <then>
+                <property name="uri.var.notes" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;notes&quot;:&quot;', get-property('uri.var.notes'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.terms') = '' or  not(string(get-property('uri.var.terms')))">
+            <then>
+                <property name="uri.var.terms" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;terms&quot;:&quot;', get-property('uri.var.terms'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.referenceNumber') = '' or  not(string(get-property('uri.var.referenceNumber')))">
+            <then>
+                <property name="uri.var.referenceNumber" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+               ',&quot;reference_number&quot;:&quot;', get-property('uri.var.referenceNumber'),'&quot;')"/>
+            </else>
+        </filter>
+        <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
+        <property name="uri.var.parameters1" expression="get-property('zohoParameters1')"/>
+        <call>
+            <endpoint>
+                <http method="put"
+                      uri-template="{uri.var.apiUrl}/creditnotes/{uri.var.creditnoteId}?authtoken={uri.var.authToken}{uri.var.parameters}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;{uri.var.parameters1}} "/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove"/>
+        <header name="X-LI-UUID" scope="transport" action="remove"/>
+        <header name="X-Li-Pop" scope="transport" action="remove"/>
+        <header name="X-Li-Fabric" scope="transport" action="remove"/>
+        <header name="x-li-request-id" scope="transport" action="remove"/>
+    </sequence>
+</template>

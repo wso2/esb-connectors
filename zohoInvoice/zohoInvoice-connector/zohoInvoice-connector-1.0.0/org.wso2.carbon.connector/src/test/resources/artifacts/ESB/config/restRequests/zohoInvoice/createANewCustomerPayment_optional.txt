@@ -1,0 +1,13 @@
+{
+"authToken":"%s",
+"customerId":"571532000000042068",
+"date":"2014-12-18",
+"amount":"200.00",
+"invoices":[{"invoice_id": "571532000000045102","amount_applied": 0.00,"tax_amount_withheld": 0.00}],
+"paymentMode":"Cash",
+"description":"",
+"referenceNumber":"",
+"exchangeRate":"10.00",
+"bankCharges":"100.00",
+"contactPersons":""
+}

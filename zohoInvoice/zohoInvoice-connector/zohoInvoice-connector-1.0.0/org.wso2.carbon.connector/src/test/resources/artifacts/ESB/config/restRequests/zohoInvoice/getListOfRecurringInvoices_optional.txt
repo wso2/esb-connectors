@@ -1,0 +1,20 @@
+{
+
+"authToken":"%s",
+"recurrenceName":"invoice2",
+"itemName":"",
+"itemDescription":"",
+"customerName":"hhh",
+"lineItemId":"",
+"itemId":"",
+"taxId":"",
+"notes":"",
+"startDate":"2014-12-04",
+"endDate":"",
+"customerId":"571532000000042068",
+"status":"active",
+"filterBy":"",
+"searchText":"",
+"sortColumn ":""
+
+}

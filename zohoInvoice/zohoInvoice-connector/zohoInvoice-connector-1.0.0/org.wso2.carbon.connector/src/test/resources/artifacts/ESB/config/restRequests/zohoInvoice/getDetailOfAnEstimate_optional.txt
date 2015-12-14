@@ -1,0 +1,7 @@
+{
+
+"authToken":"%s",
+"estimateId":"571532000000069001",
+"print":"true",
+"accept":"json"
+}

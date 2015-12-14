@@ -1,0 +1,7 @@
+{
+
+"authToken":"%s",
+"invoiceId":"%s",
+"accept":"%s"
+
+}

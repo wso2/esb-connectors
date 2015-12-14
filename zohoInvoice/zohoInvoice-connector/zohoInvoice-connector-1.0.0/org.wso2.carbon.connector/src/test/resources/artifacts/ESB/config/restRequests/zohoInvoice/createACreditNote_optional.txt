@@ -1,0 +1,16 @@
+{
+
+"authToken":"%s",
+"customerId":"571532000000042068",
+"lineItems":[{"name":"sugar"}],
+"invoiceId":"571532000000045160",
+"ignoreAutoNumberGeneration":"false",
+"contactPersons":"",
+"creditnote_number":"",
+"creditNoteNumber":"",
+"templateId":"",
+"date":"2014-11-18",
+"exchangeRate":"20.00",
+"notes":"",
+"terms":""
+}

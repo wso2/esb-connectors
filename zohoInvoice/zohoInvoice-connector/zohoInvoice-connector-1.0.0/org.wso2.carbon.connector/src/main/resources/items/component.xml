@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<component name="items" type="synapse/template">
+    <subComponents>
+        <component name="getTheListOfItems">
+            <file>getTheListOfItems.xml</file>
+            <description>List Items</description>
+        </component>
+        <component name="getADetailOfAnItem">
+            <file>getADetailOfAnItem.xml</file>
+            <description>Get Items</description>
+        </component>
+        <component name="createANewItem">
+            <file>createANewItem.xml</file>
+            <description>Create Items</description>
+        </component>
+        <component name="updateAnExistingItem">
+            <file>updateAnExistingItem.xml</file>
+            <description>Update Item</description>
+        </component>
+        <component name="deleteAnExistingItem">
+            <file>deleteAnExistingItem.xml</file>
+            <description>Delete Item</description>
+        </component>
+    </subComponents>
+</component>

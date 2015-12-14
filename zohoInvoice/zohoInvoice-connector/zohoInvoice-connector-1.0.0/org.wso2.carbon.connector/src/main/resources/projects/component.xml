@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) $today.year, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<component name="projects" type="synapse/template">
+    <subComponents>
+        <component name="getAListOfProjects">
+            <file>getAListOfProjects.xml</file>
+            <description>get the details of projects</description>
+        </component>
+        <component name="createAProject">
+            <file>createAProject.xml</file>
+            <description>Create a project</description>
+        </component>
+        <component name="updateAnExistingProject">
+            <file>updateAnExistingProject.xml</file>
+            <description>Update the project</description>
+        </component>
+        <component name="getAProjectDetail">
+            <file>getAProjectDetail.xml</file>
+            <description>Get the detail of the project</description>
+        </component>
+        <component name="deleteExistingProject">
+            <file>deleteExistingProject.xml</file>
+            <description>Delete an the project</description>
+        </component>
+        <component name="getAListOfTasks">
+            <file>getAListOfTasks.xml</file>
+            <description>get the details of tasks</description>
+        </component>
+        <component name="createATask">
+            <file>createATask.xml</file>
+            <description>Create a task</description>
+        </component>
+        <component name="updateExistingTask">
+            <file>updateExistingTask.xml</file>
+            <description>Update an existing task</description>
+        </component>
+        <component name="deleteExistingTask">
+            <file>deleteExistingTask.xml</file>
+            <description>Delete an existing task</description>
+        </component>
+        <component name="getAListOfUsers">
+            <file>getAListOfUsers.xml</file>
+            <description>get the details of users</description>
+        </component>
+        <component name="getAUserDetail">
+            <file>getAUserDetail.xml</file>
+            <description>get the details of a users</description>
+        </component>
+        <component name="assignTheUser">
+            <file>assignTheUser.xml</file>
+            <description>Assign users for the projects</description>
+        </component>
+        <component name="updateExistingUser">
+            <file>updateExistingUser.xml</file>
+            <description>update an existing user</description>
+        </component>
+        <component name="getAListOfTimeEntries">
+            <file>getAListOfTimeEntries.xml</file>
+            <description>get a list of time entries</description>
+        </component>
+        <component name="createATimeEntry">
+            <file>createATimeEntry.xml</file>
+            <description>create a time entry</description>
+        </component>
+        <component name="getATimeEntryDetail">
+            <file>getATimeEntryDetail.xml</file>
+            <description>get a time entry detail</description>
+        </component>
+        <component name="updateExistingTimeEntry">
+            <file>updateExistingTimeEntry.xml</file>
+            <description>update an existing timeEntry</description>
+        </component>
+        <component name="deleteExistingTimeEntry">
+            <file>deleteExistingTimeEntry.xml</file>
+            <description>delete existing time entry</description>
+        </component>
+        <component name="getAListOfComments">
+            <file>getAListOfComments.xml</file>
+            <description>get a list of comments</description>
+        </component>
+        <component name="createAComment">
+            <file>createAComment.xml</file>
+            <description>create a comment</description>
+        </component>
+        <component name="deleteExistingComment">
+            <file>deleteExistingComment.xml</file>
+            <description>delete an existing comment</description>
+        </component>
+    </subComponents>
+</component>

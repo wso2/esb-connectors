@@ -1,0 +1,15 @@
+{
+"authToken":"%s",
+"customerName":"hhh",
+"referenceNumber":"",
+"date":"2014-11-18",
+"amount":"20.00",
+"notes":"",
+"paymentMode":"Cash",
+"customerId":"571532000000042068",
+"invoiceId":"",
+"filterBy":"",
+"searchText":"",
+"sortColumn":"",
+
+}

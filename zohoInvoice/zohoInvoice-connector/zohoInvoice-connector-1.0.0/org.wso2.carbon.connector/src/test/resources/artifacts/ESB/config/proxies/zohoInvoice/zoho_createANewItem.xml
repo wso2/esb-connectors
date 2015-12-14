@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_createANewItem"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="name" expression="json-eval($.name)"/>
+            <property name="description" expression="json-eval($.description)"/>
+            <property name="rate" expression="json-eval($.rate)"/>
+            <property name="taxId" expression="json-eval($.taxId)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.createANewItem>
+                <authToken>{$ctx:authToken}</authToken>
+                <name>{$ctx:name}</name>
+                <description>{$ctx:description}</description>
+                <rate>{$ctx:rate}</rate>
+                <taxId>{$ctx:taxId}</taxId>
+            </zohoInvoice.createANewItem>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <description/>
+</proxy>

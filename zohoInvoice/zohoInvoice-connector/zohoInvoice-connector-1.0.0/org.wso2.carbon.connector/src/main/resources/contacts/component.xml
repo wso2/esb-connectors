@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<component name="contacts" type="synapse/template">
+    <subComponents>
+        <component name="getAListOfContacts">
+            <file>getAListOfContacts.xml</file>
+            <description>List contacts</description>
+        </component>
+        <component name="getAContactDetail">
+            <file>getAContactDetail.xml</file>
+            <description>get contacts</description>
+        </component>
+        <component name="createAContact">
+            <file>createAContact.xml</file>
+            <description>createAContact</description>
+        </component>
+        <component name="deleteExistingContact">
+            <file>deleteExistingContact.xml</file>
+            <description>deleteExistingContact</description>
+        </component>
+        <component name="updateExistingContact">
+            <file>updateExistingContact.xml</file>
+            <description>Update Contact</description>
+        </component>
+        <component name="getTheListOfComments">
+            <file>getTheListOfComments.xml</file>
+            <description>List Comments</description>
+        </component>
+        <component name="getListOfRefunds">
+            <file>getListOfRefunds.xml</file>
+            <description>List Refunds</description>
+        </component>
+        <component name="emailTheStatement">
+            <file>emailTheStatement.xml</file>
+            <description>Email Statement</description>
+        </component>
+        <component name="createAContactPerson">
+            <file>createAContactPerson.xml</file>
+            <description>create a contact person</description>
+        </component>
+        <component name="getListOfContactPersons">
+            <file>getListOfContactPersons.xml</file>
+            <description>get list of contact persons</description>
+        </component>
+        <component name="getDetailOfAnContactPerson">
+            <file>getDetailOfAnContactPerson.xml</file>
+            <description>get detail of a contact person</description>
+        </component>
+        <component name="updateAnExistingContactPerson">
+            <file>updateAnExistingContactPerson.xml</file>
+            <description>update an existing contact person</description>
+        </component>
+        <component name="deleteAnExistingContactPerson">
+            <file>deleteAnExistingContactPerson.xml</file>
+            <description>delete an existing contact person</description>
+        </component>
+        <component name="markAContactAsActive">
+            <file>markAContactAsActive.xml</file>
+            <description>Mark a contact as active</description>
+        </component>
+        <component name="markAContactAsInactive">
+            <file>markAContactAsInactive.xml</file>
+            <description>Mark a contact as inactive.</description>
+        </component>
+    </subComponents>
+</component>

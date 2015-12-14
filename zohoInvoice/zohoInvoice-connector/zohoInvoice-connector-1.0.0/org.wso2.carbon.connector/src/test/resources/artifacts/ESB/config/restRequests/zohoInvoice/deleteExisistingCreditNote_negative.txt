@@ -1,0 +1,6 @@
+{
+
+"authToken":"%s",
+"creditnoteId":"571532000000047063"
+
+}

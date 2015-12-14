@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) $today.year, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<template name="createATimeEntry" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="authToken" description="API key"/>
+    <parameter name="taskId" description="Id of the task"/>
+    <parameter name="userId" description="Id of the user"/>
+    <parameter name="beginTime" description="Time the user started working on this task"/>
+    <parameter name="endTime" description="Id of the user"/>
+    <parameter name="logTime" description="logTime for a task"/>
+    <parameter name="logDate" description="log_date for a task"/>
+    <parameter name="isBillable" description="Task budget hours"/>
+    <parameter name="notes" description="Task budget hours"/>
+    <parameter name="startTimer" description="Task budget hours"/>
+    <parameter name="projectId" description="Id of the project"/>
+    <sequence>
+        <property name="uri.var.authToken" expression="$func:authToken"/>
+        <property name="uri.var.taskId" expression="$func:taskId"/>
+        <property name="uri.var.userId" expression="$func:userId"/>
+        <property name="uri.var.logTime" expression="$func:logTime"/>
+        <property name="uri.var.logDate" expression="$func:logDate"/>
+        <property name="uri.var.beginTime" expression="$func:beginTime"/>
+        <property name="uri.var.endTime" expression="$func:endTime"/>
+        <property name="uri.var.isBillable" expression="$func:isBillable"/>
+        <property name="uri.var.notes" expression="$func:notes"/>
+        <property name="uri.var.startTimer" expression="$func:startTimer"/>
+        <property name="uri.var.projectId" expression="$func:projectId"/>
+        <property name="zohoParameters" value=""/>
+        <filter
+                xpath="get-property('uri.var.description') = '' or  not(string(get-property('uri.var.description')))">
+            <then>
+                <property name="uri.var.description" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;description&quot;:&quot;', get-property('uri.var.description'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.description') = '' or  not(string(get-property('uri.var.description')))">
+            <then>
+                <property name="uri.var.description" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;description&quot;:&quot;', get-property('uri.var.description'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.logTime') = '' or  not(string(get-property('uri.var.logTime')))">
+            <then>
+                <property name="uri.var.logTime" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;log_time&quot;:', get-property('uri.var.logTime'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.isBillable') = '' or  not(string(get-property('uri.var.isBillable')))">
+            <then>
+                <property name="uri.var.isBillable" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;is_billable&quot;:&quot;', get-property('uri.var.isBillable'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.notes') = '' or  not(string(get-property('uri.var.notes')))">
+            <then>
+                <property name="uri.var.notes" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;notes&quot;:&quot;', get-property('uri.var.notes'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.startTimer') = '' or  not(string(get-property('uri.var.startTimer')))">
+            <then>
+                <property name="uri.var.startTimer" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;start_timer&quot;:&quot;', get-property('uri.var.startTimer'),'&quot;')"/>
+            </else>
+        </filter>
+        <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}/projects/timeentries?authtoken={uri.var.authToken}&amp;JSONString={&quot;project_id&quot;:&quot;{uri.var.projectId}&quot;,&quot;task_id&quot;:&quot;{uri.var.taskId}&quot;,&quot;user_id&quot;:&quot;{uri.var.userId}&quot;,&quot;begin_time&quot;:&quot;{uri.var.beginTime}&quot;,&quot;end_time&quot;:&quot;{uri.var.endTime}&quot;,&quot;log_date&quot;:&quot;{uri.var.logDate}&quot;{uri.var.parameters}} "/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove"/>
+        <header name="X-LI-UUID" scope="transport" action="remove"/>
+        <header name="X-Li-Pop" scope="transport" action="remove"/>
+        <header name="X-Li-Fabric" scope="transport" action="remove"/>
+        <header name="x-li-request-id" scope="transport" action="remove"/>
+    </sequence>
+</template>

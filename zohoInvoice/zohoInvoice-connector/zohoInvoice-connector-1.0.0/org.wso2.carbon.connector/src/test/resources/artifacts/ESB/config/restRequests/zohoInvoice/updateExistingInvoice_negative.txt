@@ -1,0 +1,6 @@
+{
+"authToken":"%s",
+"invoiceId":"",
+"customerId":""
+
+}

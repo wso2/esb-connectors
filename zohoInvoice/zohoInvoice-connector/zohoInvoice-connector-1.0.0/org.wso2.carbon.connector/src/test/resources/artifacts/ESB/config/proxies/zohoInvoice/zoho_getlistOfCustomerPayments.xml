@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_getlistOfCustomerPayments"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="customerName" expression="json-eval($.customerName)"/>
+            <property name="referenceNumber" expression="json-eval($.referenceNumber)"/>
+            <property name="date" expression="json-eval($.date)"/>
+            <property name="amount" expression="json-eval($.amount)"/>
+            <property name="notes" expression="json-eval($.notes)"/>
+            <property name="paymentMode" expression="json-eval($.paymentMode)"/>
+            <property name="customerId" expression="json-eval($.customerId)"/>
+            <property name="invoiceId" expression="json-eval($.invoiceId)"/>
+            <property name="filterBy" expression="json-eval($.filterBy)"/>
+            <property name="searchText" expression="json-eval($.searchText)"/>
+            <property name="sortColumn" expression="json-eval($.sortColumn)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.getlistOfCustomerPayments>
+                <authToken>{$ctx:authToken}</authToken>
+                <customerName>{$ctx:customerName}</customerName>
+                <referenceNumber>{$ctx:referenceNumber}</referenceNumber>
+                <date>{$ctx:date}</date>
+                <amount>{$ctx:amount}</amount>
+                <notes>{$ctx:notes}</notes>
+                <paymentMode>{$ctx:paymentMode}</paymentMode>
+                <customerId>{$ctx:customerId}</customerId>
+                <invoiceId>{$ctx:invoiceId}</invoiceId>
+                <filterBy>{$ctx:filterBy}</filterBy>
+                <searchText>{$ctx:searchText}</searchText>
+                <sortColumn>{$ctx:sortColumn}</sortColumn>
+            </zohoInvoice.getlistOfCustomerPayments>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <description/>
+</proxy>

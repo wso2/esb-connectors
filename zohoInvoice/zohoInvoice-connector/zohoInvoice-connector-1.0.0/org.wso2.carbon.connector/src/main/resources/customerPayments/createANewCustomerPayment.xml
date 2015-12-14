@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c)2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<template name="createANewCustomerPayment" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="authToken" description="API key"/>
+    <parameter name="amount" description="Payment amount made by the customer"/>
+    <parameter name="customerId" description="ID of the customer"/>
+    <parameter name="date" description="Description for the customer payment"/>
+    <parameter name="description" description="Description for the customer payment"/>
+    <parameter name="invoices" description="Invoice Payment details"/>
+    <parameter name="paymentMode" description="Mode of payment for the amount received"/>
+    <parameter name="referenceNumber" description="Reference number for the customer payment"/>
+    <parameter name="exchangeRate" description="Exchange rate of the currency"/>
+    <parameter name="bankCharges" description="Bank charges incurred"/>
+    <parameter name="contactPersons" description="IDs of contact persons the thank you mail has to be triggered"/>
+    <sequence>
+        <property name="uri.var.authToken" expression="$func:authToken"/>
+        <property name="uri.var.amount" expression="$func:amount"/>
+        <property name="uri.var.customerId" expression="$func:customerId"/>
+        <property name="uri.var.date" expression="$func:date"/>
+        <property name="uri.var.description" expression="$func:description"/>
+        <property name="uri.var.invoices" expression="$func:invoices"/>
+        <property name="uri.var.paymentMode" expression="$func:paymentMode"/>
+        <property name="uri.var.referenceNumber" expression="$func:referenceNumber"/>
+        <property name="uri.var.exchangeRate" expression="$func:exchangeRate"/>
+        <property name="uri.var.bankCharges" expression="$func:bankCharges"/>
+        <property name="uri.var.contactPersons" expression="$func:contactPersons"/>
+        <property name="zohoParameters" value=""/>
+        <filter
+                xpath="get-property('uri.var.description') = '' or  not(string(get-property('uri.var.description')))">
+            <then>
+                <property name="uri.var.description" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;description&quot;:', get-property('uri.var.description'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.invoices') = '' or  not(string(get-property('uri.var.invoices')))">
+            <then>
+                <property name="uri.var.invoices" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;invoices&quot;:', get-property('uri.var.invoices'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.paymentMode') = '' or  not(string(get-property('uri.var.paymentMode')))">
+            <then>
+                <property name="uri.var.paymentMode" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;payment_mode&quot;:&quot;', get-property('uri.var.paymentMode'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.referenceNumber') = '' or  not(string(get-property('uri.var.referenceNumber')))">
+            <then>
+                <property name="uri.var.referenceNumber" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;reference_number&quot;:&quot;', get-property('uri.var.referenceNumber'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.exchangeRate') = '' or  not(string(get-property('uri.var.exchangeRate')))">
+            <then>
+                <property name="uri.var.exchangeRate" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;exchange_rate&quot;:&quot;', get-property('uri.var.exchangeRate'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.bankCharges') = '' or  not(string(get-property('uri.var.bankCharges')))">
+            <then>
+                <property name="uri.var.bankCharges" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;bank_charges&quot;:&quot;', get-property('uri.var.bankCharges'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.contactPersons') = '' or  not(string(get-property('uri.var.contactPersons')))">
+            <then>
+                <property name="uri.var.contactPersons" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;contact_persons&quot;:&quot;', get-property('uri.var.contactPersons'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.description') = '' or  not(string(get-property('uri.var.description')))">
+            <then>
+                <property name="uri.var.description" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;description&quot;:&quot;', get-property('uri.var.description'),'&quot;')"/>
+            </else>
+        </filter>
+        <property name="requestMethod" expression="get-property('sQuery')"/>
+        <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}/customerpayments?authtoken={uri.var.authToken}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;,&quot;date&quot;:&quot;{uri.var.date}&quot;,&quot;amount&quot;:&quot;{uri.var.amount}&quot;{uri.var.parameters}} "/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove"/>
+        <header name="X-LI-UUID" scope="transport" action="remove"/>
+        <header name="X-Li-Pop" scope="transport" action="remove"/>
+        <header name="X-Li-Fabric" scope="transport" action="remove"/>
+        <header name="x-li-request-id" scope="transport" action="remove"/>
+    </sequence>
+</template>

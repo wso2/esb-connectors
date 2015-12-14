@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_updateExistingInvoice"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="invoiceId" expression="json-eval($.invoiceId)"/>
+            <property name="ignoreAutoNumberGeneration" expression="json-eval($.ignoreAutoNumberGeneration)"/>
+            <property name="customerId" expression="json-eval($.customerId)"/>
+            <property name="lineItems" expression="json-eval($.lineItems)"/>
+            <property name="contactPersons" expression="json-eval($.contactPersons)"/>
+            <property name="invoiceNumber" expression="json-eval($.invoiceNumber)"/>
+            <property name="templateId" expression="json-eval($.templateId)"/>
+            <property name="date" expression="json-eval($.date)"/>
+            <property name="paymentTerms" expression="json-eval($.paymentTerms)"/>
+            <property name="paymentTermsLabel" expression="json-eval($.paymentTermsLabel)"/>
+            <property name="dueDate" expression="json-eval($.dueDate)"/>
+            <property name="discount" expression="json-eval($.discount)"/>
+            <property name="isDiscountBeforeTax" expression="json-eval($.isDiscountBeforeTax)"/>
+            <property name="exchangeRate" expression="json-eval($.exchangeRate)"/>
+            <property name="recurringInvoiceId" expression="json-eval($.recurringInvoiceId)"/>
+            <property name="invoicedEstimateId" expression="json-eval($.invoicedEstimateId)"/>
+            <property name="salespersonName" expression="json-eval($.salespersonName)"/>
+            <property name="customFields" expression="json-eval($.customFields)"/>
+            <property name="timeEntryIds" expression="json-eval($.timeEntryIds)"/>
+            <property name="paymentOptions" expression="json-eval($.paymentOptions)"/>
+            <property name="allowPartialPayments" expression="json-eval($.allowPartialPayments)"/>
+            <property name="shippingCharge" expression="json-eval($.shippingCharge)"/>
+            <property name="adjustment" expression="json-eval($.adjustment)"/>
+            <property name="adjustmentDescription" expression="json-eval($.adjustmentDescription)"/>
+            <property name="paymentGateways" expression="json-eval($.paymentGateways)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.updateExistingInvoice>
+                <authToken>{$ctx:authToken}</authToken>
+                <invoiceId>{$ctx:invoiceId}</invoiceId>
+                <customerId>{$ctx:customerId}</customerId>
+                <lineItems>{$ctx:lineItems}</lineItems>
+                <contactPersons>{$ctx:contactPersons}</contactPersons>
+                <invoiceNumber>{$ctx:invoiceNumber}</invoiceNumber>
+                <templateId>{$ctx:templateId}</templateId>
+                <date>{$ctx:date}</date>
+                <paymentTerms>{$ctx:paymentTerms}</paymentTerms>
+                <paymentTermsLabel>{$ctx:paymentTermsLabel}</paymentTermsLabel>
+                <dueDate>{$ctx:dueDate}</dueDate>
+                <discount>{$ctx:discount}</discount>
+                <isDiscountBeforeTax>{$ctx:isDiscountBeforeTax}</isDiscountBeforeTax>
+                <exchangeRate>{$ctx:exchangeRate}</exchangeRate>
+                <recurringInvoiceId>{$ctx:recurringInvoiceId}</recurringInvoiceId>
+                <invoicedEstimateId>{$ctx:invoicedEstimateId}</invoicedEstimateId>
+                <salespersonName>{$ctx:salespersonName}</salespersonName>
+                <customFields>{$ctx:customFields}</customFields>
+                <timeEntryIds>{$ctx:timeEntryIds}</timeEntryIds>
+                <paymentOptions>{$ctx:paymentOptions}</paymentOptions>
+                <payment_gateways>{$ctx:payment_gateways}</payment_gateways>
+                <allowPartialPayments>{$ctx:allowPartialPayments}</allowPartialPayments>
+                <shippingCharge>{$ctx:shippingCharge}</shippingCharge>
+                <adjustment>{$ctx:adjustment}</adjustment>
+                <adjustmentDescription>{$ctx:adjustmentDescription}</adjustmentDescription>
+                <paymentGateways>{$ctx:paymentGateways}</paymentGateways>
+                <ignoreAutoNumberGeneration>{$ctx:ignoreAutoNumberGeneration}</ignoreAutoNumberGeneration>
+            </zohoInvoice.updateExistingInvoice>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <description/>
+</proxy>
