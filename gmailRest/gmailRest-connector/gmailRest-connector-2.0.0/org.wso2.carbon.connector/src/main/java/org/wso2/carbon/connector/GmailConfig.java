@@ -41,20 +41,16 @@ public class GmailConfig extends AbstractConnector {
             String oauthAccessToken =
                     GmailUtils.lookupFunctionParam(messageContext,
                             GmailConstants.GMAIL_PARAM_OAUTH_ACCESS_TOKEN);
-            String username =
-                    GmailUtils.lookupFunctionParam(messageContext,
-                            GmailConstants.GMAIL_PARAM_USERNAME);
+            String username = GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_USERNAME);
 
-            // Validating the user name and OAuth access token provided by the
-            // user
+            // Validating the user name and OAuth access token provided by th user
             if (username == null || "".equals(username.trim()) || oauthAccessToken == null ||
                     "".equals(oauthAccessToken.trim())) {
 
                 String errorLog = "Invalid username or access token";
                 log.error(errorLog);
                 ConnectException connectException = new ConnectException(errorLog);
-                GmailUtils.storeErrorResponseStatus(messageContext,
-                        connectException,
+                GmailUtils.storeErrorResponseStatus(messageContext, connectException,
                         GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
                 handleException(connectException.getMessage(), connectException, messageContext);
             }
@@ -62,9 +58,7 @@ public class GmailConfig extends AbstractConnector {
             // Storing OAuth user login details in the message context
             this.storeOauthUserLogin(messageContext, username, oauthAccessToken);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (Exception e) {
             GmailUtils.storeErrorResponseStatus(messageContext, e,
@@ -76,13 +70,10 @@ public class GmailConfig extends AbstractConnector {
     /**
      * Stores user name and access token for OAuth authentication
      *
-     * @param messageContext
-     *            message context where the user login information should be
-     *            stored
-     * @param username
-     *            user name
-     * @param oauthAccessToken
-     *            access token
+     * @param messageContext   message context where the user login information should be
+     *                         stored
+     * @param username         user name
+     * @param oauthAccessToken access token
      * @throws com.google.code.javax.mail.MessagingException
      */
     private void storeOauthUserLogin(MessageContext messageContext, String username,
@@ -91,7 +82,7 @@ public class GmailConfig extends AbstractConnector {
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode != null &&
-                (loginMode.toString() == GmailConstants.GMAIL_OAUTH_LOGIN_MODE) &&
+                (loginMode.toString().equals(GmailConstants.GMAIL_OAUTH_LOGIN_MODE)) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_USERNAME).toString()
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN).toString()

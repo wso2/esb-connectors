@@ -17,6 +17,7 @@
  */
 
 package org.wso2.carbon.connector;
+
 import com.google.code.javax.mail.MessagingException;
 
 import java.io.IOException;
@@ -25,5 +26,6 @@ import java.io.OutputStream;
 
 public interface Body {
     public InputStream getInputStream() throws MessagingException;
+
     public void writeTo(OutputStream out) throws IOException, MessagingException;
 }

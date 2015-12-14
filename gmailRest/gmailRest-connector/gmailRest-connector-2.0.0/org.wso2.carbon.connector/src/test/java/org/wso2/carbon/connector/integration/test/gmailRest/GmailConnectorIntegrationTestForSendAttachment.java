@@ -42,7 +42,11 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
 public class GmailConnectorIntegrationTestForSendAttachment extends ESBIntegrationTest {
 

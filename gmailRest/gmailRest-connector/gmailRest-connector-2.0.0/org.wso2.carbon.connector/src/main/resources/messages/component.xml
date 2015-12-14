@@ -30,8 +30,8 @@
             <description>Send a mail with attachment</description>
         </component>
         <component name="deleteMessages">
-        <file>deleteMessages.xml</file>
-        <description>delete the message</description>
+            <file>deleteMessages.xml</file>
+            <description>delete the message</description>
         </component>
     </subComponents>
 </component>

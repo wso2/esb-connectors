@@ -19,7 +19,8 @@
 <template name="updateLabels" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="id" description="The ID of the label to update"/>
     <parameter name="name" description="Specifies the type of contact to create the record type.company/person"/>
-    <parameter name="messageListVisibility" description=" Describes a dictionary organized in the same structure as a contact listing response"/>
+    <parameter name="messageListVisibility"
+               description=" Describes a dictionary organized in the same structure as a contact listing response"/>
     <parameter name="labelListVisibility" description="Specifies whether tags should be included in the results"/>
     <parameter name="type" description="Avatar url to be added"/>
     <parameter name="messagesTotal" description="Avatar url to be added"/>

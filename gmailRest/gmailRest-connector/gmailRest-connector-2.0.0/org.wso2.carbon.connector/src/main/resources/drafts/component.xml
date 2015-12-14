@@ -34,5 +34,5 @@
             <file>createADraft.xml</file>
             <description>create a plain draft</description>
         </component>
-        </subComponents>
-    </component>
+    </subComponents>
+</component>
