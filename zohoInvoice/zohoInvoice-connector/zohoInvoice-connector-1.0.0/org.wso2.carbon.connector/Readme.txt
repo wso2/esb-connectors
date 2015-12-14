@@ -8,7 +8,7 @@ Pre-requisites:
 Tested Platform: 
 
  -  MAC OS
- - WSO2 ESB 4.8.1
+ - WSO2 ESB 4.9.0
 
 STEPS:
 

@@ -12,6 +12,6 @@
 "exchangeRate":"20.00",
 "notes":"",
 "terms":"",
-"creditnoteId":"571532000000047083"
+"creditNoteId":"571532000000047083"
 
 }

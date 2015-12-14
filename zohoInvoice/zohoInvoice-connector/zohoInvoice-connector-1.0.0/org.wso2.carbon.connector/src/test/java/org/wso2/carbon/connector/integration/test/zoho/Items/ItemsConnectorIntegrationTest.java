@@ -1,4 +1,3 @@
-package org.wso2.carbon.connector.integration.test.zoho.Items;
 /**
  *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
@@ -16,6 +15,7 @@ package org.wso2.carbon.connector.integration.test.zoho.Items;
  specific language governing permissions and limitations
  under the License.
  */
+package org.wso2.carbon.connector.integration.test.zoho.Items;
 
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -88,7 +88,6 @@ public class ItemsConnectorIntegrationTest extends ZohoConnectorIntegrationTest 
             proxyAdmin.deleteProxy(methodName);
         }
     }
-
 
 // mandatory parameters for getADetailOfAnItem
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {getADetailOfAnItem} integration test")
@@ -325,6 +324,5 @@ public class ItemsConnectorIntegrationTest extends ZohoConnectorIntegrationTest 
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
-
     }
 }

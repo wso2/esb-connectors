@@ -19,12 +19,12 @@
 <template name="getACreditNoteDetail" xmlns="http://ws.apache.org/ns/synapse">
     <!-- Required Parameters -->
     <parameter name="authToken" description="API key"/>
-    <parameter name="creditnoteId" description="Id of the credit note"/>
+    <parameter name="creditNoteId" description="Id of the credit note"/>
     <parameter name="print" description="Export credit note pdf with default print option"/>
     <parameter name="accept" description="You can get credit note details as json/pdf/html. Default format is html"/>
     <sequence>
         <property name="uri.var.authToken" expression="$func:authToken"/>
-        <property name="uri.var.creditnoteId" expression="$func:creditnoteId"/>
+        <property name="uri.var.creditNoteId" expression="$func:creditNoteId"/>
         <property name="uri.var.print" expression="$func:print"/>
         <property name="uri.var.accept" expression="$func:accept"/>
         <property name="zohoParameters" value=""/>
@@ -52,7 +52,7 @@
         <call>
             <endpoint>
                 <http method="get"
-                      uri-template="{uri.var.apiUrl}/creditnotes/{uri.var.creditnoteId}?authtoken={uri.var.authToken}{uri.var.parameters}"/>
+                      uri-template="{uri.var.apiUrl}/creditnotes/{uri.var.creditNoteId}?authtoken={uri.var.authToken}{uri.var.parameters}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

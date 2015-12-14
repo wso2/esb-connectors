@@ -44,7 +44,7 @@
         </component>
         <component name="applyCreditNoteToExistingInvoices">
             <file>applyCreditNoteToExistingInvoices.xml</file>
-            <description>apply credit note to existing invoices</description>
+            <description>Apply credit note to existing invoices</description>
         </component>
         <component name="deleteTheCreditsAppliedToAnInvoice">
             <file>deleteTheCreditsAppliedToAnInvoice.xml</file>

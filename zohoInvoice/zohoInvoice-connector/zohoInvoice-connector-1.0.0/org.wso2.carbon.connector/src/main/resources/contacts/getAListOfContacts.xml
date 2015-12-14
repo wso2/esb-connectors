@@ -27,7 +27,7 @@
     <parameter name="phone" description="Search contacts by phone number of the contact person"/>
     <parameter name="filterBy" description="Filter contacts by status"/>
     <parameter name="searchText" description="Search contacts by contact name or notes"/>
-    <parameter name="sortColumn" description=""/>
+    <parameter name="sortColumn" description="Sort columns"/>
     <sequence>
         <property name="uri.var.authToken" expression="$func:authToken"/>
         <property name="uri.var.contactName" expression="$func:contactName"/>

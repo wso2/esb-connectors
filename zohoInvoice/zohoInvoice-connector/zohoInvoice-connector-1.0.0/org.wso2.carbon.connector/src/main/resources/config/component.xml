@@ -20,7 +20,7 @@
     <subComponents>
         <component name="init">
             <file>init.xml</file>
-            <description>get the basic details of api</description>
+            <description>Get the basic details of api</description>
         </component>
     </subComponents>
 </component>

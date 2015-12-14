@@ -40,7 +40,7 @@
         </component>
         <component name="getListOfExpenseCommentsAndHistory">
             <file>getListOfExpenseCommentsAndHistory.xml</file>
-            <description>getList Of Expense Comments And History</description>
+            <description>Get List Of Expense Comments And History</description>
         </component>
     </subComponents>
 </component>

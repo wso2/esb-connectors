@@ -2,6 +2,6 @@
 
 "authToken":"%s",
 "customerId":"571532000000042068",
-"creditnoteId":"571532000000047083"
+"creditNoteId":"571532000000047083"
 
 }

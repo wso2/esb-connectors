@@ -59,14 +59,14 @@
         <property name="uri.var.send" expression="$func:send"/>
         <property name="uri.var.ignore_auto_number_generation" expression="$func:ignore_auto_number_generation"/>
         <property name="zohoParameters" value=""/>
-        <property name="zohoParameters1" value=""/>
+        <property name="zohoAPIParameters" value=""/>
         <filter
                 xpath="get-property('uri.var.send') = '' or  not(string(get-property('uri.var.send')))">
             <then>
                 <property name="uri.var.send" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&amp;send=', get-property('uri.var.send'))"/>
             </else>
         </filter>
@@ -76,7 +76,7 @@
                 <property name="uri.var.ignore_auto_number_generation" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&amp;ignore_auto_number_generation=', get-property('uri.var.ignore_auto_number_generation'))"/>
             </else>
         </filter>
@@ -211,11 +211,11 @@
             </else>
         </filter>
         <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
-        <property name="uri.var.parameters1" expression="get-property('zohoParameters1')"/>
+        <property name="uri.var.APIParameters" expression="get-property('zohoAPIParameters')"/>
         <call>
             <endpoint>
                 <http method="post"
-                      uri-template="{uri.var.apiUrl}/estimates?authtoken={uri.var.authToken}{uri.var.parameters1}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;,&quot;line_items&quot;:{uri.var.lineItems}{uri.var.parameters}}"/>
+                      uri-template="{uri.var.apiUrl}/estimates?authtoken={uri.var.authToken}{uri.var.APIParameters}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;,&quot;line_items&quot;:{uri.var.lineItems}{uri.var.parameters}}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

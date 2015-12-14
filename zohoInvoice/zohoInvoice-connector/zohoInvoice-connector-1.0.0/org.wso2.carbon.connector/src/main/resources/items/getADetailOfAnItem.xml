@@ -18,7 +18,7 @@
 -->
 <template name="getADetailOfAnItem" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="authToken" description="API key"/>
-    <parameter name="itemsId"/>
+    <parameter name="itemsId" description="Id of the item"/>
     <sequence>
         <property name="uri.var.authToken" expression="$func:authToken"/>
         <property name="uri.var.itemsId" expression="$func:itemsId"/>

@@ -1,4 +1,3 @@
-package org.wso2.carbon.connector.integration.test.zoho.RecurringInvoices;
 
 /**
  *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -17,6 +16,7 @@ package org.wso2.carbon.connector.integration.test.zoho.RecurringInvoices;
  specific language governing permissions and limitations
  under the License.
  */
+package org.wso2.carbon.connector.integration.test.zoho.RecurringInvoices;
 
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -27,9 +27,9 @@ import javax.activation.DataHandler;
 import java.net.URL;
 public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
 
-//getListOfRecurringInvoices
-//mandatory parameters
-
+    /**
+     * Positive test case for getListOfRecurringInvoices method with mandatory parameters.
+     */
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {getListOfRecurringInvoices} integration test")
     public void testGetListOfRecurringInvoicesWithRequiredParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getListOfRecurringInvoices_mandatory.txt";
@@ -50,7 +50,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-    //optional parameters
+    /**
+     * Positive test case for getListOfRecurringInvoices method with optional parameters.
+     */
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {getListOfRecurringInvoices} integration test")
     public void testListItemsWithOptionalParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getListOfRecurringInvoices_optional.txt";
@@ -71,7 +73,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-    //negative parameters
+    /**
+     * Negative test case for getListOfRecurringInvoices method with mandatory parameters.
+     */
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {getListOfRecurringInvoices} integration test")
     public void testListItemsWithNegativeParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getListOfRecurringInvoices_negative.txt";
@@ -92,8 +96,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
- //getADetailOfARecurringInvoice
-//mandatory parameters
+    /**
+     * Positive test case for getADetailOfARecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {getADetailOfARecurringInvoice} integration test")
     public void testgetADetailOfARecurringInvoiceWithRequiredParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getADetailOfARecurringInvoice_mandatory.txt";
@@ -114,7 +119,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-    //negative parameters
+    /**
+     * Negative test case for getADetailOfARecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false   , groups = {"wso2.esb"}, description = "zoho {getADetailOfARecurringInvoice} integration test")
     public void testgetADetailOfARecurringInvoiceWithNegativeParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getADetailOfARecurringInvoice_negative.txt";
@@ -135,8 +142,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-//createANewRecurringInvoice
-//mandatory parameters
+    /**
+     * Positive test case for createANewRecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false, priority = 1,groups = {"wso2.esb"}, description = "zoho {createANewRecurringInvoice} integration test")
     public void testcreateANewRecurringInvoiceWithRequiredParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "createANewRecurringInvoice_mandatory.txt";
@@ -157,7 +165,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-    //optional parameters
+    /**
+     * Positive test case for createANewRecurringInvoice method with optional parameters.
+     */
     @Test(enabled = false, priority = 3, groups = {"wso2.esb"}, description = "zoho {createANewRecurringInvoice} integration test")
     public void testcreateANewRecurringInvoiceWithOptionalParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "createANewRecurringInvoice_optional.txt";
@@ -178,7 +188,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-  //negative parameters
+    /**
+     * Negative test case for createANewRecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false   , groups = {"wso2.esb"}, description = "zoho {createANewRecurringInvoice} integration test")
     public void testcreateANewRecurringInvoiceWithNegativeParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "createANewRecurringInvoice_negative.txt";
@@ -199,8 +211,9 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-//updateExistingRecurringInvoice
-//mandatory parameters
+    /**
+     * Positive test case for updateExistingRecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {updateExistingRecurringInvoice} integration test")
     public void testupdateExistingRecurringInvoiceWithRequiredParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "updateExistingRecurringInvoice_mandatory.txt";
@@ -221,9 +234,11 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-    //optional parameters
+    /**
+     * Positive test case for updateExistingRecurringInvoice method with optional parameters.
+     */
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {updateExistingRecurringInvoice} integration test")
-    public void testupdateExistingRecurringInvoiceWithOptionalParameters() throws Exception {
+    public void testUpdateExistingRecurringInvoiceWithOptionalParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "updateExistingRecurringInvoice_optional.txt";
         String methodName = "zoho_updateExistingRecurringInvoice";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
@@ -242,9 +257,11 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-    //negative parameters
+    /**
+     * Negative test case for updateExistingRecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {updateExistingRecurringInvoice} integration test")
-    public void testupdateExistingRecurringInvoiceWithNegativeParameters() throws Exception {
+    public void testUpdateExistingRecurringInvoiceWithNegativeParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "updateExistingRecurringInvoice_negative.txt";
         String methodName = "zoho_updateExistingRecurringInvoice";
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
@@ -263,10 +280,11 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
-//deleteAnExistingRecurringInvoice
-//mandatory parameters
+    /**
+     * Positive test case for deleteAnExistingRecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false, priority =2 ,groups = {"wso2.esb"}, description = "zoho {deleteAnExistingRecurringInvoice} integration test")
-    public void testdeleteAnExistingRecurringInvoiceWithRequiredParameters() throws Exception {
+    public void testDeleteAnExistingRecurringInvoiceWithRequiredParameters() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "deleteAnExistingRecurringInvoice_mandatory.txt";
         String methodName = "zoho_deleteAnExistingRecurringInvoice";
@@ -287,8 +305,11 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
         }
     }
 
+    /**
+     * Negative test case for deleteAnExistingRecurringInvoice method with mandatory parameters.
+     */
     @Test(enabled = false, priority =4 ,groups = {"wso2.esb"}, description = "zoho {deleteAnExistingRecurringInvoice} integration test")
-    public void testdeleteAnExistingRecurringInvoiceWithRequiredParameters2() throws Exception {
+    public void testDeleteAnExistingRecurringInvoiceWithRequiredParameters2() throws Exception {
 
         String jsonRequestFilePath = pathToRequestsDirectory + "deleteAnExistingRecurringInvoice_mandatory.txt";
         String methodName = "zoho_deleteAnExistingRecurringInvoice";
@@ -308,7 +329,6 @@ public class RIConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
             proxyAdmin.deleteProxy(methodName);
         }
     }
-
 }
 
 

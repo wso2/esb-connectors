@@ -26,13 +26,13 @@
         <inSequence>
             <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
             <property name="authToken" expression="json-eval($.authToken)"/>
-            <property name="creditnoteId" expression="json-eval($.creditnoteId)"/>
+            <property name="creditNoteId" expression="json-eval($.creditNoteId)"/>
             <zohoInvoice.init>
                 <apiUrl>{$ctx:apiUrl}</apiUrl>
             </zohoInvoice.init>
             <zohoInvoice.deleteExisistingCreditNote>
                 <authToken>{$ctx:authToken}</authToken>
-                <creditnoteId>{$ctx:creditnoteId}</creditnoteId>
+                <creditNoteId>{$ctx:creditNoteId}</creditNoteId>
             </zohoInvoice.deleteExisistingCreditNote>
             <respond/>
         </inSequence>

@@ -97,9 +97,9 @@
         <property name="uri.var.expenseId" expression="$func:expenseId"/>
         <property name="uri.var.projectId" expression="$func:projectId"/>
         <property name="uri.var.itemId" expression="$func:itemId"/>
-        <property name="zohoParameters1" value=""/>
+        <property name="zohoAPIParameters" value=""/>
         <property name="zohoParameters" value=""/>
-        <property name="zohoParameters2" value=""/>
+        <property name="zohoURLParameters" value=""/>
         <filter
                 xpath="get-property('uri.var.send') = '' or  not(string(get-property('uri.var.send')))">
             <then>
@@ -126,7 +126,7 @@
                 <property name="uri.var.contactPersons" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;contact_persons&quot;:&quot;', get-property('uri.var.contactPersons'),'&quot;')"/>
             </else>
         </filter>
@@ -136,7 +136,7 @@
                 <property name="uri.var.invoiceNumber" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;invoice_number&quot;:&quot;', get-property('uri.var.invoiceNumber'),'&quot;')"/>
             </else>
         </filter>
@@ -146,7 +146,7 @@
                 <property name="uri.var.templateId" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;template_id&quot;:&quot;', get-property('uri.var.templateId'),'&quot;')"/>
             </else>
         </filter>
@@ -156,7 +156,7 @@
                 <property name="uri.var.date" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;date&quot;:&quot;', get-property('uri.var.date'),'&quot;')"/>
             </else>
         </filter>
@@ -166,7 +166,7 @@
                 <property name="uri.var.paymentTerms" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;payment_terms&quot;:&quot;', get-property('uri.var.paymentTerms'),'&quot;')"/>
             </else>
         </filter>
@@ -176,7 +176,7 @@
                 <property name="uri.var.paymentTermsLabel" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;payment_terms_label&quot;:&quot;', get-property('uri.var.paymentTermsLabel'),'&quot;')"/>
             </else>
         </filter>
@@ -186,7 +186,7 @@
                 <property name="uri.var.dueDate" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;due_date&quot;:&quot;', get-property('uri.var.dueDate'),'&quot;')"/>
             </else>
         </filter>
@@ -196,7 +196,7 @@
                 <property name="uri.var.discount" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;discount&quot;:&quot;', get-property('uri.var.discount'),'&quot;')"/>
             </else>
         </filter>
@@ -206,7 +206,7 @@
                 <property name="uri.var.isDiscountBeforeTax" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;is_discount_before_tax&quot;:&quot;', get-property('uri.var.isDiscountBeforeTax'),'&quot;')"/>
             </else>
         </filter>
@@ -216,7 +216,7 @@
                 <property name="uri.var.exchangeRate" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;exchange_rate&quot;:&quot;', get-property('uri.var.exchangeRate'),'&quot;')"/>
             </else>
         </filter>
@@ -226,7 +226,7 @@
                 <property name="uri.var.recurringInvoiceId" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;recurring_invoice_id&quot;:&quot;', get-property('uri.var.recurringInvoiceId'),'&quot;')"/>
             </else>
         </filter>
@@ -236,7 +236,7 @@
                 <property name="uri.var.invoicedEstimateId" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;invoiced_estimate_id&quot;:&quot;', get-property('uri.var.invoicedEstimateId'),'&quot;')"/>
             </else>
         </filter>
@@ -246,7 +246,7 @@
                 <property name="uri.var.salespersonName" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;salesperson_name&quot;:&quot;', get-property('uri.var.salespersonName'),'&quot;')"/>
             </else>
         </filter>
@@ -256,7 +256,7 @@
                 <property name="uri.var.customFields" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;custom_fields&quot;:&quot;', get-property('uri.var.customFields'),'&quot;')"/>
             </else>
         </filter>
@@ -266,7 +266,7 @@
                 <property name="uri.var.timeEntryIds" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;time_entry_ids&quot;:&quot;', get-property('uri.var.timeEntryIds'),'&quot;')"/>
             </else>
         </filter>
@@ -276,7 +276,7 @@
                 <property name="uri.var.paymentOptions" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;payment_options&quot;:&quot;', get-property('uri.var.paymentOptions'),'&quot;')"/>
             </else>
         </filter>
@@ -286,7 +286,7 @@
                 <property name="uri.var.paymentGateways" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;payment_gateways&quot;:&quot;', get-property('uri.var.paymentGateways'),'&quot;')"/>
             </else>
         </filter>
@@ -296,7 +296,7 @@
                 <property name="uri.var.allowPartialPayments" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;allow_partial_payments&quot;:&quot;', get-property('uri.var.allowPartialPayments'),'&quot;')"/>
             </else>
         </filter>
@@ -306,7 +306,7 @@
                 <property name="uri.var.shippingCharge" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;shippingCharge&quot;:&quot;', get-property('uri.var.shippingCharge'),'&quot;')"/>
             </else>
         </filter>
@@ -316,7 +316,7 @@
                 <property name="uri.var.adjustment" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;adjustment&quot;:&quot;', get-property('uri.var.adjustment'),'&quot;')"/>
             </else>
         </filter>
@@ -326,7 +326,7 @@
                 <property name="uri.var.adjustmentDescription" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&quot;adjustmentDescription&quot;:&quot;', get-property('uri.var.adjustmentDescription'),'&quot;')"/>
             </else>
         </filter>
@@ -336,7 +336,7 @@
                 <property name="uri.var.itemId" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;item_id&quot;:&quot;', get-property('uri.var.itemId'),'&quot;')"/>
             </else>
         </filter>
@@ -346,7 +346,7 @@
                 <property name="uri.var.projectId" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;project_id&quot;:&quot;', get-property('uri.var.projectId'),'&quot;')"/>
             </else>
         </filter>
@@ -356,7 +356,7 @@
                 <property name="uri.var.expenseId" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;expense_id&quot;:&quot;', get-property('uri.var.expenseId'),'&quot;')"/>
             </else>
         </filter>
@@ -366,7 +366,7 @@
                 <property name="uri.var.itemOrder" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;item_order&quot;:&quot;', get-property('uri.var.itemOrder'),'&quot;')"/>
             </else>
         </filter>
@@ -376,7 +376,7 @@
                 <property name="uri.var.rate" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;rate&quot;:&quot;', get-property('uri.var.rate'),'&quot;')"/>
             </else>
         </filter>
@@ -386,7 +386,7 @@
                 <property name="uri.var.unit" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;unit&quot;:&quot;', get-property('uri.var.unit'),'&quot;')"/>
             </else>
         </filter>
@@ -396,7 +396,7 @@
                 <property name="uri.var.quantity" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;quantity&quot;:&quot;', get-property('uri.var.quantity'),'&quot;')"/>
             </else>
         </filter>
@@ -406,7 +406,7 @@
                 <property name="uri.var.discount" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;discount&quot;:&quot;', get-property('uri.var.discount'),'&quot;')"/>
             </else>
         </filter>
@@ -416,17 +416,17 @@
                 <property name="uri.var.taxId" value=""/>
             </then>
             <else>
-                <property name="zohoParameters2" expression="fn:concat(get-property('zohoParameters2'),
+                <property name="zohoURLParameters" expression="fn:concat(get-property('zohoURLParameters'),
                ',&quot;tax_id&quot;:&quot;', get-property('uri.var.taxId'),'&quot;')"/>
             </else>
         </filter>
-        <property name="uri.var.parameters1" expression="get-property('zohoParameters1')"/>
+        <property name="uri.var.APIParameters" expression="get-property('zohoAPIParameters')"/>
         <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
-        <property name="uri.var.Parameters2" expression="get-property('zohoParameters2')"/>
+        <property name="uri.var.URLParameters" expression="get-property('zohoURLParameters')"/>
         <call>
             <endpoint>
                 <http method="post"
-                      uri-template="{uri.var.apiUrl}/invoices?authtoken={uri.var.authToken}{uri.var.parameters}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;,&quot;line_items&quot;:{uri.var.lineItems}{uri.var.parameters1}}"/>
+                      uri-template="{uri.var.apiUrl}/invoices?authtoken={uri.var.authToken}{uri.var.parameters}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;,&quot;line_items&quot;:{uri.var.lineItems}{uri.var.APIParameters}}"/>
             </endpoint>
         </call>
         <header name="x-li-format" scope="transport" action="remove"/>

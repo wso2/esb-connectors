@@ -18,14 +18,14 @@
 -->
 <template name="deleteExisistingCreditNote" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="authToken" description="API key"/>
-    <parameter name="creditnoteId" description="Id of the credit note"/>
+    <parameter name="creditNoteId" description="Id of the credit note"/>
     <sequence>
         <property name="uri.var.authToken" expression="$func:authToken"/>
-        <property name="uri.var.creditnoteId" expression="$func:creditnoteId"/>
+        <property name="uri.var.creditNoteId" expression="$func:creditNoteId"/>
         <call>
             <endpoint>
                 <http method="delete"
-                      uri-template="{uri.var.apiUrl}/creditnotes/{uri.var.creditnoteId}?authtoken={uri.var.authToken}"/>
+                      uri-template="{uri.var.apiUrl}/creditnotes/{uri.var.creditNoteId}?authtoken={uri.var.authToken}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

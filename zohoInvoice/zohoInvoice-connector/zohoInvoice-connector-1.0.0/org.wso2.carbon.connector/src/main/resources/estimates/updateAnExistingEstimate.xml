@@ -59,7 +59,7 @@
         <property name="uri.var.adjustment" expression="$func:adjustment"/>
         <property name="uri.var.adjustmentDescription" expression="$func:adjustmentDescription"/>
         <property name="uri.var.estimateId" expression="$func:estimateId"/>
-        <property name="zohoParameters1" value=""/>
+        <property name="zohoAPIParameters" value=""/>
         <property name="zohoParameters" value=""/>
         <filter
                 xpath="get-property('uri.var.ignoreAutoNumberGeneration') = '' or  not(string(get-property('uri.var.ignoreAutoNumberGeneration')))">
@@ -67,7 +67,7 @@
                 <property name="uri.var.ignoreAutoNumberGeneration" value=""/>
             </then>
             <else>
-                <property name="zohoParameters1" expression="fn:concat(get-property('zohoParameters1'),
+                <property name="zohoAPIParameters" expression="fn:concat(get-property('zohoAPIParameters'),
                ',&amp;ignore_auto_number_generation=', get-property('uri.var.ignoreAutoNumberGeneration'))"/>
             </else>
         </filter>
@@ -201,12 +201,12 @@
                ',&quot;adjustment_description&quot;:&quot;', get-property('uri.var.adjustmentDescription'),'&quot;')"/>
             </else>
         </filter>
-        <property name="uri.var.parameters1" expression="get-property('zohoParameters1')"/>
+        <property name="uri.var.APIParameters" expression="get-property('zohoAPIParameters')"/>
         <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
         <call>
             <endpoint>
                 <http method="put"
-                      uri-template="{uri.var.apiUrl}/estimates/{uri.var.estimateId}?authtoken={uri.var.authToken}{uri.var.parameters1}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;{uri.var.parameters}}"/>
+                      uri-template="{uri.var.apiUrl}/estimates/{uri.var.estimateId}?authtoken={uri.var.authToken}{uri.var.APIParameters}&amp;JSONString={&quot;customer_id&quot;:&quot;{uri.var.customerId}&quot;{uri.var.parameters}}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

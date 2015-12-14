@@ -19,6 +19,5 @@
     <parameter name="apiUrl" description="URL of the ZohoInvoice API"/>
     <sequence>
         <property name="uri.var.apiUrl" expression="$func:apiUrl"/>
-        <property name="uri.var.apiUrl" value="https://invoice.zoho.com/api/v3"/>
-    </sequence>
+]    </sequence>
 </template>

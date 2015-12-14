@@ -1,4 +1,3 @@
-package org.wso2.carbon.connector.integration.test.zoho.Estimates;
 /**
  *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
@@ -16,6 +15,7 @@ package org.wso2.carbon.connector.integration.test.zoho.Estimates;
  specific language governing permissions and limitations
  under the License.
  */
+package org.wso2.carbon.connector.integration.test.zoho.Estimates;
 
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -283,8 +283,6 @@ public class EstimatesConnectorIntegrationTest extends ZohoConnectorIntegrationT
         }
     }
 
-
-
 //Positive test case for mandatory parameters for UpdateBillingAddress
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {UpdateBillingAddress} integration test")
     public void testUpdateBillingAddressWithRequiredParameters() throws Exception {
@@ -437,7 +435,7 @@ public class EstimatesConnectorIntegrationTest extends ZohoConnectorIntegrationT
             Assert.assertTrue(responseHeader == 201);
             JSONObject jsonObject = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonObject.has("code"));
-            String estimateId= jsonObject.getJSONObject("estimate").getString("estimate_id");
+            String estimateId= jsonObject.getJSONObject("estimate").getString("estimateId");
             zohoConnectorProperties.setProperty("estimateId",estimateId);
         } finally {
             proxyAdmin.deleteProxy(methodName);

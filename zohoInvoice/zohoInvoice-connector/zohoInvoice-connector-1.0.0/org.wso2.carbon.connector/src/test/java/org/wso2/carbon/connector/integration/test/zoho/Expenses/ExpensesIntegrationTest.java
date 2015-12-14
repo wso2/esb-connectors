@@ -1,4 +1,3 @@
-package org.wso2.carbon.connector.integration.test.zoho.Expenses;
 
 /**
  *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -17,6 +16,7 @@ package org.wso2.carbon.connector.integration.test.zoho.Expenses;
  specific language governing permissions and limitations
  under the License.
  */
+package org.wso2.carbon.connector.integration.test.zoho.Expenses;
 
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -26,7 +26,6 @@ import org.wso2.carbon.connector.integration.test.zoho.ZohoConnectorIntegrationT
 import javax.activation.DataHandler;
 import java.net.URL;
 public class ExpensesIntegrationTest extends ZohoConnectorIntegrationTest {
-
 
 //Positive test case for mandatory parameters for getTheListOfExpenses
     @Test(enabled = false, groups = {"wso2.esb"}, description = "zoho {getTheListOfExpenses} integration test")

@@ -92,7 +92,6 @@ public class ZohoConnectorIntegrationTest extends ESBIntegrationTest {
 
         pathToProxiesDirectory = repoLocation + zohoConnectorProperties.getProperty("proxyDirectoryRelativePath");
         pathToRequestsDirectory = repoLocation + zohoConnectorProperties.getProperty("requestDirectoryRelativePath");
-
     }
 
     @Override

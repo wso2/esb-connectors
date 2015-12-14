@@ -68,7 +68,7 @@
         </component>
         <component name="getTheListOfInvoicePayments">
             <file>getTheListOfInvoicePayments.xml</file>
-            <description>get the list of invoice payments</description>
+            <description>Get the list of invoice payments</description>
         </component>
         <component name="getDetailOfCreditsApplied">
             <file>getDetailOfCreditsApplied.xml</file>
@@ -80,11 +80,11 @@
         </component>
         <component name="deleteAnExistingPayment">
             <file>deleteAnExistingPayment.xml</file>
-            <description>delete an existing payment</description>
+            <description>Delete an existing payment</description>
         </component>
         <component name="deleteAnExistingCredit">
             <file>deleteAnExistingCredit.xml</file>
-            <description>delete an existing credit</description>
+            <description>Delete an existing credit</description>
         </component>
     </subComponents>
 </component>
