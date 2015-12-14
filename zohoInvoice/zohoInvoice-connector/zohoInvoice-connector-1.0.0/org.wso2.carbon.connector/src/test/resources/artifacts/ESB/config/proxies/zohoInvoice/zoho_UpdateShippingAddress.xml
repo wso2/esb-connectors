@@ -26,14 +26,14 @@
         <inSequence>
             <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
             <property name="authtoken" expression="json-eval($.authtoken)"/>
-            <property name="estimate_id" expression="json-eval($.estimate_id)"/>
+            <property name="estimateId" expression="json-eval($.estimateId)"/>
             <property name="address" expression="json-eval($.address)"/>
             <zohoInvoice.init>
                 <apiUrl>{$ctx:apiUrl}</apiUrl>
             </zohoInvoice.init>
             <zohoInvoice.UpdateShippingAddress>
                 <authtoken>{$ctx:authtoken}</authtoken>
-                <estimate_id>{$ctx:estimate_id}</estimate_id>
+                <estimateId>{$ctx:estimateId}</estimateId>
                 <address>{$ctx:address}</address>
             </zohoInvoice.UpdateShippingAddress>
             <respond/>

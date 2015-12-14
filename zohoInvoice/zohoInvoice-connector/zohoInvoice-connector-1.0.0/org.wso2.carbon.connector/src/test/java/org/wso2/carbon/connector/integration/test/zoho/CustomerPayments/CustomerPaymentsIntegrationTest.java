@@ -1,4 +1,3 @@
-package org.wso2.carbon.connector.integration.test.zoho.CustomerPayments;
 /**
  *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
@@ -16,6 +15,7 @@ package org.wso2.carbon.connector.integration.test.zoho.CustomerPayments;
  specific language governing permissions and limitations
  under the License.
  */
+package org.wso2.carbon.connector.integration.test.zoho.CustomerPayments;
 
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -25,9 +25,10 @@ import org.wso2.carbon.connector.integration.test.zoho.ZohoConnectorIntegrationT
 import javax.activation.DataHandler;
 import java.net.URL;
 public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTest {
-    
-//getListOfCustomerPayments
-//mandatory parameters
+
+    /**
+     * Positive test case for getListOfCustomerPayments method with mandatory parameters.
+     */
     @Test(enabled = true, groups = {"wso2.esb"}, description = "zoho {getlistOfCustomerPayments} integration test")
     public void testGetListOfCustomerPaymentsWithRequiredParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getlistOfCustomerPayments_mandatory.txt";
@@ -48,7 +49,10 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//mandatory parameters
+
+    /**
+     * Positive test case for getListOfCustomerPayments method with optional parameters.
+     */
     @Test(enabled = true, groups = {"wso2.esb"}, description = "zoho {getlistOfCustomerPayments} integration test")
     public void testGetListOfCustomerPaymentsWithOptionalParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getlistOfCustomerPayments_optional.txt";
@@ -69,7 +73,10 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//negative parameters
+
+    /**
+     * Positive test case for getListOfCustomerPayments method with negative parameters.
+     */
     @Test(enabled = false   , groups = {"wso2.esb"}, description = "zoho {getlistOfCustomerPayments} integration test")
     public void testGetListOfCustomerPaymentsWithNegativeParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getlistOfCustomerPayments_negative.txt";
@@ -90,8 +97,9 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//getDetailOfACustomerPayments
-//mandatory parameters
+    /**
+     * Positive test case for getDetailOfACustomerPayments method with mandatory parameters.
+     */
     @Test(enabled = true, groups = {"wso2.esb"}, description = "zoho {getDetailOfACustomerPayments} integration test")
     public void testGetDetailOfACustomerPaymentsWithRequiredParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getDetailOfACustomerPayments_mandatory.txt";
@@ -113,7 +121,9 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//negative parameters
+    /**
+     * Positive test case for getDetailOfACustomerPayments method with negative parameters.
+     */
     @Test(enabled = false   , groups = {"wso2.esb"}, description = "zoho {getDetailOfACustomerPayments} integration test")
     public void testGetDetailOfACustomerPaymentsWithNegativeParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "getDetailOfACustomerPayments_negative.txt";
@@ -135,8 +145,9 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//createANewCustomerPayment
-//mandatory parameters
+    /**
+     * Positive test case for createANewCustomerPayment method with mandatory parameters.
+     */
     @Test(enabled = true, priority = 1, groups = {"wso2.esb"}, description = "zoho {createANewCustomerPayment} integration test")
     public void testcreateANewCustomerPaymentWithRequiredParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "createANewCustomerPayment_mandatory.txt";
@@ -159,7 +170,9 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//optional parameters
+    /**
+     * Positive test case for createANewCustomerPayment method with optional parameters.
+     */
     @Test(enabled = true, groups = {"wso2.esb"}, description = "zoho {createANewCustomerPayment} integration test")
     public void testcreateANewCustomerPaymentWithOptionalParameters() throws Exception {
             String jsonRequestFilePath = pathToRequestsDirectory + "createANewCustomerPayment_optional.txt";
@@ -180,7 +193,9 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//negative parameters
+    /**
+     * Positive test case for createANewCustomerPayment method with negative parameters.
+     */
     @Test(enabled = true, groups = {"wso2.esb"}, description = "zoho {createANewCustomerPayment} integration test")
     public void testcreateANewCustomerPaymentWithNegativeParameters() throws Exception {
         String jsonRequestFilePath = pathToRequestsDirectory + "createANewCustomerPayment_negative.txt";
@@ -201,9 +216,9 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-//deleteAnExisistingCustomerPayment
-//mandatory parameters
-
+    /**
+     * Positive test case for deleteAnExisistingCustomerPayment method with mandatory parameters.
+     */
     @Test(enabled = true, priority = 2,groups = {"wso2.esb"}, description = "zoho {deleteAnExisistingCustomerPayment} integration test")
     public void testdeleteAnExisistingCustomerPaymentWithRequiredParameters() throws Exception {
 
@@ -224,7 +239,9 @@ public class CustomerPaymentsIntegrationTest extends ZohoConnectorIntegrationTes
         }
     }
 
-    //negative parameters
+    /**
+     * Positive test case for deleteAnExisistingCustomerPayment method with negative parameters.
+     */
     @Test(enabled = true, groups = {"wso2.esb"}, description = "zoho {deleteAnExisistingCustomerPayment} integration test")
     public void testdeleteAnExisistingCustomerPaymentWithNegativeParameters() throws Exception {
 

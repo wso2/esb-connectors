@@ -18,16 +18,16 @@
 -->
 <template name="UpdateShippingAddress" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="authtoken" description="API key"/>
-    <parameter name="estimate_id" description="Id of the estimate"/>
+    <parameter name="estimateId" description="Id of the estimate"/>
     <parameter name="address"/>
     <sequence>
         <property name="uri.var.authtoken" expression="$func:authtoken"/>
-        <property name="uri.var.estimate_id" expression="$func:estimate_id"/>
+        <property name="uri.var.estimateId" expression="$func:estimateId"/>
         <property name="uri.var.address" expression="$func:address"/>
         <call>
             <endpoint>
                 <http method="put"
-                      uri-template="{uri.var.apiUrl}/estimates/{uri.var.estimate_id}/address/shipping?authtoken={uri.var.authtoken}&amp;JSONString={&quot;address&quot;:&quot;{uri.var.address}&quot;}"/>
+                      uri-template="{uri.var.apiUrl}/estimates/{uri.var.estimateId}/address/shipping?authtoken={uri.var.authtoken}&amp;JSONString={&quot;address&quot;:&quot;{uri.var.address}&quot;}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

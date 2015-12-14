@@ -25,7 +25,8 @@
         <call>
             <endpoint>
                 <http method="get"
-                      uri-template="https://invoice.zoho.com/api/v3/creditnotes/{uri.var.creditNoteId}/invoices?authtoken={uri.var.authToken}"/>
+                      uri-template="https://invoice.zoho.com/api/v3/creditnotes/{uri.var.creditNoteId}/invoices?
+                      authtoken={uri.var.authToken}"/>
             </endpoint>
         </call>
         <!-- Remove response custom header information -->

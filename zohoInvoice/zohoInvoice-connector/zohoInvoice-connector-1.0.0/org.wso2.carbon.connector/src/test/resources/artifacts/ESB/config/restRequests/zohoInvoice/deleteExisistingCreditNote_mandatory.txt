@@ -1,7 +1,7 @@
 {
 
 "authToken":"%s",
-"creditnoteId":"%s"
+"creditNoteId":"%s"
 
 
 }

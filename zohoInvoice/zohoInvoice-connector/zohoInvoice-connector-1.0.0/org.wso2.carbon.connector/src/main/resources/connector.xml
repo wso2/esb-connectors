@@ -28,6 +28,6 @@
         <dependency component="expenses"/>
         <dependency component="config"/>
         <dependency component="projects"/>
-        <description>synapse library for zohoInvoice</description>
+        <description>WSO2 connector library for zohoInvoice</description>
     </component>
 </connector>

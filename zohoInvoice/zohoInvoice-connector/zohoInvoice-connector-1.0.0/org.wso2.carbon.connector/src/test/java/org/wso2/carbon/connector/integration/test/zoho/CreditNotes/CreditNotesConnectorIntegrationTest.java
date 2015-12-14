@@ -1,3 +1,21 @@
+
+/**
+ *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+ WSO2 Inc. licenses this file to you under the Apache License,
+ Version 2.0 (the "License"); you may not use this file except
+ in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
 package org.wso2.carbon.connector.integration.test.zoho.CreditNotes;
 
 import org.json.JSONObject;
@@ -167,8 +185,8 @@ public class CreditNotesConnectorIntegrationTest extends ZohoConnectorIntegratio
             Assert.assertTrue(responseHeader == 201);
             JSONObject jsonObject = ConnectorIntegrationUtil.sendRequest(getProxyServiceURL(methodName), modifiedJsonString);
             Assert.assertTrue(jsonObject.has("message"));
-            String creditnoteId = jsonObject.getJSONObject("creditnote").getString("creditnote_id");
-            zohoConnectorProperties.setProperty("creditnoteId", creditnoteId);
+            String creditNoteId = jsonObject.getJSONObject("creditnote").getString("creditnote_id");
+            zohoConnectorProperties.setProperty("creditNoteId", creditNoteId);
         } finally {
             proxyAdmin.deleteProxy(methodName);
         }
@@ -299,7 +317,7 @@ public class CreditNotesConnectorIntegrationTest extends ZohoConnectorIntegratio
         final String jsonString = ConnectorIntegrationUtil.getFileContent(jsonRequestFilePath);
         final String proxyFilePath = "file:///" + pathToProxiesDirectory + methodName + ".xml";
         String modifiedJsonString = String.format(jsonString,
-                zohoConnectorProperties.getProperty("authToken"), zohoConnectorProperties.getProperty("creditnoteId")
+                zohoConnectorProperties.getProperty("authToken"), zohoConnectorProperties.getProperty("creditNoteId")
         );
         proxyAdmin.addProxyService(new DataHandler(new URL(proxyFilePath)));
         try {

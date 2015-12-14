@@ -45,7 +45,6 @@
         <property name="uri.var.authToken" expression="$func:authToken"/>
         <property name="uri.var.contactName" expression="$func:contactName"/>
         <property name="uri.var.companyName" expression="$func:companyName"/>
-        <property name="uri.var.companyName" expression="$func:companyName"/>
         <property name="uri.var.website" expression="$func:website"/>
         <property name="uri.var.customFields" expression="$func:customFields"/>
         <property name="uri.var.shippingAddress" expression="$func:shippingAddress"/>

@@ -1,6 +1,4 @@
 
-package org.wso2.carbon.connector.integration.test.common;
-
 /**
  *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
@@ -18,6 +16,7 @@ package org.wso2.carbon.connector.integration.test.common;
  specific language governing permissions and limitations
  under the License.
  */
+package org.wso2.carbon.connector.integration.test.common;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
@@ -39,7 +38,13 @@ import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 
 import javax.activation.DataHandler;
 import javax.xml.stream.XMLStreamException;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;

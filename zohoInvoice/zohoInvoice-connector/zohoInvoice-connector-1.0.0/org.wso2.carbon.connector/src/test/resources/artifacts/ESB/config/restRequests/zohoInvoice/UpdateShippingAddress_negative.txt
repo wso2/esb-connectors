@@ -1,5 +1,5 @@
 {
 
 "authtoken":"%s",
-"estimate_id":""
+"estimateId":""
 }

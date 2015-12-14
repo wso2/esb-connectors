@@ -1,4 +1,3 @@
-package org.wso2.carbon.connector.integration.test.zoho.Invoices;
 
 /**
  *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
@@ -17,6 +16,7 @@ package org.wso2.carbon.connector.integration.test.zoho.Invoices;
  specific language governing permissions and limitations
  under the License.
  */
+package org.wso2.carbon.connector.integration.test.zoho.Invoices;
 
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -27,6 +27,7 @@ import javax.activation.DataHandler;
 import java.net.URL;
 
 public class InvoicesConnectorIntegrationTest extends ZohoConnectorIntegrationTest {
+
     /*
       mandatory parameters for getTheListOfInvoices
     */
@@ -668,7 +669,6 @@ public class InvoicesConnectorIntegrationTest extends ZohoConnectorIntegrationTe
         }
     }
 
-
     //Negative test case for mandatory parameters for createANewCredit
     @Test(enabled = false,groups = {"wso2.esb"}, description = "zoho {deleteAnExistingPayment} integration test")
     public void testDeleteAnExistingPaymentWithNegativeParameters() throws Exception {
@@ -690,7 +690,6 @@ public class InvoicesConnectorIntegrationTest extends ZohoConnectorIntegrationTe
         }
     }
 
-
     //Negative test case for mandatory parameters for createANewCredit
     @Test(enabled = false,groups = {"wso2.esb"}, description = "zoho {deleteAnExistingCredit} integration test")
     public void testDeleteAnExistingCreditWithNegativeParameters() throws Exception {
@@ -711,5 +710,4 @@ public class InvoicesConnectorIntegrationTest extends ZohoConnectorIntegrationTe
             proxyAdmin.deleteProxy(methodName);
         }
     }
-
 }

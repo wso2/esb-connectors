@@ -38,7 +38,7 @@
             <property name="exchangeRate" expression="json-eval($.exchangeRate)"/>
             <property name="notes" expression="json-eval($.notes)"/>
             <property name="terms" expression="json-eval($.terms)"/>
-            <property name="creditnoteId" expression="json-eval($.creditnoteId)"/>
+            <property name="creditNoteId" expression="json-eval($.creditNoteId)"/>
             <zohoInvoice.init>
                 <apiUrl>{$ctx:apiUrl}</apiUrl>
             </zohoInvoice.init>
@@ -56,7 +56,7 @@
                 <exchangeRate>{$ctx:exchangeRate}</exchangeRate>
                 <notes>{$ctx:notes}</notes>
                 <terms>{$ctx:terms}</terms>
-                <creditnoteId>{$ctx:creditnoteId}</creditnoteId>
+                <creditNoteId>{$ctx:creditNoteId}</creditNoteId>
             </zohoInvoice.updateExistingCreditNote>
             <respond/>
         </inSequence>
