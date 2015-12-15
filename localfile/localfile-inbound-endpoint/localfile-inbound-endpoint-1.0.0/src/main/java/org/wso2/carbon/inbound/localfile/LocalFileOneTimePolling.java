@@ -39,17 +39,18 @@ import java.util.concurrent.Executors;
 
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 public class LocalFileOneTimePolling extends GenericPollingConsumer {
     private static final Log log = LogFactory.getLog(LocalFileOneTimePolling.class);
+
     private String injectingSeq;
     private String watchedDir;
     private String contentType;
     private String actionAfterProcess;
     private String moveFileUri;
+    private String processBeforeWatch;
     private boolean isPolled = false;
 
     public LocalFileOneTimePolling(Properties localFileProperties, String name,
@@ -72,62 +73,72 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
      * @param properties the local file properties
      */
     private void setUpParameters(Properties properties) {
-        watchedDir = properties.getProperty(LocalFileConstants.FILEURI);
-        contentType = properties.getProperty(LocalFileConstants.CONTENTTYPE);
-        actionAfterProcess = properties.getProperty(LocalFileConstants.ACTIONAFTERPROCESS);
-        moveFileUri = properties.getProperty(LocalFileConstants.MOVEFILEURI);
+        watchedDir = properties.getProperty(LocalFileConstants.FILE_URI);
+        contentType = properties.getProperty(LocalFileConstants.CONTENT_TYPE);
+        actionAfterProcess = properties.getProperty(LocalFileConstants.ACTION_AFTER_PROCESS);
+        moveFileUri = properties.getProperty(LocalFileConstants.MOVE_FILE_URI);
+        processBeforeWatch = properties.getProperty(LocalFileConstants.PROCESS_BEFORE_WATCH);
         if (StringUtils.isEmpty(watchedDir)) {
-            log.error("watchedDir can not be empty");
+            log.error("watchedDir can not be empty.");
         }
     }
 
     @Override
     public Object poll() {
-        log.info("within the poll method");
         if (!isPolled) {
-            beforeWatch();
-        isPolled=true;
+            if (StringUtils.isEmpty(processBeforeWatch) || processBeforeWatch.toUpperCase().equals(LocalFileConstants.YES)) {
+                setProcessAndWatch();
+            } else if (processBeforeWatch != null && processBeforeWatch.toUpperCase().equals(LocalFileConstants.NO)) {
+                setThreadHandlingWatch();
+            }
+            isPolled = true;
         }
         return null;
     }
 
-    private void beforeWatch() {
+    /**
+     * Before start the watch directory if watchedDir has any files it will start to process.
+     */
+    private void setProcessAndWatch() {
         Path dir = FileSystems.getDefault().getPath(watchedDir);
-        DirectoryStream<Path> stream;
+        DirectoryStream<Path> stream = null;
         try {
             stream = Files.newDirectoryStream(dir);
             for (final Path path : stream) {
-                processFile(path,contentType);
+                processFile(path, contentType);
             }
-            stream.close();
-            //using executor service
-            ExecutorService executorService = Executors.newFixedThreadPool(10);
-            executorService.execute(new Runnable() {
-                public void run() {
-                    log.info("Start watch service");
-                    watchDirectory();
-                }
-            });
-            executorService.shutdown();
-
-            //log.info("Start watch service");
-            //watchDirectory();
-              /*MyRunnable myRunnable = new MyRunnable();
-                Thread t = new Thread(myRunnable);
-                t.start();*/
         } catch (IOException e) {
-            log.error("Error while processing the directory.", e);
+            log.error("Error while processing the directory." + e.getMessage(), e);
+        } finally {
+            try {
+                if (stream != null) {
+                    stream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                log.error("Error while close the DirectoryStream." + e.getMessage(), e);
+            }
         }
+        setThreadHandlingWatch();
     }
 
-    /*
-    * Using background thread
-    * */
-   /* public class MyRunnable implements Runnable {
-        public void run() {
-            watchDirectory();
-        }
-    }*/
+    /**
+     * Start the ExecutorService for watchDirectory
+     */
+    private void setThreadHandlingWatch() {
+        ExecutorService executorService = Executors.newFixedThreadPool(LocalFileConstants.THREAD_SIZE);
+        executorService.execute(new Runnable() {
+            public void run() {
+                try {
+                    watchDirectory();
+                } catch (IOException e) {
+                    log.error("Error while watching the directory." + e.getMessage(), e);
+                }
+            }
+        });
+        executorService.shutdown();
+    }
+
     /**
      * Injecting the file contents to the sequence
      *
@@ -137,10 +148,10 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
         if (injectingSeq != null) {
             injectMessage(string, contentType);
             if (log.isDebugEnabled()) {
-                log.debug("injecting localFile content message to the sequence : " + injectingSeq);
+                log.debug("Injecting localFile content message to the sequence : " + injectingSeq);
             }
         } else {
-            log.error("the Sequence is not found");
+            log.error("The Sequence is not found.");
         }
     }
 
@@ -152,26 +163,21 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
             }
             String readAllBytes = new String(Files.readAllBytes(path));
             injectFileContent(readAllBytes, contentType);
-            if (actionAfterProcess != null && actionAfterProcess.toUpperCase().equals("MOVE")) {
-                if (log.isDebugEnabled()) {
-                    log.debug("actionAfterProcess is MOVE");
-                }
+            if (actionAfterProcess != null && actionAfterProcess.toUpperCase().equals(LocalFileConstants.MOVE)) {
                 if (Files.exists(Paths.get(moveFileUri))) {
                     moveFile(path.toString(), moveFileUri);
                 } else {
                     Files.createDirectory(Paths.get(moveFileUri));
                     moveFile(path.toString(), moveFileUri);
                 }
-            } else {
-                if (actionAfterProcess != null && actionAfterProcess.toUpperCase().equals("DELETE")) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("actionAfterProcess is DELETE");
-                    }
-                    Files.delete(path);
-                }
+            } else if (actionAfterProcess != null && actionAfterProcess.toUpperCase().equals(LocalFileConstants.DELETE)) {
+                Files.delete(path);
             }
         } catch (IOException e) {
             log.error("Error while processing file : " + e.getMessage(), e);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("The processing file path is : " + path);
         }
     }
 
@@ -179,11 +185,11 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
     * to watch the directory using java nio
     * */
     @SuppressWarnings("unchecked")
-    private Object watchDirectory() {
+    private Object watchDirectory() throws IOException {
+        Path newPath = Paths.get(watchedDir);
+        WatchService watchService = FileSystems.getDefault().newWatchService();
         try {
-            Path newPath = Paths.get(watchedDir);
-            WatchService watchService = FileSystems.getDefault().newWatchService();
-            newPath.register(watchService, ENTRY_CREATE, ENTRY_MODIFY);
+            newPath.register(watchService, ENTRY_MODIFY);
             while (true) {
                 final WatchKey key = watchService.take();
                 if (key != null) {
@@ -191,14 +197,15 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
                         final WatchEvent.Kind<?> kind = watchEvent.kind();
                         final WatchEvent<Path> watchEventPath = (WatchEvent<Path>) watchEvent;
                         final Path entry = watchEventPath.context();
-                        if (log.isDebugEnabled()) {
-                            log.debug("Processing file is : " + entry);
-                        }
-                        Path filePath = Paths.get(watchedDir, entry.toString());
+
+                        final Path filePath = Paths.get(watchedDir, entry.toString());
                         if (kind == ENTRY_MODIFY) {
                             processFile(filePath, contentType);
                         } else if (kind == OVERFLOW) {
                             continue;
+                        }
+                        if (log.isDebugEnabled()) {
+                            log.debug("Processing file is : " + entry);
                         }
                     }
                     key.reset();
@@ -207,11 +214,12 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
                     }
                 }
             }
-            watchService.close();
         } catch (IOException e) {
             log.error("Error while watching directory: " + e.getMessage(), e);
         } catch (InterruptedException ie) {
             log.error("Error while get the WatchKey : " + ie.getMessage(), ie);
+        } finally {
+            watchService.close();
         }
         return null;
     }
