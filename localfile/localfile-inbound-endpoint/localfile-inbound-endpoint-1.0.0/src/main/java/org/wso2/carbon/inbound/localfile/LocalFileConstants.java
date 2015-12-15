@@ -19,10 +19,14 @@
 package org.wso2.carbon.inbound.localfile;
 
 class LocalFileConstants {
-    public static final String FILEURI = "FileURI";
-    public static final String CONTENTTYPE = "ContentType";
-    public static final String ACTIONAFTERPROCESS = "actionAfterProcess";
-    public static final String MOVEFILEURI = "MoveFileUri";
+    public static final String FILE_URI = "FileURI";
+    public static final String CONTENT_TYPE = "ContentType";
+    public static final String ACTION_AFTER_PROCESS = "ActionAfterProcess";
+    public static final String MOVE_FILE_URI = "MoveFileUri";
     public static final String MOVE="MOVE";
     public static final String DELETE="DELETE";
+    public static final String YES ="YES";
+    public static final String NO ="NO";
+    public static final String PROCESS_BEFORE_WATCH ="ProcessBeforeWatch";
+    public static final int THREAD_SIZE=1;
 }
