@@ -22,7 +22,7 @@ class LocalFileConstants {
     public static final String FILE_URI = "FileURI";
     public static final String CONTENT_TYPE = "ContentType";
     public static final String ACTION_AFTER_PROCESS = "ActionAfterProcess";
-    public static final String MOVE_FILE_URI = "MoveFileUri";
+    public static final String MOVE_FILE_URI = "MoveFileURI";
     public static final String MOVE="MOVE";
     public static final String DELETE="DELETE";
     public static final String YES ="YES";
