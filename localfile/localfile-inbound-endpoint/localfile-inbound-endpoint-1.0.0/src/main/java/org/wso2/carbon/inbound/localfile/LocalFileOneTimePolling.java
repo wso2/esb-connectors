@@ -89,7 +89,7 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
             if (StringUtils.isEmpty(processBeforeWatch) || processBeforeWatch.toUpperCase().equals(LocalFileConstants.YES)) {
                 setProcessAndWatch();
             } else if (StringUtils.isNotEmpty(processBeforeWatch) && processBeforeWatch.toUpperCase().equals(LocalFileConstants.NO)) {
-                setThreadHandlingWatch();
+                startWatch();
             }
             isPolled = true;
         }
@@ -118,13 +118,13 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
                 log.error("Error while close the DirectoryStream." + e.getMessage(), e);
             }
         }
-        setThreadHandlingWatch();
+        startWatch();
     }
 
     /**
      * Start the ExecutorService for watchDirectory.
      */
-    private void setThreadHandlingWatch() {
+    private void startWatch() {
         ExecutorService executorService = Executors.newFixedThreadPool(LocalFileConstants.THREAD_SIZE);
         executorService.execute(new Runnable() {
             public void run() {

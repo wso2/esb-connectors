@@ -38,7 +38,7 @@
                 <module>connector-archetype</module>
                 <module>integration-base</module>
                 <module>integration-base-1.0.1</module>
-		        <module>123contactform/contactform-connector/contactform-connector-1.0.0/org.wso2.carbon.connector</module>
+		<!--        <module>123contactform/contactform-connector/contactform-connector-1.0.0/org.wso2.carbon.connector</module>
                 <module>activecampaign/activecampaign-connector/activecampaign-connector-1.0.0/org.wso2.carbon.connector</module>
                 <module>activecollab/activecollab-connector/activecollab-connector-1.0.0/org.wso2.carbon.connector</module>
                 <module>agilezen/agilezen-connector/agilezen-connector-1.0.0/org.wso2.carbon.connector</module>
@@ -169,7 +169,8 @@
                 <module>fhir/fhir-connector/fhir-connector-1.0.0/org.wso2.carbon.connector</module>
                 <module>cliniko/cliniko-connector/cliniko-connector-1.0.0/org.wso2.carbon.connector</module>
                 <module>feed/feed-connector/feed-connector-1.0.0/org.wso2.carbon.connector</module>
-                <module>ejb/ejb2-connector/ejb2-connector-1.0.0/org.wso2.carbon.connector</module>
+                <module>ejb/ejb2-connector/ejb2-connector-1.0.0/org.wso2.carbon.connector</module>-->
+		<module>localfile/localfile-inbound-endpoint/localfile-inbound-endpoint-1.0.0</module>
             </modules>
         </profile>
     </profiles>
