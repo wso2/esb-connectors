@@ -19,6 +19,7 @@ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+<<<<<<< HEAD
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>esb-connector-parent</artifactId>
@@ -26,6 +27,8 @@ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
         <relativePath>../../../pom.xml</relativePath>
     </parent>
 
+=======
+>>>>>>> 0357a8d1ccf27dc76288d28ad20e688e6d9e45c4
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.synapse.inbound</groupId>
    <!-- <artifactId>org.apache.synapse.custom.poll.class</artifactId>-->
@@ -33,7 +36,22 @@ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
     <version>1.0.0</version>
     <name>Local File Inbound OneTime Polling Sample</name>
     <url>http://wso2.org</url>
+<<<<<<< HEAD
 
+=======
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.synapse</groupId>
+            <artifactId>synapse-core</artifactId>
+            <version>2.1.3-wso2v5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.mediation</groupId>
+            <artifactId>org.wso2.carbon.inbound.endpoint</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+    </dependencies>
+>>>>>>> 0357a8d1ccf27dc76288d28ad20e688e6d9e45c4
     <repositories>
         <repository>
             <id>wso2-maven2-repository</id>
