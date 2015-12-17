@@ -72,13 +72,13 @@ public class EJBUtil {
         }
         try {
             return method.invoke(instance, processedArgs);
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException |InvocationTargetException e ) {
             handleException("Error while invoking '" + method.getName() + "' method "
                     + "via reflection.", e);
-        } catch (InvocationTargetException e) {
-            handleException("Error while invoking '" + method.getName() + "' method "
-                    + "via reflection.", e);
-        }
+        } //catch (InvocationTargetException e) {
+//            handleException("Error while invoking '" + method.getName() + "' method "
+//                    + "via reflection.", e);
+//        }
         return null;
     }
 
