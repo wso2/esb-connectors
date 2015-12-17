@@ -12,19 +12,20 @@ Tested Platform:
  - WSO2 ESB 4.9.0
  - Java 1.7
 
-Configuration:
+Sample Inbound Configuration:
 
-  <inboundEndpoint
-        class="org.wso2.carbon.inbound.localfile.LocalFileOneTimePolling"
-        name="class" onError="fault" sequence="request" suspend="false">
-        <parameters>
-            <parameter name="sequential">true</parameter>
-            <parameter name="interval">2000</parameter>
-            <parameter name="coordination">true</parameter>
-            <parameter name="FileURI">/home/kalyani/Documents/LFC/LFC/Test1/TEST</parameter>
-            <parameter name="ContentType">application/xml</parameter>
-        </parameters>
-  </inboundEndpoint>
+<inboundEndpoint
+     class="org.wso2.carbon.inbound.localfile.LocalFileOneTimePolling"
+     name="LocalFile" onError="fault" sequence="request" suspend="false">
+     <parameters>
+         <parameter name="sequential">true</parameter>
+         <parameter name="interval">2000</parameter>
+         <parameter name="coordination">true</parameter>
+         <parameter name="FileURI">/home/Documents/LFC/LFC/Test1/TEST</parameter>
+         <parameter name="ActionAfterProcess">delete</parameter>
+         <parameter name="ProcessBeforeWatch">no</parameter>
+     </parameters>
+ </inboundEndpoint>
 
   Navigate to "<ESB_CONNECTOR_HOME>/localfile/localfile-inbound-endpoint/localfile-inbound-endpoint-1.0.0" and run the following command.
          $ mvn clean install
