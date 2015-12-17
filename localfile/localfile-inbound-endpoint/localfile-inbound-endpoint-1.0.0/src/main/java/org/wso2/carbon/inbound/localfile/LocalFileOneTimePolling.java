@@ -104,7 +104,7 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
         DirectoryStream<Path> stream = null;
         try {
             stream = Files.newDirectoryStream(dir);
-            for (final Path path : stream) {
+            for (Path path : stream) {
                 processFile(path, contentType);
             }
         } catch (IOException e) {
@@ -190,14 +190,14 @@ public class LocalFileOneTimePolling extends GenericPollingConsumer {
         try {
             newPath.register(watchService, ENTRY_MODIFY);
             while (true) {
-                final WatchKey key = watchService.take();
+                WatchKey key = watchService.take();
                 if (key != null) {
                     for (WatchEvent<?> watchEvent : key.pollEvents()) {
-                        final WatchEvent.Kind<?> kind = watchEvent.kind();
-                        final WatchEvent<Path> watchEventPath = (WatchEvent<Path>) watchEvent;
-                        final Path entry = watchEventPath.context();
+                        WatchEvent.Kind<?> kind = watchEvent.kind();
+                        WatchEvent<Path> watchEventPath = (WatchEvent<Path>) watchEvent;
+                        Path entry = watchEventPath.context();
 
-                        final Path filePath = Paths.get(watchedDir, entry.toString());
+                        Path filePath = Paths.get(watchedDir, entry.toString());
                         if (kind == ENTRY_MODIFY) {
                             processFile(filePath, contentType);
                         } else if (kind == OVERFLOW) {
