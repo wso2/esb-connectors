@@ -31,11 +31,11 @@ public class CallEJBStatefulBean extends AbstractConnector {
         if (getParameter(messageContext, EJBConstants.RETURN) == null) {
             returnName = EJBConstants.RESPONSE;
         }
-        if (messageContext.getProperty(messageContext.getMessageID()) == null) {
+        if (messageContext.getProperty(EJBConstants.EJB_OBJECT) == null) {
             ejbObj = EJBUtil.getEJBObject(messageContext, EJBConstants.JNDI_NAME);
-            messageContext.setProperty(messageContext.getMessageID(), ejbObj);
+            messageContext.setProperty(EJBConstants.EJB_OBJECT, ejbObj);
         } else {
-            ejbObj = messageContext.getProperty(messageContext.getMessageID());
+            ejbObj = messageContext.getProperty(EJBConstants.EJB_OBJECT);
         }
         Object[] args = EJBUtil.buildArguments(messageContext, EJBConstants.STATEFUL);
         Method method = EJBUtil.resolveMethod(ejbObj.getClass(), methodName, args.length);

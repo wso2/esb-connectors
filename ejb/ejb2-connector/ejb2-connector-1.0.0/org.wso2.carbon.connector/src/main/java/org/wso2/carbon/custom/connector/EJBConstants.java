@@ -16,6 +16,8 @@
 
 package org.wso2.carbon.custom.connector;
 
+import java.lang.String;
+
 public class EJBConstants {
     public static final String INIT = "init";
     public static final String STATELESS = "stateless";
@@ -30,4 +32,5 @@ public class EJBConstants {
     public static final String RETURN="return";
     public static final String PARAMETER="param";
     public static final String JNDI_PROPERTIES="jndiProperties";
+    public static final String EJB_OBJECT="ejbObject";
 }
