@@ -21,5 +21,4 @@ public class ISO8583Constant {
 	public final static String TAG_FIELD="field";
 
 	public final static String TAG_DATA="data";
-
 }
