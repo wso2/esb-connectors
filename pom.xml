@@ -169,6 +169,7 @@
                 <module>cliniko/cliniko-connector/cliniko-connector-1.0.0/org.wso2.carbon.connector</module>
                 <module>feed/feed-connector/feed-connector-1.0.0/org.wso2.carbon.connector</module>
                 <module>salesforcedesk/salesforcedesk-connector/salesforcedesk-connector-1.0.0/org.wso2.carbon.connector</module>
+                <module>bigquery/bigquery-connector/bigquery-connector-1.0.0/org.wso2.carbon.connector</module>
             </modules>
         </profile>
     </profiles>
