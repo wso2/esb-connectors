@@ -71,6 +71,3 @@ public class ISO8583MessageConsumer extends GenericInboundListener {
         con.destroyConnection();
     }
 }
-
-
-
