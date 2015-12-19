@@ -25,5 +25,5 @@ public class ISO8583Constant {
 
 		public static final String INBOUND_SEQUENTIAL = "sequential";
 	    
-	    public static final String PORT = "port";
+	    	public static final String PORT = "port";
 }
