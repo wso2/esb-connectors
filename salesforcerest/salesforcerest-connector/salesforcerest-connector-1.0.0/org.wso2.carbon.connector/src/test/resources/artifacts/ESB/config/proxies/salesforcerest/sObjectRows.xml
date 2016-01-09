@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="sObjectRows"
+       statistics="disable" trace="disable" transports="https http">
+    <target>
+        <inSequence>
+            <property name="clientId" expression="json-eval($.clientId)"/>
+            <property name="refreshToken" expression="json-eval($.refreshToken)"/>
+            <property name="clientSecret" expression="json-eval($.clientSecret)"/>
+            <property name="hostName" expression="json-eval($.hostName)"/>
+            <property name="apiVersion" expression="json-eval($.apiVersion)"/>
+            <property name="sobject" expression="json-eval($.sobject)"/>
+            <property name="rowId" expression="json-eval($.rowId)"/>
+            <salesforcerest.getAccessTokenFromRefreshToken>
+                <clientId>{$ctx:clientId}</clientId>
+                <refreshToken>{$ctx:refreshToken}</refreshToken>
+                <clientSecret>{$ctx:clientSecret}</clientSecret>
+                <hostName>{$ctx:hostName}</hostName>
+            </salesforcerest.getAccessTokenFromRefreshToken>
+            <salesforcerest.init>
+                <apiVersion>{$ctx:apiVersion}</apiVersion>
+            </salesforcerest.init>
+            <log category="INFO" level="full" separator=","/>
+            <salesforcerest.sObjectRows>
+                <sobject>{$ctx:sobject}</sobject>
+                <rowId>{$ctx:rowId}</rowId>
+            </salesforcerest.sObjectRows>
+            <send/>
+        </inSequence>
+    </target>
+</proxy>
