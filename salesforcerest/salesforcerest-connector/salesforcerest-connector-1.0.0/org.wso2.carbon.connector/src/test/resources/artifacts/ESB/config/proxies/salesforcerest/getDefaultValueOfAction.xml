@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="getDefaultValueOfAction"
+       statistics="disable" trace="disable" transports="https http">
+    <target>
+        <inSequence>
+            <property name="clientId" expression="json-eval($.clientId)"/>
+            <property name="refreshToken" expression="json-eval($.refreshToken)"/>
+            <property name="clientSecret" expression="json-eval($.clientSecret)"/>
+            <property name="hostName" expression="json-eval($.hostName)"/>
+            <property name="apiVersion" expression="json-eval($.apiVersion)"/>
+            <property name="actionName" expression="json-eval($.actionName)"/>
+            <salesforcerest.getAccessTokenFromRefreshToken>
+                <clientId>{$ctx:clientId}</clientId>
+                <refreshToken>{$ctx:refreshToken}</refreshToken>
+                <clientSecret>{$ctx:clientSecret}</clientSecret>
+                <hostName>{$ctx:hostName}</hostName>
+            </salesforcerest.getAccessTokenFromRefreshToken>
+            <salesforcerest.init>
+                <apiVersion>{$ctx:apiVersion}</apiVersion>
+            </salesforcerest.init>
+            <log category="INFO" level="full" separator=","/>
+            <salesforcerest.getDefaultValueOfAction>
+                <actionName>{$ctx:actionName}</actionName>
+            </salesforcerest.getDefaultValueOfAction>
+            <send/>
+        </inSequence>
+    </target>
+</proxy>
