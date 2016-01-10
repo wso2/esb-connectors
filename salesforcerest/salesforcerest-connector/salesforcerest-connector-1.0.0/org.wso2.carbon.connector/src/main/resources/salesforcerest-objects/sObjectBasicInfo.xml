@@ -16,7 +16,9 @@
    under the License.
 -->
 <template name="sObjectBasicInfo" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="sobject" description="The type of sobject"/>
     <sequence>
+        <property name="uri.var.sobject" expression="$func:sobject"/>
         <call>
             <endpoint>
                 <http method="Get"

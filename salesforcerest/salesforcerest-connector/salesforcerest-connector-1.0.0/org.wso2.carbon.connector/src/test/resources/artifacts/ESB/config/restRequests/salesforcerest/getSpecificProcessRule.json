@@ -5,5 +5,5 @@
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
   "sobject": "%s(sobject)",
-  "objectId": "%s(objectId)"
+  "workflowRuleId": "%s(workflowRuleId)"
 }

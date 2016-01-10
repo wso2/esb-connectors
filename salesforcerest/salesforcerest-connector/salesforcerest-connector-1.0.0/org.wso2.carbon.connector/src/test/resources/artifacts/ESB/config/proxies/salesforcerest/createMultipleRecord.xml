@@ -20,10 +20,10 @@
                 <apiVersion>{$ctx:apiVersion}</apiVersion>
             </salesforcerest.init>
             <log category="INFO" level="full" separator=","/>
-            <salesforcerest.create>
+            <salesforcerest.createMultipleRecord>
                 <sobject>{$ctx:sobject}</sobject>
                 <sObjectName>{$ctx:sObjectName}</sObjectName>
-            </salesforcerest.create>
+            </salesforcerest.createMultipleRecord>
             <send/>
         </inSequence>
     </target>

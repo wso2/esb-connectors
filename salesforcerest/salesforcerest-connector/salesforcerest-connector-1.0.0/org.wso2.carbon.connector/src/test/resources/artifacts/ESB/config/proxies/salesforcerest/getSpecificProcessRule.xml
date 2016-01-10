@@ -9,7 +9,7 @@
             <property name="hostName" expression="json-eval($.hostName)"/>
             <property name="apiVersion" expression="json-eval($.apiVersion)"/>
             <property name="sobject" expression="json-eval($.sobject)"/>
-            <property name="objectId" expression="json-eval($.objectId)"/>
+            <property name="workflowRuleId" expression="json-eval($.workflowRuleId)"/>
             <salesforcerest.getAccessTokenFromRefreshToken>
                 <clientId>{$ctx:clientId}</clientId>
                 <refreshToken>{$ctx:refreshToken}</refreshToken>
@@ -22,7 +22,7 @@
             <log category="INFO" level="full" separator=","/>
             <salesforcerest.getSpecificProcessRule>
                 <sobject>{$ctx:sobject}</sobject>
-                <objectId>{$ctx:objectId}</objectId>
+                <workflowRuleId>{$ctx:workflowRuleId}</workflowRuleId>
             </salesforcerest.getSpecificProcessRule>
             <send/>
         </inSequence>

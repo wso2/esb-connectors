@@ -32,7 +32,7 @@
         <call>
             <endpoint>
                 <http method="post"
-                      uri-template="{uri.var.apiUrl}/services/data/{uri.var.apiVersion}/composite/tree/{uri.var.sobject}"/>
+                      uri-template="{uri.var.apiUrl}/services/data/{uri.var.apiVersion}/composite/tree/{uri.var.sobject}/"/>
             </endpoint>
         </call>
     </sequence>
