@@ -17,14 +17,14 @@
 -->
 <template name="getSpecificProcessRule" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="sobject" description="The type of sobject"/>
-    <parameter name="objectId" description="Specific object ID to access the record."/>
+    <parameter name="workflowRuleId" description="The work flow Id of a specific rule for specific rule"/>
     <sequence>
         <property name="uri.var.sobject" expression="$func:sobject"/>
-        <property name="uri.var.objectId" expression="$func:objectId"/>
+        <property name="uri.var.workflowRuleId" expression="$func:workflowRuleId"/>
         <call>
             <endpoint>
                 <http method="Get"
-                      uri-template="{uri.var.apiUrl}/services/data/{uri.var.apiVersion}/process/rules/{uri.var.sobject}/{uri.var.objectId}"/>
+                      uri-template="{uri.var.apiUrl}/services/data/{uri.var.apiVersion}/process/rules/{uri.var.sobject}/{uri.var.workflowRuleId}"/>
             </endpoint>
         </call>
     </sequence>
