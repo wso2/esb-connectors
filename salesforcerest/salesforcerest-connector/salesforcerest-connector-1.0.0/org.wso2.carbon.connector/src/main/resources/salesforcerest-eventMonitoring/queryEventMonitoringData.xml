@@ -18,7 +18,8 @@
 <template name="queryEventMonitoringData" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="queryStringForEventMonitoringData" description="The SOQL query to execute"/>
     <sequence>
-        <property name="uri.var.queryStringForEventMonitoringData" expression="$func:queryStringForEventMonitoringData"/>
+        <property name="uri.var.queryStringForEventMonitoringData"
+                  expression="$func:queryStringForEventMonitoringData"/>
         <call>
             <endpoint>
                 <http method="get"

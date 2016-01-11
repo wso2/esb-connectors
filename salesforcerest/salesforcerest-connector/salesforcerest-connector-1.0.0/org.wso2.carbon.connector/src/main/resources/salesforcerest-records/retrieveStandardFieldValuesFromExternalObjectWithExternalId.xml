@@ -15,7 +15,8 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<template name="retrieveStandardFieldValuesFromExternalObjectWithExternalId" xmlns="http://ws.apache.org/ns/synapse">
+<template name="retrieveStandardFieldValuesFromExternalObjectWithExternalId"
+          xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="externalObject" description="The External object of the organization."/>
     <parameter name="externalId" description="The row Id of the object."/>
     <parameter name="externalFields" description="The comma separated field values."/>

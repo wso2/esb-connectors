@@ -8,7 +8,8 @@
             <property name="clientSecret" expression="json-eval($.clientSecret)"/>
             <property name="hostName" expression="json-eval($.hostName)"/>
             <property name="apiVersion" expression="json-eval($.apiVersion)"/>
-            <property name="queryStringForEventMonitoringData" expression="json-eval($.queryStringForEventMonitoringData)"/>
+            <property name="queryStringForEventMonitoringData"
+                      expression="json-eval($.queryStringForEventMonitoringData)"/>
             <salesforcerest.getAccessTokenFromRefreshToken>
                 <clientId>{$ctx:clientId}</clientId>
                 <refreshToken>{$ctx:refreshToken}</refreshToken>
@@ -20,7 +21,8 @@
             </salesforcerest.init>
             <log category="INFO" level="full" separator=","/>
             <salesforcerest.queryEventMonitoringData>
-                <queryStringForEventMonitoringData>{$ctx:queryStringForEventMonitoringData}</queryStringForEventMonitoringData>
+                <queryStringForEventMonitoringData>{$ctx:queryStringForEventMonitoringData}
+                </queryStringForEventMonitoringData>
             </salesforcerest.queryEventMonitoringData>
             <send/>
         </inSequence>

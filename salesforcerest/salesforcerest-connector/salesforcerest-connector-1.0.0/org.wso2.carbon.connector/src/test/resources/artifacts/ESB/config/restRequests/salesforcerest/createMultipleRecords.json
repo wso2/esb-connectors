@@ -5,20 +5,26 @@
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
   "sobject": "%s(sobject)",
-  "sObjectName":
-  {
+  "sObjectName": {
     "records": [
       {
-        "attributes": {"type": "%s(sobject)", "referenceId": "%s(refId1)"},
+        "attributes": {
+          "type": "%s(sobject)",
+          "referenceId": "%s(refId1)"
+        },
         "name": "Hari",
         "phone": "11111111",
         "website": "www.salesforce1.com"
       },
       {
-        "attributes": {"type": "%s(sobject)", "referenceId": "%s(refId2)"},
+        "attributes": {
+          "type": "%s(sobject)",
+          "referenceId": "%s(refId2)"
+        },
         "name": "Hariss",
         "phone": "22222222",
         "website": "www.salesforce2.com"
-      }]
+      }
+    ]
   }
 }

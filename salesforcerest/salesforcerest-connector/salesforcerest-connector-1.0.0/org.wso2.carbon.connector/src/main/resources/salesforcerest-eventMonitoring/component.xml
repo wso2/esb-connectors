@@ -20,11 +20,16 @@
     <subComponents>
         <component name="describeEventMonitoring">
             <file>describeEventMonitoring.xml</file>
-            <description>Use the SObject Describe resource to retrieve all metadata for an object, including information about fields, URLs, and child relationships.</description>
+            <description>Use the SObject Describe resource to retrieve all metadata for an object,
+                including information about fields, URLs, and child relationships.
+            </description>
         </component>
         <component name="queryEventMonitoringData">
             <file>queryEventMonitoringData.xml</file>
-            <description>Use the Query resource to retrieve field values from a record. Specify the fields you want to retrieve in the fields parameter and use the GET method of the resource.</description>
+            <description>Use the Query resource to retrieve field values from a record. Specify the
+                fields you want to retrieve in the fields parameter and use the GET method of the
+                resource.
+            </description>
         </component>
     </subComponents>
 </component>

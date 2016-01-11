@@ -54,7 +54,9 @@
         </component>
         <component name="retrieveStandardFieldValuesFromExternalObjectWithExternalId">
             <file>retrieveStandardFieldValuesFromExternalObjectWithExternalId.xml</file>
-            <description>Retrieve specific Standard field values from an External Object using External Id</description>
+            <description>Retrieve specific Standard field values from an External Object using
+                External Id
+            </description>
         </component>
     </subComponents>
 </component>

@@ -17,7 +17,8 @@
 -->
 <template name="getSpecificProcessRule" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="sobject" description="The type of sobject"/>
-    <parameter name="workflowRuleId" description="The work flow Id of a specific rule for specific rule"/>
+    <parameter name="workflowRuleId"
+               description="The work flow Id of a specific rule for specific rule"/>
     <sequence>
         <property name="uri.var.sobject" expression="$func:sobject"/>
         <property name="uri.var.workflowRuleId" expression="$func:workflowRuleId"/>
