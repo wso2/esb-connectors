@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proxy xmlns="http://ws.apache.org/ns/synapse" name="createMultipleRecord"
-       statistics="disable" trace="disable" transports="https http">
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="describeEventMonitoring"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
     <target>
         <inSequence>
             <property name="clientId" expression="json-eval($.clientId)"/>
@@ -8,8 +12,6 @@
             <property name="clientSecret" expression="json-eval($.clientSecret)"/>
             <property name="hostName" expression="json-eval($.hostName)"/>
             <property name="apiVersion" expression="json-eval($.apiVersion)"/>
-            <property name="sobject" expression="json-eval($.sobject)"/>
-            <property name="sObjectName" expression="json-eval($.sObjectName)"/>
             <salesforcerest.getAccessTokenFromRefreshToken>
                 <clientId>{$ctx:clientId}</clientId>
                 <refreshToken>{$ctx:refreshToken}</refreshToken>
@@ -19,11 +21,8 @@
             <salesforcerest.init>
                 <apiVersion>{$ctx:apiVersion}</apiVersion>
             </salesforcerest.init>
-            <log category="INFO" level="full" separator=","/>
-            <salesforcerest.createMultipleRecord>
-                <sobject>{$ctx:sobject}</sobject>
-                <sObjectName>{$ctx:sObjectName}</sObjectName>
-            </salesforcerest.createMultipleRecord>
+            <log level="full" separator=","/>
+            <salesforcerest.describeEventMonitoring/>
             <send/>
         </inSequence>
     </target>

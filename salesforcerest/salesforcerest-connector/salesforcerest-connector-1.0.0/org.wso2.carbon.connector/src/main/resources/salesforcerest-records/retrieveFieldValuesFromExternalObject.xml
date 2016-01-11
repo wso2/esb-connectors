@@ -15,24 +15,18 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<template name="createMultipleRecord" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="sobject" description="The type of sobject"/>
-    <parameter name="sObjectName" description="The value of the field of a particular sObject"/>
+<template name="retrieveFieldValuesFromExternalObject" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="externalObject" description="The External object of the organization."/>
+    <parameter name="salesforceId" description="The row Id of the object."/>
+    <parameter name="externalFields" description="The comma separated field values."/>
     <sequence>
-        <property name="uri.var.sobject" expression="$func:sobject"/>
-        <property name="uri.var.sObjectName" expression="$func:sObjectName"/>
-        <payloadFactory media-type="json">
-            <format>
-                $1
-            </format>
-            <args>
-                <arg expression="get-property('uri.var.sObjectName')"/>
-            </args>
-        </payloadFactory>
+        <property name="uri.var.externalObject" expression="$func:externalObject"/>
+        <property name="uri.var.salesforceId" expression="$func:salesforceId"/>
+        <property name="uri.var.externalFields" expression="$func:externalFields"/>
         <call>
             <endpoint>
-                <http method="post"
-                      uri-template="{uri.var.apiUrl}/services/data/{uri.var.apiVersion}/composite/tree/{uri.var.sobject}/"/>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}/services/data/{uri.var.apiVersion}/sobjects/{uri.var.externalObject}/{uri.var.salesforceId}?fields={+uri.var.externalFields}"/>
             </endpoint>
         </call>
     </sequence>
