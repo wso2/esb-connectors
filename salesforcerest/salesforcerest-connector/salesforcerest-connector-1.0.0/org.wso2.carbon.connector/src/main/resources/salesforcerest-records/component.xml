@@ -57,9 +57,6 @@
             <description>Retrieve specific Standard field values from an External Object using
                 External Id
             </description>
-            <description>Retrieve specific Standard field values from an External Object using
-                External Id
-            </description>
         </component>
     </subComponents>
 </component>

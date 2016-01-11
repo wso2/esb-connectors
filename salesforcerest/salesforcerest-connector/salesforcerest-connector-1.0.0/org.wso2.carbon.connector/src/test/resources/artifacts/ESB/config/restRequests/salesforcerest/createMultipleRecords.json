@@ -5,7 +5,6 @@
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
   "sobject": "%s(sobject)",
-<<<<<<< HEAD
   "sObjectName": {
     "records": [
       {
@@ -13,19 +12,11 @@
           "type": "%s(sobject)",
           "referenceId": "%s(refId1)"
         },
-=======
-  "sObjectName":
-  {
-    "records": [
-      {
-        "attributes": {"type": "%s(sobject)", "referenceId": "%s(refId1)"},
->>>>>>> 7eb43b8a7d55a6e43e6dd511af9f1a686e1ddbba
         "name": "Hari",
         "phone": "11111111",
         "website": "www.salesforce1.com"
       },
       {
-<<<<<<< HEAD
         "attributes": {
           "type": "%s(sobject)",
           "referenceId": "%s(refId2)"
@@ -35,12 +26,5 @@
         "website": "www.salesforce2.com"
       }
     ]
-=======
-        "attributes": {"type": "%s(sobject)", "referenceId": "%s(refId2)"},
-        "name": "Hariss",
-        "phone": "22222222",
-        "website": "www.salesforce2.com"
-      }]
->>>>>>> 7eb43b8a7d55a6e43e6dd511af9f1a686e1ddbba
   }
 }
