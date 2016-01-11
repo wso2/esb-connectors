@@ -40,9 +40,21 @@
             <file>retrieveFieldValues.xml</file>
             <description>Retrieve specific field values from a record</description>
         </component>
-        <component name="createMultipleRecord">
-            <file>createMultipleRecord.xml</file>
-            <description>Insert multiple sObject(s) synapse library</description>
+        <component name="createMultipleRecords">
+            <file>createMultipleRecords.xml</file>
+            <description>Insert multiple sObject(s)</description>
+        </component>
+        <component name="createNestedRecords">
+            <file>createNestedRecords.xml</file>
+            <description>Insert nested sObject(s)</description>
+        </component>
+        <component name="retrieveFieldValuesFromExternalObject">
+            <file>retrieveFieldValuesFromExternalObject.xml</file>
+            <description>Retrieve specific field values from an External Object</description>
+        </component>
+        <component name="retrieveStandardFieldValuesFromExternalObjectWithExternalId">
+            <file>retrieveStandardFieldValuesFromExternalObjectWithExternalId.xml</file>
+            <description>Retrieve specific Standard field values from an External Object using External Id</description>
         </component>
     </subComponents>
 </component>

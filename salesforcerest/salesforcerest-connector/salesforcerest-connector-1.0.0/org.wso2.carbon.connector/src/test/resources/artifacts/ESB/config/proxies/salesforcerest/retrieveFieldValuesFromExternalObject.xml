@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="retrieveFieldValuesFromExternalObject"
+       statistics="disable" trace="disable" transports="https http">
+    <target>
+        <inSequence>
+            <property name="clientId" expression="json-eval($.clientId)"/>
+            <property name="refreshToken" expression="json-eval($.refreshToken)"/>
+            <property name="clientSecret" expression="json-eval($.clientSecret)"/>
+            <property name="hostName" expression="json-eval($.hostName)"/>
+            <property name="apiVersion" expression="json-eval($.apiVersion)"/>
+            <property name="externalObject" expression="json-eval($.externalObject)"/>
+            <property name="salesforceId" expression="json-eval($.salesforceId)"/>
+            <property name="externalFields" expression="json-eval($.externalFields)"/>
+            <salesforcerest.getAccessTokenFromRefreshToken>
+                <clientId>{$ctx:clientId}</clientId>
+                <refreshToken>{$ctx:refreshToken}</refreshToken>
+                <clientSecret>{$ctx:clientSecret}</clientSecret>
+                <hostName>{$ctx:hostName}</hostName>
+            </salesforcerest.getAccessTokenFromRefreshToken>
+            <salesforcerest.init>
+                <apiVersion>{$ctx:apiVersion}</apiVersion>
+            </salesforcerest.init>
+            <log category="INFO" level="full" separator=","/>
+            <salesforcerest.retrieveFieldValuesFromExternalObject>
+                <externalObject>{$ctx:externalObject}</externalObject>
+                <salesforceId>{$ctx:salesforceId}</salesforceId>
+                <externalFields>{$ctx:externalFields}</externalFields>
+            </salesforcerest.retrieveFieldValuesFromExternalObject>
+            <send/>
+        </inSequence>
+    </target>
+</proxy>
