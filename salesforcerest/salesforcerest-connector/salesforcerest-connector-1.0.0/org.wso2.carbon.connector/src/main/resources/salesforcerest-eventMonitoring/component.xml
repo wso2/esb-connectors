@@ -31,5 +31,12 @@
                 resource.
             </description>
         </component>
+        <component name="queryEventMonitoringData">
+            <file>queryEventMonitoringData.xml</file>
+            <description>Use the Query resource to retrieve field values from a record. Specify the
+                fields you want to retrieve in the fields parameter and use the GET method of the
+                resource.
+            </description>
+        </component>
     </subComponents>
 </component>

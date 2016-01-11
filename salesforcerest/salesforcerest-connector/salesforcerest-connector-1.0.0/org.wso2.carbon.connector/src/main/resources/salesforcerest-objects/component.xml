@@ -73,9 +73,7 @@
         </component>
         <component name="sObjectRowsByExternalId">
             <file>sObjectRowsByExternalId.xml</file>
-            <description>SObject Rows by External ID resource to retrieve records with a specific
-                external ID
-            </description>
+            <description>SObject Rows by External ID resource to retrieve records with a specific external ID</description>
         </component>
     </subComponents>
 </component>

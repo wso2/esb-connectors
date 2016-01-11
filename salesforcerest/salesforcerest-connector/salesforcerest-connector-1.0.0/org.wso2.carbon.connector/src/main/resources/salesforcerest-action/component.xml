@@ -30,8 +30,7 @@
         </component>
         <component name="getAttributeOfSpecificAction">
             <file>getAttributeOfSpecificAction.xml</file>
-            <description>Retrieving the details of a given attributes of a single standard action.
-            </description>
+            <description>Retrieving the details of a given attributes of a single standard action.</description>
         </component>
     </subComponents>
 </component>

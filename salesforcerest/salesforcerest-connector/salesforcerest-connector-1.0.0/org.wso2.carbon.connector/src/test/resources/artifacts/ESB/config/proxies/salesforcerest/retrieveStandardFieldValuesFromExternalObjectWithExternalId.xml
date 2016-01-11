@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <proxy xmlns="http://ws.apache.org/ns/synapse"
        name="retrieveStandardFieldValuesFromExternalObjectWithExternalId"
+=======
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="retrieveStandardFieldValuesFromExternalObjectWithExternalId"
+>>>>>>> 7eb43b8a7d55a6e43e6dd511af9f1a686e1ddbba
        statistics="disable" trace="disable" transports="https http">
     <target>
         <inSequence>
