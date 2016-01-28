@@ -102,9 +102,7 @@ public class GmailConnectorIntegrationTestForSendAttachment extends ESBIntegrati
         } else {
             repoLocation = System.getProperty("connector_repo").replace("/", "/");
         }
-
         log.warn("REPOLOCATION:" + repoLocation);
-
         proxyAdmin = new ProxyServiceAdminClient(esbServer.getBackEndUrl(), esbServer.getSessionCookie());
         ConnectorIntegrationUtil.uploadConnector(repoLocation, mediationLibUploadStub, gmailConnectorFileName);
         byte maxAttempts = 10;
@@ -121,8 +119,7 @@ public class GmailConnectorIntegrationTestForSendAttachment extends ESBIntegrati
 
         adminServiceStub.updateStatus("{org.wso2.carbon.connector}" + CONNECTOR_NAME, CONNECTOR_NAME, "org.wso2.carbon.connector", "enabled");
         gmailConnectorProperties = ConnectorIntegrationUtil.getConnectorConfigProperties(CONNECTOR_NAME);
-
-        // Initializing the local variables which are used in the test cases
+        // Initializing the local variables which are used in the test cases.
         mailSubject = "Gmail Integration Testing (Random ID:" + UUID.randomUUID().toString() + ")";
         deleteMailSubject = "[This will be deleted] Gmail Integration Testing (Random ID:" + UUID.randomUUID().toString() + ")";
         attachmentMap = new HashMap<String, DataHandler>();
@@ -175,11 +172,9 @@ public class GmailConnectorIntegrationTestForSendAttachment extends ESBIntegrati
             Assert.assertTrue(body.contains(this.mailSubject), "Expected mail subject is found in the response");
         } finally {
             proxyAdmin.deleteProxy(CONNECTOR_NAME + "_" + methodName);
-            // Waiting for the mail to be delivered to the mail box
+            // Waiting for the mail to be delivered to the mail box.
             int sleepTimer = 20000;
             Thread.sleep(sleepTimer);
         }
     }
-
-
 }

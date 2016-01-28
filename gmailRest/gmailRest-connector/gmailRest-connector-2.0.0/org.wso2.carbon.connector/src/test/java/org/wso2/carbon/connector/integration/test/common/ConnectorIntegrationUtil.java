@@ -201,14 +201,11 @@ public class ConnectorIntegrationUtil {
             while ((len = response.read(bytes)) != -1) {
                 sb.append(new String(bytes, 0, len));
             }
-
             if (!sb.toString().trim().isEmpty()) {
                 out = sb.toString();
             }
         }
-
         JSONObject jsonObject = new JSONObject(out);
-
         return jsonObject;
     }
 
@@ -232,16 +229,13 @@ public class ConnectorIntegrationUtil {
                 }
             }
         }
-
         HttpURLConnection httpConn = (HttpURLConnection) connection;
         InputStream response;
-
         if (httpConn.getResponseCode() >= 400) {
             response = httpConn.getErrorStream();
         } else {
             response = connection.getInputStream();
         }
-
         String out = "{}";
         if (response != null) {
             StringBuilder sb = new StringBuilder();
@@ -250,16 +244,12 @@ public class ConnectorIntegrationUtil {
             while ((len = response.read(bytes)) != -1) {
                 sb.append(new String(bytes, 0, len));
             }
-
             if (!sb.toString().trim().isEmpty()) {
                 out = sb.toString();
             }
         }
-
         OMElement omElement = AXIOMUtil.stringToOM(out);
-
         return omElement;
-
     }
 
     public static Properties getConnectorConfigProperties(String connectorName) {
@@ -276,18 +266,15 @@ public class ConnectorIntegrationUtil {
             if (connectorPropertyFile.exists()) {
                 inputStream = new FileInputStream(connectorPropertyFile);
             }
-
             if (inputStream != null) {
                 Properties prop = new Properties();
                 prop.load(inputStream);
                 inputStream.close();
                 return prop;
             }
-
         } catch (IOException ignored) {
             log.error("automation.properties file not found, please check your configuration");
         }
-
         return null;
     }
 
@@ -312,7 +299,6 @@ public class ConnectorIntegrationUtil {
             options.setSoapVersionURI(SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI);
             options.setProperty(Constants.Configuration.MESSAGE_TYPE, contentType);
             sender.setOptions(options);
-
             response = sender.sendReceive(payload);
             if (log.isDebugEnabled()) {
                 log.debug("Response Message : " + response);
@@ -345,7 +331,6 @@ public class ConnectorIntegrationUtil {
                 stringBuilder.append(line);
                 stringBuilder.append(ls);
             }
-
         } catch (IOException ioe) {
             log.error("Error reading request from file.", ioe);
         } finally {
@@ -354,7 +339,6 @@ public class ConnectorIntegrationUtil {
             }
         }
         return stringBuilder.toString();
-
     }
 
     /**
@@ -373,7 +357,6 @@ public class ConnectorIntegrationUtil {
             throws IOException, NoSuchAlgorithmException, InvalidKeyException, JSONException {
         Properties connectorProperties = getConnectorConfigProperties("nest");
         String url = connectorProperties.getProperty("apiUrl") + "/" + parameters + "?auth=" + connectorProperties.getProperty("accessToken");
-
         return sendRequest(url, null);
     }
     /**
@@ -397,21 +380,17 @@ public class ConnectorIntegrationUtil {
             throws AxisFault {
 
         ServiceClient serviceClient = new ServiceClient();
-
         Options serviceOptions = new Options();
         serviceOptions.setProperty(Constants.Configuration.ENABLE_SWA, Constants.VALUE_TRUE);
         serviceOptions.setTo(endpoint);
         serviceOptions.setAction("mediate");
         serviceClient.setOptions(serviceOptions);
         MessageContext messageContext = new MessageContext();
-
         SOAPEnvelope soapEnvelope = TransportUtils.createSOAPEnvelope(request);
         messageContext.setEnvelope(soapEnvelope);
-
         for (String contentId : attachmentMap.keySet()) {
             messageContext.addAttachment(contentId, attachmentMap.get(contentId));
         }
-
         OperationClient mepClient = serviceClient.createClient(ServiceClient.ANON_OUT_IN_OP);
         mepClient.addMessageContext(messageContext);
         return mepClient;
@@ -432,13 +411,11 @@ public class ConnectorIntegrationUtil {
             throws AxisFault {
 
         ServiceClient serviceClient = new ServiceClient();
-
         Options serviceOptions = new Options();
         serviceOptions.setTo(endpoint);
         serviceOptions.setAction("mediate");
         serviceClient.setOptions(serviceOptions);
         MessageContext messageContext = new MessageContext();
-
         SOAPEnvelope soapEnvelope = TransportUtils.createSOAPEnvelope(request);
         messageContext.setEnvelope(soapEnvelope);
         OperationClient mepClient = serviceClient.createClient(ServiceClient.ANON_OUT_IN_OP);

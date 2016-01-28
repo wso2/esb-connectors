@@ -68,7 +68,6 @@ public final class GmailUtils {
     private static Log log = LogFactory.getLog(GmailUtils.class);
     public static int batchNumber;
 
-
     /**
      * Extracts a given parameter from message context
      *
@@ -94,7 +93,6 @@ public final class GmailUtils {
         if (messageContext.getEnvelope().getBody().getFirstElement() != null) {
             messageContext.getEnvelope().getBody().getFirstElement().detach();
         }
-
         OMFactory factory = OMAbstractFactory.getOMFactory();
         OMNamespace ns = factory.createOMNamespace("http://org.wso2.esbconnectors.gmail", "ns");
         OMElement result = factory.createOMElement("ErrorResponse", ns);
@@ -106,297 +104,6 @@ public final class GmailUtils {
         messageContext.setProperty(SynapseConstants.ERROR_CODE, errorCode);
         messageContext.setFaultResponse(true);
         log.info("Stored the error response");
-    }
-
-    /**
-     * Read and list the e-mail messages searched from the IMAP store according
-     * to the given search term
-     *
-     * @param messageContext      Message context where the response should be stored
-     * @param store               IMAPStore
-     * @param term                Search term
-     * @param batchNumber         The batch number to return
-     * @param responseElementName Name of the response element name
-     * @throws com.google.code.javax.mail.MessagingException
-     * @throws org.wso2.carbon.connector.core.ConnectException if the folder does not exist
-     */
-    public static void listMails(MessageContext messageContext, IMAPStore store, SearchTerm term,
-                                 int batchNumber, String responseElementName)
-            throws MessagingException,
-            ConnectException {
-        FetchProfile fetchprofile = getFetchProfile();
-        Message[] messages = null;
-        try {
-            log.info("Started reading messages");
-            IMAPFolder folder = getFolder(GmailConstants.GMAIL_ALL_MAIL, store);
-            folder.open(Folder.READ_ONLY);
-            if (term != null) {
-                messages = GmailUtils.getBatch(folder.search(term), batchNumber);
-            } else {
-                messages = GmailUtils.getBatch(folder.getMessages(), batchNumber);
-            }
-            folder.fetch(messages, fetchprofile);
-            log.info("Number of fetched messages:" + messages.length);
-            storeMailListInResponse(messages, messageContext, responseElementName, false);
-            folder.close(true);
-        } catch (MessagingException e) {
-            log.error("Failure while fetching messages");
-            throw (e);
-        }
-    }
-
-    /**
-     * Deletes the e-mail messages searched from the IMAP store according
-     * to the given search term
-     *
-     * @param messageContext      Message context where the response should be stored
-     * @param store               IMAPStore
-     * @param term                Search term
-     * @param responseElementName Name of the response element name
-     * @return an array of messages fetched from the IMAPStore
-     * @throws com.google.code.javax.mail.MessagingException   if any failure occur while deleting messages
-     * @throws org.wso2.carbon.connector.core.ConnectException if no messages are fetched to delete
-     */
-    public static void deleteMails(IMAPStore store, SearchTerm term, MessageContext messageContext,
-                                   String responseElementName) throws MessagingException,
-            ConnectException {
-        FetchProfile fetchprofile = getFetchProfile();
-        Message[] messages = null;
-        try {
-            log.info("Reading messages");
-            IMAPFolder folder = getFolder(GmailConstants.GMAIL_ALL_MAIL, store);
-            IMAPFolder trash = getFolder(GmailConstants.GMAIL_TRASH, store);
-            folder.open(Folder.READ_WRITE);
-            messages = folder.search(term);
-            if (messages.length == 0) {
-                String errorLog =
-                        "No messages are found to delete. Please make sure the threda ID/ message ID is correct.";
-                log.error(errorLog);
-                ConnectException connectException = new ConnectException(errorLog);
-                throw (connectException);
-            }
-
-            log.info("Fetching messages");
-            folder.fetch(messages, fetchprofile);
-            log.info("Number of fetched messages:" + messages.length);
-            storeMailListInResponse(messages, messageContext, responseElementName, true);
-            folder.copyMessages(messages, trash);
-            folder.close(true);
-        } catch (MessagingException e) {
-            log.error("Error while deleting messages");
-            throw (e);
-        }
-    }
-
-    /**
-     * Read and list the e-mail messages searched from the IMAP store according
-     * to the given search term
-     *
-     * @param messageContext      Message context where the response should be stored
-     * @param store               IMAPStore
-     * @param term                Search term
-     * @param responseElementName Name of the response element name
-     * @throws com.google.code.javax.mail.MessagingException   if any failure occur while reading messages
-     * @throws org.wso2.carbon.connector.core.ConnectException if no messages are fetched to read
-     */
-    public static void readMails(MessageContext messageContext, IMAPStore store, SearchTerm term,
-                                 String responseElementName) throws MessagingException,
-            ConnectException {
-        FetchProfile fetchprofile = getFetchProfile();
-        Message[] messages = null;
-        try {
-            Folder ft = store.getFolder("inbox");
-            ft.open(Folder.READ_ONLY);
-            messages = ft.search(term);
-            if (messages.length == 0) {
-                String errorLog =
-                        "No messages are found to read. Please make sure the threda ID/ message ID is correct.";
-                log.error(errorLog);
-                ConnectException connectException = new ConnectException(errorLog);
-                throw (connectException);
-            }
-            log.info("Fetching messages");
-            log.info("Number of fetched messages:" + messages.length);
-            storeMailListInResponse(messages, messageContext, responseElementName, true);
-        } catch (MessagingException e) {
-            log.error("Failure while fetching messages");
-            throw (e);
-        }
-    }
-
-    /**
-     * Set labels to the e-mail messages which are searched from the IMAP store
-     * according to the given search term
-     *
-     * @param messageContext      Message context where the response should be stored
-     * @param store               IMAPStore
-     * @param term                Search term
-     * @param responseElementName Name of the response element
-     * @param labels              comma separated list of label names
-     * @throws com.google.code.javax.mail.MessagingException   if any failure occur while setting labels
-     * @throws org.wso2.carbon.connector.core.ConnectException if no messages are fetched to set labels
-     */
-    public static void setLabels(IMAPStore store, SearchTerm term, MessageContext messageContext,
-                                 String[] labels, String responseElementName)
-            throws MessagingException,
-            ConnectException {
-        FetchProfile fetchprofile = getFetchProfile();
-        IMAPMessage[] messages = null;
-        try {
-            IMAPFolder folder = getFolder(GmailConstants.GMAIL_ALL_MAIL, store);
-            log.info("Reading messages");
-            folder.open(Folder.READ_WRITE);
-            messages = (IMAPMessage[]) folder.search(term);
-            if (messages.length == 0) {
-                String errorLog =
-                        "No messages are found to set labels. Please make sure the threda ID/ message ID is correct.";
-                log.error(errorLog);
-                ConnectException connectException = new ConnectException(errorLog);
-                throw (connectException);
-            }
-            log.info("Fetching messages");
-            folder.fetch(messages, fetchprofile);
-            log.info("Number of fetched messages:" + messages.length);
-            folder.setGoogleMessageLabels(messages, labels, true);
-            GmailUtils.storeMailListInResponse(messages, messageContext, responseElementName, false);
-            folder.close(true);
-        } catch (MessagingException e) {
-            log.error("Error while deleting messages");
-            throw (e);
-        }
-    }
-
-    /**
-     * {@link com.google.code.javax.mail.FetchProfile} is created to fetch Gmail thread ID, Gmail message
-     * ID, Gmail labels, flags and envelop of e-mail messages
-     *
-     * @return the {@link com.google.code.javax.mail.FetchProfile}
-     */
-    public static FetchProfile getFetchProfile() {
-        FetchProfile fetchprofile = new FetchProfile();
-        fetchprofile.add(IMAPFolder.FetchProfileItem.X_GM_THRID);
-        fetchprofile.add(IMAPFolder.FetchProfileItem.X_GM_MSGID);
-        fetchprofile.add(IMAPFolder.FetchProfileItem.X_GM_LABELS);
-        fetchprofile.add(IMAPFolder.FetchProfileItem.ENVELOPE);
-        fetchprofile.add(IMAPFolder.FetchProfileItem.FLAGS);
-        return fetchprofile;
-    }
-
-    /**
-     * Store resulted e-mail messages in the response.
-     *
-     * @param messagesArray     Array of {@link com.google.code.javax.mail.Message}
-     * @param messageContext    Message Context where the messages should be stored
-     * @param resultElementName Name of the result element
-     * @param storeContent      Message context is stored in the response only if this flag is
-     *                          true
-     */
-    public static void storeMailListInResponse(Message[] messagesArray,
-                                               MessageContext messageContext,
-                                               String resultElementName, boolean storeContent) {
-        log.info("Storing the response in the message context");
-        if (messageContext.getEnvelope().getBody().getFirstElement() != null) {
-            messageContext.getEnvelope().getBody().getFirstElement().detach();
-        }
-
-        OMFactory factory = OMAbstractFactory.getOMFactory();
-        OMNamespace ns = factory.createOMNamespace("http://org.wso2.esbconnectors.gmail", "ns");
-        OMElement result = factory.createOMElement(resultElementName, ns);
-
-        OMElement messages = factory.createOMElement("messages", ns);
-        result.addChild(messages);
-
-        for (int i = messagesArray.length - 1; i >= 0; i--) {
-            Message message = messagesArray[i];
-            if (message != null) {
-                OMElement messageElement = factory.createOMElement("message", ns);
-                messages.addChild(messageElement);
-
-                OMElement subject = factory.createOMElement("subject", ns);
-                messageElement.addChild(subject);
-                try {
-                    subject.setText(message.getSubject());
-                } catch (MessagingException me) {
-                    log.info("\"Subject\" cannot be resolved");
-                }
-
-                OMElement from = factory.createOMElement("from", ns);
-                messageElement.addChild(from);
-                try {
-                    from.setText(InternetAddress.toString(message.getFrom()));
-                } catch (MessagingException e) {
-                    log.info("\"From\" cannot be resolved");
-                }
-
-                OMElement to = factory.createOMElement("to", ns);
-                messageElement.addChild(to);
-                try {
-                    to.setText(InternetAddress.toString(message.getAllRecipients()));
-                } catch (MessagingException e) {
-                    log.info("\"To\" cannot be resolved");
-                }
-
-                OMElement date = factory.createOMElement("sentDate", ns);
-                messageElement.addChild(date);
-                try {
-                    date.setText(message.getSentDate().toString());
-                } catch (MessagingException e) {
-                    log.info("\"Sent date\" cannot be resolved");
-                }
-
-                OMElement labelsElement = factory.createOMElement("labels", ns);
-                messageElement.addChild(labelsElement);
-                String[] labels = ((IMAPMessage) message).getGoogleMessageLabels();
-                for (String label : labels) {
-                    OMElement labelElement = factory.createOMElement("label", ns);
-                    labelsElement.addChild(labelElement);
-                    labelElement.setText(label);
-                }
-
-                OMElement msgId = factory.createOMElement("messageID", ns);
-                messageElement.addChild(msgId);
-                String messageID = Long.toString(((IMAPMessage) message).getGoogleMessageId());
-                msgId.setText(messageID);
-
-                OMElement threadId = factory.createOMElement("threadID", ns);
-                messageElement.addChild(threadId);
-                threadId.setText(Long.toString(((IMAPMessage) message).getGoogleMessageThreadId()));
-
-                OMElement status = factory.createOMElement("Status", ns);
-                messageElement.addChild(status);
-                try {
-                    if (message.isSet(Flag.SEEN)) {
-                        status.setText("READ");
-                    } else {
-                        status.setText("UNREAD");
-                    }
-                } catch (MessagingException e) {
-                    log.info("\"Message Status\" cannot be resolved");
-                }
-                if (storeContent) {
-                    OMElement content = factory.createOMElement("content", ns);
-                    messageElement.addChild(content);
-                    StringBuilder attachmentContentIDs = new StringBuilder();
-                    try {
-
-                        log.info("Processing message content");
-                        content.setText("\n" +
-                                GmailUtils.processMessageBody(message, messageContext,
-                                        attachmentContentIDs,
-                                        messageID));
-                    } catch (Exception e) {
-                        log.info("Cannot retrive \"Message Content\".");
-                    }
-                    if (attachmentContentIDs.length() > 0) {
-                        OMElement attachments = factory.createOMElement("attachemnts", ns);
-                        messageElement.addChild(attachments);
-                        attachmentContentIDs.setLength(attachmentContentIDs.length() - 1);
-                        attachments.setText(attachmentContentIDs.toString());
-                    }
-                }
-            }
-        }
-        messageContext.getEnvelope().getBody().addChild(result);
     }
 
     /**
@@ -439,35 +146,6 @@ public final class GmailUtils {
     }
 
     /**
-     * Reads the batch number from the input string.
-     *
-     * @param batchString input string
-     * @return batch number
-     * @throws NumberFormatException                           if the batch number is not an integer
-     * @throws org.wso2.carbon.connector.core.ConnectException if the batch number is not a positive integer.
-     */
-    public static int getBatchNumber(String batchString) throws NumberFormatException,
-            ConnectException {
-        if (StringUtils.isNotEmpty(batchString) && !"".equals(batchString.trim())) {
-            try {
-                batchNumber = Integer.parseInt(batchString);
-            }catch (NumberFormatException e){
-                log.error("Error while parsing Integer");
-            }
-            if (batchNumber <= 0) {
-                String errorLog = "Batch number should be a positive integer";
-                log.error(errorLog);
-                ConnectException connectException = new ConnectException(errorLog);
-                throw (connectException);
-            }
-        } else {
-            // Use first batch as the default batch.
-            batchNumber = 1;
-        }
-        return batchNumber;
-    }
-
-    /**
      * Close and remove the already stored IMAP and SMTP connections
      *
      * @param operationContext where the connections are stored
@@ -478,14 +156,12 @@ public final class GmailUtils {
         if (axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE) == null) {
             return;
         }
-
         OperationContext operationContext = axis2MessageContext.getOperationContext();
         if (operationContext.getProperty(GmailConstants.GMAIL_IMAP_STORE_INSTANCE) != null) {
             log.info("Closing the previously opened IMAP Store");
             ((IMAPStore) operationContext.getProperty(GmailConstants.GMAIL_IMAP_STORE_INSTANCE)).close();
             operationContext.removeProperty(GmailConstants.GMAIL_IMAP_STORE_INSTANCE);
         }
-
         if (operationContext.getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE) != null) {
             log.info("Closing the previously opened SMTP transport");
             ((GmailSMTPConnectionObject) operationContext.getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE))
@@ -624,31 +300,6 @@ public final class GmailUtils {
         }
         return newMessages;
     }
-
-
-    /**
-     * Gets {@link com.google.code.com.sun.mail.imap.IMAPFolder} when the folder name and the {@link com.google.code.com.sun.mail.imap.IMAPStore} is
-     * given.
-     *
-     * @param folderName name of the {@link com.google.code.com.sun.mail.imap.IMAPFolder}
-     * @param store      {@link com.google.code.com.sun.mail.imap.IMAPStore} instance where the folder is located
-     * @return the folder
-     * @throws com.google.code.javax.mail.MessagingException   as a result of the failures occur while getting the folder
-     * @throws org.wso2.carbon.connector.core.ConnectException if the folder is null.
-     */
-    private static IMAPFolder getFolder(String folderName, IMAPStore store)
-            throws MessagingException,
-            ConnectException {
-        IMAPFolder folder = (IMAPFolder) store.getFolder(folderName);
-        if (folder == null) {
-            String errorLog = "Invalid label/ folder name";
-            log.error(errorLog);
-            ConnectException connectException = new ConnectException(errorLog);
-            throw (connectException);
-        }
-        return folder;
-    }
-
 
     /**
      * Process {@link com.google.code.javax.mail.Multipart} content.
