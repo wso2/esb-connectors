@@ -20,6 +20,7 @@
                description="The query identifier if the query result is too large in the initial response."/>
     <sequence>
         <property name="uri.var.nextRecordsUrl" expression="$func:nextRecordsUrl"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"

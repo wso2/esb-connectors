@@ -19,6 +19,7 @@
     <parameter name="actionName" description="The specific action name to retrieve the action "/>
     <sequence>
         <property name="uri.var.actionName" expression="$func:actionName"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

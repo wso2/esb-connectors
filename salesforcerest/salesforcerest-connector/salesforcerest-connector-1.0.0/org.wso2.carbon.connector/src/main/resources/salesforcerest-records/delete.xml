@@ -21,6 +21,7 @@
     <sequence>
         <property name="uri.var.sobject" expression="$func:sobject"/>
         <property name="uri.var.idToDelete" expression="$func:idToDelete"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="delete"

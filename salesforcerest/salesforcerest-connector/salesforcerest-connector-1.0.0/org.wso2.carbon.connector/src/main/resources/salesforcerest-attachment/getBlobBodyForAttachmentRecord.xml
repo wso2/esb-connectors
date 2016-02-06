@@ -19,6 +19,7 @@
     <parameter name="attachmentId" description="The Id of the Attachment"/>
     <sequence>
         <property name="uri.var.attachmentId" expression="$func:attachmentId"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

@@ -4,6 +4,5 @@
   "clientSecret": "%s(clientSecret)",
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
-  "limit": "%s(limit)",
-  "apiUrl": "%s(apiUrl)"
+  "limit": "%s(limit)"
 }

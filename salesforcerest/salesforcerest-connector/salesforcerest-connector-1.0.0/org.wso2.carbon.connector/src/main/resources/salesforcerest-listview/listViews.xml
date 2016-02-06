@@ -19,6 +19,7 @@
     <parameter name="sobjectType" description="The type of sobject"/>
     <sequence>
         <property name="uri.var.sobjectType" expression="$func:sobjectType"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

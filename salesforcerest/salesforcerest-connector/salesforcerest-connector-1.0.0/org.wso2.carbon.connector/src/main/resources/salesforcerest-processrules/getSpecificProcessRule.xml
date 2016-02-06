@@ -22,6 +22,7 @@
     <sequence>
         <property name="uri.var.sobject" expression="$func:sobject"/>
         <property name="uri.var.workflowRuleId" expression="$func:workflowRuleId"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

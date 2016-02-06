@@ -4,6 +4,5 @@
   "clientSecret": "%s(clientSecret)",
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
-  "sobject": "%s(sobject)",
-  "apiUrl": "%s(apiUrl)"
+  "sobject": "%s(sobject)"
 }

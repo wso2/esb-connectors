@@ -4,7 +4,6 @@
   "clientSecret": "%s(clientSecret)",
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
-  "apiUrl": "%s(apiUrl)",
   "object": "%s(object)",
   "layoutName": "%s(layoutName)"
 }

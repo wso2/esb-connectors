@@ -19,6 +19,7 @@
     <parameter name="actionType" description="The actionType is either standard or custom"/>
     <sequence>
         <property name="uri.var.actionType" expression="$func:actionType"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

@@ -19,6 +19,7 @@
     <parameter name="sObjectList" description="object list with comma separator"/>
     <sequence>
         <property name="uri.var.sObjectList" expression="$func:sObjectList"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"

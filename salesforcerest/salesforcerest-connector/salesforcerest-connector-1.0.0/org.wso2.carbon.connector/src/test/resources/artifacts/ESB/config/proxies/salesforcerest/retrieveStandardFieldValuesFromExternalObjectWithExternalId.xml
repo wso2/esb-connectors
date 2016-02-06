@@ -4,22 +4,20 @@
        statistics="disable" trace="disable" transports="https http">
     <target>
         <inSequence>
+            <property name="externalObject" expression="json-eval($.externalObject)"/>
+            <property name="externalId" expression="json-eval($.externalId)"/>
+            <property name="externalFields" expression="json-eval($.externalFields)"/>
             <property name="clientId" expression="json-eval($.clientId)"/>
             <property name="refreshToken" expression="json-eval($.refreshToken)"/>
             <property name="clientSecret" expression="json-eval($.clientSecret)"/>
             <property name="hostName" expression="json-eval($.hostName)"/>
             <property name="apiVersion" expression="json-eval($.apiVersion)"/>
-            <property name="externalObject" expression="json-eval($.externalObject)"/>
-            <property name="externalId" expression="json-eval($.externalId)"/>
-            <property name="externalFields" expression="json-eval($.externalFields)"/>
-            <salesforcerest.getAccessTokenFromRefreshToken>
-                <clientId>{$ctx:clientId}</clientId>
-                <refreshToken>{$ctx:refreshToken}</refreshToken>
-                <clientSecret>{$ctx:clientSecret}</clientSecret>
-                <hostName>{$ctx:hostName}</hostName>
-            </salesforcerest.getAccessTokenFromRefreshToken>
             <salesforcerest.init>
                 <apiVersion>{$ctx:apiVersion}</apiVersion>
+                <hostName>{$ctx:hostName}</hostName>
+                <clientSecret>{$ctx:clientSecret}</clientSecret>
+                <clientId>{$ctx:clientId}</clientId>
+                <refreshToken>{$ctx:refreshToken}</refreshToken>
             </salesforcerest.init>
             <log category="INFO" level="full" separator=","/>
             <salesforcerest.retrieveStandardFieldValuesFromExternalObjectWithExternalId>

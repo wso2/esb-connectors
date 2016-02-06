@@ -5,6 +5,5 @@
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
   "sobject": "%s(sobject)",
-  "idToDelete": "%s(idToDelete)",
-  "apiUrl": "%s(apiUrl)"
+  "idToDelete": "%s(idToDelete)"
 }

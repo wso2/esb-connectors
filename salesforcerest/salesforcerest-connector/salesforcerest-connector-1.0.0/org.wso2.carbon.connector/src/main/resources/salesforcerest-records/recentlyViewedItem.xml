@@ -19,6 +19,7 @@
     <parameter name="limit" description="The value of the response object limit."/>
     <sequence>
         <property name="uri.var.limit" expression="$func:limit"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

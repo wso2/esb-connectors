@@ -23,6 +23,7 @@
         <property name="uri.var.sobject" expression="$func:sobject"/>
         <property name="uri.var.startTime" expression="$func:startTime"/>
         <property name="uri.var.endTime" expression="$func:endTime"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"

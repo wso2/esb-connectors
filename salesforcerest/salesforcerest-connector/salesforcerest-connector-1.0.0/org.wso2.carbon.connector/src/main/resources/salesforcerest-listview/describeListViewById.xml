@@ -21,6 +21,7 @@
     <sequence>
         <property name="uri.var.sobjectType" expression="$func:sobjectType"/>
         <property name="uri.var.listViewID" expression="$func:listViewID"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

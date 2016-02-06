@@ -23,6 +23,7 @@
         <property name="uri.var.sobject" expression="$func:sobject"/>
         <property name="uri.var.rowId" expression="$func:rowId"/>
         <property name="uri.var.fields" expression="$func:fields"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"

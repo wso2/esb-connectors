@@ -17,6 +17,7 @@
 -->
 <template name="sObjectPlatformAction" xmlns="http://ws.apache.org/ns/synapse">
     <sequence>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

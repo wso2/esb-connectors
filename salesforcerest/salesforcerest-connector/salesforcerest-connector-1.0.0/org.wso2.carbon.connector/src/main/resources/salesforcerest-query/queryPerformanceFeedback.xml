@@ -19,6 +19,7 @@
     <parameter name="queryString" description="The SOQL query to execute."/>
     <sequence>
         <property name="uri.var.queryString" expression="$func:queryString"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"

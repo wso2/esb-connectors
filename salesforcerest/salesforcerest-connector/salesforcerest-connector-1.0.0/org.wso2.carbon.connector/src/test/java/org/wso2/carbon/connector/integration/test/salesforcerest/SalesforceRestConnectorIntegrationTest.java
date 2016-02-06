@@ -29,6 +29,7 @@ import org.wso2.connector.integration.test.base.RestResponse;
 
 
 import java.io.IOException;
+import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,9 +38,6 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
 
     private Map<String, String> apiRequestHeadersMap = new HashMap<String, String>();
 
-    private Map<String, String> mpRequestHeadersMap = new HashMap<String, String>();
-
-    private String multipartProxyUrl;
 
     /**
      * Set up the environment.

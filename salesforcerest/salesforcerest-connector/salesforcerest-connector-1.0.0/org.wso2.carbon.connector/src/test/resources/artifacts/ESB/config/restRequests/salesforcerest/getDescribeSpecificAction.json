@@ -4,6 +4,5 @@
   "clientSecret": "%s(clientSecret)",
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
-  "actionName": "%s(actionName)",
-  "apiUrl": "%s(apiUrl)"
+  "actionName": "%s(actionName)"
 }

@@ -19,6 +19,7 @@
     <parameter name="menuType" description="The type is either AppSwitcher or Salesforce1"/>
     <sequence>
         <property name="uri.var.menuType" expression="$func:menuType"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

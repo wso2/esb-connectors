@@ -4,6 +4,5 @@
   "clientSecret": "%s(clientSecret)",
   "hostName": "%s(hostName)",
   "apiVersion": "%s(apiVersion)",
-  "queryString": "%s(queryString)",
-  "apiUrl": "%s(apiUrl)"
+  "queryString": "%s(queryString)"
 }

@@ -21,6 +21,7 @@
     <sequence>
         <property name="uri.var.object" expression="$func:object"/>
         <property name="uri.var.layoutName" expression="$func:layoutName"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

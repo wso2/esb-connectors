@@ -17,10 +17,11 @@
 -->
 <template name="describeGlobal" xmlns="http://ws.apache.org/ns/synapse">
     <sequence>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"
-                      uri-template="{uri.var.apiUrl}/services/data/{uri.var.apiVersion}/sobjects"/>
+                      uri-template="{+uri.var.apiUrl}/services/data/{uri.var.apiVersion}/sobjects"/>
             </endpoint>
         </call>
     </sequence>

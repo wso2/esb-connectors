@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+   Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
    WSO2 Inc. licenses this file to you under the Apache License,
    Version 2.0 (the "License"); you may not use this file except
    in compliance with the License.
@@ -16,48 +16,30 @@
    under the License.
 -->
 <template name="getAccessTokenFromRefreshToken" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="refreshToken" description="value of the refresh token."/>
-    <parameter name="clientSecret"
-               description="Value of your secret key given when you registered your application with salesforce."/>
-    <parameter name="clientId"
-               description="Value of your API Key given when you registered your application with salesforce."/>
-    <parameter name="hostName" description="Value of the hostname to authenticate salesforce."/>
     <sequence>
-        <property name="uri.var.refreshToken" expression="$func:refreshToken"/>
-        <property name="uri.var.clientId" expression="$func:clientId"/>
-        <property name="uri.var.clientSecret" expression="$func:clientSecret"/>
-        <property name="uri.var.hostName" expression="$func:hostName"/>
-        <property name="FORCE_POST_PUT_NOBODY" value="true" scope="axis2" type="BOOLEAN"/>
+        <payloadFactory media-type="json">
+            <format>
+                {
+                "refresh_token": "$1",
+                "client_secret": "$2",
+                "client_id": "$3"
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.refreshToken')"/>
+                <arg expression="get-property('uri.var.clientSecret')"/>
+                <arg expression="get-property('uri.var.clientId')"/>
+            </args>
+        </payloadFactory>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="post"
-                      uri-template="{uri.var.hostName}/services/oauth2/token?grant_type=refresh_token&amp;client_id={uri.var.clientId}&amp;client_secret={uri.var.clientSecret}&amp;refresh_token={uri.var.refreshToken}&amp;format=xml"/>
+                      uri-template="{+uri.var.hostName}/services/oauth2/token?grant_type=refresh_token&amp;client_id={uri.var.clientId}&amp;client_secret={uri.var.clientSecret}&amp;refresh_token={uri.var.refreshToken}&amp;format=json"/>
             </endpoint>
         </call>
-        <header name="Authorization" expression="fn:concat('Bearer  ',get-property('accessToken'))"
-                scope="transport"/>
-        <filter source="$axis2:HTTP_SC" regex="[2][0][0]">
-            <then>
-                <property name="uri.var.apiUrl" expression="//instance_url"/>
-                <property name="accessToken" expression="//access_token"/>
-            </then>
-            <else>
-                <respond/>
-                <drop/>
-            </else>
-        </filter>
-        <header name="Authorization" expression="fn:concat('Bearer  ',get-property('accessToken'))"
-                scope="transport"/>
+        <!-- Remove custom Headers from the API Response -->
+        <header name="Cache-Control" action="remove" scope="transport"/>
+        <header name="Pragma" action="remove" scope="transport"/>
     </sequence>
 </template>
-
-
-
-
-
-
-
-
-
-
-

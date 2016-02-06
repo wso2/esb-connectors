@@ -22,10 +22,10 @@
             <file>init.xml</file>
             <description>Initial configuration file for salesforce rest connector</description>
         </component>
-        <component name="getAccessTokenFromCode">
-            <file>getAccessTokenFromCode.xml</file>
-            <description>Getting Access Token from access code</description>
-        </component>
+        <!--<component name="getAccessTokenFromCode">-->
+        <!--<file>getAccessTokenFromCode.xml</file>-->
+        <!--<description>Getting Access Token from access code</description>-->
+        <!--</component>-->
         <component name="getAccessTokenFromRefreshToken">
             <file>getAccessTokenFromRefreshToken.xml</file>
             <description>Getting Access Token from refresh token</description>

@@ -19,6 +19,7 @@
     <parameter name="documentId" description="The Id of the Document"/>
     <sequence>
         <property name="uri.var.documentId" expression="$func:documentId"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

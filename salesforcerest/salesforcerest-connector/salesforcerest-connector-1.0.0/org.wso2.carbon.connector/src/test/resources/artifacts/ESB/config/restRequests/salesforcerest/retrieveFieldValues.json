@@ -6,6 +6,5 @@
   "apiVersion": "%s(apiVersion)",
   "sobject": "%s(sobject)",
   "rowId": "%s(rowId)",
-  "fields": "%s(fields)",
-  "apiUrl": "%s(apiUrl)"
+  "fields": "%s(fields)"
 }

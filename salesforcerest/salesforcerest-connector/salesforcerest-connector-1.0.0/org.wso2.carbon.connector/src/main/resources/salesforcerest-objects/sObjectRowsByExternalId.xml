@@ -23,6 +23,7 @@
         <property name="uri.var.customObject" expression="$func:customObject"/>
         <property name="uri.var.externalIdField" expression="$func:externalIdField"/>
         <property name="uri.var.externalIdFieldValue" expression="$func:externalIdFieldValue"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="Get"

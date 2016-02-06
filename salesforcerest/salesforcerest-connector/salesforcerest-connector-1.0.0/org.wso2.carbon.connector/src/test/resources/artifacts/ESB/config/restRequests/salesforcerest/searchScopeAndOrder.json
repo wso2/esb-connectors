@@ -3,6 +3,5 @@
   "refreshToken": "%s(refreshToken)",
   "clientSecret": "%s(clientSecret)",
   "hostName": "%s(hostName)",
-  "apiVersion": "%s(apiVersion)",
-  "apiUrl": "%s(apiUrl)"
+  "apiVersion": "%s(apiVersion)"
 }

@@ -29,6 +29,7 @@
                 <arg expression="get-property('uri.var.sObjectName')"/>
             </args>
         </payloadFactory>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="post"

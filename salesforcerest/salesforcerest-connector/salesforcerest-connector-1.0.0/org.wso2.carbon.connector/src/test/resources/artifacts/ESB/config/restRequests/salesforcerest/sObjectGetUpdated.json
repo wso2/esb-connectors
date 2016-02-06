@@ -6,6 +6,5 @@
   "apiVersion": "%s(apiVersion)",
   "sobject": "%s(sobject)",
   "startTime": "%s(startTime)",
-  "endTime": "%s(endTime)",
-  "apiUrl": "%s(apiUrl)"
+  "endTime": "%s(endTime)"
 }

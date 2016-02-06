@@ -24,6 +24,7 @@
         <property name="uri.var.externalObject" expression="$func:externalObject"/>
         <property name="uri.var.externalId" expression="$func:externalId"/>
         <property name="uri.var.externalFields" expression="$func:externalFields"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"

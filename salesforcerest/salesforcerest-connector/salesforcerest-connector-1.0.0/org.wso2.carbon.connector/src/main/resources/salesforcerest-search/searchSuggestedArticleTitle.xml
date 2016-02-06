@@ -25,6 +25,7 @@
         <property name="uri.var.searchString" expression="$func:searchString"/>
         <property name="uri.var.language" expression="$func:language"/>
         <property name="uri.var.status" expression="$func:status"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"

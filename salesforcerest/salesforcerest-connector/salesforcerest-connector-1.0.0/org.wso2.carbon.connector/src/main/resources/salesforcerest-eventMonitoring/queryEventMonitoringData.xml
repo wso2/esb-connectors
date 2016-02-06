@@ -20,6 +20,7 @@
     <sequence>
         <property name="uri.var.queryStringForEventMonitoringData"
                   expression="$func:queryStringForEventMonitoringData"/>
+        <property name="Accept-Encoding" scope="transport" action="remove"/>
         <call>
             <endpoint>
                 <http method="get"
