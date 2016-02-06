@@ -183,7 +183,6 @@
                 <module>jira/jira-connector/jira-connector-2.0.0/org.wso2.carbon.connector</module>
                 <module>confluence/confluence-connector/confluence-connector-2.0.0/org.wso2.carbon.connector</module>
                 <module>geonames/geonames-connector/geonames-connector-1.0.0/org.wso2.carbon.connector</module>
-                <module>salesforcerest/salesforcerest-connector/salesforcerest-connector-1.0.0/org.wso2.carbon.connector</module>
             </modules>
         </profile>
     </profiles>
