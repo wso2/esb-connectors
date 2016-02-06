@@ -329,7 +329,7 @@
         <dependency>
             <groupId>org.wso2.esb</groupId>
             <artifactId>org.wso2.carbon.esb.common</artifactId>
-            <version>${esb.version}</version>
+            <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -387,7 +387,7 @@
     </distributionManagement>
     <properties>
         <test.framework.version>4.2.0</test.framework.version>
-        <esb.version>4.8.0</esb.version>
+        <esb.version>4.10.0-M2-SNAPSHOT</esb.version>
         <carbon.kernel.version>4.4.1</carbon.kernel.version>
         <emma.version>2.1.5320</emma.version>
         <synapse.version>2.1.3-wso2v11</synapse.version>

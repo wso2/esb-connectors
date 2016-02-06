@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="queryEventMonitoringData"
+       statistics="disable" trace="disable" transports="https http">
+    <target>
+        <inSequence>
+            <property name="queryStringForEventMonitoringData"
+                      expression="json-eval($.queryStringForEventMonitoringData)"/>
+            <property name="clientId" expression="json-eval($.clientId)"/>
+            <property name="refreshToken" expression="json-eval($.refreshToken)"/>
+            <property name="clientSecret" expression="json-eval($.clientSecret)"/>
+            <property name="hostName" expression="json-eval($.hostName)"/>
+            <property name="apiVersion" expression="json-eval($.apiVersion)"/>
+            <salesforcerest.init>
+                <apiVersion>{$ctx:apiVersion}</apiVersion>
+                <hostName>{$ctx:hostName}</hostName>
+                <clientSecret>{$ctx:clientSecret}</clientSecret>
+                <clientId>{$ctx:clientId}</clientId>
+                <refreshToken>{$ctx:refreshToken}</refreshToken>
+            </salesforcerest.init>
+            <log category="INFO" level="full" separator=","/>
+            <salesforcerest.queryEventMonitoringData>
+                <queryStringForEventMonitoringData>{$ctx:queryStringForEventMonitoringData}
+                </queryStringForEventMonitoringData>
+            </salesforcerest.queryEventMonitoringData>
+            <send/>
+        </inSequence>
+    </target>
+</proxy>

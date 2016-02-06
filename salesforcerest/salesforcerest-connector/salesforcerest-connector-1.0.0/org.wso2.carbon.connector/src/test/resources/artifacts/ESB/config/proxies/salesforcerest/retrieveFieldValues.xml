@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="retrieveFieldValues"
+       statistics="disable" trace="disable" transports="https http">
+    <target>
+        <inSequence>
+            <property name="sobject" expression="json-eval($.sobject)"/>
+            <property name="rowId" expression="json-eval($.rowId)"/>
+            <property name="fields" expression="json-eval($.fields)"/>
+            <property name="clientId" expression="json-eval($.clientId)"/>
+            <property name="refreshToken" expression="json-eval($.refreshToken)"/>
+            <property name="clientSecret" expression="json-eval($.clientSecret)"/>
+            <property name="hostName" expression="json-eval($.hostName)"/>
+            <property name="apiVersion" expression="json-eval($.apiVersion)"/>
+            <salesforcerest.init>
+                <apiVersion>{$ctx:apiVersion}</apiVersion>
+                <hostName>{$ctx:hostName}</hostName>
+                <clientSecret>{$ctx:clientSecret}</clientSecret>
+                <clientId>{$ctx:clientId}</clientId>
+                <refreshToken>{$ctx:refreshToken}</refreshToken>
+            </salesforcerest.init>
+            <log category="INFO" level="full" separator=","/>
+            <salesforcerest.retrieveFieldValues>
+                <sobject>{$ctx:sobject}</sobject>
+                <rowId>{$ctx:rowId}</rowId>
+                <fields>{$ctx:fields}</fields>
+            </salesforcerest.retrieveFieldValues>
+            <send/>
+        </inSequence>
+    </target>
+</proxy>
