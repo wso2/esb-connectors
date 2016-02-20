@@ -463,7 +463,7 @@ public  final class GmailUtils {
                                 GmailUtils.processMessageBody(message, messageContext,
                                         attachmentContentIDs,
                                         messageID));
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                             log.debug("Cannot retrive \"Message Content\".", e);
                     }
 

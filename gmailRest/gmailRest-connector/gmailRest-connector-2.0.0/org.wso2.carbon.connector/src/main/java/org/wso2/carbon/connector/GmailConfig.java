@@ -53,8 +53,7 @@ public class GmailConfig extends AbstractConnector {
                 String errorLog = "Invalid username or access token";
                 log.error(errorLog);
                 ConnectException connectException = new ConnectException(errorLog);
-                GmailUtils.storeErrorResponseStatus(messageContext,
-                        connectException,
+                GmailUtils.storeErrorResponseStatus(messageContext, connectException,
                         GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
                 handleException(connectException.getMessage(), connectException, messageContext);
             }
@@ -64,10 +63,6 @@ public class GmailConfig extends AbstractConnector {
         } catch (MessagingException e) {
             GmailUtils.storeErrorResponseStatus(messageContext, e,
                     GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
-            handleException(e.getMessage(), e, messageContext);
-        } catch (Exception e) {
-            GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }
