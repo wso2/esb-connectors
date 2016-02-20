@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.wso2.carbon.connector.GmailConstants;
 import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 import org.wso2.connector.integration.test.base.RestResponse;
 
@@ -23,7 +24,7 @@ public class GmailConnectorIntegrationTest extends ConnectorIntegrationTestBase{
     @BeforeClass(alwaysRun = true)
     public void setEnvironment() throws Exception {
         init("gmailRest-connector-2.0.0");
-        esbRequestHeadersMap.put("Accept-Charset", "UTF-8");
+        esbRequestHeadersMap.put(GmailConstants.GMAIL_CHARSET, "UTF-8");
         esbRequestHeadersMap.put("Content-Type", "application/json");
         String authorization = connectorProperties.getProperty("accessToken");
         apiRequestHeadersMap.put("Authorization", "Bearer "+ authorization);
