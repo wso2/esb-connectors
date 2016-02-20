@@ -96,17 +96,22 @@ public class GmailConfig extends AbstractConnector {
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN).toString()
                         .equals(oauthAccessToken)) {
-            log.info("The same authentication is already available. Hence no changes are needed.");
+            if(log.isDebugEnabled()){
+                log.debug("The same authentication is already available. Hence no changes are needed.");
+            }
             return;
         }
 
         // Reset already stored instances
         GmailUtils.closeConnection(axis2MessageContext);
-
-        log.info("Setting the loggin mode to \"OAUTH\"");
+        if(log.isDebugEnabled()){
+            log.debug("Setting the loggin mode to \"OAUTH\"");
+        }
         axis2MessageContext.setProperty(GmailConstants.GMAIL_LOGIN_MODE,
                 GmailConstants.GMAIL_OAUTH_LOGIN_MODE);
-        log.info("Storing new username and access token");
+        if(log.isDebugEnabled()){
+            log.debug("Storing new username and access token");
+        }
         messageContext.setProperty(GmailConstants.GMAIL_OAUTH_USERNAME, username);
         messageContext.setProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN, oauthAccessToken);
     }

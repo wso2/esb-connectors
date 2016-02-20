@@ -94,17 +94,23 @@ public class GmailPasswordLogin extends AbstractConnector {
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString()
                         .equals(password)) {
-            log.info("The same authentication is already available. Hence no changes are needed.");
+            if(log.isDebugEnabled()){
+                log.debug("The same authentication is already available. Hence no changes are needed.");
+            }
             return;
         }
 
         // Closing already stored connections
         GmailUtils.closeConnection(axis2MessageContext);
 
-        log.info("Setting the loggin mode to \"SASL\"");
+        if(log.isDebugEnabled()){
+            log.debug("Setting the loggin mode to \"SASL\"");
+        }
         axis2MessageContext.setProperty(GmailConstants.GMAIL_LOGIN_MODE,
                 GmailConstants.GMAIL_SASL_LOGIN_MODE);
-        log.info("Storing new username and password");
+        if(log.isDebugEnabled()){
+            log.debug("Storing new username and password");
+        }
         messageContext.setProperty(GmailConstants.GMAIL_USER_USERNAME, username);
         messageContext.setProperty(GmailConstants.GMAIL_USER_PASSWORD, password);
     }

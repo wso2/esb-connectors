@@ -63,7 +63,9 @@ public class GmailSMTPClientLoader {
         // Use if there exists an already stored GmailSMTPConnectionObject
         // instance.
         if (prestoredInstance != null) {
-            log.info("Restoring the preinstantiated SMTP session");
+            if(log.isDebugEnabled()){
+                log.debug("Restoring the preinstantiated SMTP session");
+            }
             return (GmailSMTPConnectionObject) prestoredInstance;
         }
 
@@ -82,8 +84,9 @@ public class GmailSMTPClientLoader {
         // Perform SASL authentication if configured using the "Password Login"
         // operation.
         if (loginMode.toString().equals(GmailConstants.GMAIL_SASL_LOGIN_MODE)) {
-
-            log.info("SASL authentication starts");
+            if(log.isDebugEnabled()){
+                log.debug("SASL authentication starts");
+            }
             smtpConnectionObject =
                     GmailSASLAuthenticator.connectToSMTPSession(messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME)
                                     .toString(),
@@ -94,16 +97,17 @@ public class GmailSMTPClientLoader {
         // Perform OAuth authentication if configured using the "init"
         // operation.
         else if (loginMode.toString().equals(GmailConstants.GMAIL_OAUTH_LOGIN_MODE)) {
-
             if (axis2MsgCtx.getProperty(GmailConstants.GMAIL_OAUTH2_PROVIDER) == null) {
-
-                log.info("Initializing a new OAuth2 provider");
+                if(log.isDebugEnabled()){
+                    log.debug("Initializing a new OAuth2 provider");
+                }
                 GmailOAuth2SASLAuthenticator.initializeOAuth2Provider();
                 axis2MsgCtx.getOperationContext().setProperty(GmailConstants.GMAIL_OAUTH2_PROVIDER,
                         "initialized");
             }
-
-            log.info("OAuth2 authentication starts");
+            if(log.isDebugEnabled()){
+                log.debug("OAuth2 authentication starts");
+            }
             smtpConnectionObject =
                     GmailOAuth2SASLAuthenticator.connectToSMTP(messageContext.getProperty(GmailConstants.GMAIL_OAUTH_USERNAME)
                                     .toString(),
