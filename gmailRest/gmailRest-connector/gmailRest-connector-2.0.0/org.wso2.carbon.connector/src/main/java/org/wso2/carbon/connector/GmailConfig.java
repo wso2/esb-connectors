@@ -91,7 +91,7 @@ public class GmailConfig extends AbstractConnector {
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode != null &&
-                (loginMode.toString() == GmailConstants.GMAIL_OAUTH_LOGIN_MODE) &&
+                (loginMode.toString().equals(GmailConstants.GMAIL_OAUTH_LOGIN_MODE)) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_USERNAME).toString()
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN).toString()

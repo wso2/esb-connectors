@@ -89,7 +89,7 @@ public class GmailPasswordLogin extends AbstractConnector {
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode != null &&
-                (loginMode.toString() == GmailConstants.GMAIL_SASL_LOGIN_MODE) &&
+                (loginMode.toString().equals( GmailConstants.GMAIL_SASL_LOGIN_MODE)) &&
                 messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME).toString()
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString()
