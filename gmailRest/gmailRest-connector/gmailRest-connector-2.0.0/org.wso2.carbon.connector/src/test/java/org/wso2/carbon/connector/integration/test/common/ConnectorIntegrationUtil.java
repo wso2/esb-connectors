@@ -85,7 +85,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -110,7 +110,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -134,7 +134,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -177,7 +177,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -224,7 +224,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -281,7 +281,7 @@ public class ConnectorIntegrationUtil {
             }
 
         } catch (IOException ignored) {
-            log.error("automation.properties file not found, please check your configuration");
+            log.error("automation.properties file not found, please check your configuration", ignored);
         }
 
         return null;

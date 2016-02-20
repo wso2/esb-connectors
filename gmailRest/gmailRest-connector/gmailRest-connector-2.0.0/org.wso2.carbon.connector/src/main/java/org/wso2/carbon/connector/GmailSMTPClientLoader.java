@@ -92,7 +92,6 @@ public class GmailSMTPClientLoader {
                                     .toString(),
                             messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD)
                                     .toString());
-
         }
         // Perform OAuth authentication if configured using the "init"
         // operation.

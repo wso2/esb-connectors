@@ -59,8 +59,7 @@ public class GmailPasswordLogin extends AbstractConnector {
             // Storing user login details in the message context
             this.storeSASLUserLogin(username, password, messageContext);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
+            GmailUtils.storeErrorResponseStatus(messageContext, e,
                     GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (Exception e) {

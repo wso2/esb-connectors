@@ -98,8 +98,7 @@ public class GmailSendMail extends AbstractConnector {
                     GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
+            GmailUtils.storeErrorResponseStatus(messageContext, e,
                     GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (IOException e) {

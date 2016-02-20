@@ -92,8 +92,7 @@ public class GmailIMAPClientLoader {
                                 messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD)
                                         .toString());
             } catch (MessagingException e) {
-                log.error("Failure in SASL authentication");
-                throw (e);
+                log.error("Failure in SASL authentication", e);
             }
         }
 
@@ -118,8 +117,7 @@ public class GmailIMAPClientLoader {
                                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN)
                                         .toString());
             } catch (MessagingException e) {
-                log.error("Failure in OAuth2 authentication.");
-                throw (e);
+                log.error("Failure in OAuth2 authentication.", e);
             }
 
         } else {

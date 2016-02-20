@@ -43,8 +43,7 @@ public class GmailEndSession extends AbstractConnector {
                 log.debug("Successfully terminated the session");
             }
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
+            GmailUtils.storeErrorResponseStatus(messageContext, e,
                     GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (Exception e) {

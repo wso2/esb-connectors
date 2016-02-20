@@ -169,8 +169,7 @@ public  final class GmailUtils {
             storeMailListInResponse(messages, messageContext, responseElementName, false);
             folder.close(true);
         } catch (MessagingException e) {
-            log.error("Failure while fetching messages");
-            throw (e);
+            log.error("Failure while fetching messages",e);
         }
     }
 
@@ -223,8 +222,7 @@ public  final class GmailUtils {
             folder.copyMessages(messages, trash);
             folder.close(true);
         } catch (MessagingException e) {
-            log.error("Error while deleting messages");
-            throw (e);
+            log.error("Error while deleting messages",e);
         }
     }
 
@@ -281,8 +279,7 @@ public  final class GmailUtils {
             storeMailListInResponse(messages, messageContext, responseElementName, true);
             //folder.close(true);
         } catch (MessagingException e) {
-            log.error("Failure while fetching messages");
-            throw (e);
+            log.error("Failure while fetching messages",e);
         }
     }
 
@@ -336,8 +333,7 @@ public  final class GmailUtils {
             GmailUtils.storeMailListInResponse(messages, messageContext, responseElementName, false);
             folder.close(true);
         } catch (MessagingException e) {
-            log.error("Error while deleting messages");
-            throw (e);
+            log.error("Error while deleting messages",e);
         }
     }
 
@@ -398,9 +394,7 @@ public  final class GmailUtils {
                 try {
                     subject.setText(message.getSubject());
                 } catch (MessagingException me) {
-                    if(log.isDebugEnabled()){
-                        log.debug("\"Subject\" cannot be resolved");
-                    }
+                        log.error("\"Subject\" cannot be resolved", me);
                 }
 
                 OMElement from = factory.createOMElement("from", ns);
@@ -408,9 +402,7 @@ public  final class GmailUtils {
                 try {
                     from.setText(InternetAddress.toString(message.getFrom()));
                 } catch (MessagingException e) {
-                    if(log.isDebugEnabled()){
-                        log.debug("\"From\" cannot be resolved");
-                    }
+                        log.error("\"From\" cannot be resolved", e);
                 }
 
                 OMElement to = factory.createOMElement("to", ns);
@@ -418,9 +410,7 @@ public  final class GmailUtils {
                 try {
                     to.setText(InternetAddress.toString(message.getAllRecipients()));
                 } catch (MessagingException e) {
-                    if(log.isDebugEnabled()){
-                        log.debug("\"To\" cannot be resolved");
-                    }
+                        log.error("\"To\" cannot be resolved", e);
                 }
 
                 OMElement date = factory.createOMElement("sentDate", ns);
@@ -428,9 +418,7 @@ public  final class GmailUtils {
                 try {
                     date.setText(message.getSentDate().toString());
                 } catch (MessagingException e) {
-                    if(log.isDebugEnabled()){
-                        log.debug("\"Sent date\" cannot be resolved");
-                    }
+                        log.error("\"Sent date\" cannot be resolved", e);
                 }
 
                 OMElement labelsElement = factory.createOMElement("labels", ns);
@@ -460,9 +448,7 @@ public  final class GmailUtils {
                         status.setText("UNREAD");
                     }
                 } catch (MessagingException e) {
-                    if(log.isDebugEnabled()){
-                        log.debug("\"Message Status\" cannot be resolved");
-                    }
+                        log.error("\"Message Status\" cannot be resolved", e);
                 }
 
                 if (storeContent) {
@@ -478,9 +464,7 @@ public  final class GmailUtils {
                                         attachmentContentIDs,
                                         messageID));
                     } catch (Exception e) {
-                        if(log.isDebugEnabled()){
-                            log.debug("Cannot retrive \"Message Content\".");
-                        }
+                            log.debug("Cannot retrive \"Message Content\".", e);
                     }
 
                     if (attachmentContentIDs.length() > 0) {
