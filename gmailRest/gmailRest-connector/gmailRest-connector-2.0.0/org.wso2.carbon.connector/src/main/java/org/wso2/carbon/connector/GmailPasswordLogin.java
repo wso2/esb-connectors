@@ -59,13 +59,8 @@ public class GmailPasswordLogin extends AbstractConnector {
             // Storing user login details in the message context
             this.storeSASLUserLogin(username, password, messageContext);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
-            handleException(e.getMessage(), e, messageContext);
-        } catch (Exception e) {
             GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
+                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }
@@ -89,22 +84,28 @@ public class GmailPasswordLogin extends AbstractConnector {
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode != null &&
-                (loginMode.toString() == GmailConstants.GMAIL_SASL_LOGIN_MODE) &&
+                (loginMode.toString().equals( GmailConstants.GMAIL_SASL_LOGIN_MODE)) &&
                 messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME).toString()
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString()
                         .equals(password)) {
-            log.info("The same authentication is already available. Hence no changes are needed.");
+            if(log.isDebugEnabled()){
+                log.debug("The same authentication is already available. Hence no changes are needed.");
+            }
             return;
         }
 
         // Closing already stored connections
         GmailUtils.closeConnection(axis2MessageContext);
 
-        log.info("Setting the loggin mode to \"SASL\"");
+        if(log.isDebugEnabled()){
+            log.debug("Setting the loggin mode to \"SASL\"");
+        }
         axis2MessageContext.setProperty(GmailConstants.GMAIL_LOGIN_MODE,
                 GmailConstants.GMAIL_SASL_LOGIN_MODE);
-        log.info("Storing new username and password");
+        if(log.isDebugEnabled()){
+            log.debug("Storing new username and password");
+        }
         messageContext.setProperty(GmailConstants.GMAIL_USER_USERNAME, username);
         messageContext.setProperty(GmailConstants.GMAIL_USER_PASSWORD, password);
     }

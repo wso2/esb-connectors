@@ -61,7 +61,9 @@ public class GmailIMAPClientLoader {
 
         // Use if there exists an already stored IMAPStore instance.
         if (prestoredInstance != null) {
-            log.info("Retriving the prestored IMAPstore instance");
+            if(log.isDebugEnabled()){
+                log.debug("Retriving the prestored IMAPstore instance");
+            }
             return (IMAPStore) prestoredInstance;
         }
 
@@ -80,7 +82,9 @@ public class GmailIMAPClientLoader {
         // Perform SASL authentication if configured using the "Password Login"
         // operation.
         if (loginMode.toString().equals(GmailConstants.GMAIL_SASL_LOGIN_MODE)) {
-            log.info("SASL authentication starts");
+            if(log.isDebugEnabled()){
+                log.debug("SASL authentication starts");
+            }
             try {
                 store =
                         GmailSASLAuthenticator.connectToIMAP(messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME)
@@ -88,8 +92,7 @@ public class GmailIMAPClientLoader {
                                 messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD)
                                         .toString());
             } catch (MessagingException e) {
-                log.error("Failure in SASL authentication");
-                throw (e);
+                log.error("Failure in SASL authentication", e);
             }
         }
 
@@ -97,13 +100,16 @@ public class GmailIMAPClientLoader {
         // operation.
         else if (loginMode.toString().equals(GmailConstants.GMAIL_OAUTH_LOGIN_MODE)) {
             if (axis2MsgCtx.getProperty(GmailConstants.GMAIL_OAUTH2_PROVIDER) == null) {
-                log.info("Initializing OAuth2 provider");
+                if(log.isDebugEnabled()){
+                    log.debug("Initializing OAuth2 provider");
+                }
                 GmailOAuth2SASLAuthenticator.initializeOAuth2Provider();
                 axis2MsgCtx.getOperationContext().setProperty(GmailConstants.GMAIL_OAUTH2_PROVIDER,
                         "Initialized");
             }
-
-            log.info("OAuth2 authentication starts");
+            if(log.isDebugEnabled()){
+                log.debug("OAuth2 authentication starts");
+            }
             try {
                 store =
                         GmailOAuth2SASLAuthenticator.connectToIMAP(messageContext.getProperty(GmailConstants.GMAIL_OAUTH_USERNAME)
@@ -111,8 +117,7 @@ public class GmailIMAPClientLoader {
                                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN)
                                         .toString());
             } catch (MessagingException e) {
-                log.error("Failure in OAuth2 authentication.");
-                throw (e);
+                log.error("Failure in OAuth2 authentication.", e);
             }
 
         } else {

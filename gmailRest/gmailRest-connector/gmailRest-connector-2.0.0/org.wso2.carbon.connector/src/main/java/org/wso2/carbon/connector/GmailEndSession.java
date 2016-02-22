@@ -39,16 +39,12 @@ public class GmailEndSession extends AbstractConnector {
             org.apache.axis2.context.MessageContext axis2MessageContext =
                     ((Axis2MessageContext) messageContext).getAxis2MessageContext();
             GmailUtils.closeConnection(axis2MessageContext);
-            log.info("Successfully terminated the session");
-
+            if(log.isDebugEnabled()){
+                log.debug("Successfully terminated the session");
+            }
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
-            handleException(e.getMessage(), e, messageContext);
-        } catch (Exception e) {
             GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
+                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }

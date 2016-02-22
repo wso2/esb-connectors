@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Find the relevant Java docs for SMTP Body below
+ * http://mulesoft.github.io/google-connectors-suite/gmail-connector/java/com/google/code/javax/mail/package-summary.html
+ */
 public interface Body {
     public InputStream getInputStream() throws MessagingException;
     public void writeTo(OutputStream out) throws IOException, MessagingException;

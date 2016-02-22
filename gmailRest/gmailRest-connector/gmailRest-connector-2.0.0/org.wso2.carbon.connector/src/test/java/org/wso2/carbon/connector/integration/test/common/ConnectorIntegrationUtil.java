@@ -53,6 +53,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import org.wso2.carbon.connector.GmailConstants;
+
 public class ConnectorIntegrationUtil {
 
     public static final String ESB_CONFIG_LOCATION = "artifacts" + File.separator + "ESB" + File.separator + "config";
@@ -74,8 +76,8 @@ public class ConnectorIntegrationUtil {
         String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CHARSET, charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CONTENT_TYPE, GmailConstants.GMAIL_CONTENT_TYPE_CHARSET + charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
@@ -85,7 +87,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -99,8 +101,8 @@ public class ConnectorIntegrationUtil {
         String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", contentType + ";charset=" + charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CHARSET, charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CONTENT_TYPE, contentType + ";charset=" + charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
@@ -110,7 +112,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -123,8 +125,8 @@ public class ConnectorIntegrationUtil {
         String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CHARSET, charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CONTENT_TYPE, GmailConstants.GMAIL_CONTENT_TYPE_CHARSET + charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
@@ -134,7 +136,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -166,8 +168,8 @@ public class ConnectorIntegrationUtil {
         String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CHARSET, charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CONTENT_TYPE, GmailConstants.GMAIL_CONTENT_TYPE_CHARSET + charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
@@ -177,7 +179,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -213,8 +215,8 @@ public class ConnectorIntegrationUtil {
         String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CHARSET, charset);
+        connection.setRequestProperty(GmailConstants.GMAIL_CONTENT_TYPE, GmailConstants.GMAIL_CONTENT_TYPE_CHARSET + charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
@@ -224,7 +226,7 @@ public class ConnectorIntegrationUtil {
                 try {
                     output.close();
                 } catch (IOException logOrIgnore) {
-                    log.error("Error while closing the connection");
+                    log.error("Error while closing the connection", logOrIgnore);
                 }
             }
         }
@@ -281,7 +283,7 @@ public class ConnectorIntegrationUtil {
             }
 
         } catch (IOException ignored) {
-            log.error("automation.properties file not found, please check your configuration");
+            log.error("automation.properties file not found, please check your configuration", ignored);
         }
 
         return null;

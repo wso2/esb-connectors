@@ -122,7 +122,9 @@ public  final class GmailUtils {
 
         messageContext.setProperty(SynapseConstants.ERROR_CODE, errorCode);
         messageContext.setFaultResponse(true);
-        log.info("Stored the error response");
+        if(log.isDebugEnabled()){
+            log.debug("Stored the error response");
+        }
     }
 
     /**
@@ -150,7 +152,9 @@ public  final class GmailUtils {
         FetchProfile fetchprofile = getFetchProfile();
         Message[] messages = null;
         try {
-            log.info("Started reading messages");
+            if(log.isDebugEnabled()){
+                log.debug("Started reading messages");
+            }
             IMAPFolder folder = getFolder(GmailConstants.GMAIL_ALL_MAIL, store);
             folder.open(Folder.READ_ONLY);
             if (term != null) {
@@ -159,12 +163,13 @@ public  final class GmailUtils {
                 messages = GmailUtils.getBatch(folder.getMessages(), batchNumber);
             }
             folder.fetch(messages, fetchprofile);
-            log.info("Number of fetched messages:" + messages.length);
+            if(log.isDebugEnabled()){
+                log.debug("Number of fetched messages:" + messages.length);
+            }
             storeMailListInResponse(messages, messageContext, responseElementName, false);
             folder.close(true);
         } catch (MessagingException e) {
-            log.error("Failure while fetching messages");
-            throw (e);
+            log.error("Failure while fetching messages",e);
         }
     }
 
@@ -192,7 +197,9 @@ public  final class GmailUtils {
         FetchProfile fetchprofile = getFetchProfile();
         Message[] messages = null;
         try {
-            log.info("Reading messages");
+            if(log.isDebugEnabled()){
+                log.debug("Reading messages");
+            }
             IMAPFolder folder = getFolder(GmailConstants.GMAIL_ALL_MAIL, store);
             IMAPFolder trash = getFolder(GmailConstants.GMAIL_TRASH, store);
             folder.open(Folder.READ_WRITE);
@@ -204,16 +211,18 @@ public  final class GmailUtils {
                 ConnectException connectException = new ConnectException(errorLog);
                 throw (connectException);
             }
-
-            log.info("Fetching messages");
+            if(log.isDebugEnabled()){
+                log.debug("Fetching messages");
+            }
             folder.fetch(messages, fetchprofile);
-            log.info("Number of fetched messages:" + messages.length);
+            if (log.isDebugEnabled()){
+                log.debug("Number of fetched messages:" + messages.length);
+            }
             storeMailListInResponse(messages, messageContext, responseElementName, true);
             folder.copyMessages(messages, trash);
             folder.close(true);
         } catch (MessagingException e) {
-            log.error("Error while deleting messages");
-            throw (e);
+            log.error("Error while deleting messages",e);
         }
     }
 
@@ -263,14 +272,14 @@ public  final class GmailUtils {
                 ConnectException connectException = new ConnectException(errorLog);
                 throw (connectException);
             }
-            log.info("Fetching messages");
+            if(log.isDebugEnabled()){
+                log.debug("Fetching messages");
+            }
             //folder.fetch(messages, fetchprofile);
-            log.info("Number of fetched messages:" + messages.length);
             storeMailListInResponse(messages, messageContext, responseElementName, true);
             //folder.close(true);
         } catch (MessagingException e) {
-            log.error("Failure while fetching messages");
-            throw (e);
+            log.error("Failure while fetching messages",e);
         }
     }
 
@@ -301,7 +310,9 @@ public  final class GmailUtils {
         IMAPMessage[] messages = null;
         try {
             IMAPFolder folder = getFolder(GmailConstants.GMAIL_ALL_MAIL, store);
-            log.info("Reading messages");
+            if(log.isDebugEnabled()){
+                log.debug("Reading messages");
+            }
             folder.open(Folder.READ_WRITE);
             messages = (IMAPMessage[]) folder.search(term);
             if (messages.length == 0) {
@@ -311,15 +322,18 @@ public  final class GmailUtils {
                 ConnectException connectException = new ConnectException(errorLog);
                 throw (connectException);
             }
-            log.info("Fetching messages");
+            if(log.isDebugEnabled()){
+                log.debug("Fetching messages");
+            }
             folder.fetch(messages, fetchprofile);
-            log.info("Number of fetched messages:" + messages.length);
+            if (log.isDebugEnabled()){
+                log.debug("Number of fetched messages:" + messages.length);
+            }
             folder.setGoogleMessageLabels(messages, labels, true);
             GmailUtils.storeMailListInResponse(messages, messageContext, responseElementName, false);
             folder.close(true);
         } catch (MessagingException e) {
-            log.error("Error while deleting messages");
-            throw (e);
+            log.error("Error while deleting messages",e);
         }
     }
 
@@ -355,7 +369,9 @@ public  final class GmailUtils {
     public static void storeMailListInResponse(Message[] messagesArray,
                                                MessageContext messageContext,
                                                String resultElementName, boolean storeContent) {
-        log.info("Storing the response in the message context");
+        if(log.isDebugEnabled()){
+            log.debug("Storing the response in the message context");
+        }
         if (messageContext.getEnvelope().getBody().getFirstElement() != null) {
             messageContext.getEnvelope().getBody().getFirstElement().detach();
         }
@@ -378,7 +394,7 @@ public  final class GmailUtils {
                 try {
                     subject.setText(message.getSubject());
                 } catch (MessagingException me) {
-                    log.info("\"Subject\" cannot be resolved");
+                        log.error("\"Subject\" cannot be resolved", me);
                 }
 
                 OMElement from = factory.createOMElement("from", ns);
@@ -386,7 +402,7 @@ public  final class GmailUtils {
                 try {
                     from.setText(InternetAddress.toString(message.getFrom()));
                 } catch (MessagingException e) {
-                    log.info("\"From\" cannot be resolved");
+                        log.error("\"From\" cannot be resolved", e);
                 }
 
                 OMElement to = factory.createOMElement("to", ns);
@@ -394,7 +410,7 @@ public  final class GmailUtils {
                 try {
                     to.setText(InternetAddress.toString(message.getAllRecipients()));
                 } catch (MessagingException e) {
-                    log.info("\"To\" cannot be resolved");
+                        log.error("\"To\" cannot be resolved", e);
                 }
 
                 OMElement date = factory.createOMElement("sentDate", ns);
@@ -402,7 +418,7 @@ public  final class GmailUtils {
                 try {
                     date.setText(message.getSentDate().toString());
                 } catch (MessagingException e) {
-                    log.info("\"Sent date\" cannot be resolved");
+                        log.error("\"Sent date\" cannot be resolved", e);
                 }
 
                 OMElement labelsElement = factory.createOMElement("labels", ns);
@@ -432,7 +448,7 @@ public  final class GmailUtils {
                         status.setText("UNREAD");
                     }
                 } catch (MessagingException e) {
-                    log.info("\"Message Status\" cannot be resolved");
+                        log.error("\"Message Status\" cannot be resolved", e);
                 }
 
                 if (storeContent) {
@@ -440,14 +456,15 @@ public  final class GmailUtils {
                     messageElement.addChild(content);
                     StringBuilder attachmentContentIDs = new StringBuilder();
                     try {
-
-                        log.info("Processing message content");
+                        if(log.isDebugEnabled()){
+                            log.debug("Processing message content");
+                        }
                         content.setText("\n" +
                                 GmailUtils.processMessageBody(message, messageContext,
                                         attachmentContentIDs,
                                         messageID));
-                    } catch (Exception e) {
-                        log.info("Cannot retrive \"Message Content\".");
+                    } catch (IOException e) {
+                            log.debug("Cannot retrive \"Message Content\".", e);
                     }
 
                     if (attachmentContentIDs.length() > 0) {
@@ -550,13 +567,17 @@ public  final class GmailUtils {
 
         OperationContext operationContext = axis2MessageContext.getOperationContext();
         if (operationContext.getProperty(GmailConstants.GMAIL_IMAP_STORE_INSTANCE) != null) {
-            log.info("Closing the previously opened IMAP Store");
+            if(log.isDebugEnabled()){
+                log.debug("Closing the previously opened IMAP Store");
+            }
             ((IMAPStore) operationContext.getProperty(GmailConstants.GMAIL_IMAP_STORE_INSTANCE)).close();
             operationContext.removeProperty(GmailConstants.GMAIL_IMAP_STORE_INSTANCE);
         }
 
         if (operationContext.getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE) != null) {
-            log.info("Closing the previously opened SMTP transport");
+            if(log.isDebugEnabled()){
+                log.debug("Closing the previously opened SMTP transport");
+            }
             ((GmailSMTPConnectionObject) operationContext.getProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE)).getTransport()
                     .close();
             operationContext.removeProperty(GmailConstants.GMAIL_SMTP_CONNECTION_INSTANCE);
@@ -584,7 +605,9 @@ public  final class GmailUtils {
     public static void storeSentMailResponse(String responseElementName, String subject,
                                              String textContent, String recipients,
                                              String attachmentIDs, MessageContext messageContext) {
-        log.info("Storing the response in the message context");
+        if(log.isDebugEnabled()){
+            log.debug("Storing the response in the message context");
+        }
         if (messageContext.getEnvelope().getBody().getFirstElement() != null) {
             messageContext.getEnvelope().getBody().getFirstElement().detach();
         }
@@ -641,7 +664,9 @@ public  final class GmailUtils {
             throws ConnectException,
             MessagingException,
             IOException {
-        log.info("Creating the mail message");
+        if(log.isDebugEnabled()){
+            log.debug("Creating the mail message);
+        }
         MimeMessage message = new MimeMessage(session);
         if (toRecipients != null) {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toRecipients));
@@ -694,9 +719,13 @@ public  final class GmailUtils {
      */
     public static void sendMessage(Message message, SMTPTransport transport)
             throws MessagingException {
-        log.info("Sending the mail...");
+        if(log.isDebugEnabled()){
+            log.debug("Restoring the preinstantiated SMTP session");
+        }
         transport.sendMessage(message, message.getAllRecipients());
-        log.info("The mail is succesfully sent");
+        if(log.isDebugEnabled()){
+            log.debug("The mail is succesfully sent");
+        }
     }
 
     private static Message[] getBatch(Message[] messages, int batchNumber) {
@@ -829,6 +858,8 @@ public  final class GmailUtils {
                 new javax.activation.DataHandler(
                         (javax.activation.DataSource) source);
         axis2mc.addAttachment(attachmentContentID, handler);
-        log.info("Added an attachemnt named \"" + attachmentContentID + "\" to message context");
+        if(log.isDebugEnabled()){
+            log.debug("Added an attachemnt named \"" + attachmentContentID + "\" to message context");
+        }
     }
 }

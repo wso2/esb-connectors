@@ -53,8 +53,7 @@ public class GmailConfig extends AbstractConnector {
                 String errorLog = "Invalid username or access token";
                 log.error(errorLog);
                 ConnectException connectException = new ConnectException(errorLog);
-                GmailUtils.storeErrorResponseStatus(messageContext,
-                        connectException,
+                GmailUtils.storeErrorResponseStatus(messageContext, connectException,
                         GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
                 handleException(connectException.getMessage(), connectException, messageContext);
             }
@@ -62,13 +61,8 @@ public class GmailConfig extends AbstractConnector {
             // Storing OAuth user login details in the message context
             this.storeOauthUserLogin(messageContext, username, oauthAccessToken);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
-            handleException(e.getMessage(), e, messageContext);
-        } catch (Exception e) {
             GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
+                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }
@@ -91,22 +85,27 @@ public class GmailConfig extends AbstractConnector {
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode != null &&
-                (loginMode.toString() == GmailConstants.GMAIL_OAUTH_LOGIN_MODE) &&
+                (loginMode.toString().equals(GmailConstants.GMAIL_OAUTH_LOGIN_MODE)) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_USERNAME).toString()
                         .equals(username) &&
                 messageContext.getProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN).toString()
                         .equals(oauthAccessToken)) {
-            log.info("The same authentication is already available. Hence no changes are needed.");
+            if(log.isDebugEnabled()){
+                log.debug("The same authentication is already available. Hence no changes are needed.");
+            }
             return;
         }
 
         // Reset already stored instances
         GmailUtils.closeConnection(axis2MessageContext);
-
-        log.info("Setting the loggin mode to \"OAUTH\"");
+        if(log.isDebugEnabled()){
+            log.debug("Setting the loggin mode to \"OAUTH\"");
+        }
         axis2MessageContext.setProperty(GmailConstants.GMAIL_LOGIN_MODE,
                 GmailConstants.GMAIL_OAUTH_LOGIN_MODE);
-        log.info("Storing new username and access token");
+        if(log.isDebugEnabled()){
+            log.debug("Storing new username and access token");
+        }
         messageContext.setProperty(GmailConstants.GMAIL_OAUTH_USERNAME, username);
         messageContext.setProperty(GmailConstants.GMAIL_OAUTH_ACCESS_TOKEN, oauthAccessToken);
     }

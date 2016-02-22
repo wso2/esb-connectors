@@ -70,7 +70,9 @@ public class GmailSendMail extends AbstractConnector {
             String textContent = this.setTextContent(messageContext);
 
             GmailSMTPClientLoader smtpClientLoader = new GmailSMTPClientLoader();
-            log.info("Loading the SMTP connection");
+            if(log.isDebugEnabled()){
+                log.debug("Loading the SMTP connection");
+            }
             GmailSMTPConnectionObject smtpConnectionObject =
                     (GmailSMTPConnectionObject) smtpClientLoader.loadSMTPSession(messageContext);
             Session session = smtpConnectionObject.getSession();
@@ -88,23 +90,20 @@ public class GmailSendMail extends AbstractConnector {
                     InternetAddress.toString(message.getAllRecipients())
                             .toString(),
                     StringUtils.join(attachmentList, ','), messageContext);
-            log.info("Successfully completed the \"send mail\" operation");
+            if(log.isDebugEnabled()){
+                log.debug("Successfully completed the \"send mail\" operation");
+            }
         } catch (ConnectException e) {
             GmailUtils.storeErrorResponseStatus(messageContext, e,
                     GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
+            GmailUtils.storeErrorResponseStatus(messageContext, e,
                     GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (IOException e) {
             GmailUtils.storeErrorResponseStatus(messageContext, e,
                     GmailErrorCodes.GMAIL_ERROR_CODE_IO_EXCEPTION);
-            handleException(e.getMessage(), e, messageContext);
-        } catch (Exception e) {
-            GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }
