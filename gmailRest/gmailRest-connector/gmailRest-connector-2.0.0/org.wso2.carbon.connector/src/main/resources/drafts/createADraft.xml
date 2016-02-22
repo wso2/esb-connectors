@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  ~ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
   ~ WSO2 Inc. licenses this file to you under the Apache License,
   ~ Version 2.0 (the "License"); you may not use this file except
   ~ in compliance with the License.
@@ -114,7 +114,7 @@
             </else>
         </filter>
         <property name="parameters" expression="get-property('gmailParameters')"/>
-        <class name="org.wso2.carbon.connector.createMail"/>
+        <class name="org.wso2.carbon.connector.CreateMail"/>
         <property name="encodedValue" expression="get-property('uri.var.encoded')"/>
         <payloadFactory media-type="json">
             <format>
@@ -129,7 +129,6 @@
         </payloadFactory>
         <script language="js">
             <![CDATA[
-
                     var to = mc.getProperty('encodedValue');
                     var payload = mc.getPayloadJSON();
                     payload.message.raw=to;

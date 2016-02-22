@@ -25,47 +25,36 @@ import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 
 /**
- * Class which reads user name and password from the
- * message context to perform SASL authentication for Gmail.
- *
+ * Class which reads user name and password from the message context to perform SASL authentication for Gmail.
  */
 public class GmailPasswordLogin extends AbstractConnector {
 
     /*
-     * Extracts the values for user name and password and stores them in the
-     * message context.
+     * Extracts the values for user name and password and stores them in the message context.
      */
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {
         try {
             String username =
-                    GmailUtils.lookupFunctionParam(messageContext,
-                            GmailConstants.GMAIL_PARAM_USERNAME);
+                    GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_USERNAME);
             String password =
-                    GmailUtils.lookupFunctionParam(messageContext,
-                            GmailConstants.GMAIL_PARAM_PASSWORD);
-            if (username == null || "".equals(username.trim()) || password == null ||
-                    "".equals(password.trim())) {
-
+                    GmailUtils.lookupFunctionParam(messageContext, GmailConstants.GMAIL_PARAM_PASSWORD);
+            if (username == null || "".equals(username.trim()) || password == null || "".equals(password.trim())){
                 String errorLog = "Invalid username or password";
                 log.error(errorLog);
                 ConnectException connectException = new ConnectException(errorLog);
-                GmailUtils.storeErrorResponseStatus(messageContext,
-                        connectException,
+                GmailUtils.storeErrorResponseStatus(messageContext, connectException,
                         GmailErrorCodes.GMAIL_ERROR_CODE_CONNECT_EXCEPTION);
                 handleException(connectException.getMessage(), connectException, messageContext);
             }
 
-            // Storing user login details in the message context
+            // Storing user login details in the message context.
             this.storeSASLUserLogin(username, password, messageContext);
         } catch (MessagingException e) {
-            GmailUtils.storeErrorResponseStatus(messageContext,
-                    e,
-                    GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_ERROR_CODE_MESSAGING_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         } catch (Exception e) {
-            GmailUtils.storeErrorResponseStatus(messageContext, e,
-                    GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
+            GmailUtils.storeErrorResponseStatus(messageContext, e, GmailErrorCodes.GMAIL_COMMON_EXCEPTION);
             handleException(e.getMessage(), e, messageContext);
         }
     }
@@ -73,15 +62,11 @@ public class GmailPasswordLogin extends AbstractConnector {
     /**
      * Stores user name and password information for SASL authentication
      *
-     * @param username
-     *            user name
-     * @param password
-     *            password
-     * @param messageContext
-     *            message context where the user login information should be
-     *            stored
-     * @throws com.google.code.javax.mail.MessagingException
-     *             if failures occur while authentication.
+     * @param username       user name
+     * @param password       password
+     * @param messageContext message context where the user login information should be
+     *                       stored
+     * @throws com.google.code.javax.mail.MessagingException if failures occur while authentication.
      */
     private void storeSASLUserLogin(String username, String password, MessageContext messageContext)
             throws MessagingException {
@@ -90,15 +75,13 @@ public class GmailPasswordLogin extends AbstractConnector {
         Object loginMode = axis2MessageContext.getProperty(GmailConstants.GMAIL_LOGIN_MODE);
         if (loginMode != null &&
                 (loginMode.toString() == GmailConstants.GMAIL_SASL_LOGIN_MODE) &&
-                messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME).toString()
-                        .equals(username) &&
-                messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString()
-                        .equals(password)) {
+                messageContext.getProperty(GmailConstants.GMAIL_USER_USERNAME).toString().equals(username) &&
+                messageContext.getProperty(GmailConstants.GMAIL_USER_PASSWORD).toString().equals(password)){
             log.info("The same authentication is already available. Hence no changes are needed.");
             return;
         }
 
-        // Closing already stored connections
+        // Closing already stored connections.
         GmailUtils.closeConnection(axis2MessageContext);
 
         log.info("Setting the loggin mode to \"SASL\"");

@@ -37,11 +37,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.automation.core.ProductConstant;
+import org.wso2.carbon.connector.GmailConstants;
 import org.wso2.carbon.mediation.library.stub.upload.MediationLibraryUploaderStub;
 import org.wso2.carbon.mediation.library.stub.upload.types.carbon.LibraryFileItem;
 import javax.activation.DataHandler;
 import javax.xml.stream.XMLStreamException;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,6 +64,7 @@ import java.util.Properties;
 public class ConnectorIntegrationUtil {
 
     public static final String ESB_CONFIG_LOCATION = "artifacts" + File.separator + "ESB" + File.separator + "config";
+
     private static final Log log = LogFactory.getLog(ConnectorIntegrationUtil.class);
     public static void uploadConnector(String repoLocation, MediationLibraryUploaderStub mediationLibUploadStub,
                                        String strFileName) throws MalformedURLException, RemoteException {
@@ -71,15 +80,14 @@ public class ConnectorIntegrationUtil {
     }
 
     public static int sendRequestToRetriveHeaders(String addUrl, String query) throws IOException, JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -96,15 +104,14 @@ public class ConnectorIntegrationUtil {
 
     public static int sendRequestToRetriveHeaders(String addUrl, String query, String contentType) throws IOException,
             JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", contentType + ";charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", contentType + ";charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -120,15 +127,14 @@ public class ConnectorIntegrationUtil {
     }
 
     public static JSONArray sendRequestJSONArray(String addUrl, String query) throws IOException, JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -163,15 +169,14 @@ public class ConnectorIntegrationUtil {
     }
 
     public static JSONObject sendRequest(String addUrl, String query) throws IOException, JSONException {
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -196,29 +201,25 @@ public class ConnectorIntegrationUtil {
             while ((len = response.read(bytes)) != -1) {
                 sb.append(new String(bytes, 0, len));
             }
-
             if (!sb.toString().trim().isEmpty()) {
                 out = sb.toString();
             }
         }
-
         JSONObject jsonObject = new JSONObject(out);
-
         return jsonObject;
     }
 
     public static OMElement sendXMLRequest(String addUrl, String query) throws MalformedURLException, IOException,
             XMLStreamException {
 
-        String charset = "UTF-8";
         URLConnection connection = new URL(addUrl).openConnection();
         connection.setDoOutput(true);
-        connection.setRequestProperty("Accept-Charset", charset);
-        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Accept-Charset", GmailConstants.charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + GmailConstants.charset);
         OutputStream output = null;
         try {
             output = connection.getOutputStream();
-            output.write(query.getBytes(charset));
+            output.write(query.getBytes(GmailConstants.charset));
         } finally {
             if (output != null) {
                 try {
@@ -228,16 +229,13 @@ public class ConnectorIntegrationUtil {
                 }
             }
         }
-
         HttpURLConnection httpConn = (HttpURLConnection) connection;
         InputStream response;
-
         if (httpConn.getResponseCode() >= 400) {
             response = httpConn.getErrorStream();
         } else {
             response = connection.getInputStream();
         }
-
         String out = "{}";
         if (response != null) {
             StringBuilder sb = new StringBuilder();
@@ -246,16 +244,12 @@ public class ConnectorIntegrationUtil {
             while ((len = response.read(bytes)) != -1) {
                 sb.append(new String(bytes, 0, len));
             }
-
             if (!sb.toString().trim().isEmpty()) {
                 out = sb.toString();
             }
         }
-
         OMElement omElement = AXIOMUtil.stringToOM(out);
-
         return omElement;
-
     }
 
     public static Properties getConnectorConfigProperties(String connectorName) {
@@ -272,18 +266,15 @@ public class ConnectorIntegrationUtil {
             if (connectorPropertyFile.exists()) {
                 inputStream = new FileInputStream(connectorPropertyFile);
             }
-
             if (inputStream != null) {
                 Properties prop = new Properties();
                 prop.load(inputStream);
                 inputStream.close();
                 return prop;
             }
-
         } catch (IOException ignored) {
             log.error("automation.properties file not found, please check your configuration");
         }
-
         return null;
     }
 
@@ -308,7 +299,6 @@ public class ConnectorIntegrationUtil {
             options.setSoapVersionURI(SOAP12Constants.SOAP_ENVELOPE_NAMESPACE_URI);
             options.setProperty(Constants.Configuration.MESSAGE_TYPE, contentType);
             sender.setOptions(options);
-
             response = sender.sendReceive(payload);
             if (log.isDebugEnabled()) {
                 log.debug("Response Message : " + response);
@@ -341,7 +331,6 @@ public class ConnectorIntegrationUtil {
                 stringBuilder.append(line);
                 stringBuilder.append(ls);
             }
-
         } catch (IOException ioe) {
             log.error("Error reading request from file.", ioe);
         } finally {
@@ -350,7 +339,6 @@ public class ConnectorIntegrationUtil {
             }
         }
         return stringBuilder.toString();
-
     }
 
     /**
@@ -369,7 +357,6 @@ public class ConnectorIntegrationUtil {
             throws IOException, NoSuchAlgorithmException, InvalidKeyException, JSONException {
         Properties connectorProperties = getConnectorConfigProperties("nest");
         String url = connectorProperties.getProperty("apiUrl") + "/" + parameters + "?auth=" + connectorProperties.getProperty("accessToken");
-
         return sendRequest(url, null);
     }
     /**
@@ -393,21 +380,17 @@ public class ConnectorIntegrationUtil {
             throws AxisFault {
 
         ServiceClient serviceClient = new ServiceClient();
-
         Options serviceOptions = new Options();
         serviceOptions.setProperty(Constants.Configuration.ENABLE_SWA, Constants.VALUE_TRUE);
         serviceOptions.setTo(endpoint);
         serviceOptions.setAction("mediate");
         serviceClient.setOptions(serviceOptions);
         MessageContext messageContext = new MessageContext();
-
         SOAPEnvelope soapEnvelope = TransportUtils.createSOAPEnvelope(request);
         messageContext.setEnvelope(soapEnvelope);
-
         for (String contentId : attachmentMap.keySet()) {
             messageContext.addAttachment(contentId, attachmentMap.get(contentId));
         }
-
         OperationClient mepClient = serviceClient.createClient(ServiceClient.ANON_OUT_IN_OP);
         mepClient.addMessageContext(messageContext);
         return mepClient;
@@ -428,13 +411,11 @@ public class ConnectorIntegrationUtil {
             throws AxisFault {
 
         ServiceClient serviceClient = new ServiceClient();
-
         Options serviceOptions = new Options();
         serviceOptions.setTo(endpoint);
         serviceOptions.setAction("mediate");
         serviceClient.setOptions(serviceOptions);
         MessageContext messageContext = new MessageContext();
-
         SOAPEnvelope soapEnvelope = TransportUtils.createSOAPEnvelope(request);
         messageContext.setEnvelope(soapEnvelope);
         OperationClient mepClient = serviceClient.createClient(ServiceClient.ANON_OUT_IN_OP);

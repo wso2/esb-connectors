@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) $today.year, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 
     WSO2 Inc. licenses this file to you under the Apache License,
     Version 2.0 (the "License"); you may not use this file except
@@ -17,11 +17,15 @@
     under the License.
 -->
 <template name="listAllMails" xmlns="http://ws.apache.org/ns/synapse">
-    <parameter name="includeSpamTrash" description="Include messages from SPAM and TRASH in the results. (Default: false)"/>
-    <parameter name="labelIds" description="Only return messages with labels that match all of the specified label IDs"/>
+    <parameter name="includeSpamTrash"
+               description="Include messages from SPAM and TRASH in the results. (Default: false)"/>
+    <parameter name="labelIds"
+               description="Only return messages with labels that match all of the specified label IDs"/>
     <parameter name="maxResults" description="Maximum number of messages to return"/>
     <parameter name="pageToken" description="Page token to retrieve a specific page of results in the list"/>
-    <parameter name="q" description="Only return messages matching the specified query. Supports the same query format as the Gmail search box"/>
+    <parameter name="q"
+               description="Only return messages matching the specified query. Supports the same query format as the
+               Gmail search box"/>
     <sequence>
         <property name="uri.var.includeSpamTrash" expression="$func:includeSpamTrash"/>
         <property name="uri.var.labelIds" expression="$func:labelIds"/>
@@ -86,7 +90,6 @@
                '&amp;q=', get-property('uri.var.q'))"/>
             </else>
         </filter>
-
         <property name="uri.var.parameters" expression="get-property('gmailParameters')"/>
         <call>
             <endpoint>
