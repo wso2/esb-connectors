@@ -32,6 +32,12 @@
     <version>1.0.0</version>
     <name>WSO2 Carbon - Custom EJB Connector</name>
     <url>http://wso2.org</url>
+    <properties>
+        <connector.name>ejb2</connector.name>
+        <connector.version>1.0.0</connector.version>
+        <jboss.lib.version>5.1.0.GA</jboss.lib.version>
+        <sample.version>1.0.0</sample.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.jboss.jbossas</groupId>
@@ -42,7 +48,7 @@
         <dependency>
             <artifactId>HelloWorld_stateless</artifactId>
             <groupId>HelloWorld_stateless</groupId>
-            <version>1.0.0</version>
+            <version>${sample.version}</version>
             <scope>system</scope>
             <systemPath>${basedir}/src/test/resources/artifacts/ESB/jar/EJB2StatelessJboss.jar
             </systemPath>
@@ -50,17 +56,12 @@
         <dependency>
             <artifactId>HelloWorld_stateful</artifactId>
             <groupId>HelloWorld_stateful</groupId>
-            <version>1.0.0</version>
+            <version>${sample.version}</version>
             <scope>system</scope>
             <systemPath>${basedir}/src/test/resources/artifacts/ESB/jar/EJB2StatefulJboss.jar
             </systemPath>
         </dependency>
     </dependencies>
-    <properties>
-        <connector.name>ejb2</connector.name>
-        <connector.version>1.0.0</connector.version>
-        <jboss.lib.version>5.1.0.GA</jboss.lib.version>
-    </properties>
     <build>
         <plugins>
             <plugin>
