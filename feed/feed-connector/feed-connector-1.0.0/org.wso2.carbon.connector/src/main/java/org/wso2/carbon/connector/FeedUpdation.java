@@ -23,7 +23,6 @@ import org.apache.abdera.protocol.client.RequestOptions;
 import org.apache.commons.lang.StringUtils;
 import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
-import org.wso2.carbon.connector.core.ConnectException;
 
 /**
  * Edit Existing Feed By ID
@@ -32,13 +31,12 @@ public class FeedUpdation extends AbstractConnector {
     private static Document<Entry> doc;
 
     @Override
-    public void connect(MessageContext messageContext) throws ConnectException {
+    public void connect(MessageContext messageContext){
         String entryID = getParameter(messageContext, FeedConstant.ENTRY_ID).toString();
         String hostAddress = getParameter(messageContext, FeedConstant.HOST_ADDRESS).toString();
         String title = getParameter(messageContext, FeedConstant.TITLE).toString();
         String content = getParameter(messageContext, FeedConstant.CONTENT).toString();
         String author = getParameter(messageContext, FeedConstant.AUTHOR).toString();
-
         if (StringUtils.isEmpty(entryID) || StringUtils.isEmpty(hostAddress)) {
             handleException("Entry ID and host address can not be null or empty", messageContext);
         }
@@ -47,15 +45,15 @@ public class FeedUpdation extends AbstractConnector {
         try {
             doc = abderaClient.get(entryUri).getDocument();
         } catch (Exception e) {
-            handleException("error while get the entry from server ", e, messageContext);
+            handleException("Error while get the entry from server ", e, messageContext);
         }
-        if (title != null) {
+        if (!StringUtils.isEmpty(title)) {
             doc.getRoot().getTitleElement().setText(title);
         }
-        if (content != null) {
+        if (!StringUtils.isEmpty(content)) {
             doc.getRoot().getContentElement().setText(content);
         }
-        if (author != null) {
+        if (!StringUtils.isEmpty(author)) {
             doc.getRoot().getAuthor().setText(author);
         }
         RequestOptions opts = new RequestOptions();
@@ -66,7 +64,7 @@ public class FeedUpdation extends AbstractConnector {
             FeedUtil response = new FeedUtil();
             response.InjectMessage(messageContext, resp.getStatusText());
         } catch (Exception ex) {
-            handleException("error while update the entry: ", ex, messageContext);
+            handleException("Error while update the entry: ", ex, messageContext);
         }
     }
 }
