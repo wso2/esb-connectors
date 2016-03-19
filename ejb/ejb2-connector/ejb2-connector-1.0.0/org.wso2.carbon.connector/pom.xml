@@ -44,14 +44,16 @@
             <groupId>HelloWorld_stateless</groupId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/src/test/resources/artifacts/ESB/jar/EJB2StatelessJboss.jar</systemPath>
+            <systemPath>${basedir}/src/test/resources/artifacts/ESB/jar/EJB2StatelessJboss.jar
+            </systemPath>
         </dependency>
         <dependency>
-        <artifactId>HelloWorld_stateful</artifactId>
-        <groupId>HelloWorld_stateful</groupId>
-        <version>1.0.0</version>
-        <scope>system</scope>
-        <systemPath>${basedir}/src/test/resources/artifacts/ESB/jar/EJB2StatefulJboss.jar</systemPath>
+            <artifactId>HelloWorld_stateful</artifactId>
+            <groupId>HelloWorld_stateful</groupId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/test/resources/artifacts/ESB/jar/EJB2StatefulJboss.jar
+            </systemPath>
         </dependency>
     </dependencies>
     <properties>

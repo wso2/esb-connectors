@@ -72,13 +72,10 @@ public class EJBUtil {
         }
         try {
             return method.invoke(instance, processedArgs);
-        } catch (IllegalAccessException |InvocationTargetException e ) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             handleException("Error while invoking '" + method.getName() + "' method "
                     + "via reflection.", e);
-        } //catch (InvocationTargetException e) {
-//            handleException("Error while invoking '" + method.getName() + "' method "
-//                    + "via reflection.", e);
-//        }
+        }
         return null;
     }
 
@@ -150,15 +147,27 @@ public class EJBUtil {
         return dynamicValues;
     }
 
+    /**
+     * @param messageContext message context
+     * @param paramName      parameter name
+     * @return value of the paramName from messageContext
+     */
     protected static Object getParameter(MessageContext messageContext, String paramName) {
         return ConnectorUtils.lookupTemplateParamater(messageContext, paramName);
     }
 
+    /**
+     * @param message error message
+     */
     public static void handleException(String message) {
         log.error(message);
         throw new SynapseException(message);
     }
 
+    /**
+     * @param message error message
+     * @param e       exception
+     */
     public static void handleException(String message, Exception e) {
         log.error(message);
         throw new SynapseException(message, e);
@@ -172,13 +181,14 @@ public class EJBUtil {
     public static Object getEJBObject(MessageContext messageContext, String jndiName) {
         Object ejbObject = null;
         try {
-            InitialContext context = new InitialContext((Properties) messageContext.getProperty(EJBConstants.JNDI_PROPERTIES));
+            InitialContext context = new InitialContext((Properties) messageContext
+                    .getProperty(EJBConstants.JNDI_PROPERTIES));
             Object obj = context.lookup(getParameter(messageContext, jndiName).toString());
             EJBHome ejbHome = (EJBHome) PortableRemoteObject.narrow(obj, EJBHome.class);
             Method method = ejbHome.getClass().getDeclaredMethod(EJBConstants.CREATE);
             if (method != null) {
                 ejbObject = method.invoke(ejbHome);
-            } else handleException("ejb home is missing ");
+            } else handleException("Ejb home is missing ");
         } catch (IllegalAccessException e) {
             handleException("Failed to get ejb Object because of IllegalAccessException ", e);
         } catch (InvocationTargetException e) {

@@ -11,8 +11,10 @@
             <property name="argument2" expression="json-eval($.argument2)"/>
             <ejb2.init>
                 <key>raj</key>
-                <raj.java.naming.factory.initial>org.jnp.interfaces.NamingContextFactory</raj.java.naming.factory.initial>
-                <raj.java.naming.factory.url.pkgs>org.jboss.naming:org.jnp.interfaces</raj.java.naming.factory.url.pkgs>
+                <raj.java.naming.factory.initial>org.jnp.interfaces.NamingContextFactory
+                </raj.java.naming.factory.initial>
+                <raj.java.naming.factory.url.pkgs>org.jboss.naming:org.jnp.interfaces
+                </raj.java.naming.factory.url.pkgs>
                 <raj.java.naming.provider.url>localhost</raj.java.naming.provider.url>
             </ejb2.init>
             <ejb2.stateless>

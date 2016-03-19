@@ -16,6 +16,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
+
 <template name="stateless" xmlns="http://ws.apache.org/ns/synapse">
     <parameter name="method" description="Name of the method"/>
     <parameter name="jndiName" description="Java API for a directory service"/>

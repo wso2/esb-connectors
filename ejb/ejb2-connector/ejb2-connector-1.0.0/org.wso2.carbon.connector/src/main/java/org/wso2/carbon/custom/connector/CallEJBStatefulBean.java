@@ -23,6 +23,11 @@ import java.lang.reflect.Method;
 
 public class CallEJBStatefulBean extends AbstractConnector {
 
+    /**
+     * Method to connect with stateful bean
+     *
+     * @param messageContext the MessageContext
+     */
     @Override
     public void connect(MessageContext messageContext) {
         Object ejbObj;
@@ -37,11 +42,11 @@ public class CallEJBStatefulBean extends AbstractConnector {
         } else {
             ejbObj = messageContext.getProperty(EJBConstants.EJB_OBJECT);
         }
-        Object[] args = EJBUtil.buildArguments(messageContext, EJBConstants.STATEFUL);
-        Method method = EJBUtil.resolveMethod(ejbObj.getClass(), methodName, args.length);
-        Object obj = EJBUtil.invokeInstanceMethod(ejbObj, method, args);
+        Object[] arguments = EJBUtil.buildArguments(messageContext, EJBConstants.STATEFUL);
+        Method method = EJBUtil.resolveMethod(ejbObj.getClass(), methodName, arguments.length);
+        Object result = EJBUtil.invokeInstanceMethod(ejbObj, method, arguments);
         if (!method.getReturnType().toString().equals(EJBConstants.VOID)) {
-            messageContext.setProperty(returnName, obj);
+            messageContext.setProperty(returnName, result);
         } else {
             messageContext.setProperty(EJBConstants.RESPONSE, EJBConstants.SUCCESS);
         }

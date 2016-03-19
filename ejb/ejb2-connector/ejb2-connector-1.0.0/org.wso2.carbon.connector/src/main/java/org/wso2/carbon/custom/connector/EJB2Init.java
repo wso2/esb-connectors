@@ -26,6 +26,12 @@ import java.util.Set;
 
 public class EJB2Init extends AbstractConnector {
 
+    /**
+     * Initialize the JNDI property values
+     *
+     * @param messageContext the MessageContext
+     * @throws ConnectException the ConnectException
+     */
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {
         Properties prop = new Properties();
