@@ -46,6 +46,12 @@ public class FeedRegistryHandler {
         }
     }
 
+    /**
+     * Read date from registry
+     *
+     * @param resourcePath resource path in registry
+     * @return last update date
+     */
     public Object readFromRegistry(String resourcePath) {
         try {
             if (registry.resourceExists(resourcePath)) {
@@ -59,6 +65,12 @@ public class FeedRegistryHandler {
         return obj;
     }
 
+    /**
+     * Convert byte date to object
+     *
+     * @param arrayDate date in bytes
+     * @return date object
+     */
     private Object toObject(byte[] arrayDate) {
         ByteArrayInputStream bis = new ByteArrayInputStream(arrayDate);
         ObjectInputStream in = null;
@@ -80,6 +92,12 @@ public class FeedRegistryHandler {
         return null;
     }
 
+    /**
+     * Convert object date to bytes
+     *
+     * @param date object date
+     * @return date in bytes
+     */
     private byte[] toByteArray(Object date) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos;
@@ -95,16 +113,27 @@ public class FeedRegistryHandler {
         return bos.toByteArray();
     }
 
+    /**
+     * write in registry
+     *
+     * @param resourceID resource id
+     * @param date       date in object
+     */
     public void writeToRegistry(String resourceID, Object date) {
         try {
             resource = registry.newResource();
             resource.setContent(toByteArray(date));
             registry.put(resourceID, resource);
         } catch (RegistryException e) {
-            log.error("error while handle with registry", e);
+            log.error("Error while handle with registry", e);
         }
     }
 
+    /**
+     * Delete date from regisry
+     *
+     * @param resourcePath resource path in registry
+     */
     public void deleteFromRegistry(String resourcePath) {
         try {
             registry.delete(resourcePath);
@@ -112,7 +141,7 @@ public class FeedRegistryHandler {
                 log.debug(resourcePath + " Registry Deleted");
             }
         } catch (RegistryException e) {
-            log.error("error while handle with registry", e);
+            log.error("Error while handle with registry", e);
         }
     }
 }
