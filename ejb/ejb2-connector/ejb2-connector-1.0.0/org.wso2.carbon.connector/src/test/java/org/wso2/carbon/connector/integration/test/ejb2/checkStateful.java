@@ -27,13 +27,13 @@ import java.rmi.RemoteException;
 public class checkStateful {
 
     /***
-     * @param context
-     * @return
+     * @param context context
+     * @return counter
      * @throws RemoteException
      * @throws CreateException
      * @throws NamingException
      */
-    public static int getFromStaeful(Context context) throws RemoteException, CreateException, NamingException {
+    public static int getFromStateful(Context context) throws RemoteException, CreateException, NamingException {
         HelloHome home;
         home = (HelloHome) context.lookup("EJB2StatefulJboss");
         Hello bean;

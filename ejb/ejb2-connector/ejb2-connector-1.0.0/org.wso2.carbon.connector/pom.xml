@@ -16,8 +16,8 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.wso2.carbon</groupId>
@@ -30,7 +30,7 @@
     <artifactId>org.wso2.carbon.connector.ejb2</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>WSO2 Carbon - Custom EJB Connector</name>
+    <name>WSO2 Carbon - Mediation Library Connector For ${connector.name}</name>
     <url>http://wso2.org</url>
     <properties>
         <connector.name>ejb2</connector.name>

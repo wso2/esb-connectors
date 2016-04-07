@@ -16,8 +16,6 @@
 
 package org.wso2.carbon.custom.connector;
 
-import java.lang.String;
-
 public class EJBConstants {
     public static final String INIT = "init";
     public static final String STATELESS = "stateless";

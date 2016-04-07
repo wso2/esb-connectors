@@ -24,10 +24,13 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Set;
 
+/**
+ * Set properties for jndi.
+ */
 public class EJB2Init extends AbstractConnector {
 
     /**
-     * Initialize the JNDI property values
+     * Initialize the JNDI property values.
      *
      * @param messageContext the MessageContext
      * @throws ConnectException the ConnectException

@@ -38,6 +38,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+/**
+ * Ejb2connector util.
+ */
 public class EJBUtil {
     private static final Log log = LogFactory.getLog(EJBUtil.class);
 
@@ -50,9 +53,9 @@ public class EJBUtil {
     public static Object invokeInstanceMethod(Object instance, Method method, Object[] args) {
         Class[] paramTypes = method.getParameterTypes();
         if (paramTypes.length != args.length) {
-            handleException("Provided argument count does not match method the "
-                    + "parameter count of method '" + method.getName() + "'. Argument count = "
-                    + args.length + ", method parameter count = " + paramTypes.length);
+            handleException("Provided argument count does not match method the parameter count of method '"
+                    + method.getName() + "'. Argument count = " + args.length + ", method parameter count = "
+                    + paramTypes.length);
         }
         Object[] processedArgs = new Object[paramTypes.length];
         for (int i = 0; i < paramTypes.length; ++i) {
@@ -73,8 +76,7 @@ public class EJBUtil {
         try {
             return method.invoke(instance, processedArgs);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            handleException("Error while invoking '" + method.getName() + "' method "
-                    + "via reflection.", e);
+            handleException("Error while invoking '" + method.getName() + "' method via reflection.", e);
         }
         return null;
     }
@@ -93,9 +95,8 @@ public class EJBUtil {
                 if (resolvedMethod == null) {
                     resolvedMethod = method;
                 } else {
-                    handleException("More than one '" + methodName + "' methods " +
-                            "that take " + argCount + " arguments are found in '" +
-                            aClass.getName() + "' class.");
+                    handleException("More than one '" + methodName + "' methods that take " + argCount
+                            + " arguments are found in '" + aClass.getName() + "' class.");
                 }
             }
         }
@@ -103,7 +104,7 @@ public class EJBUtil {
     }
 
     /**
-     * @param messageContext message contest
+     * @param messageContext message context
      * @param operationName  name of the operation
      * @return extract the value's from properties and make its as hashable
      */
@@ -120,7 +121,7 @@ public class EJBUtil {
     }
 
     /**
-     * @param messageContext message contest
+     * @param messageContext message context
      * @param operationName  Name of the operation
      * @return extract the value's from properties and make its as hashable
      */
@@ -134,9 +135,9 @@ public class EJBUtil {
         }
         key = operationName + ":" + key;
         Map<String, Object> propertiesMap = (((Axis2MessageContext) messageContext).getProperties());
-        Set prop = messageContext.getPropertyKeySet();
+        Set propertyKeySet = messageContext.getPropertyKeySet();
         Value probValues;
-        for (String stringValue : (String[]) prop.toArray(new String[prop.size()])) {
+        for (String stringValue : (String[]) propertyKeySet.toArray(new String[propertyKeySet.size()])) {
             if (stringValue.startsWith(key)) {
                 probValues = (Value) propertiesMap.get(stringValue);
                 dynamicValues.put(stringValue.substring(key.length() + 1, stringValue.length())

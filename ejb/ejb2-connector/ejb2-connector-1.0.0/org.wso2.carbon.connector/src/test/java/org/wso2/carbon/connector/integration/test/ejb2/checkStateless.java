@@ -28,8 +28,8 @@ import java.rmi.RemoteException;
 public class checkStateless {
 
     /**
-     * @param context
-     * @return
+     * @param context context
+     * @return sum
      * @throws RemoteException
      * @throws CreateException
      * @throws NamingException
@@ -40,7 +40,6 @@ public class checkStateless {
         // invoke on the remote calculator
         int a = 10;
         int b = 12;
-        int sum = bean.add(a, b);
-        return sum;
+        return bean.add(a, b);
     }
 }

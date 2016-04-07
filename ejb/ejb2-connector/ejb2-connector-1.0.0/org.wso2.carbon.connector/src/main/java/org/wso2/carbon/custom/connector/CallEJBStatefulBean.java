@@ -21,10 +21,13 @@ import org.wso2.carbon.connector.core.AbstractConnector;
 
 import java.lang.reflect.Method;
 
+/**
+ * Work with stateful bean.
+ */
 public class CallEJBStatefulBean extends AbstractConnector {
 
     /**
-     * Method to connect with stateful bean
+     * Method to connect with stateful bean.
      *
      * @param messageContext the MessageContext
      */
