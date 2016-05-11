@@ -1,0 +1,5 @@
+{
+    "key":"%s(hashkey)",
+    "field":"%s(hashfield1)",
+    "value":"%s(integer)"
+}

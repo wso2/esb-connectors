@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="rename"
+       transports="https http"
+       startOnLoad="true"
+       trace="disable">
+   <description/>
+   <target>
+      <inSequence>
+         <property name="host" expression="json-eval($.host)"/>
+         <property name="port" expression="json-eval($.port)"/>
+         <property name="timeout" expression="json-eval($.timeout)"/>
+         <property name="result" expression="json-eval($.result)"/>
+         <property name="oldKey" expression="json-eval($.oldKey)"/>
+         <property name="newKey" expression="json-eval($.newKey)"/>
+         <redis.init>
+            <host>{$ctx:host}</host>
+            <port>{$ctx:port}</port>
+            <timeout>{$ctx:timeout}</timeout>
+         </redis.init>
+         <redis.rename>
+            <oldKey>{$ctx:oldKey}</oldKey>
+            <newKey>{$ctx:newKey}</newKey>
+         </redis.rename>
+         <property name="response" expression="get-property('result')"/>
+         <payloadFactory media-type="json">
+            <format>
+                $1
+            </format>
+            <args>
+               <arg evaluator="xml" expression="get-property('response')"/>
+            </args>
+         </payloadFactory>
+         <respond/>
+      </inSequence>
+   </target>
+</proxy>
