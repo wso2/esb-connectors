@@ -1,0 +1,14 @@
+{
+"authToken":"%s",
+"expenseId":"571532000000057089",
+"accountId":"571532000000022053",
+"amount":"400.00",
+"date":"2013-12-18",
+"taxId":"",
+"isInclusiveTax":"",
+"isBillable":"",
+"reference_number":"",
+"customerId":"571532000000042068",
+"exchangeRate":"30.00"
+
+}

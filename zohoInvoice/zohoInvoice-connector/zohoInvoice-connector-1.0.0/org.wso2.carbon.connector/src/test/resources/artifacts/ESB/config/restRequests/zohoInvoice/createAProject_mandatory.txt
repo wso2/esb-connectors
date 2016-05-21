@@ -1,0 +1,6 @@
+{
+"authToken":"%s",
+"projectName":"%s",
+"customerId":"571532000000088061",
+"billingType":"based_on_task_hours"
+}

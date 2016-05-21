@@ -1,0 +1,8 @@
+{
+
+"authToken":"%s",
+"invoiceId":"571532000000073069",
+"accept":"json",
+"print":"true"
+
+}

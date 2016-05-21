@@ -1,0 +1,11 @@
+{
+"authToken":"%s",
+"accountId":"571532000000022053",
+"amount":"",
+"date":"2013-11-18",
+"taxId":"",
+"isInclusiveTax":"",
+"isBillable":"true",
+"customerId":"571532000000042068",
+"exchangeRate":"20.00"
+}

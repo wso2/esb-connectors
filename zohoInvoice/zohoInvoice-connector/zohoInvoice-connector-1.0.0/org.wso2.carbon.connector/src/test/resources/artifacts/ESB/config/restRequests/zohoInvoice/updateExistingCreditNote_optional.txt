@@ -1,0 +1,17 @@
+{
+
+"authToken":"%s",
+"customerId":"571532000000042068",
+"lineItems":[{"name":"sugar"},{"name":"Onion"}],
+"ignoreAutoNumberGeneration":"false",
+"contactPersons":"",
+"creditNoteNumber":"",
+"referenceNumber":"",
+"templateId":"",
+"date":"2014-12-18",
+"exchangeRate":"20.00",
+"notes":"",
+"terms":"",
+"creditNoteId":"571532000000047083"
+
+}

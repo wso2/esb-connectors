@@ -1,0 +1,10 @@
+{
+"authToken":"%s",
+"name":"Flour",
+"description":"Flour",
+"rate":"200",
+"taxId":"",
+"filterBy":"",
+"searchText":"",
+"sortColumn":""
+}

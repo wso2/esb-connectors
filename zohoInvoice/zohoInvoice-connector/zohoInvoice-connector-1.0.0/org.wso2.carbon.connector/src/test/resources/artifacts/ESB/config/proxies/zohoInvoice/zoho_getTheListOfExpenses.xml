@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_getTheListOfExpenses"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="description" expression="json-eval($.description)"/>
+            <property name="referenceNumber" expression="json-eval($.referenceNumber)"/>
+            <property name="date" expression="json-eval($.date)"/>
+            <property name="amount" expression="json-eval($.amount)"/>
+            <property name="status" expression="json-eval($.status)"/>
+            <property name="accountName" expression="json-eval($.accountName)"/>
+            <property name="customerId" expression="json-eval($.customerId)"/>
+            <property name="customerName" expression="json-eval($.customerName)"/>
+            <property name="filterBy" expression="json-eval($.filterBy)"/>
+            <property name="searchText" expression="json-eval($.searchText)"/>
+            <property name="sortColumn" expression="json-eval($.sortColumn)"/>
+            <property name="recurringExpenseId" expression="json-eval($.recurringExpenseId)"/>
+            <property name="paidThroughAccountId" expression="json-eval($.paidThroughAccountId)"/>
+            <property name="projectId" expression="json-eval($.projectId)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.getTheListOfExpenses>
+                <authToken>{$ctx:authToken}</authToken>
+                <description>{$ctx:description}</description>
+                <referenceNumber>{$ctx:referenceNumber}</referenceNumber>
+                <date>{$ctx:date}</date>
+                <amount>{$ctx:amount}</amount>
+                <status>{$ctx:status}</status>
+                <accountName>{$ctx:accountName}</accountName>
+                <customerId>{$ctx:customerId}</customerId>
+                <customerName>{$ctx:customerName}</customerName>
+                <filterBy>{$ctx:filterBy}</filterBy>
+                <searchText>{$ctx:searchText}</searchText>
+                <sortColumn>{$ctx:sortColumn}</sortColumn>
+                <recurringExpenseId>{$ctx:recurringExpenseId}</recurringExpenseId>
+                <paidThroughAccountId>{$ctx:paidThroughAccountId}</paidThroughAccountId>
+                <projectId>{$ctx:projectId}</projectId>
+            </zohoInvoice.getTheListOfExpenses>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <description/>
+</proxy>

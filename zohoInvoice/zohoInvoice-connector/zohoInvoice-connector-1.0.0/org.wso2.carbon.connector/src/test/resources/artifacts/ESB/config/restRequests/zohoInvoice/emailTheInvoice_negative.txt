@@ -1,0 +1,7 @@
+{
+"authToken":"%s",
+"invoiceId":"",
+"toMailIds":"duri@gmail.com",
+"subject":"Attachment",
+"mBody":"HAidear"
+}

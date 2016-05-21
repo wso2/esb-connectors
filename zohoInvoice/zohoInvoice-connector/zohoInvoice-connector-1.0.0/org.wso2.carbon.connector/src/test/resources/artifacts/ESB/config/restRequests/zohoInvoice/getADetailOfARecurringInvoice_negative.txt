@@ -1,0 +1,7 @@
+{
+
+"authToken":"%s",
+"recurringInvoiceId":"57153200000004512378"
+
+
+}

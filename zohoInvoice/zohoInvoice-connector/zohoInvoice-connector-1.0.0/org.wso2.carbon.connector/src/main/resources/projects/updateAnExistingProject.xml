@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<template name="updateAnExistingProject" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="authToken" description="API key"/>
+    <parameter name="projectId" description="ID of the project"/>
+    <parameter name="projectName" description="Name of the project"/>
+    <parameter name="customerId" description="ID of the customer"/>
+    <parameter name="billingType" description="The way you bill your customer"/>
+    <parameter name="rate" description="Hourly rate for a task"/>
+    <parameter name="budgetType" description="The way you budget"/>
+    <parameter name="budgetHours" description="Task budget hours"/>
+    <parameter name="budgetAmount" description="Give value, if you are estimating total project cost"/>
+    <parameter name="users" description="Details of the users"/>
+    <parameter name="tasks" description="Details of the tasks"/>
+    <parameter name="projectName" description="ID of the project"/>
+    <parameter name="customerId" description="ID of the project"/>
+    <parameter name="billingType" description="ID of the project"/>
+    <parameter name="description" description="ID of the project"/>
+    <sequence>
+        <property name="uri.var.authToken" expression="$func:authToken"/>
+        <property name="uri.var.projectId" expression="$func:projectId"/>
+        <property name="uri.var.projectName" expression="$func:projectName"/>
+        <property name="uri.var.customerId" expression="$func:customerId"/>
+        <property name="uri.var.billingType" expression="$func:billingType"/>
+        <property name="uri.var.rate" expression="$func:rate"/>
+        <property name="uri.var.budgetType" expression="$func:budgetType"/>
+        <property name="uri.var.budgetHours" expression="$func:budgetHours"/>
+        <property name="uri.var.budgetAmount" expression="$func:budgetAmount"/>
+        <property name="uri.var.users" expression="$func:users"/>
+        <property name="uri.var.tasks" expression="$func:tasks"/>
+        <property name="uri.var.projectName" expression="$func:projectName"/>
+        <property name="uri.var.customerId" expression="$func:customerId"/>
+        <property name="uri.var.billingType" expression="$func:billingType"/>
+        <property name="uri.var.description" expression="$func:description"/>
+        <property name="zohoParameters" value=""/>
+        <filter
+                xpath="get-property('uri.var.customerId') = '' or  not(string(get-property('uri.var.customerId')))">
+            <then>
+                <property name="uri.var.customerId" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;customer_id&quot;:&quot;', get-property('uri.var.customerId'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.billingType') = '' or  not(string(get-property('uri.var.billingType')))">
+            <then>
+                <property name="uri.var.billingType" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;billing_type&quot;:&quot;', get-property('uri.var.billingType'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.description') = '' or  not(string(get-property('uri.var.description')))">
+            <then>
+                <property name="uri.var.description" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;description&quot;:&quot;', get-property('uri.var.description'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.rate') = '' or  not(string(get-property('uri.var.rate')))">
+            <then>
+                <property name="uri.var.rate" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;rate&quot;:&quot;', get-property('uri.var.rate'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.budgetType') = '' or  not(string(get-property('uri.var.budgetType')))">
+            <then>
+                <property name="uri.var.budgetType" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;budget_type&quot;:&quot;', get-property('uri.var.budgetType'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.budgetHours') = '' or  not(string(get-property('uri.var.budgetHours')))">
+            <then>
+                <property name="uri.var.budgetHours" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;budget_hours&quot;:&quot;', get-property('uri.var.budgetHours'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.budgetAmount') = '' or  not(string(get-property('uri.var.budgetAmount')))">
+            <then>
+                <property name="uri.var.budgetAmount" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;budget_amount&quot;:&quot;', get-property('uri.var.budgetAmount'),'&quot;')"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.users') = '' or  not(string(get-property('uri.var.users')))">
+            <then>
+                <property name="uri.var.users" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;users&quot;:',get-property('uri.var.users'))"/>
+            </else>
+        </filter>
+        <filter
+                xpath="get-property('uri.var.tasks') = '' or  not(string(get-property('uri.var.tasks')))">
+            <then>
+                <property name="uri.var.tasks" value=""/>
+            </then>
+            <else>
+                <property name="zohoParameters" expression="fn:concat(get-property('zohoParameters'),
+               ',&quot;tasks&quot;:',get-property('uri.var.tasks'))"/>
+            </else>
+        </filter>
+        <property name="uri.var.parameters" expression="get-property('zohoParameters')"/>
+        <call>
+            <endpoint>
+                <http method="put"
+                      uri-template="{uri.var.apiUrl}/projects/{uri.var.projectId}?authtoken={uri.var.authToken}&amp;JSONString={&quot;project_name&quot;:&quot;{uri.var.projectName}&quot;{uri.var.parameters}} "/>
+            </endpoint>
+        </call>
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove"/>
+        <header name="X-LI-UUID" scope="transport" action="remove"/>
+        <header name="X-Li-Pop" scope="transport" action="remove"/>
+        <header name="X-Li-Fabric" scope="transport" action="remove"/>
+        <header name="x-li-request-id" scope="transport" action="remove"/>
+    </sequence>
+</template>

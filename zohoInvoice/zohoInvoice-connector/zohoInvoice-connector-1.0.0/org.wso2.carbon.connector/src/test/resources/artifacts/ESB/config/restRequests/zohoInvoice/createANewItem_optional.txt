@@ -1,0 +1,7 @@
+{
+"authToken":"%s",
+"name":"%s",
+"description":"Flour",
+"rate":"200.00",
+"taxId":""
+}

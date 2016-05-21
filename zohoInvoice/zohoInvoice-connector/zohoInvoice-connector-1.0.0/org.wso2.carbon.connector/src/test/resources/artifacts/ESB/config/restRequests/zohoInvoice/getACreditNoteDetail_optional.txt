@@ -1,0 +1,9 @@
+{
+
+"authToken":"%s",
+"creditNoteId":"571532000000045209",
+"print":"true",
+"accept":"json"
+
+
+}

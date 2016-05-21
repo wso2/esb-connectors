@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_createAContact"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="contactName" expression="json-eval($.contactName)"/>
+            <property name="companyName" expression="json-eval($.companyName)"/>
+            <property name="website" expression="json-eval($.website)"/>
+            <property name="customFields" expression="json-eval($.customFields)"/>
+            <property name="shippingAddress" expression="json-eval($.shippingAddress)"/>
+            <property name="billingAddress" expression="json-eval($.billingAddress)"/>
+            <property name="contactPersons" expression="json-eval($.contactPersons)"/>
+            <property name="contactPersonId" expression="json-eval($.contactPersonId)"/>
+            <property name="email" expression="json-eval($.email)"/>
+            <property name="isPrimaryContact" expression="json-eval($.isPrimaryContact)"/>
+            <property name="invoiceTemplateId" expression="json-eval($.invoiceTemplateId)"/>
+            <property name="estimateTemplateId" expression="json-eval($.estimateTemplateId)"/>
+            <property name="creditnoteTemplateId" expression="json-eval($.creditnoteTemplateId)"/>
+            <property name="invoiceImailTemplateId" expression="json-eval($.invoiceImailTemplateId)"/>
+            <property name="estimateEmailTemplateId" expression="json-eval($.estimateEmailTemplateId)"/>
+            <property name="creditnoteEmailTemplateId" expression="json-eval($.creditnoteEmailTemplateId)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.createAContact>
+                <authToken>{$ctx:authToken}</authToken>
+                <contactName>{$ctx:contactName}</contactName>
+                <companyName>{$ctx:companyName}</companyName>
+                <website>{$ctx:website}</website>
+                <customFields>{$ctx:customFields}</customFields>
+                <shippingAddress>{$ctx:shippingAddress}</shippingAddress>
+                <billingAddress>{$ctx:billingAddress}</billingAddress>
+                <contactPersons>{$ctx:contactPersons}</contactPersons>
+                <contactPersonId>{$ctx:contactPersonId}</contactPersonId>
+                <email>{$ctx:email}</email>
+                <isPrimaryContact>{$ctx:isPrimaryContact}</isPrimaryContact>
+                <invoiceTemplateId>{$ctx:invoiceTemplateId}</invoiceTemplateId>
+                <estimateTemplateId>{$ctx:estimateTemplateId}</estimateTemplateId>
+                <creditnoteTemplateId>{$ctx:creditnoteTemplateId}</creditnoteTemplateId>
+                <invoiceImailTemplateId>{$ctx:invoiceImailTemplateId}</invoiceImailTemplateId>
+                <estimateEmailTemplateId>{$ctx:estimateEmailTemplateId}</estimateEmailTemplateId>
+                <creditnoteEmailTemplateId>{$ctx:creditnoteEmailTemplateId}</creditnoteEmailTemplateId>
+            </zohoInvoice.createAContact>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <description/>
+</proxy>
