@@ -15,27 +15,24 @@
  */
 package org.wso2.carbon.connector;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
+import org.apache.commons.lang.StringUtils;
 import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
-import org.wso2.carbon.connector.core.ConnectException;
 
 /**
  * Delete the Existing feed by ID
  */
 public class FeedDeletion extends AbstractConnector {
     @Override
-    public void connect(MessageContext messageContext) throws ConnectException {
+    public void connect(MessageContext messageContext) {
         String entryID = (String) getParameter(messageContext, FeedConstant.ENTRY_ID);
         String hostAddress = (String) getParameter(messageContext, FeedConstant.HOST_ADDRESS);
-
         if (StringUtils.isEmpty(entryID) || StringUtils.isEmpty(hostAddress)) {
             handleException("Entry ID and host address can not be null or empty", messageContext);
         }
-
         Abdera abdera = new Abdera();
         AbderaClient abderaClient = new AbderaClient(abdera);
         String entryUri = hostAddress + "/" + entryID + "-";
@@ -48,7 +45,7 @@ public class FeedDeletion extends AbstractConnector {
             resp = abderaClient.delete(entryUri);
             response.InjectMessage(messageContext, resp.getStatusText());
         } catch (Exception ex) {
-            handleException("error while connect " + ex.getMessage(), ex, messageContext);
+            handleException("Error while connect " + ex.getMessage(), ex, messageContext);
         }
     }
 }

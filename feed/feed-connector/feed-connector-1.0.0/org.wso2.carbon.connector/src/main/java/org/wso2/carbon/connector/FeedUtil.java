@@ -29,6 +29,12 @@ import org.apache.synapse.MessageContext;
  */
 public class FeedUtil {
 
+    /**
+     * Add message in messageContext
+     *
+     * @param messageContext message context
+     * @param text           response message to ESB
+     */
     public void InjectMessage(MessageContext messageContext, String text) {
         OMFactory omFactory = OMAbstractFactory.getOMFactory();
         OMNamespace ns = omFactory.createOMNamespace(FeedConstant.STATUS, FeedConstant.NS);
@@ -39,11 +45,21 @@ public class FeedUtil {
         messageContext.getEnvelope().getBody().addChild(result);
     }
 
+    /**
+     * Get the abdera factory
+     *
+     * @return abdera factory
+     */
     public static Factory getFactory() {
         Abdera abdera = new Abdera();
         return abdera.getFactory();
     }
 
+    /**
+     * Get abdera client
+     *
+     * @return abdera client
+     */
     public static AbderaClient getAbderaClient() {
         Abdera abdera = new Abdera();
         return new AbderaClient(abdera);

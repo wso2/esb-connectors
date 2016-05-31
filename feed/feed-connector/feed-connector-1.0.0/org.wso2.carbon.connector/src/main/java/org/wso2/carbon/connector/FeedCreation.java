@@ -23,7 +23,6 @@ import org.apache.abdera.protocol.client.RequestOptions;
 import org.apache.commons.lang.StringUtils;
 import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
-import org.wso2.carbon.connector.core.ConnectException;
 
 import java.util.Date;
 
@@ -32,17 +31,15 @@ import java.util.Date;
  */
 public class FeedCreation extends AbstractConnector {
 
-    public void connect(MessageContext messageContext) throws ConnectException {
+    public void connect(MessageContext messageContext) {
         String hostAddress = (String) getParameter(messageContext, FeedConstant.HOST_ADDRESS);
         String title = (String) getParameter(messageContext, FeedConstant.TITLE);
         String content = (String) getParameter(messageContext, FeedConstant.CONTENT);
         String author = (String) getParameter(messageContext, FeedConstant.AUTHOR);
         String feedID = (String) getParameter(messageContext, FeedConstant.FEED_ID);
-
         if (StringUtils.isEmpty(hostAddress)) {
-            handleException("host address can not be null or empty", messageContext);
+            handleException("Host address can not be null or empty", messageContext);
         }
-
         AbderaClient abderaClient = FeedUtil.getAbderaClient();
         Factory factory = FeedUtil.getFactory();
         Entry entry = factory.newEntry();
@@ -51,7 +48,6 @@ public class FeedCreation extends AbstractConnector {
         entry.setUpdated(new Date());
         entry.addAuthor(author);
         entry.setContent(content);
-
         RequestOptions opts = new RequestOptions();
         opts.setContentType(FeedConstant.CONTENT_TYPE);
         FeedUtil response = new FeedUtil();
@@ -60,7 +56,7 @@ public class FeedCreation extends AbstractConnector {
             resp = abderaClient.post(hostAddress, entry, opts);
             response.InjectMessage(messageContext, resp.getStatusText());
         } catch (Exception ex) {
-            handleException("error while connect ", ex, messageContext);
+            handleException("Error while connect ", ex, messageContext);
         }
     }
 }
