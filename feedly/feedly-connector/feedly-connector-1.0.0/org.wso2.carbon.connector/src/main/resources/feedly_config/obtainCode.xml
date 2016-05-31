@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="obtainCode" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="response_type" description="Indicates the type of token requested."/>
+    <parameter name="client_id" description="Client that is making the request."/>
+    <parameter name="redirect_uri" description="Determines where the response is sent."/>
+    <parameter name="scope" description="Scope of subscription."/>
+
+    <sequence>
+        <property name="uri.var.response_type" expression="$func:response_type"/>
+        <property name="uri.var.client_id" expression="$func:client_id"/>
+        <property name="uri.var.redirect_uri" expression="$func:redirect_uri"/>
+        <property name="uri.var.scope" expression="$func:scope"/>
+
+        <filter
+                xpath="get-property('uri.var.response_type') = '' or  (not(string(get-property('uri.var.response_type'))))">
+            <then>
+                <property name="uri.var.response_type" value="code"/>
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.client_id') = '' or  (not(string(get-property('uri.var.client_id'))))">
+            <then>
+                <property name="uri.var.client_id" value="feedly"/>
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.redirect_uri') = '' or  (not(string(get-property('uri.var.redirect_uri'))))">
+            <then>
+                <property name="uri.var.redirect_uri" value="https://cloud.feedly.com/feedly.html"/>
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.scope') = '' or  (not(string(get-property('uri.var.scope'))))">
+            <then>
+                <property name="uri.var.scope" value="https://cloud.feedly.com/subscriptions"/>
+            </then>
+        </filter>
+
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="https://cloud.feedly.com/v3/auth/auth?response_type={uri.var.response_type}&amp;client_id={uri.var.client_id}&amp;redirect_uri={uri.var.redirect_uri}&amp;scope={uri.var.scope}"/>
+            </endpoint>
+        </call>
+    </sequence>
+</template>

@@ -1,0 +1,6 @@
+{
+  "accessToken":"%s",
+  "autoRefresh" : "true",
+  "newerThan" : "1367539068016",
+  "streamId" : "test"
+}
