@@ -65,36 +65,30 @@ public class FeedInject implements InjectHandler {
             messageContext = (org.apache.synapse.MessageContext) createMessageContext();
             MessageContext axis2MsgCtx = null;
             if (messageContext != null) {
-                axis2MsgCtx =
-                        ((Axis2MessageContext) messageContext).getAxis2MessageContext();
+                axis2MsgCtx = ((Axis2MessageContext) messageContext).getAxis2MessageContext();
             }
             // Determine the message builder to use
             Builder builder = null;
-
             if (axis2MsgCtx != null) {
                 builder = BuilderUtil.getBuilderFromSelector(contentType, axis2MsgCtx);
-            }
-            if (builder == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("No message builder found for type '" + contentType + "'. Falling back to SOAP.");
-                }
             }
             OMElement documentElement = (OMElement) object;
             messageContext.setEnvelope(TransportUtils.createSOAPEnvelope(documentElement));
         } catch (AxisFault axisFault) {
-            log.error("Error while setting message to the message context : " + axisFault.getMessage(), axisFault);
+            log.error("Error while setting message to the message context : "
+                    + axisFault.getMessage(), axisFault);
         }
         // Inject the message to the sequence.
         if (StringUtils.isEmpty(injectingSeq)) {
-            log.error("Sequence name not specified. Sequence : " + injectingSeq);
             throw new SynapseException("Sequence name not specified. Sequence : " + injectingSeq);
         }
-        SequenceMediator seq = (SequenceMediator) synapseEnvironment.getSynapseConfiguration().getSequence(injectingSeq);
-        seq.setErrorHandler(onErrorSeq);
+        SequenceMediator sequenceMediator = (SequenceMediator) synapseEnvironment
+                .getSynapseConfiguration().getSequence(injectingSeq);
+        sequenceMediator.setErrorHandler(onErrorSeq);
         if (log.isDebugEnabled()) {
-            log.debug("injecting message to sequence : " + injectingSeq);
+            log.debug("Injecting message to sequence : " + injectingSeq);
         }
-        synapseEnvironment.injectInbound(messageContext, seq, sequential);
+        synapseEnvironment.injectInbound(messageContext, sequenceMediator, sequential);
         return true;
     }
 

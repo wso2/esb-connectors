@@ -31,7 +31,7 @@ public class FeedInbound extends GenericPollingConsumer {
     private boolean sequential;
     private String host;
     private String feedType;
-    private FeedRetrieval consume;
+    private FeedRetrieval feedRetrieval;
     private final FeedRegistryHandler registryHandler;
     private String dateFormat;
     private long scanInterval;
@@ -60,20 +60,32 @@ public class FeedInbound extends GenericPollingConsumer {
         init();
     }
 
+    /**
+     * Clear registry
+     */
     public void destroy() {
         if (registryHandler.readFromRegistry(name) != null) {
             registryHandler.deleteFromRegistry(name);
         }
     }
 
+    /**
+     * call event in a given time interval
+     *
+     * @return null
+     */
     public Object poll() {
-        consume.execute();
+        feedRetrieval.execute();
         return null;
     }
 
+    /**
+     * start the inbound process
+     */
     private void init() {
         FeedInject rssInject = new FeedInject(injectingSeq, onErrorSeq, sequential,
                 synapseEnvironment, FeedEPConstant.FEED_FORMAT);
-        consume = new FeedRetrieval(rssInject, scanInterval, host, feedType, registryHandler, name, dateFormat);
+        feedRetrieval = new FeedRetrieval(rssInject, scanInterval, host, feedType,
+                registryHandler, name, dateFormat);
     }
 }
