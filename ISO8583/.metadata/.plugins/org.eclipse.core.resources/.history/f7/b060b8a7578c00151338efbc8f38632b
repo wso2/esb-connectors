@@ -1,0 +1,69 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.core.SynapseEnvironment;
+import org.apache.synapse.inbound.InboundProcessorParams;
+import org.jpos.iso.ISOException;
+
+public class ServerDemo extends Thread
+{
+    private static final Log log = LogFactory.getLog(ServerDemo.class);
+
+	private int port;;//Arbitrary port number
+	private static ServerSocket server;
+    private  String onErrorSeq;
+    private  boolean sequential;
+    private  SynapseEnvironment synapseEnvironment;
+    private String injectingSeq;
+    protected String name;
+
+    protected InboundProcessorParams params;
+
+ public ServerDemo(int port,InboundProcessorParams params){
+	 this.port=port;
+	 this.injectingSeq = params.getInjectingSeq();
+     this.onErrorSeq = params.getOnErrorSeq();
+     this.name = params.getName();
+     this.synapseEnvironment = params.getSynapseEnvironment();
+     this.params =params;
+	 
+ }
+ 	public void run() {
+		
+		boolean listening = true;
+ 
+		try {
+			server = new ServerSocket(port);
+		} catch (IOException e) {
+			log.error("Could not listen on port: " + port,e);
+		}
+ 
+		while (listening) {
+			try {
+				handleClientRequest(server,params);
+			} catch (ISOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+ 
+		try {
+			server.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+ 
+	private void handleClientRequest(ServerSocket server,InboundProcessorParams params) throws ISOException {
+		try {
+			new ConnectionRequestHandler(server.accept(),params,port).run();
+		} catch (IOException e) {
+			log.error("Could not establish the connection",e);
+		}
+	}
+}

@@ -1,0 +1,40 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.core.SynapseEnvironment;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+
+public class ReceiveISO8583Message {
+    private static final Log log = LogFactory.getLog(ReceiveISO8583Message.class);
+    ISOPackager packager;
+    
+    public ReceiveISO8583Message(String injectingSeq, String onErrorSeq, boolean sequential,
+            SynapseEnvironment synapseEnvironment) throws ISOException{
+    	this.packager = ISO8583PackagerFactory.getPackager();
+    }
+
+	 public void unpackRequest(String message) throws ISOException, Exception {
+         try {
+             ISOMsg isoMsg = new ISOMsg();
+             isoMsg.setPackager(packager);
+             isoMsg.unpack(message.getBytes());
+             injectISO8583Message(isoMsg);
+         } catch (ISOException e) {
+         	log.info(message);
+             log.error("Message is not in ISO8583 standard", e);
+         }
+     }
+
+     public ISOMsg injectISO8583Message(ISOMsg isomsg) {
+         if (injectingSeq != null) {
+             msgInject.inject(isomsg, ISO8583Constant.MESSAGE_FORMAT);
+         } else {
+             log.info("The Sequence is not found");
+         }
+         return null;
+     }
+
+}

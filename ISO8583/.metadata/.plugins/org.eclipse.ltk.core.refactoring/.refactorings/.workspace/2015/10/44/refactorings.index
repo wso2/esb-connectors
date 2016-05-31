@@ -1,0 +1,5 @@
+1446046004698	Delete resource 'client'
+1446092561509	Delete resource 'org.wso2.carbon.connector.ISO8583'
+1446092567362	Delete resource 'org.wso2.carbon.connector.ISO8583Server'
+1446194244794	Delete resource 'org.apache.synapse.iso8583.listening.class'
+1446279119649	Delete resource 'org.apache.synapse.iso8583.poll.class'

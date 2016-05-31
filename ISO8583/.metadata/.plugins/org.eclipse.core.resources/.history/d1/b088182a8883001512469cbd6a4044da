@@ -1,0 +1,217 @@
+/*
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.SynapseException;
+import org.apache.synapse.core.SynapseEnvironment;
+import org.apache.synapse.inbound.InboundProcessorParams;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericInboundListener;
+
+
+
+public class ISO8583MessageConsumer extends GenericInboundListener {
+	private static final Log log = LogFactory.getLog(ISO8583MessageConsumer.class);
+	private  int port;
+	private String host;
+	private String injectingSeq;
+	private ISO8583MessageInject msgInject;
+	ISOPackager packager;
+	private static ServerSocket server;
+	public static InputStreamReader inputstreamreader;
+	private  Socket connection;
+	protected InboundProcessorParams params;
+	private String onErrorSeq;
+	private boolean sequential;
+    private SynapseEnvironment synapseEnvironment;
+    Properties properties;
+    
+	public ISO8583MessageConsumer(InboundProcessorParams params) throws ISOException, IOException {
+		super(params);
+		this.injectingSeq = params.getInjectingSeq();
+        this.onErrorSeq = params.getOnErrorSeq();
+        this.name = params.getName();
+        this.synapseEnvironment = params.getSynapseEnvironment();
+        this.properties = params.getProperties();
+		this.params = params;
+        this.host = properties.getProperty(ISO8583Constant.HOST);
+		this.port=5000;
+		log.info("URL : " + host + ":" + port);
+		this.packager = ISO8583PackagerFactory.getPackager();
+		this.msgInject= new ISO8583MessageInject(injectingSeq, onErrorSeq, sequential,
+                synapseEnvironment);	
+		try {
+			setupConnection();
+		 } catch (Exception e) {
+	            log.error("Error while initiate the socket connection",e);
+       }
+	}
+	public boolean setupConnection() throws IOException{
+		try{
+		server = new ServerSocket(port);
+		 connection = server.accept();
+		 log.info("There is a client connected on port :" +port);
+		inputstreamreader =  new InputStreamReader(connection.getInputStream());
+		
+		}catch(IOException e){
+			log.error("problem with input stream",e);
+		}
+		return true;
+	}
+	/*
+	public void BuildISO8583Message() throws Exception{
+	        ISOMsg isoMsg = new ISOMsg();
+	        isoMsg.setPackager(packager);
+//	        isoMsg.setMTI("0200");
+//	        isoMsg.set(3, "201234");
+//	        isoMsg.set(4, "10000");
+//	        isoMsg.set(7, "110722180");
+//	        isoMsg.set(11, "123456");
+//	        isoMsg.set(32, "100005");
+//	        isoMsg.set(44, "A5DFGR");
+//	        isoMsg.set(111, "ABCDEFGHIJ 1234567890");
+		        
+		       isoMsg.setMTI("0200");
+		        isoMsg.set(3, "201345");
+		        isoMsg.set(4, "500000");
+		        isoMsg.set(7, "111522180");
+		        isoMsg.set(11, "123489");
+		        isoMsg.set(32, "100009");
+		        isoMsg.set(44, "XYRTUI5269TYUI");
+		        isoMsg.set(111, "SDFGHJKIOL 1234567890 9876543210");
+		        
+		        // Get and print the output result
+		        byte[] data = isoMsg.pack();
+		        String dataString=new String(data);
+		        unpackRequest(dataString);
+		    }
+	*/
+
+	/**
+	 * Unpack the STRING ISO8583 Messages.
+	*/
+
+	public void receiveMessage() throws ISOException, Exception {
+		try{
+			/** Receive Request */
+		while(connection.getInputStream() != null){
+			BufferedReader receive_PackedRequestData = new BufferedReader(inputstreamreader);
+			String fromclient = receive_PackedRequestData.readLine();
+			log.info("--- Request Received from Client--- ");
+			log.info(fromclient);
+			unpackRequest(fromclient);
+		}
+		}
+		catch(Exception e){
+			try {
+				server.close();
+				connection.close();
+				log.info("client disconnect the connection");
+				new ISO8583MessageConsumer(params);
+				init();
+			} catch (IOException e1) {
+				log.error("Error while disconnect the connection",e1);
+			}
+			
+		}
+	}
+
+
+	public void unpackRequest(String message) throws ISOException, Exception{
+		try{
+			ISOMsg isoMsg = new ISOMsg();
+			isoMsg.setPackager(packager);
+			isoMsg.unpack(message.getBytes());
+//			isoMsg.dump(System.out, "");
+			injectISO8583Message(isoMsg);
+			}
+			catch (ISOException e){
+	            log.error("Message is not in ISO8583 standard",e);
+	        }
+	}
+
+	public ISOMsg injectISO8583Message(ISOMsg isomsg) { 
+			log.info("Inject the ISO8583 messages into the sequence");
+	        if (injectingSeq != null) {
+	            msgInject.invoke(isomsg, ISO8583Constant.MESSAGE_FORMAT);
+	            if (log.isDebugEnabled()) {
+	                log.debug("injecting ISO8583Message to the sequence : "
+	                        + injectingSeq);
+	            }
+	        } else {
+	            handleException("the Sequence is not found");
+	        }
+			return null;
+	        
+	    }
+
+	private void handleException(String msg) {
+	        log.error(msg);
+	        throw new SynapseException(msg);
+		}	
+
+		public int getPort() {
+			return port;
+		}
+
+
+		public void setPort(int port) {
+			this.port = port;
+		}
+
+
+		public String getHost() {
+			return host;
+		}
+
+
+		public void setHost(String host) {
+			this.host = host;
+		}
+	@Override
+	public void destroy() {
+		log.info("destroy the connection");
+	}
+	@Override
+	public void init(){
+		try {
+			log.info("Server is listening for Request on port " + port);
+				receiveMessage();
+		} catch (Exception e) {
+			log.error("Error while receiving the message", e);
+		}
+		
+	}
+	
+
+	
+		
+	}
+
+
+

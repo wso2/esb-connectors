@@ -1,0 +1,24 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+public class ISO8583Constant {
+	
+		
+		public final static String TAG_FIELD="field";
+
+		public final static String TAG_CONFIG="config";
+
+		public final static String TAG_DATA="isomsg";
+
+		public final static String TAG_MTI="mti";
+
+		public static final String INBOUND_COORDINATION = "coordination";
+
+		public static final String CONTENT_TYPE = "Content-Type";
+
+		public static final String HOST = "host";
+		
+		public static final String MESSAGE_FORMAT = "TEXT";
+		
+	    public static final String NAMESPACE = "data";
+	
+}

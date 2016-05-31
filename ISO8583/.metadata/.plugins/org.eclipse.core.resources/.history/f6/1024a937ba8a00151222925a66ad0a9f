@@ -1,0 +1,58 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class CreateConnection extends Thread {
+	private static final Log log = LogFactory.getLog(CreateConnection.class);
+	private Socket connection;
+     private int clientNumber;
+
+     public CreateConnection(Socket connection, int clientNumber) {
+         this.connection = connection;
+         this.clientNumber = clientNumber;
+         log.info("New connection with client# " + clientNumber + " at " + connection);
+     }
+     
+     public void run() {
+         try {
+
+             // Decorate the streams so we can send characters
+             // and not just bytes.  Ensure output is flushed
+             // after every newline.
+             BufferedReader in = new BufferedReader(
+                     new InputStreamReader(connection.getInputStream()));
+             
+
+             // Send a welcome message to the client.
+             out.println("Hello, you are client #" + clientNumber + ".");
+             out.println("Enter a line with only a period to quit\n");
+
+             // Get messages from the client, line by line; return them
+             // capitalized
+             while (true) {
+                 String input = in.readLine();
+                 if (input == null || input.equals(".")) {
+                     break;
+                 }
+                 out.println(input.toUpperCase());
+             }
+         } catch (IOException e) {
+             log.info("Error handling client# " + clientNumber + ": " + e);
+         } finally {
+             try {
+                 socket.close();
+             } catch (IOException e) {
+                 log.info("Couldn't close a socket, what's going on?");
+             }
+             log.info("Connection with client# " + clientNumber + " closed");
+         }
+     }
+
+
+}

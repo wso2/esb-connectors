@@ -1,0 +1,230 @@
+/*
+ * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.wso2.carbon.inbound.iso8583.poll;
+import org.apache.synapse.SynapseException;
+import org.apache.synapse.core.SynapseEnvironment;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+//import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import java.util.Properties;
+
+public class ISO8583MessageConsumer extends GenericPollingConsumer  {
+	private static final Log log = LogFactory.getLog(ISO8583MessageConsumer.class);
+//	private static Socket connection;
+	private  int port;
+	private String host;
+	private String injectingSeq;
+	private BufferedReader inFromClient;
+	private String datafromClient;
+	private DataOutputStream outToClient;
+	private Socket serverSocket ;
+	private ISO8583MessageInject msgInject;
+	
+
+
+	ISOPackager packager = ISO8583PackagerFactory.getPackager();
+//	GenericPackager packager = new GenericPackager("iso87ascii.xml");
+	public ISO8583MessageConsumer(Properties properties, String name,
+            SynapseEnvironment synapseEnvironment, long scanInterval,
+            String injectingSeq, String onErrorSeq, boolean coordination,
+            boolean sequential) throws ISOException, IOException{
+		super(properties, name, synapseEnvironment, scanInterval,
+		     injectingSeq, onErrorSeq, coordination, sequential);
+		this.host = properties.getProperty(ISO8583Constant.HOST);
+		this.port=8280;
+		log.info("URL : " + host + "PORT : " + port);
+		this.coordination = true;
+		this.injectingSeq = injectingSeq;
+		this.msgInject= new ISO8583MessageInject(injectingSeq, onErrorSeq, sequential,
+                synapseEnvironment);
+		
+}
+	
+	public void BuildISO8583Message() throws Exception{
+        ISOMsg isoMsg = new ISOMsg();
+        isoMsg.setPackager(packager);
+//        isoMsg.setMTI("0200");
+//        isoMsg.set(3, "201234");
+//        isoMsg.set(4, "10000");
+//        isoMsg.set(7, "110722180");
+//        isoMsg.set(11, "123456");
+//        isoMsg.set(32, "100005");
+//        isoMsg.set(44, "A5DFGR");
+//        isoMsg.set(111, "ABCDEFGHIJ 1234567890");
+	        
+	       isoMsg.setMTI("0200");
+	        isoMsg.set(3, "201345");
+	        isoMsg.set(4, "500000");
+	        isoMsg.set(7, "111522180");
+	        isoMsg.set(11, "123489");
+	        isoMsg.set(32, "100009");
+	        isoMsg.set(44, "XYRTUI5269TYUI");
+	        isoMsg.set(111, "SDFGHJKIOL 1234567890 9876543210");
+	        
+	        // Get and print the output result
+	        byte[] data = isoMsg.pack();
+	        String dataString=new String(data);
+//	        Object str = dataString;
+//	       log.info("Packed ISO Message : " +dataString);
+	       unpackRequest(dataString);
+	    }
+
+	private static void logISOMsg(ISOMsg msg) {
+		OMFactory factory = OMAbstractFactory.getOMFactory();
+        String outputResult;
+        OMNamespace ns = factory.createOMNamespace(ISO8583Constant.TAG_CONFIG,
+        		ISO8583Constant.NAMESPACE);
+        OMElement result = factory.createOMElement(ISO8583Constant.TAG_DATA, ns);
+        log.info("----Unpacked ISO MESSAGE-----");
+        try {
+           log.info("  MTI : " + msg.getMTI());
+            for (int i = 1; i <= msg.getMaxField(); i++) {
+                if (msg.hasField(i)) {
+                   log.info("    Field-" + i + " : " + msg.getString(i));
+                }
+            }
+        } catch (ISOException e) {
+            e.printStackTrace();
+        } finally {
+            log.info("--------------------");
+        }
+    }
+	    
+/* THIS METHOD FOR UNPACK THE STRING ISO8583 MESSAGE TO FILEDS (LIKE XML FORMAT)*/
+
+	public ISOMsg unpackRequest(String message) throws ISOException, Exception{
+		try{
+		ISOMsg isoMsg = new ISOMsg();
+		isoMsg.setPackager(packager);
+		isoMsg.unpack(message.getBytes());
+		
+		isoMsg.dump(System.out, "");
+		logISOMsg(isoMsg);
+//		injectISO8583Message(message);
+		injectISO8583Message(message);
+		return isoMsg ;
+		}
+		catch (ISOException e) {
+            throw new Exception();
+        }
+//		return isoMsg;
+}
+
+	public ISOMsg injectISO8583Message(String isomsg) { 
+		log.info("Inject the ISO8583 messages into the sequence");
+        if (injectingSeq != null) {
+        	log.info("START");
+            msgInject.invoke(isomsg, ISO8583Constant.MESSAGE_FORMAT);
+            log.info("check");
+            if (log.isDebugEnabled()) {
+                log.debug("injecting ISO8583Message to the sequence : "
+                        + injectingSeq);
+            }
+        } else {
+            handleException("the Sequence is not found");
+        }
+		return null;
+        
+    }
+
+	private void handleException(String msg) {
+        log.error(msg);
+        throw new SynapseException(msg);
+	}
+	
+	 public void setupConnection() throws IOException {
+		 
+//		inFromClient = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+//		outToClient = new DataOutputStream(serverSocket.getOutputStream());
+	try {
+			log.info("Server is ready…");
+			while (true) 
+			{
+				log.info("There is a client connected…");
+				outToClient.writeBytes("InfoServer version 0.1\n");
+				datafromClient = inFromClient.readLine();
+				log.info("Data From Client : "+datafromClient);
+				unpackRequest(datafromClient); // Take the ISO8583 MESSAGE from client and unpack the message
+//				outToClient.writeBytes(messageHandler.process(isomsg));
+			}
+		}
+		catch (IOException ioe) {
+			log.error("error: " + ioe);
+	}
+		catch (Exception e) {
+			log.error("error: " + e);
+	}
+		finally {
+			try {
+				if (inFromClient != null) inFromClient.close();
+				if (outToClient != null) outToClient.close();
+				if (serverSocket != null) serverSocket.close();
+	} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	 }
+
+
+	public int getPort() {
+		return port;
+	}
+
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+
+	public String getHost() {
+		return host;
+	}
+
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+	@Override
+	public Object poll() {
+		log.info("inside poll");
+		try {
+			BuildISO8583Message();
+//			setupConnection();
+        } 
+		catch (Exception e) {
+    		log.error("error: " + e);
+
+	}
+		return null;
+	}
+}

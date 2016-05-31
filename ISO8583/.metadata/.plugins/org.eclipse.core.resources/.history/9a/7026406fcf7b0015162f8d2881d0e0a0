@@ -1,0 +1,29 @@
+package org.wso2.carbon.inbound.iso8583.poll;
+import javax.xml.namespace.QName;
+
+public class ISO8583Constant {
+	
+	public final static String TAG_FIELD="field";
+
+	public final static String TAG_CONFIG="config";
+
+//	public final static String TAG_DATA="data";
+
+	public final static String TAG_MTI="mti";
+
+	public static final String INBOUND_COORDINATION = "coordination";
+
+	public static final String CONTENT_TYPE = "Content-Type";
+
+	public static final String HOST = "host";
+
+	private static String data;
+    public static final String MESSAGE_FORMAT = "TEXT";
+
+//	private static int port;
+	
+	public static final QName TAG_DATA = new QName(data);
+//    public static final QName FEED_LASTBUILDDATE = new QName(LASTBUILDDATE);
+
+//	public static  int PORT = port;
+}

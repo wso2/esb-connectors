@@ -1,0 +1,5 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+public class ServerDemo {
+
+}

@@ -1,0 +1,55 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+	public class ConnectionRequestHandler implements Runnable{
+		private Socket connection = null;
+	    public static DataInputStream inputstreamreader;
+
+//		private PrintWriter _out = null;
+//		private BufferedReader _in = null;
+
+		public ConnectionRequestHandler(Socket connection) {
+			this.connection = connection;
+		}
+
+		public void run() {
+			System.out.println("Client connected to socket: " + connection.toString());
+
+			try {
+	            inputstreamreader = new DataInputStream(connection.getInputStream());
+
+
+				String inputLine, outputLine;
+				BusinessLogic businessLogic = new BusinessLogic();
+				outputLine = businessLogic.processInput(null);
+				_out.println(outputLine);
+
+				//Read from socket and write back the response to client. 
+				while ((inputLine = inputstreamreader.readLine()) != null) {
+					outputLine = businessLogic.processInput(inputLine);
+					if(outputLine != null) {
+						_out.println(outputLine);
+						if (outputLine.equals("exit")) {
+							System.out.println("Server is closing connection for client:" + connection.getLocalAddress());
+							break;
+						}
+					} else {
+						System.out.println("OutputLine is null!!!");
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally { //In case anything goes wrong we need to close our I/O streams and sockets.
+				try {
+					inputstreamreader.close();
+					connection.close();
+				} catch(Exception e) { 
+					System.out.println("Couldn't close I/O streams");
+				}
+			}
+		}
+
+	}

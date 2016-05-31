@@ -1,0 +1,82 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+
+public class CreateConnection extends Thread {
+	private static final Log log = LogFactory.getLog(CreateConnection.class);
+	private int port;
+	private Socket connection;
+    private static ServerSocket server;
+    public static DataInputStream inputstreamreader;
+    ISOPackager packager;
+
+     public CreateConnection(Socket connection,int port) throws ISOException {
+         this.connection = connection;
+         this.port = port;
+         this.packager = ISO8583PackagerFactory.getPackager();
+     }
+     
+     public void run() {
+    	 try {
+    		 server = new ServerSocket(port);
+             log.info("Server is listening for Request on port " + port);
+             while(true){
+             connection = server.accept();
+             log.info("There is a client connected on port :" + port);
+             inputstreamreader = new DataInputStream(connection.getInputStream());
+             }
+         } catch (IOException e) {
+             log.error("problem while establish the connection", e);
+         } finally {
+             try {
+            	 connection.close();
+             } catch (IOException e) {
+                 log.info("Couldn't close a socket, what's going on?");
+             }
+             log.info("Connection with client closed");
+         }
+     }
+
+     public void receiveMessage() throws ISOException, Exception {
+         while (connection.getInputStream() != null) {        		
+ 	            String fromclient = inputstreamreader.readLine();
+ 	            unpackRequest(fromclient);   
+         }
+     }
+
+     /**
+      * Unpack the STRING ISO8583 Messages.
+      * 
+      */
+     public void unpackRequest(String message) throws ISOException, Exception {
+         try {
+             ISOMsg isoMsg = new ISOMsg();
+             isoMsg.setPackager(packager);
+             isoMsg.unpack(message.getBytes());
+             injectISO8583Message(isoMsg);
+         } catch (ISOException e) {
+         	log.info(message);
+             log.error("Message is not in ISO8583 standard", e);
+         }
+     }
+
+     public ISOMsg injectISO8583Message(ISOMsg isomsg) {
+         if (injectingSeq != null) {
+             msgInject.inject(isomsg, ISO8583Constant.MESSAGE_FORMAT);
+         } else {
+             handleException("The Sequence is not found");
+         }
+         return null;
+     }
+
+
+}

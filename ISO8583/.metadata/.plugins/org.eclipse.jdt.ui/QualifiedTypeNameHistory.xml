@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.io.FileInputStream"/>
+<fullyQualifiedTypeName name="javax.wsdl.Port"/>
+<fullyQualifiedTypeName name="org.apache.commons.cli.MissingArgumentException"/>
+<fullyQualifiedTypeName name="org.jpos.util.SimpleLogListener"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="org.apache.axis2.transport.TransportUtils"/>
+<fullyQualifiedTypeName name="javax.xml.soap.SOAPEnvelope"/>
+<fullyQualifiedTypeName name="org.apache.axiom.soap.SOAPEnvelope"/>
+<fullyQualifiedTypeName name="org.jpos.util.Logger"/>
+<fullyQualifiedTypeName name="org.apache.log4j.Logger"/>
+<fullyQualifiedTypeName name="java.io.DataOutputStream"/>
+<fullyQualifiedTypeName name="java.lang.Thread"/>
+<fullyQualifiedTypeName name="org.wso2.carbon.inbound.endpoint.protocol.generic.GenericInboundListener"/>
+<fullyQualifiedTypeName name="org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer"/>
+<fullyQualifiedTypeName name="java.util.Properties"/>
+<fullyQualifiedTypeName name="org.jpos.iso.packager.GenericPackager"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="org.apache.synapse.SynapseException"/>
+<fullyQualifiedTypeName name="org.apache.axiom.om.OMFactory"/>
+<fullyQualifiedTypeName name="org.apache.axiom.om.OMNamespace"/>
+<fullyQualifiedTypeName name="org.apache.axiom.om.OMElement"/>
+<fullyQualifiedTypeName name="org.apache.commons.logging.Log"/>
+<fullyQualifiedTypeName name="org.apache.commons.logging.LogFactory"/>
+<fullyQualifiedTypeName name="org.apache.synapse.core.SynapseEnvironment"/>
+<fullyQualifiedTypeName name="org.jpos.iso.ISOMsg"/>
+<fullyQualifiedTypeName name="org.apache.synapse.mediators.base.SequenceMediator"/>
+<fullyQualifiedTypeName name="org.apache.axiom.om.OMAbstractFactory"/>
+<fullyQualifiedTypeName name="org.apache.axis2.context.MessageContext"/>
+<fullyQualifiedTypeName name="org.wso2.carbon.context.PrivilegedCarbonContext"/>
+<fullyQualifiedTypeName name="org.wso2.carbon.base.MultitenantConstants"/>
+<fullyQualifiedTypeName name="org.wso2.carbon.inbound.iso8583.listening.ISO8583PackagerFactory"/>
+<fullyQualifiedTypeName name="java.io.PrintStream"/>
+<fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+<fullyQualifiedTypeName name="java.net.ServerSocket"/>
+<fullyQualifiedTypeName name="java.net.Socket"/>
+<fullyQualifiedTypeName name="java.io.DataInputStream"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="org.jpos.iso.ISOException"/>
+<fullyQualifiedTypeName name="org.jpos.iso.ISOPackager"/>
+<fullyQualifiedTypeName name="org.wso2.carbon.inbound.iso8583.listening.ReceiveISO8583Message"/>
+<fullyQualifiedTypeName name="org.wso2.carbon.inbound.iso8583.listening.ServerDemo"/>
+</qualifiedTypeNameHistroy>

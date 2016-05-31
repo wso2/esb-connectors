@@ -1,0 +1,28 @@
+package org.wso2.carbon.inbound.iso8583.listening;
+
+import org.apache.synapse.inbound.InboundProcessorParams;
+import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericInboundListener;
+
+
+
+public class ISO8583MessageConsumer extends GenericInboundListener {
+
+	public ISO8583MessageConsumer(InboundProcessorParams inboundParams) {
+		super(inboundParams);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+}

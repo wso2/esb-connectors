@@ -1,0 +1,195 @@
+package org.wso2.carbon.inbound.iso8583.poll;
+
+
+
+import java.util.Iterator;
+
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.util.UUIDGenerator;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.builder.Builder;
+import org.apache.axis2.builder.BuilderUtil;
+import org.apache.axis2.context.MessageContext;
+//import org.apache.axis2.transport.TransportUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.core.SynapseEnvironment;
+import org.apache.synapse.mediators.base.SequenceMediator;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.transport.iso8583.ISO8583Constant;
+
+/**
+ * FileInject uses to mediate the received Feeds
+ */
+@SuppressWarnings("deprecation")
+public class ISO8583MessageInject {
+    private static final Log log = LogFactory.getLog(ISO8583MessageInject.class);
+
+    private final String injectingSeq;
+    private final String onErrorSeq;
+    private final boolean sequential;
+    private final SynapseEnvironment synapseEnvironment;
+    static OMFactory OMfactory;
+    static OMNamespace ns;
+    static OMElement result;
+    static OMElement messageElement;
+//    private final String contentType;
+
+
+    public ISO8583MessageInject(String injectingSeq, String onErrorSeq, boolean sequential,
+                     SynapseEnvironment synapseEnvironment) {
+        this.injectingSeq = injectingSeq;
+        this.onErrorSeq = onErrorSeq;
+        this.sequential = sequential;
+        this.synapseEnvironment = synapseEnvironment;
+        //this.contentType = contentType;
+    }
+
+    /**
+     * Determine the message builder to use, set the feed message to the
+     * message context and
+     * inject the message to the sequence
+     */
+    public boolean invoke(Object object, String contentType) {
+        org.apache.synapse.MessageContext msgCtx = null;
+        try {
+            msgCtx = createMessageContext();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        MessageContext axis2MsgCtx = null;
+        try {
+            axis2MsgCtx =
+                    ((org.apache.synapse.core.axis2.Axis2MessageContext) msgCtx).getAxis2MessageContext();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        // Determine the message builder to use
+        Builder builder = null;
+        try {
+            builder = BuilderUtil.getBuilderFromSelector(contentType, axis2MsgCtx);
+        } catch (AxisFault axisFault) {
+            log.error("Error while creating message builder :: " + axisFault.getMessage(),
+                    axisFault);
+
+        }
+        if (builder == null) {
+            if (log.isDebugEnabled()) {
+                log.info("No message builder found for type '" + contentType +
+                        "'. Falling back to SOAP.");
+            }
+
+        }
+
+
+//        try {
+//            OMElement documentElement = (OMElement) object;
+//            msgCtx.setEnvelope(TransportUtils.createSOAPEnvelope(documentElement));
+//        } catch (AxisFault axisFault) {
+//            log.error("Error while setting message to the message context :: " +
+//                    axisFault.getMessage(), axisFault);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//        }
+        // Inject the message to the sequence.
+
+        if (injectingSeq == null || injectingSeq.equals("")) {
+            log.error("Sequence name not specified. Sequence : " + injectingSeq);
+            return false;
+        }
+        SequenceMediator seq =
+                (SequenceMediator) synapseEnvironment.getSynapseConfiguration()
+                        .getSequence(injectingSeq);
+        try {
+            seq.setErrorHandler(onErrorSeq);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        OMfactory = OMAbstractFactory.getOMFactory();
+        ns = OMfactory.createOMNamespace("status", "ns");
+        result = OMfactory.createOMElement("result", ns);
+
+        messageElement = OMfactory.createOMElement("Result", ns);
+        messageElement.setText(object.toString());
+        result.addChild(messageElement);
+        msgCtx.getEnvelope().getBody().addChild(result);
+        if (seq != null) {
+            if (log.isDebugEnabled()) {
+                log.info("injecting message to sequence : " + injectingSeq);
+            }
+            synapseEnvironment.injectInbound(msgCtx, seq, sequential);
+        } else {
+            log.error("Sequence: " + injectingSeq + " not found");
+        }
+
+        return true;
+    }
+
+    
+    public ISOMsg toISO8583(MessageContext messageContext){
+        SOAPEnvelope soapEnvelope = messageContext.getEnvelope();
+        OMElement isoElements = soapEnvelope.getBody().getFirstElement();
+
+        ISOMsg isoMsg = new ISOMsg();
+
+        @SuppressWarnings("unchecked")
+        Iterator fieldItr = isoElements.setFirstChild(
+                new QName(ISO8583Constant.TAG_DATA)).getChildrenWithLocalName(
+                ISO8583Constant.TAG_FIELD);
+        String mtiVal = isoElements
+                .getFirstChildWithName(new QName(ISO8583Constant.TAG_CONFIG))
+                .getFirstChildWithName(new QName(ISO8583Constant.TAG_MTI))
+                .getText();
+
+        try {
+            isoMsg.setMTI(mtiVal);
+
+            while (fieldItr.hasNext()) {
+
+                OMElement isoElement = (OMElement) fieldItr.next();
+
+                String isoValue = isoElement.getText();
+
+                int isoTypeID = Integer.parseInt(isoElement.getAttribute(
+                        new QName("id")).getAttributeValue());
+
+                isoMsg.set(isoTypeID, isoValue);
+
+            }
+
+            return isoMsg;
+
+        } catch (ISOException ex) {
+            throw new AxisFault("Error parsing the ISO8583 payload");
+        } catch (Exception e) {
+
+            throw new AxisFault("Error processing stream");
+        }
+
+    }
+    /**
+     * Create the initial message context for Feed
+     */
+    private org.apache.synapse.MessageContext createMessageContext() {
+        org.apache.synapse.MessageContext msgCtx = synapseEnvironment.createMessageContext();
+        MessageContext axis2MsgCtx =
+                ((org.apache.synapse.core.axis2.Axis2MessageContext) msgCtx).getAxis2MessageContext();
+        axis2MsgCtx.setServerSide(true);
+        axis2MsgCtx.setMessageID(UUIDGenerator.getUUID());
+        msgCtx.setProperty(MessageContext.CLIENT_API_NON_BLOCKING, true);
+        PrivilegedCarbonContext carbonContext =
+                PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        axis2MsgCtx.setProperty(MultitenantConstants.TENANT_DOMAIN, carbonContext.getTenantDomain());
+        return msgCtx;
+    }
+
+}
