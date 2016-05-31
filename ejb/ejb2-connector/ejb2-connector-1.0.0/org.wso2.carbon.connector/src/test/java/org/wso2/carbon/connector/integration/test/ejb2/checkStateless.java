@@ -16,7 +16,6 @@
 
 package org.wso2.carbon.connector.integration.test.ejb2;
 
-
 import com.ejb2connector.stateless.Hello;
 import com.ejb2connector.stateless.HelloHome;
 
@@ -28,11 +27,11 @@ import java.rmi.RemoteException;
 public class checkStateless {
 
     /**
-     * @param context context
-     * @return sum
-     * @throws RemoteException
-     * @throws CreateException
-     * @throws NamingException
+     * @param context context.
+     * @return sum.
+     * @throws RemoteException.
+     * @throws CreateException.
+     * @throws NamingException.
      */
     public static int getFromStateless(Context context) throws RemoteException, CreateException, NamingException {
         HelloHome home = (HelloHome) context.lookup("EJB2StatelessJboss");

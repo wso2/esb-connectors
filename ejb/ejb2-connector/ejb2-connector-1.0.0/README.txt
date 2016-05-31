@@ -12,10 +12,10 @@ Tested Platform:
  - UBUNTU 14.04
  - WSO2 ESB 4.9.0
 
-Dependency jars
-EJB2StatefulJboss.jar
-EJB2StatelessJboss.jar
-jbossall-client.jar
+  Dependency jars
+  EJB2StatefulJboss.jar
+  EJB2StatelessJboss.jar
+  jbossall-client.jar
 
 STEPS:
 

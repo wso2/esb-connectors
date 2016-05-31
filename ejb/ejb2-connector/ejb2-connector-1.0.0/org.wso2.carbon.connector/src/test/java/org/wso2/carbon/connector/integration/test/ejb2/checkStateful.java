@@ -27,11 +27,11 @@ import java.rmi.RemoteException;
 public class checkStateful {
 
     /***
-     * @param context context
-     * @return counter
-     * @throws RemoteException
-     * @throws CreateException
-     * @throws NamingException
+     * @param context context.
+     * @return counter.
+     * @throws RemoteException.
+     * @throws CreateException.
+     * @throws NamingException.
      */
     public static int getFromStateful(Context context) throws RemoteException, CreateException, NamingException {
         HelloHome home;

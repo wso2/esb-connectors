@@ -50,7 +50,7 @@ public class Ejb2ConnectorIntegrationTest extends ConnectorIntegrationTestBase {
     }
 
     /**
-     * @throws Exception
+     * @throws Exception.
      */
     @Test(enabled = true, description = "Stateless Bean Jboss")
     public void statelessBean() throws Exception {
@@ -62,7 +62,7 @@ public class Ejb2ConnectorIntegrationTest extends ConnectorIntegrationTestBase {
     }
 
     /**
-     * @throws Exception
+     * @throws Exception.
      */
     @Test(enabled = true, description = "Stateful Bean Jboss")
     public void statefulBean() throws Exception {

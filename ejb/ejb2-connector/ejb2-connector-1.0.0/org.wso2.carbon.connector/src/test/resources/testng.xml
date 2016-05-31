@@ -25,11 +25,9 @@
         <listener class-name="org.wso2.carbon.automation.core.PlatformReportManager"/>
     </listeners>
 
-    <test name="Ejb2-Connector-Test" preserve-order="true" verbose="2">
+    <test name="EJB2-Connector-Test" preserve-order="true" verbose="2">
         <packages>
             <package name="org.wso2.carbon.connector.integration.test.ejb2"/>
         </packages>
     </test>
 </suite>
-
-

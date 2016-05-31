@@ -1,17 +1,19 @@
-/**
+/*
  * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package org.wso2.carbon.custom.connector;
@@ -45,10 +47,10 @@ public class EJBUtil {
     private static final Log log = LogFactory.getLog(EJBUtil.class);
 
     /**
-     * @param instance instance of an ejb object
-     * @param method   method that we want to call
-     * @param args     arguments object for method
-     * @return invoke arguments into method and return the value which actual method returns
+     * @param instance instance of an ejb object.
+     * @param method   method that we want to call.
+     * @param args     arguments object for method.
+     * @return invoke arguments into method and return the value which actual method returns.
      */
     public static Object invokeInstanceMethod(Object instance, Method method, Object[] args) {
         Class[] paramTypes = method.getParameterTypes();
@@ -82,10 +84,10 @@ public class EJBUtil {
     }
 
     /**
-     * @param aClass     class of our target ejb remote
-     * @param methodName name of the method
-     * @param argCount   number of arguments
-     * @return extract the value's from properties and make its as hashable
+     * @param aClass     class of our target ejb remote.
+     * @param methodName name of the method.
+     * @param argCount   number of arguments.
+     * @return extract the value's from properties and make its as hashable.
      */
     public static Method resolveMethod(Class aClass, String methodName, int argCount) {
         Method resolvedMethod = null;
@@ -104,9 +106,9 @@ public class EJBUtil {
     }
 
     /**
-     * @param messageContext message context
-     * @param operationName  name of the operation
-     * @return extract the value's from properties and make its as hashable
+     * @param messageContext message context.
+     * @param operationName  name of the operation.
+     * @return extract the value's from properties and make its as hashable.
      */
     public static Object[] buildArguments(MessageContext messageContext, String operationName) {
         Hashtable<String, String> argValues = getParameters(messageContext, operationName);
@@ -121,9 +123,9 @@ public class EJBUtil {
     }
 
     /**
-     * @param messageContext message context
-     * @param operationName  Name of the operation
-     * @return extract the value's from properties and make its as hashable
+     * @param messageContext message context.
+     * @param operationName  Name of the operation.
+     * @return extract the value's from properties and make its as hashable.
      */
     public static Hashtable getParameters(MessageContext messageContext, String operationName) {
         Hashtable dynamicValues = new Hashtable();
@@ -149,16 +151,16 @@ public class EJBUtil {
     }
 
     /**
-     * @param messageContext message context
-     * @param paramName      parameter name
-     * @return value of the paramName from messageContext
+     * @param messageContext message context.
+     * @param paramName      parameter name.
+     * @return value of the paramName from messageContext.
      */
     protected static Object getParameter(MessageContext messageContext, String paramName) {
         return ConnectorUtils.lookupTemplateParamater(messageContext, paramName);
     }
 
     /**
-     * @param message error message
+     * @param message error message.
      */
     public static void handleException(String message) {
         log.error(message);
@@ -166,8 +168,8 @@ public class EJBUtil {
     }
 
     /**
-     * @param message error message
-     * @param e       exception
+     * @param message error message.
+     * @param e       exception.
      */
     public static void handleException(String message, Exception e) {
         log.error(message);
@@ -175,9 +177,9 @@ public class EJBUtil {
     }
 
     /**
-     * @param messageContext messageContext
-     * @param jndiName       jndi name
-     * @return ejb remote object
+     * @param messageContext messageContext.
+     * @param jndiName       jndi name.
+     * @return ejb remote object.
      */
     public static Object getEJBObject(MessageContext messageContext, String jndiName) {
         Object ejbObject = null;
