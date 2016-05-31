@@ -1,0 +1,11 @@
+{
+  "authToken":"%s",
+  "date": "2015-11-19",
+  "refundMode": "Cash",
+  "referenceNumber": "782364",
+  "amount": 5.00,
+  "exchangeRate": 1.00,
+  "description": "",
+  "creditNoteId":"571532000000105001",
+  "creditNoteRefundId":"571532000000105011"
+}

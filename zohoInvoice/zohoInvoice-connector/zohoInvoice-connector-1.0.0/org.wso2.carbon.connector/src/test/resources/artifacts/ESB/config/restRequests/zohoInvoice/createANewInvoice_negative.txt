@@ -1,0 +1,9 @@
+{
+"authToken":"%s",
+"itemId":"",
+"name":"",
+"customerId":"543390000000039025",
+"rate":"20.00",
+"quantity":""
+
+}

@@ -1,0 +1,9 @@
+{
+"authToken":"%s",
+"name":"Grapes",
+"description":"potato",
+"rate":"140.00",
+"taxId":"",
+"itemId":"571532000000043001"
+
+}

@@ -1,0 +1,24 @@
+{
+"authToken":"%s",
+"projectName":"XML",
+"customerId":"571532000000088061",
+"billingType":"based_on_task_hours",
+"description":"Hai",
+"budgetType":"total_project_cost",
+  "budgetAmount":"100.00",
+  "tasks": [
+        {
+          "task_name": "Distribution",
+          "description": "",
+          "rate": 25.00,
+          "budget_hours": 0
+        }
+      ],
+  "users": [
+        {
+          "user_id": "571532000000042001",
+          "rate": 0,
+          "budget_hours": 0
+        }
+      ]
+}

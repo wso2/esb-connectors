@@ -1,0 +1,13 @@
+{
+"authToken":"%s",
+  "timeEntryId":"",
+  "projectId":"571532000000096019",
+ "userId":"571532000000042001",
+ "taskId": "571532000000099003",
+  "logDate": "2015-01-07",
+  "beginTime": "10:00",
+  "endTime": "15:00",
+  "isBillable":"true",
+  "notes":"Hai",
+  "startTimer": ""
+}

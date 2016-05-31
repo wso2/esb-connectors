@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="zoho_createAProject"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <property name="REQUEST_HOST_HEADER" value="invoice.zoho.com" scope="axis2"/>
+            <property name="authToken" expression="json-eval($.authToken)"/>
+            <property name="projectName" expression="json-eval($.projectName)"/>
+            <property name="customerId" expression="json-eval($.customerId)"/>
+            <property name="description" expression="json-eval($.description)"/>
+            <property name="rate" expression="json-eval($.rate)"/>
+            <property name="budgetType" expression="json-eval($.budgetType)"/>
+            <property name="budgetHours" expression="json-eval($.budgetHours)"/>
+            <property name="budgetAmount" expression="json-eval($.budgetAmount)"/>
+            <property name="users" expression="json-eval($.users)"/>
+            <property name="tasks" expression="json-eval($.tasks)"/>
+            <property name="billingType" expression="json-eval($.billingType)"/>
+            <zohoInvoice.init>
+                <apiUrl>{$ctx:apiUrl}</apiUrl>
+            </zohoInvoice.init>
+            <zohoInvoice.createAProject>
+                <authToken>{$ctx:authToken}</authToken>
+                <projectName>{$ctx:projectName}</projectName>
+                <customerId>{$ctx:customerId}</customerId>
+                <description>{$ctx:description}</description>
+                <rate>{$ctx:rate}</rate>
+                <budgetType>{$ctx:budgetType}</budgetType>
+                <budgetHours>{$ctx:budgetHours}</budgetHours>
+                <budgetAmount>{$ctx:budgetAmount}</budgetAmount>
+                <users>{$ctx:users}</users>
+                <tasks>{$ctx:tasks}</tasks>
+                <billingType>{$ctx:billingType}</billingType>
+            </zohoInvoice.createAProject>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <parameter name="serviceType">proxy</parameter>
+    <projectName/>
+</proxy>

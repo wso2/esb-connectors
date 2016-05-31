@@ -1,0 +1,5 @@
+{
+"authToken":"%s",
+"estimateId":"571532000000076001",
+"emailTemplateId":""
+}

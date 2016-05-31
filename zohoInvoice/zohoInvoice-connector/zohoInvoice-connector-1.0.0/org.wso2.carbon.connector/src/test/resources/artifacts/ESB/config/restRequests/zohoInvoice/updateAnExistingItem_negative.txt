@@ -1,0 +1,6 @@
+{
+"authToken":"%s",
+"name":"Orange",
+"rate":"255.00",
+"itemId":""
+}

@@ -1,0 +1,4 @@
+{
+  "authToken":"%s",
+   "contactPersonId":"571532000000045088"
+}
