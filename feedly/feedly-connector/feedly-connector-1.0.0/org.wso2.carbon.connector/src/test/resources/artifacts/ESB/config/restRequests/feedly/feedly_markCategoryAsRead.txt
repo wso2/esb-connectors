@@ -1,0 +1,8 @@
+{
+  "accessToken":"%s",
+  "action": "markAsRead",
+  "lastReadEntryId": "%s",
+  "categoryIds": [
+    "%s"
+  ]
+}

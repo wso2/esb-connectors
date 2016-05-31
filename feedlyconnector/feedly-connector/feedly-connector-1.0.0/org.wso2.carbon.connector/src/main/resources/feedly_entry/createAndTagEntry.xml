@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="createAndTagEntry" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="keywords" description="OPTIONAL" />
+    <parameter name="tags" description="OPTIONAL" />
+    <parameter name="alternate" description="OPTIONAL" />
+    <parameter name="title" description="" />
+    <parameter name="author" description="OPTIONAL" />
+    <parameter name="origin" description="OPTIONAL" />
+    <parameter name="content" description="" />
+
+    <sequence>
+        <property name="uri.var.keywords" expression="$func:keywords" />
+        <property name="uri.var.tags" expression="$func:tags" />
+        <property name="uri.var.alternate" expression="$func:alternate" />
+        <property name="uri.var.title" expression="$func:title" />
+        <property name="uri.var.author" expression="$func:author" />
+        <property name="uri.var.origin" expression="$func:origin" />
+        <property name="uri.var.content" expression="$func:content" />
+
+        <script language="js">
+            <![CDATA[
+
+			var tags = ''+mc.getProperty('uri.var.tags');
+			var tagsObj = eval ("(" + tags + ")");
+
+            var query = '';
+            if (mc.getProperty('uri.var.tags') != null && mc.getProperty('uri.var.tags') != "") {
+                query = '[';
+                var added = 0;
+                for(var i in tagsObj) {
+                    var temp = tagsObj[i].id;
+                    if(added == 0) {
+                        query = query + '{\"id\":\"user/'+mc.getProperty('uri.var.userId')+'/tag/' + temp + '\"}';
+                        added = 1;
+                    }else {
+                        query = query + ',{\"id\":\"user/'+mc.getProperty('uri.var.userId')+'/tag/' + temp + '\"}';
+                    }
+                }
+
+                query = query + ']';
+            }
+
+            if (query != '') {
+                var tagsId = '"tags":' + query +",";
+            }
+            mc.setProperty('uri.var.temp.tags', tagsId);
+
+            if (mc.getProperty('uri.var.keywords') != null && mc.getProperty('uri.var.keywords') != "") {
+                var temp = '"keywords":' + mc.getProperty('uri.var.keywords')+",";
+                mc.setProperty('uri.var.temp.keywords', temp);
+            }
+
+            if (mc.getProperty('uri.var.alternate') != null && mc.getProperty('uri.var.alternate') != "") {
+                var temp = '"alternate":' + mc.getProperty('uri.var.alternate')+",";
+                mc.setProperty('uri.var.temp.alternate', temp);
+            }
+
+            if (mc.getProperty('uri.var.author') != null && mc.getProperty('uri.var.author') != "") {
+                var temp = '"author":"' + mc.getProperty('uri.var.author')+'",';
+                mc.setProperty('uri.var.temp.author', temp);
+            }
+
+            if (mc.getProperty('uri.var.origin') != null && mc.getProperty('uri.var.origin') != "") {
+                var temp = '"origin":' + mc.getProperty('uri.var.origin')+",";
+                mc.setProperty('uri.var.temp.origin', temp);
+            }
+	 	]]>
+        </script>
+
+        <log level="custom">
+            <property name="tagsId" expression="get-property('uri.var.temp.tags')"/>
+        </log>
+
+        <log level="custom">
+            <property name="content" expression="get-property('uri.var.content')"/>
+        </log>
+
+        <header name="Content-Type" value="application/json"
+                scope="transport" />
+        <property name="messageType" value="application/json"
+                  scope="axis2" />
+
+
+        <payloadFactory media-type="json">
+            <format>
+                {
+                    $1
+                    $2
+                    $3
+                    "title": "$4",
+                    $5
+                    $6
+                    "content": $7
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.temp.keywords')" />
+                <arg expression="get-property('uri.var.temp.tags')" />
+                <arg expression="get-property('uri.var.temp.alternate')" />
+                <arg expression="get-property('uri.var.title')" />
+                <arg expression="get-property('uri.var.temp.author')" />
+                <arg expression="get-property('uri.var.temp.origin')" />
+                <arg expression="get-property('uri.var.content')" />
+            </args>
+        </payloadFactory>
+
+
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}/v3/entries/" />
+            </endpoint>
+        </call>
+
+    </sequence>
+</template>

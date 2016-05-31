@@ -1,0 +1,9 @@
+{
+  "accessToken":"%s",
+  "categoryId": "test",
+  "count": "20",
+  "ranked": "newest",
+  "unreadOnly": "false",
+  "newerThan": "1410843612357",
+  "continuation": "148676e09c7:ce12:17b7b560"
+}

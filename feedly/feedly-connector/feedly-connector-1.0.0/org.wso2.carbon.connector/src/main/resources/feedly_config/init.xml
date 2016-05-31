@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="init" xmlns="http://ws.apache.org/ns/synapse">
+
+    <parameter name="apiUrl" description="Url of Feedly API V3"/>
+    <parameter name="accessToken" description="Access token which provides temporary, secure access to Feedly APIs"/>
+
+    <parameter name="code"
+               description="Value of authorization_code."/>
+    <parameter name="redirectUri"
+               description="Same redirect_uri that you passed to get authorization_code."/>
+    <parameter name="clientId"
+               description="Value of your API Key given when you registered your application with Feedly."/>
+    <parameter name="clientSecret"
+               description="Value of your secret key given when you registered your application with Feedly."/>
+
+    <sequence>
+        <property name="uri.var.code" expression="$func:code"/>
+        <property name="uri.var.redirectUri" expression="$func:redirectUri"/>
+        <property name="uri.var.clientId" expression="$func:clientId"/>
+        <property name="uri.var.clientSecret" expression="$func:clientSecret"/>
+        <property name="uri.var.apiUrl" expression="$func:apiUrl"/>
+
+        <!-- If the apiUrl is not specified, set the default value as https://cloud.feedly.com -->
+        <filter source="boolean(get-property('uri.var.apiUrl'))" regex="false">
+            <then>
+                <property name="uri.var.apiUrl" value="https://cloud.feedly.com"/>
+            </then>
+        </filter>
+
+        <header name="Content-Type" value="application/x-www-form-urlencoded" scope="transport"/>
+        <property name="messageType" value="application/x-www-form-urlencoded" scope="axis2"/>
+
+        <payloadFactory media-type="xml">
+            <format>
+                <xform>
+                    <grant_type>authorization_code</grant_type>
+                    <code>$1</code>
+                    <redirect_uri>http://www.feedly.com/feedly.html</redirect_uri>
+                    <client_id>feedly</client_id>
+                    <client_secret>0XP4XQ07VVMDWBKUHTJM4WUQ</client_secret>
+                </xform>
+            </format>
+
+            <args>
+                <arg expression="get-property('uri.var.code')"/>
+                <arg expression="get-property('uri.var.redirectUri')"/>
+                <arg expression="get-property('uri.var.clientId')"/>
+                <arg expression="get-property('uri.var.clientSecret')"/>
+            </args>
+        </payloadFactory>
+
+        <call>
+            <endpoint>
+                <http method="post" uri-template="{uri.var.apiUrl}/v3/auth/token"/>
+            </endpoint>
+        </call>
+
+        <filter source="$axis2:HTTP_SC" regex="[2][\d][\d]">
+            <then>
+                <property name="token" expression="json-eval($.access_token)"/>
+
+                <header name="Authorization" expression="get-property('token')"
+                        scope="transport"/>
+
+                <property name="uri.var.userId" expression="json-eval($.id)"/>
+                <property name="uri.var.refreshToken" expression="json-eval($.refresh_token)"/>
+            </then>
+        </filter>
+
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove"/>
+        <header name="X-LI-UUID" scope="transport" action="remove"/>
+        <header name="X-Li-Pop" scope="transport" action="remove"/>
+        <header name="X-Li-Fabric" scope="transport" action="remove"/>
+        <header name="x-li-request-id" scope="transport" action="remove"/>
+        <header name="P3P" scope="transport" action="remove"/>
+        <header name="Set-Cookie" scope="transport" action="remove"/>
+
+    </sequence>
+
+</template>

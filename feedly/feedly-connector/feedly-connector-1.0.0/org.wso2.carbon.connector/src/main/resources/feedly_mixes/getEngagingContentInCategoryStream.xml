@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="getEngagingContentInCategoryStream" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="categoryId" description="Id of the Entry." />
+    <parameter name="count" description="Id of the Entry." />
+    <parameter name="unreadOnly" description="Id of the Entry." />
+    <parameter name="hours" description="Id of the Entry." />
+    <parameter name="newerThan" description="Id of the Entry." />
+    <parameter name="backfill" description="Id of the Entry." />
+    <parameter name="locale" description="Id of the Entry." />
+
+    <sequence>
+        <property name="uri.var.id" expression="$func:categoryId" />
+        <property name="uri.var.count" expression="$func:count" />
+        <property name="uri.var.unreadOnly" expression="$func:unreadOnly" />
+        <property name="uri.var.hours" expression="$func:hours" />
+        <property name="uri.var.newerThan" expression="$func:newerThan" />
+        <property name="uri.var.backfill" expression="$func:backfill" />
+        <property name="uri.var.locale" expression="$func:locale" />
+
+        <property name="feedly.streamId"
+                  expression="fn:concat('user/', get-property('uri.var.userId'),'/category/',get-property('uri.var.id'))" />
+
+        <filter
+                xpath="get-property('uri.var.count') = '' or  (not(string(get-property('uri.var.count'))))">
+            <then>
+                <property name="uri.var.count" value="3" />
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.unreadOnly') = '' or  (not(string(get-property('uri.var.unreadOnly'))))">
+            <then>
+                <property name="uri.var.unreadOnly" value="false" />
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.backfill') = '' or  (not(string(get-property('uri.var.backfill'))))">
+            <then>
+                <property name="uri.var.backfill" value="true" />
+            </then>
+        </filter>
+
+        <filter
+                xpath="get-property('uri.var.locale') = '' or  (not(string(get-property('uri.var.locale'))))">
+            <then>
+                <property name="uri.var.locale" value="en_US" />
+            </then>
+        </filter>
+
+        <script language="js"><![CDATA[
+
+			var hours = mc.getProperty('uri.var.hours');
+			var newerThan = mc.getProperty('uri.var.newerThan');
+
+			var stream = encodeURIComponent(mc.getProperty('feedly.streamId'));
+			mc.setProperty('uri.var.streamId', stream);
+
+			var added = 1;
+            var query = "";
+
+            if((newerThan != null && newerThan != "") && (hours != null && hours != "")) {
+                if(Boolean(added)) {
+			        query = query + '&amp;newerThan='+newerThan;
+			    }else {
+			        query = query + 'newerThan='+newerThan;
+			        added = 1;
+			    }
+            }else if((newerThan != null && newerThan != "") && !(hours != null && hours != "")) {
+                if(Boolean(added)) {
+			        query = query + '&amp;newerThan='+newerThan;
+			    }else {
+			        query = query + 'newerThan='+newerThan;
+			        added = 1;
+			    }
+            }else if(!(newerThan != null && newerThan != "") && (hours != null && hours != "")) {
+                if(Boolean(added)) {
+			        query = query + '&amp;hours='+hours;
+			    }else {
+			        query = query + 'hours='+hours;
+			        added = 1;
+			    }
+            }else {
+                if(Boolean(added)) {
+			        query = query + '&amp;hours=48';
+			    }else {
+			        query = query + 'hours=48';
+			        added = 1;
+			    }
+            }
+
+			mc.setProperty('uri.var.params', query);
+
+         ]]></script>
+
+        <log level="custom">
+            <property name="params" expression="get-property('uri.var.params')"/>
+        </log>
+
+
+        <call>
+            <endpoint>
+                <http method="get"
+                      uri-template="{uri.var.apiUrl}/v3/mixes/{uri.var.streamId}/contents?count={uri.var.count}&amp;locale={uri.var.locale}&amp;backfill={uri.var.backfill}&amp;unreadOnly={uri.var.unreadOnly}{uri.var.params}" />
+            </endpoint>
+        </call>
+    </sequence>
+</template>

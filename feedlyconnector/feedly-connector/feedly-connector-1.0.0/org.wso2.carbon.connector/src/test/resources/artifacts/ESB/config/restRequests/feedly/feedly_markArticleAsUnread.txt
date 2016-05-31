@@ -1,0 +1,8 @@
+{
+  "accessToken":"%s",
+  "action":"keepUnread",
+  "entryIds":[
+    "%s",
+    "%s"
+  ]
+}

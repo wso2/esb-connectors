@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="updateProfile" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="email" description="Email address" />
+    <parameter name="givenName" />
+    <parameter name="familyName" />
+    <parameter name="picture" />
+    <parameter name="gender" />
+    <parameter name="locale" />
+    <parameter name="fullName" />
+
+    <sequence>
+        <property name="uri.var.email" expression="$func:email" type="STRING"/>
+        <property name="uri.var.givenName" expression="$func:givenName" type="STRING"/>
+        <property name="uri.var.familyName" expression="$func:familyName" type="STRING"/>
+        <property name="uri.var.fullName" expression="$func:fullName" type="STRING"/>
+        <property name="uri.var.picture" expression="$func:picture" type="STRING"/>
+        <property name="uri.var.gender" expression="$func:gender" type="STRING"/>
+        <property name="uri.var.locale" expression="$func:locale" type="STRING"/>
+
+        <script language="js">
+            <![CDATA[
+
+			var email = mc.getProperty('uri.var.email');
+			var givenName = mc.getProperty('uri.var.givenName');
+			var familyName = mc.getProperty('uri.var.familyName');
+			var fullName = mc.getProperty('uri.var.fullName');
+			var picture = mc.getProperty('uri.var.picture');
+			var gender = mc.getProperty('uri.var.gender');
+			var locale = mc.getProperty('uri.var.locale');
+			var added = 0;
+
+            var query = "{";
+
+			if (email != null && email != "") {
+			    if(Boolean(added)) {
+			        query = query + ',\"email\":\"' + email + '\"';
+			    }else {
+			        query = query + '\"email\":\"' + email + '\"';
+			        added = 1;
+			    }
+			}
+
+			if (givenName != null && givenName != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"givenName\":\"' + givenName + '\"';
+			    }else {
+			        query = query + '\"givenName\":\"' + givenName + '\"';
+			        added = 1;
+			    }
+			}
+
+			if (familyName != null && familyName != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"familyName\":\"' + familyName + '\"';
+			    }else {
+			        query = query + '\"familyName\":\"' + familyName + '\"';
+			        added = 1;
+			    }
+			}
+
+			if (fullName != null && fullName != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"fullName\":\"' + fullName + '\"';
+			    }else {
+			        query = query + '\"fullName\":\"' + fullName + '\"';
+			        added = 1;
+			    }
+			}
+
+			if (picture != null && picture != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"picture\":\"' + picture + '\"';
+			    }else {
+			        query = query + '\"picture\":\"' + picture + '\"';
+			        added = 1;
+			    }
+			}
+
+			if (gender != null && gender != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"gender\":\"' + gender + '\"';
+			    }else {
+			        query = query + '\"gender\":\"' + gender + '\"';
+			        added = 1;
+			    }
+			}
+
+			if (locale != null && locale != "") {
+				if(Boolean(added)) {
+			        query = query + ',\"locale\":\"' + locale + '\"';
+			    }else {
+			        query = query + '\"locale\":\"' + locale + '\"';
+			        added = 1;
+			    }
+			}
+
+			query = query + "}" ;
+
+			mc.setProperty('uri.var.query', query);
+
+	 	]]>
+        </script>
+
+        <log level="custom">
+            <property name="payload" expression="get-property('uri.var.query')"/>
+        </log>
+
+        <header name="Content-Type" value="application/json" scope="transport" />
+        <property name="messageType" value="application/json" scope="axis2" />
+
+        <payloadFactory media-type="json">
+            <format>
+                $1
+            </format>
+
+            <args>
+                <arg expression="get-property('uri.var.query')" />
+            </args>
+        </payloadFactory>
+
+        <call>
+            <endpoint>
+                <http method="post"
+                      uri-template="{uri.var.apiUrl}/v3/profile" />
+            </endpoint>
+        </call>
+
+        <!-- Remove response custom header information -->
+        <header name="x-li-format" scope="transport" action="remove" />
+        <header name="X-LI-UUID" scope="transport" action="remove" />
+        <header name="X-Li-Pop" scope="transport" action="remove" />
+        <header name="X-Li-Fabric" scope="transport" action="remove" />
+        <header name="x-li-request-id" scope="transport" action="remove" />
+        <header name="P3P" scope="transport" action="remove" />
+        <header name="Set-Cookie" scope="transport" action="remove" />
+    </sequence>
+</template>

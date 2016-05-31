@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    WSO2 Inc. licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+  -->
+
+<template name="tagExistingEntry" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="tagId" description="Id of a tag.eg: user/" />
+    <parameter name="entryId" description="Categories subscribed to the feed." />
+
+    <sequence>
+        <property name="uri.var.tagId" expression="$func:tagId" />
+        <property name="uri.var.entryId" expression="$func:entryId" />
+
+        <script language="js">
+            <![CDATA[
+
+			var tags = '{"tags":' + mc.getProperty('uri.var.tagId') + '}';
+
+            var query = "";
+
+			if (mc.getProperty('uri.var.tagId') != null && mc.getProperty('uri.var.tagId') != "") {
+
+                var tagsObj = eval ("(" + tags + ")");
+
+                var count = 0;
+			    for (var key in tagsObj.tags) {
+                    if (tagsObj.tags.hasOwnProperty(key)) {
+                        if(count == 0 ) {
+                            query = query + 'user%2F'+mc.getProperty('uri.var.userId')+'%2Ftag%2F' + tagsObj.tags[key].id;
+                            count =1;
+                        }else {
+                            query = query + ',user%2F'+mc.getProperty('uri.var.userId')+'%2Ftag%2F' + tagsObj.tags[key].id;
+                        }
+
+                    }
+                }
+
+			}
+
+			mc.setProperty('uri.var.query', query);
+
+	 	]]>
+        </script>
+
+        <log level="custom">
+            <property name="json" expression="get-property('uri.var.query')"/>
+        </log>
+
+        <header name="Content-Type" value="application/json"
+                scope="transport" />
+        <property name="messageType" value="application/json"
+                  scope="axis2" />
+
+
+        <payloadFactory media-type="json">
+            <format>
+                {
+                    "entryId":"$1"
+                }
+            </format>
+            <args>
+                <arg expression="get-property('uri.var.entryId')" />
+            </args>
+        </payloadFactory>
+
+
+        <call>
+            <endpoint>
+                <http method="put"
+                      uri-template="{uri.var.apiUrl}/v3/tags/{uri.var.query}" />
+            </endpoint>
+        </call>
+
+    </sequence>
+</template>

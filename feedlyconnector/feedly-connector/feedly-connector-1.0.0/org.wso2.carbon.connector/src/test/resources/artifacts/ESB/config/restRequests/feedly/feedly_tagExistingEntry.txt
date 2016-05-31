@@ -1,0 +1,9 @@
+{
+  "accessToken":"%s",
+  "entryId": "%s",
+  "tagId":
+  [
+    {"id":"today"},
+    {"id":"global.all"}
+    ]
+}
