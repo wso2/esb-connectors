@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="ISO8583_Test"
+       transports="https,http"
+       statistics="disable"
+       trace="disable"
+       startOnLoad="true">
+    <target>
+        <inSequence>
+            <ISO8583.init>
+                <serverHost>localhost</serverHost>
+                <serverPort>5010</serverPort>
+            </ISO8583.init>
+            <ISO8583.sendMessage/>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
+</proxy>
+                                
