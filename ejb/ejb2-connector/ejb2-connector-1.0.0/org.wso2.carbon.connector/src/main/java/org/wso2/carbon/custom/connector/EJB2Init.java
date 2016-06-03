@@ -39,12 +39,12 @@ public class EJB2Init extends AbstractConnector {
      */
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {
-        Properties prop = new Properties();
+        Properties properties = new Properties();
         Hashtable<String, String> dyValues = EJBUtil.getParameters(messageContext, EJBConstants.INIT);
         Set<String> set = dyValues.keySet();
         for (String aSet : set) {
-            prop.setProperty(aSet, dyValues.get(aSet));
+            properties.setProperty(aSet, dyValues.get(aSet));
         }
-        messageContext.setProperty(EJBConstants.JNDI_PROPERTIES, prop);
+        messageContext.setProperty(EJBConstants.JNDI_PROPERTIES, properties);
     }
 }
