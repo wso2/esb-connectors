@@ -28,6 +28,8 @@ import java.util.Set;
 
 /**
  * Set properties for jndi.
+ *
+ * @since 1.0.0
  */
 public class EJB2Init extends AbstractConnector {
 

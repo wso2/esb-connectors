@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 
 /**
  * Work with stateless bean.
+ *
+ * @since 1.0.0
  */
 public class CallEJBStatelessBean extends AbstractConnector {
 

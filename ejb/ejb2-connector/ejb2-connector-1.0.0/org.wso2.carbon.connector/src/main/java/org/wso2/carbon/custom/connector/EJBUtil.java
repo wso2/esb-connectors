@@ -42,11 +42,15 @@ import java.util.Set;
 
 /**
  * Ejb2connector util.
+ *
+ * @since 1.0.0
  */
 public class EJBUtil {
     private static final Log log = LogFactory.getLog(EJBUtil.class);
 
     /**
+     * Invoke instance into method.
+     *
      * @param instance instance of an ejb object.
      * @param method   method that we want to call.
      * @param args     arguments object for method.
@@ -84,6 +88,8 @@ public class EJBUtil {
     }
 
     /**
+     * Check method arguments with remote method.
+     *
      * @param aClass     class of our target ejb remote.
      * @param methodName name of the method.
      * @param argCount   number of arguments.
@@ -106,6 +112,8 @@ public class EJBUtil {
     }
 
     /**
+     * Build arguments for method object.
+     *
      * @param messageContext message context.
      * @param operationName  name of the operation.
      * @return extract the value's from properties and make its as hashable.
@@ -123,6 +131,8 @@ public class EJBUtil {
     }
 
     /**
+     * Get dynamic parameters from message context.
+     *
      * @param messageContext message context.
      * @param operationName  Name of the operation.
      * @return extract the value's from properties and make its as hashable.
@@ -151,6 +161,8 @@ public class EJBUtil {
     }
 
     /**
+     * Get parameter from message context.
+     *
      * @param messageContext message context.
      * @param paramName      parameter name.
      * @return value of the paramName from messageContext.
@@ -160,6 +172,8 @@ public class EJBUtil {
     }
 
     /**
+     * Handle exception.
+     *
      * @param message error message.
      */
     public static void handleException(String message) {
@@ -168,6 +182,8 @@ public class EJBUtil {
     }
 
     /**
+     * Handle exception.
+     *
      * @param message error message.
      * @param e       exception.
      */
@@ -177,6 +193,8 @@ public class EJBUtil {
     }
 
     /**
+     * Get ejb object from remote instance.
+     *
      * @param messageContext messageContext.
      * @param jndiName       jndi name.
      * @return ejb remote object.
