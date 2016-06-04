@@ -50,26 +50,26 @@ public class Ejb2ConnectorIntegrationTest extends ConnectorIntegrationTestBase {
     }
 
     /**
-     * @throws Exception.
+     * @throws Exception
      */
     @Test(enabled = true, description = "Stateless Bean Jboss")
     public void statelessBean() throws Exception {
         String methodName = "ejb2Stateless";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName)
                 , "GET", esbRequestHeadersMap, "stateless.json");
-        Assert.assertEquals(esbRestResponse.getBody().get("Result"), checkStateless.getFromStateless(context));
+        Assert.assertEquals(esbRestResponse.getBody().get("Result"), CheckStateless.getFromStateless(context));
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
     }
 
     /**
-     * @throws Exception.
+     * @throws Exception
      */
     @Test(enabled = true, description = "Stateful Bean Jboss")
     public void statefulBean() throws Exception {
         String methodName = "ejb2Stateful";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName)
                 , "GET", esbRequestHeadersMap, "stateful.json");
-        Assert.assertEquals(esbRestResponse.getBody().get("Result"), checkStateful.getFromStateful(context));
+        Assert.assertEquals(esbRestResponse.getBody().get("Result"), CheckStateful.getFromStateful(context));
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
     }
 }
