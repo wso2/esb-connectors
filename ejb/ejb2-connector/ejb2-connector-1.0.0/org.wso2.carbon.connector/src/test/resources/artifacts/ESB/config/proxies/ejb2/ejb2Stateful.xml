@@ -22,46 +22,48 @@
        statistics="disable"
        trace="disable"
        startOnLoad="true">
-<target>
-    <inSequence>
-        <ejb2.init>
-            <key>raj</key>
-            <raj.java.naming.factory.initial>org.jnp.interfaces.NamingContextFactory</raj.java.naming.factory.initial>
-            <raj.java.naming.factory.url.pkgs>org.jboss.naming:org.jnp.interfaces</raj.java.naming.factory.url.pkgs>
-            <raj.java.naming.provider.url>localhost</raj.java.naming.provider.url>
-        </ejb2.init>
-        <ejb2.stateful>
-            <jndiName>EJB2StatefulJboss</jndiName>
-            <method>increment</method>
-        </ejb2.stateful>
-        <ejb2.stateful>
-            <jndiName>EJB2StatefulJboss</jndiName>
-            <method>increment</method>
-        </ejb2.stateful>
-        <ejb2.stateful>
-            <jndiName>EJB2StatefulJboss</jndiName>
-            <method>increment</method>
-        </ejb2.stateful>
-        <ejb2.stateful>
-            <jndiName>EJB2StatefulJboss</jndiName>
-            <method>increment</method>
-        </ejb2.stateful>
-        <ejb2.stateful>
-            <jndiName>EJB2StatefulJboss</jndiName>
-            <method>increment</method>
-        </ejb2.stateful>
-        <ejb2.stateful>
-            <jndiName>EJB2StatefulJboss</jndiName>
-            <method>getCount</method>
-            <return>Result</return>
-        </ejb2.stateful>
-        <property name="out" expression="get-property('Result')"/>
-        <payloadFactory media-type="json">
-            <format>{ "Result": $ctx:out}</format>
-            <args/>
-        </payloadFactory>
-        <respond/>
-    </inSequence>
-</target>
-<description/>
+    <target>
+        <inSequence>
+            <ejb2.init>
+                <key>raj</key>
+                <raj.java.naming.factory.initial>org.jnp.interfaces.NamingContextFactory
+                </raj.java.naming.factory.initial>
+                <raj.java.naming.factory.url.pkgs>org.jboss.naming:org.jnp.interfaces
+                </raj.java.naming.factory.url.pkgs>
+                <raj.java.naming.provider.url>localhost</raj.java.naming.provider.url>
+            </ejb2.init>
+            <ejb2.stateful>
+                <jndiName>EJB2StatefulJboss</jndiName>
+                <method>increment</method>
+            </ejb2.stateful>
+            <ejb2.stateful>
+                <jndiName>EJB2StatefulJboss</jndiName>
+                <method>increment</method>
+            </ejb2.stateful>
+            <ejb2.stateful>
+                <jndiName>EJB2StatefulJboss</jndiName>
+                <method>increment</method>
+            </ejb2.stateful>
+            <ejb2.stateful>
+                <jndiName>EJB2StatefulJboss</jndiName>
+                <method>increment</method>
+            </ejb2.stateful>
+            <ejb2.stateful>
+                <jndiName>EJB2StatefulJboss</jndiName>
+                <method>increment</method>
+            </ejb2.stateful>
+            <ejb2.stateful>
+                <jndiName>EJB2StatefulJboss</jndiName>
+                <method>getCount</method>
+                <return>Result</return>
+            </ejb2.stateful>
+            <property name="out" expression="get-property('Result')"/>
+            <payloadFactory media-type="json">
+                <format>{ "Result": $ctx:out}</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </inSequence>
+    </target>
+    <description/>
 </proxy>

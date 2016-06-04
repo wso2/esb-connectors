@@ -1,4 +1,4 @@
-package org.wso2.carbon.connector.integration.test.ejb2;/*
+/*
 * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +14,8 @@ package org.wso2.carbon.connector.integration.test.ejb2;/*
 * limitations under the License.
 */
 
+package org.wso2.carbon.connector.integration.test.ejb2;
+
 import com.ejb2connector.stateless.Hello;
 import com.ejb2connector.stateless.HelloHome;
 
@@ -22,14 +24,21 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import java.rmi.RemoteException;
 
-public class checkStateless {
+public class CheckStateless {
+
+    /**
+     * @param context context.
+     * @return sum.
+     * @throws RemoteException
+     * @throws CreateException
+     * @throws NamingException
+     */
     public static int getFromStateless(Context context) throws RemoteException, CreateException, NamingException {
         HelloHome home = (HelloHome) context.lookup("EJB2StatelessJboss");
         Hello bean = home.create();
         // invoke on the remote calculator
         int a = 10;
         int b = 12;
-        int sum = bean.add(a, b);
-        return sum;
+        return bean.add(a, b);
     }
 }
