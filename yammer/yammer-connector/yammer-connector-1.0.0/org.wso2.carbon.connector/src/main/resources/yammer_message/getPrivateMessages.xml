@@ -11,40 +11,40 @@
         <property name="uri.var.limit" expression="$func:limit"/>
         <property name="uri.var.apiParameters" value=""/>
 
-		<filter xpath="boolean(get-property('uri.var.olderThan'))">
-			<then>
-				<property name="uri.var.apiParameters"
-					expression="fn:concat(get-property('uri.var.apiParameters'),'older_than=',get-property('uri.var.olderThan'), '&amp;')" />
-			</then>
-		</filter>
+        <filter xpath="boolean(get-property('uri.var.olderThan'))">
+            <then>
+                <property name="uri.var.apiParameters"
+                    expression="fn:concat(get-property('uri.var.apiParameters'),'older_than=',get-property('uri.var.olderThan'), '&amp;')" />
+            </then>
+        </filter>
 
-		<filter xpath="boolean(get-property('uri.var.newerThan'))">
-			<then>
-				<property name="uri.var.apiParameters"
-					expression="fn:concat(get-property('uri.var.apiParameters'),'newer_than=',get-property('uri.var.newerThan'), '&amp;')" />
-			</then>
-		</filter>
+        <filter xpath="boolean(get-property('uri.var.newerThan'))">
+            <then>
+                <property name="uri.var.apiParameters"
+                    expression="fn:concat(get-property('uri.var.apiParameters'),'newer_than=',get-property('uri.var.newerThan'), '&amp;')" />
+            </then>
+        </filter>
 
-		<filter xpath="boolean(get-property('uri.var.threaded'))">
-			<then>
-				<property name="uri.var.apiParameters"
-					expression="fn:concat(get-property('uri.var.apiParameters'),'threaded=',get-property('uri.var.threaded'), '&amp;')" />
-			</then>
-		</filter>
+        <filter xpath="boolean(get-property('uri.var.threaded'))">
+            <then>
+                <property name="uri.var.apiParameters"
+                    expression="fn:concat(get-property('uri.var.apiParameters'),'threaded=',get-property('uri.var.threaded'), '&amp;')" />
+            </then>
+        </filter>
 
-		<filter xpath="boolean(get-property('uri.var.limit'))">
-			<then>
-				<property name="uri.var.apiParameters"
-					expression="fn:concat(get-property('uri.var.apiParameters'),'limit=',get-property('uri.var.limit'), '&amp;')" />
-			</then>
-		</filter>
+        <filter xpath="boolean(get-property('uri.var.limit'))">
+            <then>
+                <property name="uri.var.apiParameters"
+                    expression="fn:concat(get-property('uri.var.apiParameters'),'limit=',get-property('uri.var.limit'), '&amp;')" />
+            </then>
+        </filter>
 
-		<filter xpath="fn:string-length(get-property('uri.var.apiParameters')) > 0">
-			<then>
-				<property name="uri.var.apiParameters"
-					expression="fn:concat('?', fn:substring(get-property('uri.var.apiParameters'), 1, fn:string-length(get-property('uri.var.apiParameters'))-1))" />
-			</then>
-		</filter>
+        <filter xpath="fn:string-length(get-property('uri.var.apiParameters')) > 0">
+            <then>
+                <property name="uri.var.apiParameters"
+                    expression="fn:concat('?', fn:substring(get-property('uri.var.apiParameters'), 1, fn:string-length(get-property('uri.var.apiParameters'))-1))" />
+            </then>
+        </filter>
 
         <call>
             <endpoint>
@@ -64,7 +64,7 @@
         <header name="Strict-Transport-Security" action="remove" scope="transport"/>
         <header name="WWW-Authenticate" action="remove" scope="transport"/>   
         <header name="Cteonnt-Length" action="remove" scope="transport" />
-		<header name="Status" action="remove" scope="transport" />     
+        <header name="Status" action="remove" scope="transport" />
       
     </sequence>
 </template>
