@@ -18,10 +18,10 @@
 
 <component name="yammer_config" type="synapse/template">
 
-	<subComponents>
-		<component name="init">
-			<file>init.xml</file>
-			<description>configure yammer connector</description>
-		</component>
-	</subComponents>
+    <subComponents>
+        <component name="init">
+            <file>init.xml</file>
+            <description>configure yammer connector</description>
+        </component>
+    </subComponents>
 </component>
