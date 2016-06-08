@@ -414,7 +414,7 @@
         <org.apache.cxf.version>3.0.5</org.apache.cxf.version>
         <org.springframework.version>3.2.6.RELEASE</org.springframework.version>
         <org.apache.cxf.api.version>2.7.8</org.apache.cxf.api.version>
-        <connector.name>reliable-message</connector.name>
+        <connector.name>reliableMessage</connector.name>
         <connector.version>1.0.0</connector.version>
         <product.esb.version>4.9.0</product.esb.version>
     </properties>
