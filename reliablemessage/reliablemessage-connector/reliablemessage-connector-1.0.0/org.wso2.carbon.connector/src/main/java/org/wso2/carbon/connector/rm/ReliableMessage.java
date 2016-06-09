@@ -113,7 +113,12 @@ public class ReliableMessage extends AbstractConnector {
         Bus springBus = (Bus) messageContext.getProperty(RMConstants.SPRING_BUS);
         Dispatch<Source> sourceDispatch = createDispatch(inputParams, messageContext);
         Source source = new StreamSource(ReliableMessageUtil.getSOAPEnvelopAsStreamSource(messageContext.getEnvelope()));
-        Source response = sourceDispatch.invoke(source);
+        Source response = null;
+        try {
+            response = sourceDispatch.invoke(source);
+        } catch (Exception e) {
+            handleException(e.getMessage(), e, messageContext);
+        }
         setResponse(messageContext, response);
         // shutdown bus
         springBus.shutdown(true);
