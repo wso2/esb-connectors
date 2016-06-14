@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -44,6 +44,8 @@ import java.util.Properties;
 
 /**
  * Salesforce streaming api Inbound.
+ *
+ * @since 1.0.0.
  */
 public class SalesforceStreamData extends GenericPollingConsumer {
 
@@ -102,11 +104,11 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                     }
                     boolean success = message.isSuccessful();
                     if (!success) {
-                        String error = (String) message.get("error");
+                        String error = (String) message.get(SalesforceConstant.ERROR);
                         if (StringUtils.isNotEmpty(error)) {
                             handleException("Error during HANDSHAKE: " + error);
                         }
-                        Exception exception = (Exception) message.get("exception");
+                        Exception exception = (Exception) message.get(SalesforceConstant.EXCEPTION);
                         if (exception != null) {
                             handleException("Exception during HANDSHAKE: ", exception);
                         }
@@ -128,7 +130,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                         } catch (IOException e) {
                             handleException("Error during make the client: " + e.getMessage(), e);
                         }
-                        String error = (String) message.get("error");
+                        String error = (String) message.get(SalesforceConstant.ERROR);
                         if (StringUtils.isNotEmpty(error)) {
                             handleException("Error during CONNECT: " + error);
                         }
@@ -143,7 +145,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                     }
                     boolean success = message.isSuccessful();
                     if (!success) {
-                        String error = (String) message.get("error");
+                        String error = (String) message.get(SalesforceConstant.ERROR);
                         if (StringUtils.isNotEmpty(error)) {
                             handleException("Error during SUBSCRIBE: " + error);
                         }
@@ -169,7 +171,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
     }
 
     /**
-     * Create a http client.
+     * Create an http client.
      *
      * @return
      * @throws Exception
@@ -193,7 +195,6 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                     exchange.addRequestHeader("Authorization", "OAuth " + sessionId);
                 }
             };
-
             BayeuxClient client = new BayeuxClient(salesforceStreamingEndpoint(endpoint), transport);
 
             if (useCookies) establishCookies(client, userName, sessionId);
@@ -317,12 +318,12 @@ public class SalesforceStreamData extends GenericPollingConsumer {
         }
     }
 
-    private void handleException(String msg, Exception ex) {
+    public static void handleException(String msg, Exception ex) {
         log.error(msg, ex);
         throw new SynapseException(ex);
     }
 
-    private void handleException(String msg) {
+    public static void handleException(String msg) {
         log.error(msg);
         throw new SynapseException(msg);
     }

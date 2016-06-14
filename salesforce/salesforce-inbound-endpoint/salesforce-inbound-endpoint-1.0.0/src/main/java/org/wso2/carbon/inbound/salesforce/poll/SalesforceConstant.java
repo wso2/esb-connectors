@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -33,10 +33,8 @@ public class SalesforceConstant {
     //default parameters for the salesforce inbound endpoint
     public static final String CONNECTION_TIMEOUT = "connection.salesforce.connectionTimeout";
     public static final int CONNECTION_TIMEOUT_DEFAULT = 10 * 1000;
-
     public static final String READ_TIMEOUT = "connection.salesforce.readTimeout";
     public static final int READ_TIMEOUT_DEFAULT = 10 * 1000;
-
     public static final String WAIT_TIME = "connection.salesforce.waitTime";
     public static final int WAIT_TIME_DEFAULT = 24 * 60 * 60 * 1000;
 
@@ -49,6 +47,8 @@ public class SalesforceConstant {
     public static final String COOKIE_LOGIN_KEY = "login";
     public static final String COOKIE_LOCALEINFO_KEY = "com.salesforce.LocaleInfo";
     public static final String COOKIE_LOCALEINFO_DEFAULT_VALUE = "us";
+    public static final String ERROR = "error";
+    public static final String EXCEPTION = "exception";
 
     // The enterprise SOAP API endpoint used for the login call in this example.
     public static final String SERVICES_SOAP_PARTNER_ENDPOINT = "/services/Soap/u/" + SOAP_API_VERSION;
