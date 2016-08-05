@@ -80,7 +80,3 @@
         <header name="Pragma" action="remove" scope="transport"/>
     </sequence>
 </template>
-
-
-
-
