@@ -89,6 +89,12 @@ public class SalesforceStreamData extends GenericPollingConsumer {
         httpClient = new HttpClient();
     }
 
+    /**
+     * Make a connection with salesforce Streaming API.
+     *
+     * @return
+     * @throws Exception
+     */
     private void makeConnect() throws IOException {
         try {
             client = makeClient();
@@ -264,7 +270,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
             try {
                 connectionTimeout = Integer.parseInt(properties.getProperty(SalesforceConstant.CONNECTION_TIMEOUT));
             } catch (NumberFormatException e) {
-                log.error("The Value should be in Number", e);
+                handleException("The Value should be in Number", e);
             }
         }
 
@@ -274,7 +280,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
             try {
                 readTimeout = Integer.parseInt(properties.getProperty(SalesforceConstant.READ_TIMEOUT));
             } catch (NumberFormatException e) {
-                log.error("The Value should be in Number", e);
+                handleException("The Value should be in Number", e);
             }
         }
 
@@ -284,7 +290,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
             try {
                 waitTime = Integer.parseInt(properties.getProperty(SalesforceConstant.WAIT_TIME));
             } catch (NumberFormatException e) {
-                log.error("The Value should be in Number", e);
+                handleException("The Value should be in Number", e);
             }
         }
     }
@@ -337,7 +343,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                 }
             }
         } catch (Exception e) {
-            log.error("Error while shutdown the Salesforce stream" + e.getMessage(), e);
+            handleException("Error while shutdown the Salesforce stream" + e.getMessage(), e);
         }
     }
 }
