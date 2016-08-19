@@ -20,9 +20,7 @@
     <formats>
         <format>zip</format>
     </formats>
-
     <includeBaseDirectory>false</includeBaseDirectory>
-
     <fileSets>
         <fileSet>
             <directory>target/connector/dependencies</directory>

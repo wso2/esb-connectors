@@ -48,10 +48,8 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
         init("salesforcerest-connector-1.0.0");
         esbRequestHeadersMap.put("Accept-Charset", "UTF-8");
         esbRequestHeadersMap.put("Content-Type", "application/json");
-
         apiRequestHeadersMap.put("Accept-Charset", "UTF-8");
         apiRequestHeadersMap.put("Content-Type", "application/json");
-
         String accessToken = connectorProperties.getProperty("accessToken");
         apiRequestHeadersMap.put("Authorization", "Bearer " + accessToken);
     }
