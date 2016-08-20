@@ -24,8 +24,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 import org.wso2.connector.integration.test.base.RestResponse;
-
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
