@@ -42,8 +42,10 @@ public final class SoapLoginUtil {
 
     /**
      * Build soap body to login with salesforce.
+     *
      * @param username the username for salesforce.
      * @param password the password for salesforce.
+     * @return byte array of soap body.
      * @throws UnsupportedEncodingException
      */
     private static byte[] soapXmlForLogin(String username, String password)
