@@ -31,11 +31,21 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Login with Salesforce.
+ *
+ */
 public final class SoapLoginUtil {
     private static final Log log = LogFactory.getLog(SoapLoginUtil.class);
 
     private static String sessionId, loginUrl;
 
+    /**
+     * Build soap body to login with salesforce.
+     * @param username the username for salesforce.
+     * @param password the password for salesforce.
+     * @throws UnsupportedEncodingException
+     */
     private static byte[] soapXmlForLogin(String username, String password)
             throws UnsupportedEncodingException {
         return (SalesforceConstant.ENV_START +
@@ -46,6 +56,17 @@ public final class SoapLoginUtil {
                 SalesforceConstant.ENV_END).getBytes("UTF-8");
     }
 
+    /**
+     * Login call with Salesforce.
+     *
+     * @param client    the HttpClient.
+     * @param username  the username for Salesforce.
+     * @param password  the password for salesforce
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public static void login(HttpClient client, String username, String password) throws IOException, InterruptedException, SAXException,
             ParserConfigurationException {
         try {
@@ -80,18 +101,30 @@ public final class SoapLoginUtil {
         }
     }
 
+    /**
+     * Get Salesforce login Endpoint.
+     */
     private static String getSoapURL() throws MalformedURLException {
         return new URL(SalesforceStreamData.loginEndpoint + getSoapUri()).toExternalForm();
     }
 
+    /**
+     * Get the enterprise SOAP API endpoint used for the login call.
+     */
     private static String getSoapUri() {
         return SalesforceConstant.SERVICES_SOAP_PARTNER_ENDPOINT;
     }
 
+    /**
+     * Get sessionID to access Salesforce API.
+     */
     public static String getSessionId() {
         return sessionId;
     }
 
+    /**
+     * Get Salesforce login URL endpoint.
+     */
     public static String getEndpoint() {
         return loginUrl;
     }
