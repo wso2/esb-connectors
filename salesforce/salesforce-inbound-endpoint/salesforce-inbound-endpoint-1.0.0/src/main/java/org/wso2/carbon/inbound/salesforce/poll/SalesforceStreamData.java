@@ -290,13 +290,9 @@ public class SalesforceStreamData extends GenericPollingConsumer {
 
     public Object poll() {
         //Establishing connection with Salesforce streaming api.
-        try {
-            if (!isPolled) {
-                makeConnect();
-                isPolled = true;
-            }
-        } catch (Exception se) {
-            handleException("Error while setup the Salesforce connection.", se);
+        if (!isPolled) {
+            makeConnect();
+            isPolled = true;
         }
         return null;
     }

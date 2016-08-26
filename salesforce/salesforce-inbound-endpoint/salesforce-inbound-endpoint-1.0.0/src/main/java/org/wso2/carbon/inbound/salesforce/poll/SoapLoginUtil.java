@@ -33,7 +33,6 @@ import java.net.URL;
 
 /**
  * Login with Salesforce.
- *
  */
 public final class SoapLoginUtil {
     private static final Log log = LogFactory.getLog(SoapLoginUtil.class);
@@ -61,9 +60,9 @@ public final class SoapLoginUtil {
     /**
      * Login call with Salesforce.
      *
-     * @param client    the HttpClient.
-     * @param username  the username for Salesforce.
-     * @param password  the password for salesforce
+     * @param client   the HttpClient.
+     * @param username the username for Salesforce.
+     * @param password the password for salesforce
      * @throws IOException
      * @throws InterruptedException
      * @throws SAXException
