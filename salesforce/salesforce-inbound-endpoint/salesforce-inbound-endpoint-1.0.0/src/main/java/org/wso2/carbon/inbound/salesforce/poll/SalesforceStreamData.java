@@ -22,8 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.SynapseException;
 import org.apache.synapse.core.SynapseEnvironment;
-import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
-
 import org.cometd.bayeux.Channel;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
@@ -33,9 +31,8 @@ import org.cometd.client.transport.ClientTransport;
 import org.cometd.client.transport.LongPollingTransport;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
+import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
 
-import java.io.IOException;
-import java.lang.Exception;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -95,10 +92,10 @@ public class SalesforceStreamData extends GenericPollingConsumer {
      * @return
      * @throws Exception
      */
-    private void makeConnect() throws IOException {
+    private void makeConnect() {
         try {
             client = makeClient();
-        } catch (Exception e) {
+        } catch (MalformedURLException e) {
             handleException("Error during make the client: " + e.getMessage(), e);
         }
 
@@ -131,11 +128,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                         channel.unsubscribe();
                         client.disconnect();
                         log.info("Waiting to Connect with Salesforce Streaming API......");
-                        try {
-                            makeConnect();
-                        } catch (IOException e) {
-                            handleException("Error during make the client: " + e.getMessage(), e);
-                        }
+                        makeConnect();
                         String error = (String) message.get(SalesforceConstant.ERROR);
                         if (StringUtils.isNotEmpty(error)) {
                             handleException("Error during CONNECT: " + error);
@@ -248,9 +241,9 @@ public class SalesforceStreamData extends GenericPollingConsumer {
         packageName = properties.getProperty(SalesforceConstant.PACKAGE_NAME);
         packageVersion = properties.getProperty(SalesforceConstant.PACKAGE_VERSION);
 
-        if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(salesforceObject) &&
-                StringUtils.isEmpty(password) && StringUtils.isEmpty(loginEndpoint) &&
-                StringUtils.isEmpty(packageName) && StringUtils.isEmpty(packageVersion)) {
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(salesforceObject) ||
+                StringUtils.isEmpty(password) || StringUtils.isEmpty(loginEndpoint) ||
+                StringUtils.isEmpty(packageName) || StringUtils.isEmpty(packageVersion)) {
             handleException("Mandatory Parameters can't be Empty...");
         }
     }
@@ -335,15 +328,11 @@ public class SalesforceStreamData extends GenericPollingConsumer {
     }
 
     public void destroy() {
-        try {
-            if (client != null) {
-                client.disconnect();
-                if (log.isDebugEnabled()) {
-                    log.debug("The Salesforce stream has been shutdown !");
-                }
+        if (client != null) {
+            client.disconnect();
+            if (log.isDebugEnabled()) {
+                log.debug("The Salesforce stream has been shutdown !");
             }
-        } catch (Exception e) {
-            handleException("Error while shutdown the Salesforce stream" + e.getMessage(), e);
         }
     }
 }
