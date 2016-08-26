@@ -29,7 +29,8 @@
     <parameter name="apiUrl" description="The instance URL for your organization"/>
     <parameter name="registryPath"
                description="Registry Path of the Connector where the values are stored"/>
-    <parameter name="intervalTime" description="The Interval time to check the accessToken validity"/>
+    <parameter name="intervalTime"
+               description="The Interval time to check the accessToken validity"/>
     <sequence>
         <property name="uri.var.accessToken" expression="$func:accessToken"/>
         <property name="uri.var.apiVersion" expression="$func:apiVersion"/>

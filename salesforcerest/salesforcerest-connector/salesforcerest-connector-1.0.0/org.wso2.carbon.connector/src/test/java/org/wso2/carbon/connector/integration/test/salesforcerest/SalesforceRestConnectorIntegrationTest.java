@@ -48,10 +48,8 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
         init("salesforcerest-connector-1.0.0");
         esbRequestHeadersMap.put("Accept-Charset", "UTF-8");
         esbRequestHeadersMap.put("Content-Type", "application/json");
-
         apiRequestHeadersMap.put("Accept-Charset", "UTF-8");
         apiRequestHeadersMap.put("Content-Type", "application/json");
-
         String accessToken = connectorProperties.getProperty("accessToken");
         apiRequestHeadersMap.put("Authorization", "Bearer " + accessToken);
     }
@@ -228,7 +226,7 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
 
         String methodName = "queryAllMore";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "queryAllMore.json");
-        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/"+ connectorProperties.getProperty("apiVersion")+"/queryAll/"+connectorProperties.getProperty("nextRecordsUrl");
+        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/" + connectorProperties.getProperty("apiVersion") + "/queryAll/" + connectorProperties.getProperty("nextRecordsUrl");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -242,7 +240,7 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
 
         String methodName = "queryMore";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "queryMore.json");
-        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/"+ connectorProperties.getProperty("apiVersion")+"/query/"+connectorProperties.getProperty("nextRecordsUrl");
+        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/" + connectorProperties.getProperty("apiVersion") + "/query/" + connectorProperties.getProperty("nextRecordsUrl");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -494,7 +492,7 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
 
         String methodName = "resetPassword";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "resetPassword.json");
-        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/"+ connectorProperties.getProperty("apiVersion")+"/sobjects/User/"+connectorProperties.getProperty("userId")+"/password";
+        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/" + connectorProperties.getProperty("apiVersion") + "/sobjects/User/" + connectorProperties.getProperty("userId") + "/password";
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
@@ -765,7 +763,7 @@ public class SalesforceRestConnectorIntegrationTest extends ConnectorIntegration
     public void getSpecificProcessRuleWithMandatoryParameters() throws IOException, JSONException {
         String methodName = "getSpecificProcessRule";
         RestResponse<JSONObject> esbRestResponse = sendJsonRestRequest(getProxyServiceURL(methodName), "POST", esbRequestHeadersMap, "getSpecificProcessRule.json");
-        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/"+connectorProperties.getProperty("apiVersion")+"/process/rules/"+connectorProperties.getProperty("sobject")+"/"+connectorProperties.getProperty("objectId");
+        String apiEndPoint = connectorProperties.getProperty("apiUrl") + "/services/data/" + connectorProperties.getProperty("apiVersion") + "/process/rules/" + connectorProperties.getProperty("sobject") + "/" + connectorProperties.getProperty("objectId");
         RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
         Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 200);
         Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 200);
