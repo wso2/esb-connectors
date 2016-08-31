@@ -19,9 +19,6 @@ package org.wso2.carbon.inbound.salesforce.poll;
 
 public class SalesforceConstant {
 
-    public SalesforceConstant() {
-    }
-
     //property values for the salesforce inbound endpoint
     public static final String USER_NAME = "connection.salesforce.userName";
     public static final String PASSWORD = "connection.salesforce.password";
