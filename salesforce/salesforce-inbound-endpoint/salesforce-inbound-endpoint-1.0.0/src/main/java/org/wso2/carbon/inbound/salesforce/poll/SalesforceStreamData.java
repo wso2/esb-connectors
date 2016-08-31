@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -22,8 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.SynapseException;
 import org.apache.synapse.core.SynapseEnvironment;
-import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
-
 import org.cometd.bayeux.Channel;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
@@ -33,9 +31,8 @@ import org.cometd.client.transport.ClientTransport;
 import org.cometd.client.transport.LongPollingTransport;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
+import org.wso2.carbon.inbound.endpoint.protocol.generic.GenericPollingConsumer;
 
-import java.io.IOException;
-import java.lang.Exception;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -44,6 +41,8 @@ import java.util.Properties;
 
 /**
  * Salesforce streaming api Inbound.
+ *
+ * @since 1.0.0.
  */
 public class SalesforceStreamData extends GenericPollingConsumer {
 
@@ -87,10 +86,16 @@ public class SalesforceStreamData extends GenericPollingConsumer {
         httpClient = new HttpClient();
     }
 
-    private void makeConnect() throws IOException {
+    /**
+     * Make a connection with salesforce Streaming API.
+     *
+     * @return
+     * @throws Exception
+     */
+    private void makeConnect() {
         try {
             client = makeClient();
-        } catch (Exception e) {
+        } catch (MalformedURLException e) {
             handleException("Error during make the client: " + e.getMessage(), e);
         }
 
@@ -102,11 +107,11 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                     }
                     boolean success = message.isSuccessful();
                     if (!success) {
-                        String error = (String) message.get("error");
+                        String error = (String) message.get(SalesforceConstant.ERROR);
                         if (StringUtils.isNotEmpty(error)) {
                             handleException("Error during HANDSHAKE: " + error);
                         }
-                        Exception exception = (Exception) message.get("exception");
+                        Exception exception = (Exception) message.get(SalesforceConstant.EXCEPTION);
                         if (exception != null) {
                             handleException("Exception during HANDSHAKE: ", exception);
                         }
@@ -123,12 +128,8 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                         channel.unsubscribe();
                         client.disconnect();
                         log.info("Waiting to Connect with Salesforce Streaming API......");
-                        try {
-                            makeConnect();
-                        } catch (IOException e) {
-                            handleException("Error during make the client: " + e.getMessage(), e);
-                        }
-                        String error = (String) message.get("error");
+                        makeConnect();
+                        String error = (String) message.get(SalesforceConstant.ERROR);
                         if (StringUtils.isNotEmpty(error)) {
                             handleException("Error during CONNECT: " + error);
                         }
@@ -143,7 +144,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                     }
                     boolean success = message.isSuccessful();
                     if (!success) {
-                        String error = (String) message.get("error");
+                        String error = (String) message.get(SalesforceConstant.ERROR);
                         if (StringUtils.isNotEmpty(error)) {
                             handleException("Error during SUBSCRIBE: " + error);
                         }
@@ -169,7 +170,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
     }
 
     /**
-     * Create a http client.
+     * Create an http client.
      *
      * @return
      * @throws Exception
@@ -193,7 +194,6 @@ public class SalesforceStreamData extends GenericPollingConsumer {
                     exchange.addRequestHeader("Authorization", "OAuth " + sessionId);
                 }
             };
-
             BayeuxClient client = new BayeuxClient(salesforceStreamingEndpoint(endpoint), transport);
 
             if (useCookies) establishCookies(client, userName, sessionId);
@@ -241,9 +241,9 @@ public class SalesforceStreamData extends GenericPollingConsumer {
         packageName = properties.getProperty(SalesforceConstant.PACKAGE_NAME);
         packageVersion = properties.getProperty(SalesforceConstant.PACKAGE_VERSION);
 
-        if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(salesforceObject) &&
-                StringUtils.isEmpty(password) && StringUtils.isEmpty(loginEndpoint) &&
-                StringUtils.isEmpty(packageName) && StringUtils.isEmpty(packageVersion)) {
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(salesforceObject) ||
+                StringUtils.isEmpty(password) || StringUtils.isEmpty(loginEndpoint) ||
+                StringUtils.isEmpty(packageName) || StringUtils.isEmpty(packageVersion)) {
             handleException("Mandatory Parameters can't be Empty...");
         }
     }
@@ -263,7 +263,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
             try {
                 connectionTimeout = Integer.parseInt(properties.getProperty(SalesforceConstant.CONNECTION_TIMEOUT));
             } catch (NumberFormatException e) {
-                log.error("The Value should be in Number", e);
+                handleException("The Value should be in Number", e);
             }
         }
 
@@ -273,7 +273,7 @@ public class SalesforceStreamData extends GenericPollingConsumer {
             try {
                 readTimeout = Integer.parseInt(properties.getProperty(SalesforceConstant.READ_TIMEOUT));
             } catch (NumberFormatException e) {
-                log.error("The Value should be in Number", e);
+                handleException("The Value should be in Number", e);
             }
         }
 
@@ -283,20 +283,16 @@ public class SalesforceStreamData extends GenericPollingConsumer {
             try {
                 waitTime = Integer.parseInt(properties.getProperty(SalesforceConstant.WAIT_TIME));
             } catch (NumberFormatException e) {
-                log.error("The Value should be in Number", e);
+                handleException("The Value should be in Number", e);
             }
         }
     }
 
     public Object poll() {
         //Establishing connection with Salesforce streaming api.
-        try {
-            if (!isPolled) {
-                makeConnect();
-                isPolled = true;
-            }
-        } catch (Exception se) {
-            handleException("Error while setup the Salesforce connection.", se);
+        if (!isPolled) {
+            makeConnect();
+            isPolled = true;
         }
         return null;
     }
@@ -317,26 +313,22 @@ public class SalesforceStreamData extends GenericPollingConsumer {
         }
     }
 
-    private void handleException(String msg, Exception ex) {
+    public static void handleException(String msg, Exception ex) {
         log.error(msg, ex);
         throw new SynapseException(ex);
     }
 
-    private void handleException(String msg) {
+    public static void handleException(String msg) {
         log.error(msg);
         throw new SynapseException(msg);
     }
 
     public void destroy() {
-        try {
-            if (client != null) {
-                client.disconnect();
-                if (log.isDebugEnabled()) {
-                    log.debug("The Salesforce stream has been shutdown !");
-                }
+        if (client != null) {
+            client.disconnect();
+            if (log.isDebugEnabled()) {
+                log.debug("The Salesforce stream has been shutdown !");
             }
-        } catch (Exception e) {
-            log.error("Error while shutdown the Salesforce stream" + e.getMessage(), e);
         }
     }
 }

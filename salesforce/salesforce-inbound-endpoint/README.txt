@@ -41,7 +41,4 @@ https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streami
             <parameter name="connection.salesforce.packageVersion">35.0</parameter>
             <parameter name="connection.salesforce.soapApiVersion">22.0/</parameter>
         </parameters>
-    </inboundEndpoint>
-   
-
-
+</inboundEndpoint>

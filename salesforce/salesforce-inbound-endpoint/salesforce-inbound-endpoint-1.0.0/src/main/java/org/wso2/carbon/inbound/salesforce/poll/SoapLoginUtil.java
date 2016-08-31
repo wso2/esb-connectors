@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *   WSO2 Inc. licenses this file to you under the Apache License,
  *   Version 2.0 (the "License"); you may not use this file except
@@ -31,11 +31,22 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Login with Salesforce.
+ */
 public final class SoapLoginUtil {
     private static final Log log = LogFactory.getLog(SoapLoginUtil.class);
 
-    private static String sessionId, LoginUrl;
+    private static String sessionId, loginUrl;
 
+    /**
+     * Build soap body to login with salesforce.
+     *
+     * @param username the username for salesforce.
+     * @param password the password for salesforce.
+     * @return byte array of soap body.
+     * @throws UnsupportedEncodingException
+     */
     private static byte[] soapXmlForLogin(String username, String password)
             throws UnsupportedEncodingException {
         return (SalesforceConstant.ENV_START +
@@ -46,6 +57,17 @@ public final class SoapLoginUtil {
                 SalesforceConstant.ENV_END).getBytes("UTF-8");
     }
 
+    /**
+     * Login call with Salesforce.
+     *
+     * @param client   the HttpClient.
+     * @param username the username for Salesforce.
+     * @param password the password for salesforce
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public static void login(HttpClient client, String username, String password) throws IOException, InterruptedException, SAXException,
             ParserConfigurationException {
         try {
@@ -60,41 +82,51 @@ public final class SoapLoginUtil {
 
             client.send(exchange);
             exchange.waitForDone();
-            try {
-                String response = exchange.getResponseContent();
-                String tagSession = "<sessionId>";
-                String tagServerUrl = "<serverUrl>";
-                String serverUrl = response.substring(response.indexOf(tagServerUrl) + tagServerUrl.length(), response.indexOf("</serverUrl>"));
-                sessionId = response.substring(response.indexOf(tagSession) + tagSession.length(), response.indexOf("</sessionId>"));
-                LoginUrl = serverUrl.substring(0, serverUrl.indexOf("/services"));
-            } catch (IndexOutOfBoundsException e) {
-                log.error("Login credentials of Salesforce is wrong....");
-                throw new SynapseException("Login credentials of Salesforce is wrong....", e);
-            }
+
+            String response = exchange.getResponseContent();
+            String tagSession = "<sessionId>";
+            String tagServerUrl = "<serverUrl>";
+            String serverUrl = response.substring(response.indexOf(tagServerUrl) + tagServerUrl.length(), response.indexOf("</serverUrl>"));
+            sessionId = response.substring(response.indexOf(tagSession) + tagSession.length(), response.indexOf("</sessionId>"));
+            loginUrl = serverUrl.substring(0, serverUrl.indexOf("/services"));
+        } catch (IndexOutOfBoundsException e) {
+            throw new SynapseException("Login credentials of Salesforce is wrong....", e);
         } catch (MalformedURLException e) {
-            log.error("Error while building URL", e);
+            SalesforceStreamData.handleException("Error while building URL", e);
         } catch (InterruptedException e) {
-            log.error("Error in exchange the asynchronous message", e);
+            SalesforceStreamData.handleException("Error in exchange the asynchronous message", e);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            SalesforceStreamData.handleException("Error in Encoding", e);
         } catch (IOException e) {
-            log.error("Error while login to Salesforce" + e.getMessage(), e);
+            SalesforceStreamData.handleException("Error while login to Salesforce", e);
         }
     }
 
+    /**
+     * Get Salesforce login Endpoint.
+     */
     private static String getSoapURL() throws MalformedURLException {
         return new URL(SalesforceStreamData.loginEndpoint + getSoapUri()).toExternalForm();
     }
 
+    /**
+     * Get the enterprise SOAP API endpoint used for the login call.
+     */
     private static String getSoapUri() {
         return SalesforceConstant.SERVICES_SOAP_PARTNER_ENDPOINT;
     }
 
+    /**
+     * Get sessionID to access Salesforce API.
+     */
     public static String getSessionId() {
         return sessionId;
     }
 
+    /**
+     * Get Salesforce login URL endpoint.
+     */
     public static String getEndpoint() {
-        return LoginUrl;
+        return loginUrl;
     }
 }

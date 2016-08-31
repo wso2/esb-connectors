@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 *  WSO2 Inc. licenses this file to you under the Apache License,
 *  Version 2.0 (the "License"); you may not use this file except
@@ -163,9 +163,9 @@ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
                     <instructions>
                         <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
                         <Export-Package>
-                            org.wso2.carbon.inbound.salesforce.poll.*,
-                            org.cometd.*,
-                            org.eclipse.jetty.*,
+                            org.wso2.carbon.inbound.salesforce.poll.*;version="${version}",
+                            org.cometd.*;version="${cometd-java-client.version}",
+                            org.eclipse.jetty.*;version="${jetty-server.version}",
                         </Export-Package>
                         <Import-Package>
                             !javax.xml.namespace,
@@ -176,7 +176,6 @@ Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
                     </instructions>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
     <distributionManagement>
