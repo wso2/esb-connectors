@@ -39,7 +39,6 @@
         <call>
             <endpoint>
                 <http method="post" uri-template="{uri.var.apiUrl}"/>
-
             </endpoint>
         </call>
 

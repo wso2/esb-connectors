@@ -23,9 +23,6 @@
         <property name="uri.var.action" value="VerifyDomainIdentity"/>
 
         <class name="org.wso2.carbon.connector.amazonses.auth.AmazonSESVerifyDomainIdentityMediator"/>
-        <log level="custom">
-            <property name="requestPayload" expression="get-property('uri.var.requestPayload')"/>
-        </log>
         <payloadFactory media-type="json">
             <format>
                 $1
