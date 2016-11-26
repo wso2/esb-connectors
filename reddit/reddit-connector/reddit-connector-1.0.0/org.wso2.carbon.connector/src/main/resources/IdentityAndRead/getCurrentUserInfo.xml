@@ -21,12 +21,12 @@
         <property name="host" value=""/>
         <script language="js">
             <![CDATA[
-        var apiUrlOauth = mc.getProperty('uri.var.apiUrlOauth');
-        if(apiUrlOauth != "") {
-        var host = apiUrlOauth.replace("https://","");
-        mc.setProperty('host',host);
-        }
-        ]]>
+            var apiUrlOauth = mc.getProperty('uri.var.apiUrlOauth');
+            if(apiUrlOauth != "") {
+            var host = apiUrlOauth.replace("https://","");
+            mc.setProperty('host',host);
+            }
+            ]]>
         </script>
         <filter source="boolean(get-property('uri.var.apiUrlOauth'))" regex="true">
             <then>
