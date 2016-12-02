@@ -22,6 +22,9 @@ import org.wso2.carbon.connector.amazonses.constants.AmazonSESConstants;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * To delete Receipt Rule from the amazon SES.
+ */
 public class AmazonSESDeleteReceiptRuleMediator extends AmazonSESMediatorBase {
 
     /**
